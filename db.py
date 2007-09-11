@@ -24,7 +24,7 @@ __version__ = "$Id: db.py 309 2007-04-09 16:23:38Z wrobel $"
 #
 #-------------------------------------------------------------------------------
 
-import os, os.path, urllib2, re, md5
+import os, codecs, os.path, urllib2, re, md5
 
 from   layman.utils             import path
 from   layman.overlay           import Overlays
@@ -109,7 +109,7 @@ class DB(Overlays):
             result = overlay.add(self.config['storage'])
             if result == 0:
                 if 'priority' in self.config.keys():
-                    overlay.priority = int(self.config['priority'])
+                    overlay.set_priority(self.config['priority'])
                 self.overlays[overlay.name] = overlay
                 self.write(self.path)
                 make_conf = MakeConf(self.config, self.overlays)
@@ -398,7 +398,7 @@ class MakeConf:
         >>> [i.name for i in b.overlays]
         [u'wrobel', u'wrobel-stable']
         >>> b.extra
-        ['/usr/portage/local/ebuilds/testing', '/usr/portage/local/ebuilds/stable', '/usr/portage/local/kolab2', '/usr/portage/local/gentoo-webapps-overlay/experimental', '/usr/portage/local/gentoo-webapps-overlay/production-ready']
+        [u'/usr/portage/local/ebuilds/testing', u'/usr/portage/local/ebuilds/stable', u'/usr/portage/local/kolab2', u'/usr/portage/local/gentoo-webapps-overlay/experimental', u'/usr/portage/local/gentoo-webapps-overlay/production-ready']
 
         >>> os.unlink(write)
         '''
@@ -426,7 +426,7 @@ class MakeConf:
         >>> [i.name for i in b.overlays]
         []
         >>> b.extra
-        ['/usr/portage/local/ebuilds/testing', '/usr/portage/local/ebuilds/stable', '/usr/portage/local/kolab2', '/usr/portage/local/gentoo-webapps-overlay/experimental', '/usr/portage/local/gentoo-webapps-overlay/production-ready']
+        [u'/usr/portage/local/ebuilds/testing', u'/usr/portage/local/ebuilds/stable', u'/usr/portage/local/kolab2', u'/usr/portage/local/gentoo-webapps-overlay/experimental', u'/usr/portage/local/gentoo-webapps-overlay/production-ready']
 
         >>> os.unlink(write)
         '''
@@ -451,7 +451,7 @@ class MakeConf:
         >>> [i.name for i in a.overlays]
         [u'wrobel-stable']
         >>> a.extra
-        ['/usr/portage/local/ebuilds/testing', '/usr/portage/local/ebuilds/stable', '/usr/portage/local/kolab2', '/usr/portage/local/gentoo-webapps-overlay/experimental', '/usr/portage/local/gentoo-webapps-overlay/production-ready']
+        [u'/usr/portage/local/ebuilds/testing', u'/usr/portage/local/ebuilds/stable', u'/usr/portage/local/kolab2', u'/usr/portage/local/gentoo-webapps-overlay/experimental', u'/usr/portage/local/gentoo-webapps-overlay/production-ready']
         '''
         if os.path.isfile(self.path):
             self.content()
@@ -510,7 +510,7 @@ class MakeConf:
         >>> [i.name for i in b.overlays]
         [u'wrobel-stable']
         >>> b.extra
-        ['/usr/portage/local/ebuilds/testing', '/usr/portage/local/ebuilds/stable', '/usr/portage/local/kolab2', '/usr/portage/local/gentoo-webapps-overlay/experimental', '/usr/portage/local/gentoo-webapps-overlay/production-ready']
+        [u'/usr/portage/local/ebuilds/testing', u'/usr/portage/local/ebuilds/stable', u'/usr/portage/local/kolab2', u'/usr/portage/local/gentoo-webapps-overlay/experimental', u'/usr/portage/local/gentoo-webapps-overlay/production-ready']
 
         >>> os.unlink(write)
         '''
@@ -542,7 +542,7 @@ class MakeConf:
                             'le.')
 
         try:
-            make_conf = open(self.path, 'w')
+            make_conf = codecs.open(self.path, 'w', 'utf-8')
 
             make_conf.write(content)
 
@@ -557,7 +557,7 @@ class MakeConf:
         Returns the content of the /etc/make.conf file.
         '''
         try:
-            make_conf = open(self.path)
+            make_conf = codecs.open(self.path, 'r', 'utf-8')
 
             self.data = make_conf.read()
 

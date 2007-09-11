@@ -13,7 +13,7 @@ __version__ = "$Id: debug.py 153 2006-06-05 06:03:16Z wrobel $"
 ##
 #################################################################################
 
-import sys, inspect
+import sys, inspect, types
 
 from   optparse      import OptionGroup
 
@@ -298,7 +298,8 @@ class Message:
 
     def info (self, info, level = 4):
 
-        info = str(info)
+        if type(info) not in types.StringTypes:
+            info = str(info)
 
         if level > self.info_lev:
             return
@@ -308,7 +309,8 @@ class Message:
 
     def status (self, message, status, info = 'ignored'):
 
-        message = str(message)
+        if type(message) not in types.StringTypes:
+            message = str(message)
 
         lines = message.split('\n')
 
@@ -335,7 +337,8 @@ class Message:
 
     def warn (self, warn, level = 4):
 
-        warn = str(warn)
+        if type(warn) not in types.StringTypes:
+            warn = str(warn)
 
         if level > self.warn_lev:
             return
@@ -345,7 +348,8 @@ class Message:
 
     def error (self, error):
 
-        error = str(error)
+        if type(error) not in types.StringTypes:
+            error = str(error)
 
         for i in error.split('\n'):
             print >> self.error_out, self.maybe_color('red', '* ') + i
@@ -353,7 +357,8 @@ class Message:
 
     def die (self, error):
 
-        error = str(error)
+        if type(error) not in types.StringTypes:
+            error = str(error)
 
         for i in error.split('\n'):
             self.error(self.maybe_color('red', 'Fatal error: ') + i)
@@ -415,7 +420,8 @@ class Message:
             not str(callerobject.__class__.__name__) in self.debug_obj):
             return
 
-        message = str(message)
+        if type(message) not in types.StringTypes:
+            message = str(message)
 
         def breaklines(x):
             '''

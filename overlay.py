@@ -24,7 +24,7 @@ __version__ = "$Id: overlay.py 273 2006-12-30 15:54:50Z wrobel $"
 #
 #-------------------------------------------------------------------------------
 
-import os, os.path, xml.dom.minidom
+import sys, codecs, os, os.path, xml.dom.minidom
 
 from   layman.overlays.bzr       import BzrOverlay
 from   layman.overlays.darcs     import DarcsOverlay
@@ -161,7 +161,7 @@ class Overlays:
 
         try:
 
-            out_file = open(path, 'w')
+            out_file = codecs.open(path, 'w', 'utf-8')
 
             doc.writexml(out_file, '', '  ', '\n')
 
@@ -178,7 +178,6 @@ class Overlays:
         >>> a.select('wrobel-stable').data['&src']
         u'rsync://gunnarwrobel.de/wrobel-stable'
         '''
-
         if overlay in self.overlays.keys():
             return self.overlays[overlay]
 

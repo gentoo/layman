@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<layman>
+
+  <overlay
+      type = "svn"
+      src  = "https://overlays.gentoo.org/svn/dev/wrobel"
+      contact = "nobody@gentoo.org"
+      name = "wrÖbel"
+      status = "official"
+      priority = "10">
+
+    <description>
+      Test ä
+    </description>
+
+  </overlay>
+
+
+</layman>

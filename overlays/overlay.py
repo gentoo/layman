@@ -24,7 +24,7 @@ __version__ = "$Id: overlay.py 273 2006-12-30 15:54:50Z wrobel $"
 #
 #-------------------------------------------------------------------------------
 
-import re, os, os.path, shutil, popen2
+import sys, types, re, os, os.path, shutil, popen2
 
 from   layman.utils             import node_to_dict, dict_to_node, path
 
@@ -112,6 +112,12 @@ class Overlay:
         else:
             self.priority = 50
 
+    def set_priority(self, priority):
+        '''Set the priority of this overlay.'''
+
+        self.data['&priority'] = str(priority)
+        self.priority = int(priority)
+
     def to_minidom(self, document):
         '''Convert to xml.'''
 
@@ -147,6 +153,10 @@ class Overlay:
 
         OUT.info('Running command "' + command + '"...', 2)
 
+        if hasattr(sys.stdout,'encoding'):
+            command = command.encode(sys.stdout.encoding or 
+                                     sys.getfilesystemencoding())
+
         if not self.quiet:
             return os.system(command)
         else:
@@ -178,29 +188,29 @@ class Overlay:
         <BLANKLINE>
         '''
 
-        result = ''
+        result = u''
 
-        result += self.name + '\n' + (len(self.name) * '~')
+        result += self.name + u'\n' + (len(self.name) * u'~')
 
-        result += '\nSource  : ' + self.src
-        result += '\nContact : ' + self.contact
-        result += '\nType    : ' + self.type
-        result += '; Priority: ' + str(self.priority) + '\n'
+        result += u'\nSource  : ' + self.src
+        result += u'\nContact : ' + self.contact
+        result += u'\nType    : ' + self.type
+        result += u'; Priority: ' + str(self.priority) + u'\n'
 
         description = self.description
-        description = re.compile(' +').sub(' ', description)
-        description = re.compile('\n ').sub('\n', description)
-        result += '\nDescription:'
-        result += '\n  '.join(('\n' + description).split('\n'))
-        result += '\n'
+        description = re.compile(u' +').sub(u' ', description)
+        description = re.compile(u'\n ').sub(u'\n', description)
+        result += u'\nDescription:'
+        result += u'\n  '.join((u'\n' + description).split(u'\n'))
+        result += u'\n'
 
         if '<link>1' in self.data.keys():
             link = self.data['<link>1']['@'].strip()
-            link = re.compile(' +').sub(' ', link)
-            link = re.compile('\n ').sub('\n', link)
-            result += '\nLink:\n'
-            result += '\n  '.join(('\n' + link).split('\n'))
-            result += '\n'
+            link = re.compile(u' +').sub(u' ', link)
+            link = re.compile(u'\n ').sub(u'\n', link)
+            result += u'\nLink:\n'
+            result += u'\n  '.join((u'\n' + link).split(u'\n'))
+            result += u'\n'
 
         return result
 

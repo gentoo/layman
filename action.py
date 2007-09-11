@@ -92,6 +92,9 @@ class Sync:
 
         self.selection = config['sync']
 
+        enc = sys.getfilesystemencoding()
+        self.selection = [i.decode(enc) for i in self.selection]
+
         if config['sync_all'] or 'ALL' in self.selection:
             self.selection = self.db.overlays.keys()
 
@@ -153,6 +156,9 @@ class Add:
 
         self.selection = config['add']
 
+        enc = sys.getfilesystemencoding()
+        self.selection = [i.decode(enc) for i in self.selection]
+
         if 'ALL' in self.selection:
             self.selection = self.rdb.overlays.keys()
 
@@ -197,6 +203,9 @@ class Delete:
 
         self.selection = config['delete']
 
+        enc = sys.getfilesystemencoding()
+        self.selection = [i.decode(enc) for i in self.selection]
+
         if 'ALL' in self.selection:
             self.selection = self.db.overlays.keys()
 
@@ -225,6 +234,72 @@ class Delete:
                 result = 1
 
         return result
+
+#===============================================================================
+#
+# Class Info
+#
+#-------------------------------------------------------------------------------
+
+class Info:
+    ''' Print information about the specified overlays.
+
+    >>> import os
+    >>> here = os.path.dirname(os.path.realpath(__file__))
+    >>> cache = os.tmpnam()
+    >>> config = {'overlays' :
+    ...           'file://' + here + '/tests/testfiles/global-overlays.xml',
+    ...           'cache'  : cache,
+    ...           'proxy'  : None,
+    ...           'info'   : ['wrobel'],
+    ...           'nocheck'    : False,
+    ...           'verbose': False,
+    ...           'quietness':3}
+    >>> a = Info(config)
+    >>> a.rdb.cache()
+    >>> OUT.color_off()
+    >>> a.run()
+    * wrobel
+    * ~~~~~~
+    * Source  : https://overlays.gentoo.org/svn/dev/wrobel
+    * Contact : nobody@gentoo.org
+    * Type    : Subversion; Priority: 10
+    * 
+    * Description:
+    *   Test
+    * 
+    0
+    '''
+
+    def __init__(self, config):
+
+        OUT.debug('Creating RemoteDB handler', 6)
+
+        self.rdb    = RemoteDB(config)
+        self.config = config
+
+        self.selection = config['info']
+
+        enc = sys.getfilesystemencoding()
+        self.selection = [i.decode(enc) for i in self.selection]
+
+        if 'ALL' in self.selection:
+            self.selection = self.rdb.overlays.keys()
+
+    def run(self):
+        ''' Print information about the selected overlays.'''
+
+        for i in self.selection:
+            overlay = self.rdb.select(i)
+            # Is the overlay supported?
+            OUT.info(overlay.__str__(), 1)
+            if not overlay.is_official():
+                OUT.warn('*** This is no official gentoo overlay ***\n', 1)
+            if not overlay.is_supported():
+                OUT.error('*** You are lacking the necessary tools to install t'
+                          'his overlay ***\n')
+
+        return 0
 
 #===============================================================================
 #
@@ -370,6 +445,7 @@ class Actions:
     actions = [('fetch',      Fetch),
                ('add',        Add),
                ('sync',       Sync),
+               ('info',       Info),
                ('sync_all',   Sync),
                ('delete',     Delete),
                ('list',       List),
