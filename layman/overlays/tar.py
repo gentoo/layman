@@ -63,7 +63,7 @@ class TarOverlay(Overlay):
 
     type = 'Tar'
 
-    binary = '/bin/tar'
+    binary = u'/bin/tar'
 
     def __init__(self, xml, ignore = 0, quiet = False):
 
@@ -138,8 +138,8 @@ class TarOverlay(Overlay):
 
         os.makedirs(target)
 
-        result = self.cmd(self.binary + ' -v -x ' + opt + ' -f "' + pkg
-                          + '" -C "' + target + '"')
+        result = self.cmd(self.binary + u' -v -x ' + opt + u' -f "' + pkg
+                          + u'" -C "' + target + u'"')
 
         if self.subpath:
             source = target + '/' + self.subpath

@@ -58,7 +58,7 @@ class RsyncOverlay(Overlay):
 
         self.supported()
 
-        return self.cmd(self.base + '"' + self.src + '/*" "' +
+        return self.cmd(self.base + '"' + self.src + '/" "' +
                         path([base, self.name]) + '"')
 
     def supported(self):

@@ -61,7 +61,7 @@ class Config(object):
                          'cache'     : '%(storage)s/cache',
                          'local_list': '%(storage)s/overlays.xml',
                          'make_conf' : '%(storage)s/make.conf',
-                         'nocheck'   : 'no',
+                         'nocheck'   : 'yes',
                          'proxy'     : '',
                          'overlays'  :
                          'http://www.gentoo.org/proj/en/overlays/layman-global.'
@@ -97,6 +97,12 @@ class Config(object):
                          action = 'append',
                          help = 'Update the specified overlay. Use "ALL" as para'
                          'meter to synchronize all overlays')
+
+        group.add_option('-i',
+                         '--info',
+                         action = 'append',
+                         help = 'Display information about the specified overlay'
+                         '.')
 
         group.add_option('-S',
                          '--sync-all',
@@ -164,7 +170,8 @@ class Config(object):
         group.add_option('-v',
                          '--verbose',
                          action = 'store_true',
-                         help = 'Increase amount of output.')
+                         help = 'Increase the amount of output and describe the '
+                         'overlays.')
 
         group.add_option('-q',
                          '--quiet',
@@ -175,6 +182,11 @@ class Config(object):
                          ' hang without telling you why. This might happen for e'
                          'xample if your overlay resides in subversion and the S'
                          'SL certificate of the server needs acceptance.')
+
+        group.add_option('-N',
+                         '--nocolor',
+                         action = 'store_true',
+                         help = 'Remove color codes from the layman output.')
 
         group.add_option('-Q',
                          '--quietness',
@@ -205,6 +217,9 @@ class Config(object):
 
         # handle debugging
         OUT.cli_handle(self.options)
+
+        if self.options.__dict__['nocolor']:
+            OUT.color_off()
 
         # Fetch only an alternate config setting from the options
         if not self.options.__dict__['config'] is None:

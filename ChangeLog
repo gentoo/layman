@@ -1,3 +1,60 @@
+2007-09-11  Gunnar Wrobel  <p@rdus.de>
+
+	* layman/config.py (Config.__init__): 
+	* doc/layman.8.xml: 
+
+	Add "nocolor" option (#183364)
+	http://bugs.gentoo.org/show_bug.cgi?id=183364
+
+	* layman/db.py: 
+	* layman/debug.py: 
+
+	Fixes for unicode bug #184449
+	http://bugs.gentoo.org/show_bug.cgi?id=184449
+
+	* layman/overlays/rsync.py (RsyncOverlay.sync): 
+
+	Fix bug #177045
+	http://bugs.gentoo.org/show_bug.cgi?id=177045
+
+	* doc/layman.8.xml: 
+
+	Improve the man page concerning the --overlays flag (#180107)
+	http://bugs.gentoo.org/show_bug.cgi?id=180107
+
+	* layman/db.py (DB.add): 
+	* layman/overlays/overlay.py (Overlay.set_priority): 
+
+	Correctly handle the priority setting (#185142)
+	http://bugs.gentoo.org/show_bug.cgi?id=185142
+
+	* layman/config.py (Config.__init__): 
+
+	Finally fix the default for "nocheck"
+
+	* layman/version.py: 
+
+	Update to version 1.1.
+
+	* layman/config.py (Config.__init__): 
+	* layman/action.py (Info.run): 
+	* doc/layman.8.xml: 
+
+	Add the new "--info" option (bug #188000)
+	http://bugs.gentoo.org/show_bug.cgi?id=188000
+
+	* doc/layman.8.xml: 
+
+	Description of the verbose switch (partial fix 
+	for #188004).
+	http://bugs.gentoo.org/show_bug.cgi?id=188004
+
+	* layman/config.py (Config.__init__): 
+
+	Add the output options into the list of documented
+	cli switches (partial fix for #188004).
+	http://bugs.gentoo.org/show_bug.cgi?id=188004
+
 2007-01-09  Gunnar Wrobel  <wrobel@pardus.de>
 
 	* layman/version.py: 

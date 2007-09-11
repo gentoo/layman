@@ -420,6 +420,14 @@
 	  </varlistentry>
 
 	  <varlistentry>
+	    <term><option>-i</option> <replaceable>overlay</replaceable></term>
+	    <term><option>--info</option> <replaceable>overlay</replaceable></term>
+	    <listitem>
+	      <para>Display all available information about the specified overlay.</para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
 	    <term><option>-S</option></term>
 	    <term><option>--sync-all</option></term>
 	    <listitem>
@@ -468,10 +476,13 @@
 	    <listitem>
 	      <para>Specifies the location of additional overlay
 	      lists. You can use this flag several times and the
-	      specified urls will get appended to the list of urls you
-	      specified in your config file. You may also specify
-	      local file urls by prepending the path with
-	      file://</para>
+	      specified urls will get temporarily appended to the list
+	      of urls you specified in your config file. You may also
+	      specify local file urls by prepending the path with
+	      file://. This option will only append the URL for this
+	      specific layman run - edit your config file to add a URL
+	      permanently. So this is useful for testing purposes.
+	      </para>
 	    </listitem>
 	  </varlistentry>
 
@@ -510,6 +521,25 @@
 		why. This might happen for example if your overlay
 		resides in subversion and the SSL certificate of
 		the server needs acceptance.</para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term><option>-v</option></term>
+	    <term><option>--verbose</option></term>
+	    <listitem>
+	      <para>Makes <command>layman</command> more verbose and
+	        you will receive a description of the overlays you can
+	        download.</para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term><option>-N</option></term>
+	    <term><option>--nocolor</option></term>
+	    <listitem>
+	      <para>Remove color codes from the <command>layman</command>
+	      output.</para>
 	    </listitem>
 	  </varlistentry>
 
