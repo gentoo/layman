@@ -102,6 +102,13 @@
     <itemizedlist>
       <listitem>
 	<para>
+	  <link linkend="layman-search">Searching ebuilds in overlays</link>
+	</para>
+      </listitem>
+    </itemizedlist>
+    <itemizedlist>
+      <listitem>
+	<para>
 	  <link linkend="layman-types">Overlay types</link>
 	</para>
       </listitem>
@@ -776,6 +783,19 @@
 	  layman-1.0.7 and if you'd like to return to the old
 	  behavior you may use the k option flag or set the nocheck
 	  option in the configuration file.
+	  </para>
+
+	</refsection>
+
+	<refsection id="layman-search">
+
+	  <title>Searching ebuilds in overlays</title>
+
+	  <para>
+	    You can search through the ebuilds available in the
+	    overlays on <ulink url="http://overlays.gentoo.org"/> by
+	    using "eix". Emerge the package and run
+	    <command>update-eix-remote update</command>.
 	  </para>
 
 	</refsection>
