@@ -1,0 +1,601 @@
+<?xml version='1.0'?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+	  "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+<article>
+
+  <articleinfo>
+    <title>layman</title>
+    
+    <authorgroup>
+      <author>
+        <firstname>Gunnar</firstname>
+        <surname>Wrobel</surname>
+	<affiliation>
+	  <address>
+	    <email>wrobel@gentoo.org</email>
+	    <otheraddr>
+	      <ulink url="http://gunnarwrobel.de" />
+	    </otheraddr>
+	  </address>
+	</affiliation>
+      </author>
+    </authorgroup>
+
+    <copyright>
+      <year>2006</year>
+      <holder>Gunnar Wrobel</holder>
+    </copyright>
+  </articleinfo>
+
+  <section>
+    <title>Reference</title>
+
+    <refentry>
+      <refentryinfo>
+        <title>layman</title>
+	<date>February 2006</date>
+	<productname>Gentoo Linux</productname>
+      </refentryinfo>
+      <refmeta>
+        <refentrytitle>layman</refentrytitle>
+	<manvolnum>8</manvolnum>
+      </refmeta>
+      <refnamediv>
+        <refname>layman</refname>
+	<refpurpose>
+	  manage your local repository of gentoo overlays
+	</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <cmdsynopsis>
+	  <command>layman</command>
+	  <group choice="plain">
+	    <arg>-a</arg>
+	    <arg>--add</arg>
+	  </group>
+	  <group choice="plain">
+	    <arg>ALL</arg>
+	    <arg><replaceable>overlay</replaceable></arg>
+	  </group>
+	</cmdsynopsis>
+
+        <cmdsynopsis>
+	  <command>layman</command>
+	  <group choice="plain">
+	    <arg>-d</arg>
+	    <arg>--delete</arg>
+	  </group>
+	  <group choice="plain">
+	    <arg>ALL</arg>
+	    <arg><replaceable>overlay</replaceable></arg>
+	  </group>
+	</cmdsynopsis>
+
+        <cmdsynopsis>
+	  <command>layman</command>
+	  <group choice="plain">
+	    <arg>-s</arg>
+	    <arg>--sync</arg>
+	  </group>
+	  <group choice="plain">
+	    <arg>ALL</arg>
+	    <arg><replaceable>overlay</replaceable></arg>
+	  </group>
+	</cmdsynopsis>
+
+        <cmdsynopsis>
+	  <command>layman</command>
+	  <group choice="plain">
+	    <arg>-S</arg>
+	    <arg>--sync-all</arg>
+	  </group>
+	</cmdsynopsis>
+
+        <cmdsynopsis>
+	  <command>layman</command>
+	  <group choice="plain">
+	    <arg>-L</arg>
+	    <arg>--list</arg>
+	  </group>
+	</cmdsynopsis>
+
+        <cmdsynopsis>
+	  <command>layman</command>
+	  <group choice="plain">
+	    <arg>-l</arg>
+	    <arg>--list-local</arg>
+	  </group>
+	</cmdsynopsis>
+
+        <cmdsynopsis>
+	  <command>layman</command>
+	  <group choice="plain">
+	    <arg>-f</arg>
+	    <arg>--fetch</arg>
+	  </group>
+	</cmdsynopsis>
+
+        <cmdsynopsis>
+	  <command>layman</command>
+	  <group choice="plain">
+	    <arg>-n</arg>
+	    <arg>--nofetch</arg>
+	  </group>
+	</cmdsynopsis>
+
+        <cmdsynopsis>
+	  <command>layman</command>
+	  <group choice="plain">
+	    <arg>-k</arg>
+	    <arg>--nocheck</arg>
+	  </group>
+	</cmdsynopsis>
+
+        <cmdsynopsis>
+	  <command>layman</command>
+	  <group choice="plain">
+	    <arg>-q</arg>
+	    <arg>--quiet</arg>
+	  </group>
+	</cmdsynopsis>
+
+        <cmdsynopsis>
+	  <command>layman</command>
+	  <group choice="plain">
+	    <arg>-Q</arg>
+	    <arg>--quietness</arg>
+	    <group choice="plain">
+	      <arg><replaceable>0-4</replaceable></arg>
+	    </group>
+	  </group>
+	</cmdsynopsis>
+
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>Description</title>
+
+	<para><command>layman</command> is a script that allows you to
+	add, remove and update gentoo overlays from a variety of
+	sources.</para>
+
+      </refsect1>
+
+      <refsect1>
+        <title>WARNING</title>
+
+	<para><command>layman</command> makes it easy to retrieve and
+	  update overlays for gentoo. In addition it makes it TRIVIAL
+	  to break your system. 
+	</para>
+
+	<para>The main portage tree provides you with high quality ebuilds
+	  that are all maintained by gentoo developers. This will not
+	  be the case for most of the overlays you can get by using
+	  <command>layman</command>. Thus you are removing the
+	  security shield that the standard tree provides for
+	  you. You should keep that in mind when installing ebuilds
+	  from an overlay.
+	</para>
+
+	<para>To ensure the security of your system you MUST read the
+	  source of the ebuild you are about to install. 
+	</para>
+
+      </refsect1>
+
+      <refsect1>
+
+        <title>Handling overlays</title>
+
+	<para><command>layman</command> intends to provide easy
+	  maintenance of gentoo overlays while not requiring any
+	  configuration.
+	</para>
+
+	<refsect2>
+
+	  <title>Remote overlay lists</title>
+
+	  <para><command>layman</command> allows you to fetch an overlay
+	    without the need to modify any configuration files. In
+	    order for this to be possible the script needs an external
+	    list of possible overlay sources. There will be a
+	    centralized list available <ulink
+	    url="http://www.gentoo.org/proj/en/overlays/layman-global.txt">here</ulink>,
+	    but nothing will prevent you from using or publishing your
+	    own list of overlays. The location of the remote lists can
+	    also be modified using the <option>--overlays</option> option
+	    when running <command>layman</command>.
+	  </para>
+
+	  <para>To get a new overlay added to the central list provided
+	    for layman, send a mail to
+	    <email>overlays@gentoo.org</email>. Gentoo developers may
+	    add their overlay entries directly into the list which can
+	    be accessed over the CVS repository for the Gentoo
+	    website.
+	  </para>
+
+	  <para>You can also use several lists at the same time. Just
+	  add one url per line to the overlays variable in your
+	  configuration file. <command>layman</command> will merge the
+	  contents of all lists. 
+	  </para>
+
+	  <para><command>layman</command> also allows you to define
+	    local files in this list. Just make sure you prepend these
+	    pathnames in standard URL notation
+	    with <filename>file://</filename>.
+	  </para>
+
+	  <para>If you need to use a proxy for access to the internet,
+	  you can use the corresponding variable in
+	  the <command>layman</command> configuration file. Layman
+	  will also respect the <command>http_proxy</command>
+	  environment variable in case you set it.
+	  </para>
+
+	</refsect2>
+
+	<refsect2>
+
+	  <title>Local cache</title>
+
+	  <para><command>layman</command> stores a local copy of the
+	    fetched remote list. It will be stored in
+	    <filename>/usr/portage/local/layman/cache.xml</filename>
+	    by default. There exists only one such cache file and it
+	    will be overwritten every time you
+	    run <command>layman</command>.
+	  </para>
+
+	</refsect2>
+
+	<refsect2>
+
+	  <title>Handling <filename>/etc/make.conf</filename></title>
+
+	  <para>Since <command>layman</command> is designed to
+	    automatically handle the inclusion of overlays into your
+	    system it needs to be able to modify
+	    the <command>PORTDIR_OVERLAY</command> variable in your
+	    <filename>/etc/make.conf</filename> file. But
+	    <filename>/etc/make.conf</filename> is a very central and
+	    essential configuration file for a gentoo
+	    system. Automatically modifying this file would be
+	    somewhat dangerous. You can
+	    allow <command>layman</command> to do this by setting
+	    the <command>make_conf</command> variable in the
+	    configuration file to <filename>/etc/make.conf</filename>.
+	  </para>
+
+	  <para>A much safer and in fact recommended solution to the
+	    problem is to let <command>layman</command> handle an
+	    external file that only contains
+	    the <command>PORTDIR_OVERLAY</command> variable and is
+	    sourced within the
+	    standard <filename>/etc/make.conf</filename> file. Just add the following line to the end of your 
+	    <filename>/etc/make.conf</filename> file:
+	  </para>
+
+	  <para>source /usr/portage/local/layman/make.conf</para>
+
+	  <para><filename>/usr/portage/local/layman/make.conf</filename>
+	    is the default provided in the layman
+	    configuration. Change this filename in case you decide to
+	    store it somewhere else.
+	  </para>
+
+	  <para>The file does not necessarily need to exist at the
+	    beginning. If it is missing, layman will create it for you.
+	  </para>
+
+	  <para>There is also no need to remove the
+	  original <command>PORTDIR_OVERLAY</command> variable from
+	  the make.conf file. Layman will simply add new overlays to
+	  this variable and all your old entries will remain in there.
+	  </para>
+
+	</refsect2>
+
+	<refsect2>
+
+	  <title>Adding, removing and updating overlays</title>
+
+	  <para>Once a remote list of overlays has been fetched,
+	    <command>layman</command> allows to add overlays from the
+	    remote list to your system. The script will try to fetch
+	    the overlay. If this is successful the overlay information
+	    will be copied from the cache to the list of locally
+	    installed overlays. In addition
+	    <command>layman</command> will modify the
+	    <command>PORTDIR_OVERLAY</command> variable to include the
+	    new overlay path.
+	  </para>
+
+	  <para>Removing the overlay with <command>layman</command>  will
+	    delete the overlay without leaving any traces behind.
+	  </para>
+
+	  <para>In order to update all overlays managed by
+	    <command>layman</command> you can run the script with the 
+	    <option>--sync ALL</option> option or
+	    the <option>--sync-all</option> flag.
+	  </para>
+
+	</refsect2>
+
+	<refsect2>
+
+	  <title>List overlays</title>
+
+	  <para><command>layman</command> provides the
+	    <option>--list</option> and <option>--list-local</option>
+	    options to print a list of available respectively
+	    installed overlays.
+	  </para>
+
+	  <para> Listing will prepend all fully supported overlays
+	    with a green asterisk, all non-official overlays with a
+	    yellow asterisk and all overlays that you will not be able
+	    to use since you do not have the necessary tools installed
+	    with a red asterisk.
+	  </para>
+
+	  <para> In the default mode layman will be strict about
+	    listing overlays and only present you with overlays that
+	    are fully supported. In addition it will complain about
+	    overlays that are missing a description field or a contact
+	    attribute. This type of behaviour has been added with
+	    layman-1.0.7 and if you'd like to return to the old
+	    behaviour you may use the k option flag or set the nocheck
+	    option in the configuration file.
+	  </para>
+
+	</refsect2>
+
+	<refsect2>
+
+	  <title>Overlay types</title>
+
+	  <para>Currently <command>layman</command> supports overlays that
+	    are exported via <command>rsync</command>,
+	    <command>subversion</command>, <command>bzr</command>, 
+	    <command>darcs</command>, <command>git</command>, 
+	    <command>mercurial</command> or provided
+	    as <command>tar</command> packages.
+	  </para>
+
+	</refsect2>
+
+      </refsect1>
+
+      <refsect1>
+
+        <title>Actions</title>
+
+	<para>List of possible <command>layman</command> actions.</para>
+
+	<variablelist>
+	  <varlistentry>
+	    <term><option>-f</option></term>
+	    <term><option>--fetch</option></term>
+	    <listitem>
+	      <para>Fetches the remote list of overlays. You will
+	      usually NOT need to explicitely specify this option. The
+	      fetch operation will be performed automatically once you
+	      run the sync, sync-all, or list action. You can prevent
+	      this automatic fetching using the --nofetch option.</para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term><option>-a</option> <replaceable>overlay</replaceable></term>
+	    <term><option>--add</option> <replaceable>overlay</replaceable></term>
+	    <listitem>
+	      <para>Add the given overlay from the cached remote list to
+	      your locally installed overlays. Specify "ALL" to add
+	      all overlays from the remote list.</para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term><option>-d</option> <replaceable>overlay</replaceable></term>
+	    <term><option>--delete</option> <replaceable>overlay</replaceable></term>
+	    <listitem>
+	      <para>Remove the given overlay from your locally installed
+	      overlays. Specify "ALL" to remove all overlays</para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term><option>-s</option> <replaceable>overlay</replaceable></term>
+	    <term><option>--sync</option> <replaceable>overlay</replaceable></term>
+	    <listitem>
+	      <para>Update the specified overlay. Use "ALL" as
+	      parameter to synchronize all overlays</para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term><option>-S</option></term>
+	    <term><option>--sync-all</option></term>
+	    <listitem>
+	      <para>Update all overlays. Shortcut for -s ALL.</para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term><option>-L</option></term>
+	    <term><option>--list</option></term>
+	    <listitem>
+	      <para>List the contents of the remote list.</para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term><option>-l</option></term>
+	    <term><option>--list-local</option></term>
+	    <listitem>
+	      <para>List the locally installed overlays.</para>
+	    </listitem>
+	  </varlistentry>
+
+	</variablelist>
+      </refsect1>
+
+      <refsect1>
+
+        <title>Options</title>
+
+	<para>List of available <command>layman</command> options.</para>
+
+	<variablelist>
+
+	  <varlistentry>
+	    <term><option>-c</option> <replaceable>path</replaceable></term>
+	    <term><option>--config</option> <replaceable>path</replaceable></term>
+	    <listitem>
+	      <para>Path to an alternative configuration file.</para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term><option>-o</option> <replaceable>url</replaceable></term>
+	    <term><option>--overlays</option> <replaceable>url</replaceable></term>
+	    <listitem>
+	      <para>Specifies the location of additional overlay
+	      lists. You can use this flag several times and the
+	      specified urls will get appended to the list of urls you
+	      specified in your config file. You may also specify
+	      local file urls by prepending the path with
+	      file://</para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term><option>-n</option></term>
+	    <term><option>--nofetch</option></term>
+	    <listitem>
+	      <para>Prevents <command>layman</command> from
+	      automatically fetching the remote lists of overlays. The
+	      default behaviour for <command>layman</command> is to
+	      update all remote lists if you run the sync, list or
+	      fetch operation.</para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term><option>-k</option></term>
+	    <term><option>--nocheck</option></term>
+	    <listitem>
+	      <para>Prevents <command>layman</command> from checking
+	      the remote lists of overlays for complete overlay
+	      definitions. The default behaviour for layman is to
+	      reject overlays that do not provide a description or a
+	      contact attribute.</para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term><option>-q</option></term>
+	    <term><option>--quiet</option></term>
+	    <listitem>
+	      <para>Makes <command>layman</command> completely quiet.
+		This option is dangerous: If the processes spawned by
+		layman when adding or synchronizing overlays require
+		any input layman will hang without telling you
+		why. This might happen for example if your overlay
+		resides in subversion and the SSL certificate of
+		the server needs acceptance.</para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term><option>-Q</option><replaceable>LEVEL</replaceable></term>
+	    <term><option>--quietness</option><replaceable>LEVEL</replaceable></term>
+	    <listitem>
+	      <para>Makes <command>layman</command> less verbose.
+		Choose a value between 0 and 4 with 0 being completely
+		quiet. Once you set this below 3, the same warning as
+		given for --quiet applies.</para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term><option>-p</option><replaceable>LEVEL</replaceable></term>
+	    <term><option>--priority</option><replaceable>LEVEL</replaceable></term>
+	    <listitem>
+	      <para>Use this option in combination with
+		the <command>--add</command>. It will modify the
+		priority of the added overlay and thus influence the
+		order of entries in the make.conf file. The lower the
+		priority, the earlier in the list the entry will be
+		mentioned. Use a value between 0 and 100. The default
+		value is 50.</para>
+	    </listitem>
+	  </varlistentry>
+
+	</variablelist>
+
+      </refsect1>
+
+      <refsect1>
+
+        <title>Examples</title>
+
+	<refsect2>
+
+	  <title>Installing an overlay</title>
+
+	  <para><userinput>layman -f -a wrobel</userinput></para>
+	  <para>This would add the overlay with the id
+	  <command>wrobel</command> to your list of installed
+	  overlays.</para>
+
+	</refsect2>
+
+	<refsect2>
+
+	  <title>Syncing your overlays</title>
+
+	  <para><userinput>layman -s ALL</userinput></para>
+	  <para>This updates all overlays</para>
+
+	</refsect2>
+
+	<refsect2>
+
+	  <title>Performing several actions at the same time</title>
+
+	  <para><userinput>layman -f -a wrobel -a webapps-experimental</userinput></para>
+	  <para>This fetches the remote list and immediately adds two
+	  overlays</para>
+
+	</refsect2>
+
+      </refsect1>
+
+      <refsect1>
+
+        <title>Files</title>
+
+	<variablelist>
+
+	  <varlistentry>
+	    <term><filename>/etc/layman/layman.cfg</filename></term>
+	    <listitem>
+	      <para>Configuration file, holding the defaults for
+	      <command>layman</command></para>
+	    </listitem>
+	  </varlistentry>
+
+	</variablelist>
+
+      </refsect1>
+
+    </refentry>
+  </section>
+</article>

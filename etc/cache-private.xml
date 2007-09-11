@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<layman>
+
+  <overlay
+      type = "svn"
+      src  = "http://overlays.gentoo.org/svn/dev/wrobel/stable"
+      name = "wrobel-stable"/>
+  <overlay
+      type = "svn"
+      src  = "http://overlays.gentoo.org/svn/dev/wrobel/testing"
+      name = "wrobel-testing"/>
+  <overlay
+      type = "svn"
+      src  = "http://overlays.gentoo.org/svn/dev/wrobel/broken"
+      name = "wrobel-broken"/>
+  <overlay
+      type = "svn"
+      src  = "https://www.gunnarwrobel.de/svn/kolab/ebuilds"
+      name = "kolab2"/>
+  <overlay
+      type = "svn"
+      src  = "https://www.gunnarwrobel.de/svn/kolab-pardus/ebuilds"
+      name = "kolab-pardus"/>
+
+</layman>
