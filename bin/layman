@@ -1,0 +1,37 @@
+#!python
+################################################################################
+# LAYMAN - A UTILITY TO SELECT AND UPDATE GENTOO OVERLAYS
+################################################################################
+# Distributed under the terms of the GNU General Public License v2
+#
+# Copyright:
+#             (c) 2005 Gunnar Wrobel
+#             Distributed under the terms of the GNU General Public License v2
+#
+# Author(s):
+#             Gunnar Wrobel <wrobel@gentoo.org>
+#
+
+__version__ = "$Id$"
+
+#===============================================================================
+#
+# Dependencies
+#
+#-------------------------------------------------------------------------------
+
+from   layman.config            import Config
+from   layman.action            import Actions
+
+#===============================================================================
+#
+# MAIN
+#
+#-------------------------------------------------------------------------------
+
+def main():
+
+    Actions(Config())
+
+if __name__ == "__main__":
+    main()

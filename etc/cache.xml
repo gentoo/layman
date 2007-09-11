@@ -1,0 +1,531 @@
+<?xml version="1.0" ?>
+<layman>
+
+  <overlay
+      type = "svn"
+      src  = "https://gentopia.gentooexperimental.org/svn/overlay/"
+      name = "gentopia">
+
+    <link>
+      http://gentopia.gentooexperimental.org/
+    </link>
+
+    <description>
+      Purpose
+
+      To provide a smooth, seamlessly functional and enjoyable Gentoo
+      Desktop experience by following the mantra of "Just Works".
+    </description>
+
+  </overlay>
+
+  <overlay
+      type = "tar"
+      src  = "http://svn.gnqs.org/downloads/gentoo-php-overlay.tar.gz"
+      name = "php">
+
+    <link>
+      http://svn.gnqs.org/projects/gentoo-php-overlay/
+    </link>
+
+    <description>
+      The Gentoo PHP Overlay is our testbed for new and improved PHP
+      packages for Gentoo21. It's a place where Gentoo developers and
+      users alike can work together on providing Gentoo Linux with the
+      very best PHP support that there is, for any platform.
+    </description>
+
+  </overlay>
+
+  <overlay
+      type = "svn"
+      src  = "https://gentooscience.org/svn/overlay"
+      name = "science">
+
+    <link>
+      https://gentooscience.org/
+    </link>
+
+    <description>
+      The Gentoo Science Overlay is intended as a place to work
+      outside of the main portage tree on experimental ebuilds. Our
+      aim is to increase the rate of development of scientific
+      packages for Gentoo, but ebuilds in this repository are by their
+      very nature more experimental. If you wish to use them you
+      should be willing to help test and report bugs. 
+    </description>
+
+  </overlay>
+
+  <overlay
+      type = "svn"
+      src  = "https://nemesis.fprintf.net/svn/gnome-experimental/"
+      name = "gnome-experimental">
+  </overlay>
+
+  <overlay
+      type = "rsync"
+      src  = "rsync://rsync.breakmygentoo.net/bmg-main"
+      name = "break-my-gentoo-main">
+
+    <link>
+      http://www.breakmygentoo.net
+    </link>
+
+    <description>
+      Nevertheless the name seems to be standing for something other,
+      "Break My Gentoo" is not just a project to help you destroying your
+      fine Gentoo-installation. It could, but this is not the main purpose.
+      We want to provide unstable ebuilds, which have no chance to get into
+      portage. We want to give technology previews especially focused on
+      GNOME.
+    </description>
+
+  </overlay>
+
+  <overlay
+      type = "rsync"
+      src  = "rsync://rsync.gentoo.de/gentoo-de-ebuilds"
+      name = "gentoo-de">
+  </overlay>
+
+  <overlay
+      type = "svn"
+      src  = "http://redeeman.kaspersandberg.com/fluidportage/trunk"
+      name = "fluidportage">
+
+    <description>
+      Contains A LOT of *-cvs packages for many things, read the
+      readme file for more information.
+    </description>
+
+  </overlay>
+
+  <overlay
+      type = "svn"
+      src  = "http://catmur.co.uk/svn/repos/gentoo/tree"
+      name = "ecatmur">
+
+    <link>
+      http://catmur.co.uk/gentoo/
+    </link>
+
+    <description>
+      ecatmurs overlay contains a variety of ebuilds: cool applications,
+      various fixes, version bumps, bleeding-edge code grabs.
+    </description>
+
+  </overlay>
+
+  <overlay
+      type = "rsync"
+      src  = "rsync://download.berlios.de/genkdesvn_ftp/stable"
+      name = "kde-stable">
+
+    <link>
+      http://genkdesvn.berlios.de/wiki/index.php/Main_Page
+    </link>
+
+    <description>
+      This wiki has been provided as a central place for information
+      regarding the kde-svn ebuilds.
+    </description>
+
+  </overlay>
+
+  <overlay
+      type = "rsync"
+      src  = "rsync://download.berlios.de/genkdesvn_ftp/playground"
+      name = "kde-experimental">
+
+    <link>
+      http://genkdesvn.berlios.de/wiki/index.php/Main_Page
+    </link>
+
+    <description>
+      This wiki has been provided as a central place for information
+      regarding the kde-svn ebuilds.
+    </description>
+
+  </overlay>
+
+  <overlay
+      type = "rsync"
+      src  = "rsync://gentoo.zugaina.org/zugaina-portage"
+      name = "zugaina">
+
+    <link>
+      http://gentoo.zugaina.org/
+    </link>
+
+  </overlay>
+
+  <overlay
+      type = "rsync"
+      src  = "rsync://gentoo.xwing.info/xwing-overlay"
+      name = "xwing">
+  </overlay>
+
+  <overlay
+      type = "rsync"
+      src  = "rsync://rsync.ebuildexchange.org/ebuildexchange"
+      name = "ebuild-exchange">
+
+    <link>
+      http://www.ebuildexchange.org/      
+    </link>
+
+    <description>
+      This site tries to provide a new medium of distributing Ebuilds
+      for the Gentoo Linux Distribution.
+    </description>
+
+  </overlay>
+
+  <overlay
+      type = "rsync"
+      src  = "rsync://erazor-zone.de/portage/"
+      name = "erazor">
+
+    <link>
+      http://wiki.erazor-zone.de/wiki:projects:linux:gentoo
+    </link>
+
+    <description>
+      erazor provides some ebuilds here. At this point, most of them
+      are newer that the ones in portage, but be warned, they have not
+      been tested much and there is no warranty at all.
+    </description>
+
+  </overlay>
+
+  <overlay
+      type = "svn"
+      src  = "https://fantoo.ru/svn"
+      name = "fantoo">
+
+    <link>
+      http://fantoo.org/
+    </link>
+
+    <description>
+      Portage Overlay tree of new gentoo based distibution called
+      Fantoo Linux. Fantoo Linux aims to be bleeding edge and bugfixes
+      in gentoo upstream. 
+    </description>
+
+  </overlay>
+
+  <overlay
+      type = "svn"
+      src  = "http://svn.gnqs.org/svn/gentoo-webapps-overlay/experimental"
+      name = "webapps-experimental">
+
+    <link>
+      http://svn.gnqs.org/projects/gentoo-webapps-overlay/
+    </link>
+
+    <description>
+      This is the home of Gentoo's wider collection of ebuilds for
+      web-based applications. This is where we collect all the ebuilds
+      submitted to Bugzilla by our users, and make them available in
+      an easy-to-use overlay for wider testing.
+    </description>
+
+  </overlay>
+
+  <overlay
+      type = "rsync"
+      src  = "rsync://gunnarwrobel.de/wrobel-stable"
+      name = "wrobel-stable">
+
+    <link>
+      http://projects.gunnarwrobel.de/ebuilds/wiki/WikiStart
+    </link>
+
+    <description>
+      A collection of stable ebuilds from Gunnar Wrobel [wrobel@gentoo.org].
+    </description>
+
+  </overlay>
+
+  <overlay
+      type = "rsync"
+      src  = "rsync://gunnarwrobel.de/wrobel-testing"
+      name = "wrobel-experimental">
+
+    <link>
+      http://projects.gunnarwrobel.de/ebuilds/wiki/WikiStart
+    </link>
+
+    <description>
+      A collection of experimental ebuilds from Gunnar Wrobel [wrobel@gentoo.org].
+    </description>
+
+  </overlay>
+
+  <overlay
+      type = "rsync"
+      src  = "rsync://gunnarwrobel.de/kolab2"
+      name = "kolab2">
+
+    <link>
+      http://projects.gunnarwrobel.de/kolab/wiki
+    </link>
+
+    <description>
+      Project to allow running Kolab2 on Gentoo.
+    </description>
+
+  </overlay>
+
+  <overlay
+      type = "svn"
+      src  = "http://svn.xgl-coffee.org/xgl-coffee/trunk/"
+      name = "portage-xgl">
+
+    <link>
+      http://gentoo-wiki.com/XGL#Checkout_An_Overlay
+    </link>
+
+    <description>
+      Xgl is an Xserver that uses OpenGL for its drawing
+      operations. Together with compiz, an opengl compositing and
+      window manager, it allows for some cool desktop effects.
+
+      This is the XGL overlay from Hanno Boeck (http://www.hboeck.de)
+    </description>
+
+  </overlay>
+
+  <overlay
+      type = "rsync"
+      src  = "rsync://svn.netdomination.org/gentoo-voip"
+      name = "voip">
+
+    <link>
+      http://svn.netdomination.org/gentoo-voip
+    </link>
+
+    <description>
+      Voice over IP related ebuilds.
+    </description>
+
+  </overlay>
+
+  <overlay
+      type = "rsync"
+      src  = "rsync://kpex.no-ip.org/kpex-media"
+      name = "kpex-media">
+
+    <link>
+      https://kpex.no-ip.org/kpex-media.html
+    </link>
+
+    <description>
+      A series of unsupported multimedia ebuilds for Gentoo 
+      portage that are either updated versions, live CVS/SVN 
+      packages, or have updated features not included in the 
+      official portage tree.
+    </description>
+
+  </overlay>
+
+  <overlay
+      type = "svn"
+      src  = "https://svn.initng.org/portage/gentoo"
+      name = "initng">
+
+    <link>
+      http://www.initng.org
+    </link>
+
+    <description>
+      Initng is a full replacement of the old and in many ways
+      deprecated sysvinit tool. It is designed with speed in mind
+      because it does as much as possible asynchronously. In other
+      words: It will boot your unix-system much faster, and give you
+      more control and statistics over your system.
+    </description>
+
+  </overlay>
+
+  <overlay
+      type = "tar"
+      src  = "http://snigel.no-ip.com/~nxsty/linux/glibc-overlay.tar.bz2"
+      name = "nxsty-glibc"
+      category = "sys-libs">
+
+    <link>
+      http://forums.gentoo.org/viewtopic-t-435659-start-0-postdays-0-postorder-asc-highlight-nxsty+glibc.html      
+    </link>
+
+    <description>
+      This overlay provides an enhanced glibc 2.4 ebuild.
+    </description>
+
+  </overlay>
+
+  <overlay
+      type = "tar"
+      src  = "http://snigel.no-ip.com/~nxsty/linux/binutils-overlay.tar.bz2"
+      name = "nxsty-binutils"
+      category = "sys-devel">
+
+    <link>
+      http://forums.gentoo.org/viewtopic-t-435659-start-0-postdays-0-postorder-asc-highlight-nxsty+glibc.html      
+    </link>
+
+    <description>
+      This overlay provides a supplemental binutils ebuild to the nxsty-glibc overlay.
+    </description>
+
+  </overlay>
+
+  <overlay
+      type = "svn"
+      src  = "http://svn.gnqs.org/svn/gentoo-nx-overlay/testing"
+      name = "nx">
+
+    <link>
+      http://svn.gnqs.org/projects/gentoo-nx-overlay/timeline
+    </link>
+
+    <description>
+      Overlay for the NX/FreeNX packages for Gentoo. 
+    </description>
+
+  </overlay>
+
+  <overlay
+      type = "svn"
+      src  = "svn://svn.tuxfamily.org/svnroot/ckpp/proaudio"
+      name = "pro-audio">
+
+    <link>
+      http://forums.gentoo.org/viewtopic-t-427211.html
+    </link>
+
+    <description>
+      Evermind's overlay with ebuilds for a lot of pro-audio production
+      software.
+    </description>
+
+  </overlay>
+
+  <overlay
+      type = "svn"
+      src  = "http://svn.italpro.biz/catalyst-portage"
+      name = "catalystframework">
+
+    <link>
+      http://gentoo-wiki.com/HOWTO_Catalyst_Framework
+    </link>
+
+    <description>
+      This project tries to provide ebuilds for the great Catalyst MVC
+      Framework and many of the related Perl modules, plugins, etc.
+    </description>
+
+  </overlay>
+
+  <overlay
+      type = "svn"
+      src  = "http://callisto.cs.kun.nl:81/svn/trees/vmware/"
+      name = "vmware">
+
+    <link>
+      http://bugs.gentoo.org/show_bug.cgi?id=122500
+    </link>
+
+    <description>
+      Testing ground for vmware-server and vmware-server-console
+      ebuilds until they can eventually be committed into portage.
+    </description>
+
+  </overlay>
+
+  <overlay
+      type = "svn"
+      src  = "https://www.gentooexperimental.org/svn/java/migration/"
+      name = "java-migration">
+
+    <link>
+      https://projects.gentooexperimental.org/expj/wiki
+    </link>
+
+    <description>
+      The current focus of this overlay is on migration to a new build
+      system which will ultimately allow us to unmask Java 1.5, and be
+      able to support Java 1.6 when it is released.
+    </description>
+
+  </overlay>
+
+  <overlay
+      type = "svn"
+      src  = "https://www.gentooexperimental.org/svn/java/gentoo-java-experimental/"
+      name = "java-experimental">
+
+    <link>
+      https://projects.gentooexperimental.org/expj/wiki
+    </link>
+
+    <description>
+      This is the experimental Portage tree for the Gentoo Java
+      Team. Half-baked ebuilds in-progress will reside it here during
+      development time, before they are included into the
+    </description>
+
+  </overlay>
+
+  <overlay
+      type = "svn"
+      src  = "svn://juffo.org/musicbrainz-overlay"
+      name = "musicbrainz">
+
+    <link>
+      http://juffo.org/proj/musicbrainz-overlay/README.html
+    </link>
+
+    <description>
+      This is the Gentoo Portage overlay for the most recent
+      MusicBrainz packages.
+    </description>
+
+  </overlay>
+
+  <overlay 
+     type = "svn"
+     name = "liferea_overlay"
+     src  = "https://82.224.45.203/svn/liferea_overlay" >
+    
+    <link>
+      http://liferea.sourceforge.net/
+    </link>
+    
+    <description>
+      Updated ebuilds for newer versions of Liferea
+    </description>
+    
+  </overlay>
+
+  <overlay 
+     type = "svn"
+     name = "yao"
+     src  = "svn://svn.berlios.de/yao/trunk" >
+    
+    <link>
+      http://developer.berlios.de/projects/yao/
+    </link>
+    
+    <description>
+      Yet Another Overlay aims to provide ebuilds for light
+      applications to allow Gentoo users to maintain a light desktop
+      without being restricted to the small amount of apps which don't
+      depend on GNOME or KDE libraries.
+    </description>
+    
+  </overlay>
+
+</layman>

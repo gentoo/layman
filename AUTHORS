@@ -1,0 +1,14 @@
+AUTHORS
+-------
+
+Written by Gunnar Wrobel (wrobel@gentoo.org)
+
+Originally created after a discussion with Stuart Herbert (stuart@gentoo.org).
+
+Contributors:
+~~~~~~~~~~~~~
+
+Stefan Schweizer (genstef@gentoo.org)      - git overlay support
+Adrian Perez     (moebius@connectical.net) - bzr overlay support
+Andres Loeh      (kosmikus@gentoo.org)     - darcs overlay support
+Samuel Tardieu   (sam@rfc1149.net)         - mercurial overlay support
