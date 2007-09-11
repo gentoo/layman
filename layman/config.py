@@ -52,11 +52,10 @@ class Config(object):
         >>> a['overlays']
         '\\nhttp://www.gentoo.org/proj/en/overlays/layman-global.txt'
         >>> sorted(a.keys())
-        ['cache', 'config', 'config_dir', 'local_list', 'make_conf', 'nocheck', 'overlays', 'proxy', 'quietness', 'storage']
+        ['cache', 'config', 'local_list', 'make_conf', 'nocheck', 'overlays', 'proxy', 'quietness', 'storage']
         '''
 
-        self.defaults = {'config_dir': '/etc/layman',
-                         'config'    : '/etc/layman/layman.cfg',
+        self.defaults = {'config'    : '/etc/layman/layman.cfg',
                          'storage'   : '/usr/portage/local/layman',
                          'cache'     : '%(storage)s/cache',
                          'local_list': '%(storage)s/overlays.xml',

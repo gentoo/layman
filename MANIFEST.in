@@ -1,3 +1,6 @@
+include AUTHORS
+include ChangeLog
+include COPYING
 include etc/layman.cfg
 include doc/layman.8
 include doc/layman.8.html
