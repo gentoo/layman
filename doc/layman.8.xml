@@ -136,6 +136,22 @@
     </itemizedlist>
   </section>
 
+  <section>
+    <title>External links</title>
+    <itemizedlist>
+      <listitem>
+	<para>
+	  <ulink url="http://sourceforge.net/projects/layman/">Layman project page on SourceForge</ulink>
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	  <ulink url="http://overlays.gentoo.org">Gentoo Overlays project</ulink>
+	</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
   <section id="layman-reference">
     <title>Reference</title>
 
