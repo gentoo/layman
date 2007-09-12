@@ -1,3 +1,14 @@
+2007-09-12  Gunnar Wrobel  <p@rdus.de>
+
+	* layman/version.py: 
+
+	Version 1.1.1
+
+	* layman/action.py (Sync.__init__): 
+
+	Fixed --sync-all (#192190)
+	http://bugs.gentoo.org/show_bug.cgi?id=192190
+
 2007-09-11  Gunnar Wrobel  <p@rdus.de>
 
 	* layman/config.py (Config.__init__): 
