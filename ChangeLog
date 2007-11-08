@@ -1,3 +1,10 @@
+2007-11-08  Gunnar Wrobel  <p@rdus.de>
+
+	* layman/action.py (Info.run): 
+
+	Catch non-existing overlay when calling --info
+	http://bugs.gentoo.org/show_bug.cgi?id=198483
+
 2007-09-12  Gunnar Wrobel  <p@rdus.de>
 
 	* layman/version.py: 

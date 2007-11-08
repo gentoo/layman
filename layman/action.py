@@ -291,13 +291,18 @@ class Info:
 
         for i in self.selection:
             overlay = self.rdb.select(i)
-            # Is the overlay supported?
-            OUT.info(overlay.__str__(), 1)
-            if not overlay.is_official():
-                OUT.warn('*** This is no official gentoo overlay ***\n', 1)
-            if not overlay.is_supported():
-                OUT.error('*** You are lacking the necessary tools to install t'
-                          'his overlay ***\n')
+
+            if overlay:
+                # Is the overlay supported?
+                OUT.info(overlay.__str__(), 1)
+                if not overlay.is_official():
+                    OUT.warn('*** This is no official gentoo overlay ***\n', 1)
+                if not overlay.is_supported():
+                    OUT.error('*** You are lacking the necessary tools to install t'
+                              'his overlay ***\n')
+            else:
+                OUT.warn('Overlay "' + i + '" does not exist!', 2)
+                result = 1
 
         return 0
 
