@@ -289,6 +289,8 @@ class Info:
     def run(self):
         ''' Print information about the selected overlays.'''
 
+        result = 0
+
         for i in self.selection:
             overlay = self.rdb.select(i)
 
@@ -304,7 +306,7 @@ class Info:
                 OUT.warn('Overlay "' + i + '" does not exist!', 2)
                 result = 1
 
-        return 0
+        return result
 
 #===============================================================================
 #
