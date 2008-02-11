@@ -1,0 +1,79 @@
+====================
+INSTALL instructions
+====================
+
+:Last update:   $Date: 2007-12-18 14:32:42 +0100 (Di, 18 Dez 2007) $
+:Revision:      $Revision: 10 $
+:Contact:       p@rdus.de
+
+Obtaining the software
+----------------------
+
+Download the software at 
+
+  http://sourceforge.net/project/showfiles.php?group_id=195416
+
+
+Prerequisites
+-------------
+
+  layman requires the following to work:
+
+    - >=python-2.4 (http://www.python.org)
+
+
+  In addition you will need to install the different version control /
+  file management systems that layman should support.
+
+  layman can support the following systems:
+
+   - bzr
+   - cvs
+   - darcs
+   - git
+   - mercurial
+   - rsync
+   - svn
+   - tar
+
+
+Installing the software
+-----------------------
+
+  Download the package, unpack it and use the Python setup.py to build
+  and install the software:
+
+    python setup.py build
+    python setup.py install
+
+
+Configuring the software
+------------------------
+
+  The basic configuration can be found in /etc/layman/layman.cfg.
+
+  If you are using layman for overlay management on Gentoo you should
+  follow the configuration instructions provided after installing the
+  tool.
+
+
+Upgrading the software
+----------------------
+
+  Simply download and install a newer version following the
+  instructions given above.
+
+
+Obtaining support
+-----------------
+
+  You can either
+
+   - Post to the mailing list
+     (http://groups.google.com/group/layman)
+
+  or
+
+   - Post a bug report
+     (http://bugs.gentoo.org)
+

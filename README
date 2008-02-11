@@ -1,0 +1,63 @@
+======
+README
+======
+
+:Last update:   $Date: 2008-02-10 07:51:13 +0100 (So, 10 Feb 2008) $
+:Revision:      $Revision: 28 $
+:Contact:       p@rdus.de
+
+
+About
+-----
+
+layman is the Gentoo overlay manager and allows to integrate
+experimental software packages into the main distribution. It can also
+be used as a manager for version control repositories.
+
+
+Links
+-----
+
+Primary project web site:
+
+ - http://layman.sourceforge.net/
+
+Project site on SourceForge: 
+
+ - http://sourceforge.net/projects/layman
+
+Project summary on Ohloh:
+
+ - http://www.ohloh.net/projects/9486?p=layman
+
+Mailing list:
+
+ - http://groups.google.com/group/layman
+
+Bug tracker:
+
+ - http://bugs.gentoo.org
+
+Wiki:
+
+ - http://
+
+Combined RSS feed:
+
+ - http://www.google.com/reader/shared/user/02645926629531261525/label/%5Bproject%5D%20layman
+
+
+File description
+----------------
+
+AUTHORS      : The developers of this project
+ChangeLog    : A detailed change log
+CHANGES      : A summary of the project changes
+COPYING      : Licensing information
+HACKING      : Developers notes for the project
+INSTALL      : Installation instructions
+MANIFEST.in  : The listing of files that get included into the python
+               package.
+README       : This file.
+RELEASE_NOTES: Release notes for the latest version
+TODO         : Task list for the project
