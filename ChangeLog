@@ -1,5 +1,8 @@
 2008-06-02  Gunnar Wrobel  <p@rdus.de>
 
+	* layman/config.py: Implement a umask setting (#186819)
+	http://bugs.gentoo.org/show_bug.cgi?id=186819
+
 	* INSTALL: Fix the documentation.
 
 	* README: Updated project links.

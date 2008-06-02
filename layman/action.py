@@ -24,7 +24,7 @@ __version__ = "$Id: action.py 312 2007-04-09 19:45:49Z wrobel $"
 #
 #-------------------------------------------------------------------------------
 
-import sys
+import os, sys
 
 from   layman.db                import DB, RemoteDB
 
@@ -472,6 +472,15 @@ class Actions:
 
         result = 0
 
+        # Set the umask
+        umask = config['umask']
+        try:
+            new_umask = int(umask, 8)
+            old_umask = os.umask(new_umask)
+        except Exception, error:
+            OUT.die('Failed setting to umask "' + umask + '"!\nError was: ' 
+                    + str(error))
+
         for i in self.actions:
 
             OUT.debug('Checking for action', 7)
@@ -479,6 +488,8 @@ class Actions:
             if i[0] in config.keys():
                 result += i[1](config).run()
 
+        # Reset umask
+        os.umask(old_umask)
 
         if not result:
             sys.exit(0)
