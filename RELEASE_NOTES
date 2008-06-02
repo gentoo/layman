@@ -1,16 +1,30 @@
-Version 1.2.0 - 
+Version 1.2.0 - Released 2008/06/02
 ===================================
 
 FULL CHANGES
 ------------
 
+ - Fixed --info call (#198483)
 
+ - Added umask setting (#186819)
+
+ - Switched default storage location from
+
+     /usr/portage/local/layman
+
+   to
+
+     /usr/local/portage/layman
+
+   (#219786)
+
+ - Added optional version control useflags (#168203)
 
 SHORT CHANGES
 -------------
 
- - Fixed --info call (#198483)
-
+ layman-1.2.0 fixes a few minor bugs and changes the default storage
+ location from /usr/portage/local/layman to /usr/local/portage/layman.
 
 FRESHMEAT
 =========

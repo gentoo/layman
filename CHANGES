@@ -1,7 +1,21 @@
 CHANGES
 -------
 
-Version 1.2.0 - Released
-=========================================
+Version 1.2.0 - Released 2008/06/02
+===================================
 
  - Fixed --info call (#198483)
+
+ - Added umask setting (#186819)
+
+ - Switched default storage location from
+
+     /usr/portage/local/layman
+
+   to
+
+     /usr/local/portage/layman
+
+   (#219786)
+
+ - Added optional version control useflags (#168203)
