@@ -1,5 +1,7 @@
 2008-06-02  Gunnar Wrobel  <p@rdus.de>
 
+	* ebuild/layman-1.2.0.ebuild: Ebuild for 1.2.0
+
 	* etc/layman.cfg (nocheck): Set nocheck to yes.
 
 	* layman/version.py: Mark version 1.2.0
