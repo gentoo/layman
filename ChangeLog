@@ -1,5 +1,7 @@
 2008-06-02  Gunnar Wrobel  <p@rdus.de>
 
+	* etc/layman.cfg (nocheck): Set nocheck to yes.
+
 	* layman/version.py: Mark version 1.2.0
 
 	* layman/config.py: Implement a umask setting (#186819)
