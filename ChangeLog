@@ -1,5 +1,7 @@
 2008-06-02  Gunnar Wrobel  <p@rdus.de>
 
+	* layman/version.py: Mark version 1.2.0
+
 	* layman/config.py: Implement a umask setting (#186819)
 	http://bugs.gentoo.org/show_bug.cgi?id=186819
 
