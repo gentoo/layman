@@ -1,73 +1,79 @@
+2008-06-02  Gunnar Wrobel  <p@rdus.de>
+
+	* README: Updated project links.
+
+	* doc/layman.8.xml: Update the link section.
+
 2007-11-08  Gunnar Wrobel  <p@rdus.de>
 
-	* layman/action.py (Info.run): 
+	* layman/action.py (Info.run):
 
 	Catch non-existing overlay when calling --info
 	http://bugs.gentoo.org/show_bug.cgi?id=198483
 
 2007-09-12  Gunnar Wrobel  <p@rdus.de>
 
-	* layman/version.py: 
+	* layman/version.py:
 
 	Version 1.1.1
 
-	* layman/action.py (Sync.__init__): 
+	* layman/action.py (Sync.__init__):
 
 	Fixed --sync-all (#192190)
 	http://bugs.gentoo.org/show_bug.cgi?id=192190
 
 2007-09-11  Gunnar Wrobel  <p@rdus.de>
 
-	* layman/config.py (Config.__init__): 
-	* doc/layman.8.xml: 
+	* layman/config.py (Config.__init__):
+	* doc/layman.8.xml:
 
 	Add "nocolor" option (#183364)
 	http://bugs.gentoo.org/show_bug.cgi?id=183364
 
-	* layman/db.py: 
-	* layman/debug.py: 
+	* layman/db.py:
+	* layman/debug.py:
 
 	Fixes for unicode bug #184449
 	http://bugs.gentoo.org/show_bug.cgi?id=184449
 
-	* layman/overlays/rsync.py (RsyncOverlay.sync): 
+	* layman/overlays/rsync.py (RsyncOverlay.sync):
 
 	Fix bug #177045
 	http://bugs.gentoo.org/show_bug.cgi?id=177045
 
-	* doc/layman.8.xml: 
+	* doc/layman.8.xml:
 
 	Improve the man page concerning the --overlays flag (#180107)
 	http://bugs.gentoo.org/show_bug.cgi?id=180107
 
-	* layman/db.py (DB.add): 
-	* layman/overlays/overlay.py (Overlay.set_priority): 
+	* layman/db.py (DB.add):
+	* layman/overlays/overlay.py (Overlay.set_priority):
 
 	Correctly handle the priority setting (#185142)
 	http://bugs.gentoo.org/show_bug.cgi?id=185142
 
-	* layman/config.py (Config.__init__): 
+	* layman/config.py (Config.__init__):
 
 	Finally fix the default for "nocheck"
 
-	* layman/version.py: 
+	* layman/version.py:
 
 	Update to version 1.1.
 
-	* layman/config.py (Config.__init__): 
-	* layman/action.py (Info.run): 
-	* doc/layman.8.xml: 
+	* layman/config.py (Config.__init__):
+	* layman/action.py (Info.run):
+	* doc/layman.8.xml:
 
 	Add the new "--info" option (bug #188000)
 	http://bugs.gentoo.org/show_bug.cgi?id=188000
 
-	* doc/layman.8.xml: 
+	* doc/layman.8.xml:
 
-	Description of the verbose switch (partial fix 
+	Description of the verbose switch (partial fix
 	for #188004).
 	http://bugs.gentoo.org/show_bug.cgi?id=188004
 
-	* layman/config.py (Config.__init__): 
+	* layman/config.py (Config.__init__):
 
 	Add the output options into the list of documented
 	cli switches (partial fix for #188004).
@@ -75,63 +81,63 @@
 
 2007-01-09  Gunnar Wrobel  <wrobel@pardus.de>
 
-	* layman/version.py: 
+	* layman/version.py:
 
 	Update to version 1.0.10
 
 2007-01-08  Gunnar Wrobel  <wrobel@pardus.de>
 
-	* layman/db.py (DB.add, MakeConf.write): 
+	* layman/db.py (DB.add, MakeConf.write):
 
 	Added support for the --priority flag.
 
 	Modified order of entries in PORTDIR_OVERLAY.
 
-	* layman/config.py (Config.__init__): 
+	* layman/config.py (Config.__init__):
 
 	Added --priority flag.
 
-	* doc/layman.8.xml: 
+	* doc/layman.8.xml:
 
 	Added documentation for --priority switch.
 
 2007-01-05  Gunnar Wrobel  <wrobel@pardus.de>
 
-	* layman/db.py: 
+	* layman/db.py:
 
 	Fixed doc tests.
 
-	* layman/config.py: 
+	* layman/config.py:
 
 	Fixed doc tests.
 
-	* layman/action.py: 
+	* layman/action.py:
 
 	Fixed doc tests.
 
-	* layman/overlays/tar.py: 
+	* layman/overlays/tar.py:
 
 	Fixed doc tests.
 
 2006-12-30  Gunnar Wrobel  <wrobel@pardus.de>
 
-	* layman/config.py (Config.__init__): 
+	* layman/config.py (Config.__init__):
 
 	Fixed quietness option.
 
-	* layman/overlays/tar.py (TarOverlay.__init__): 
+	* layman/overlays/tar.py (TarOverlay.__init__):
 
 	Fixed default values.
 
-	* layman/overlays/cvs.py (CvsOverlay.__init__): 
+	* layman/overlays/cvs.py (CvsOverlay.__init__):
 
 	Fixed default values.
 
-	* layman/action.py: 
+	* layman/action.py:
 
 	Add support for --quiet/--quietness
 
-	* layman/overlay.py (Overlays.__init__): 
+	* layman/overlay.py (Overlays.__init__):
 
 	Add support for --quiet/--quietness
 
@@ -139,26 +145,26 @@
 
 	Add support for --quiet/--quietness
 
-	* layman/db.py (DB.__init__): 
+	* layman/db.py (DB.__init__):
 
 	Add support for --quiet/--quietness
 
-	* layman/version.py: 
+	* layman/version.py:
 
 	This will be version 1.0.9
 
-	* doc/layman.8.xml: 
+	* doc/layman.8.xml:
 
 	Added documentation for --quiet/--quietness
 
 2006-12-29  Gunnar Wrobel  <wrobel@pardus.de>
 
-	* layman/config.py (Config): 
+	* layman/config.py (Config):
 
 	Added quietness and modified OUT.info / OUT.warn calls
 	accordingly (bug #151965)
-	
-	* layman/db.py (DB.sync, DB.add): 
+
+	* layman/db.py (DB.sync, DB.add):
 
 	Catching error when syncing fails (bugs #148698 and #159051).
 
@@ -167,7 +173,7 @@
 	Fixed postinstall instructions for layman (bug #149867)
 
 	Added subversion "nowebdav" check by cardoe into repository.
-	
+
 2006-09-23    <post@gunnarwrobel.de>
 
 	* layman/version.py: Update to 1.0.8
@@ -179,7 +185,7 @@
 2006-09-05    <post@gunnarwrobel.de>
 
 	* layman/*: Generic pylint and cleanup fixes
-	
+
 	* layman/config.py (Config.__init__): Modified to allow switching
 	strict checking off.
 
@@ -251,7 +257,7 @@
 
 	* layman/action.py (Actions.__init__): Reduced actions for which
 	the remote lists will be implicitely fetched.
-	
+
 	* doc/layman.8.xml: Updated documentation for implicit fetch.
 
 	* layman/action.py (Actions.__init__): Run fetch implicitely
@@ -259,7 +265,7 @@
 
 	* layman/db.py (RemoteDB.cache): Modified download code for
 	improved handling of fetch problems.
-	
+
 	* layman/action.py (Sync.__init__): Added --sync-all support.
 
 	* doc/layman.8.xml: Added --sync-all documentation.
@@ -306,7 +312,7 @@
 	* layman/overlays/overlay.py (Overlay): Forgot to add a check
 	if the overlay type is actually supported. -> 1.0.2
 
-	* layman/overlay.py: genstef@gentoo.org provided support for 
+	* layman/overlay.py: genstef@gentoo.org provided support for
 	git based overlays. -> released 1.0.1
 
 2006-05-27    <post@gunnarwrobel.de>
@@ -318,7 +324,7 @@
 	* etc/layman.cfg (overlays): Adapted configuration for change
 	in global list url and multiple list support.
 
-	* layman/config.py (Config.__init__): Fixed link for global 
+	* layman/config.py (Config.__init__): Fixed link for global
 	overlay list.
 
 	* layman/db.py: Added support for multiple overlay lists.
@@ -357,7 +363,7 @@
 
 	* layman/version.py: Version bump to 0.9
 
-	* layman/action.py (Add.run): Added warning if 
+	* layman/action.py (Add.run): Added warning if
 	overlay is unkown.
 
 	* etc/cache.xml: Added kolab2 and xgloverlays.
@@ -382,4 +388,3 @@
 
 	* layman/config.py (Config.__init__): Fixed description of
 	layman usage.
-

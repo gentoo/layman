@@ -156,6 +156,36 @@
 	  <ulink url="http://overlays.gentoo.org">Gentoo Overlays project</ulink>
 	</para>
       </listitem>
+      <listitem>
+	<para>
+	  <ulink url="http://ohloh.net/projects/layman/">Layman project page on Ohloh</ulink>
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	  <ulink url="http://freshmeat.net/projects/layman/">Layman project page on Freshmeat</ulink>
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	  <ulink url="http://bugs.gentoo.org/">Bug tracker</ulink>
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	  <ulink url="http://gentoo-wiki.com/Portage_Overlay_Listing#Layman">Wiki</ulink>
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	  <ulink url="http://log.onthebrink.de/feeds/posts/default/-/layman">Blog</ulink>
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	  <ulink url="http://www.google.com/reader/public/atom/user/02645926629531261525/label/%5Bproject%5D%20layman">Combined RSS feed</ulink>
+	</para>
+      </listitem>
     </itemizedlist>
   </section>
 
