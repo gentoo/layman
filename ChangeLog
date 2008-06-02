@@ -1,5 +1,7 @@
 2008-06-02  Gunnar Wrobel  <p@rdus.de>
 
+	* INSTALL: Fix the documentation.
+
 	* README: Updated project links.
 
 	* doc/layman.8.xml: Update the link section.
