@@ -115,8 +115,11 @@ class DB(Overlays):
                 make_conf = MakeConf(self.config, self.overlays)
                 make_conf.add(overlay)
             else:
-                overlay.delete(self.config['storage'])
-                raise Exception('Adding the overlay failed!')
+                raise Exception('Adding the overlay failed! Possible remains of'
+                                ' the opration have NOT been removed and may be'
+                                ' left at ' + path([self.config['storage'],
+                                                  overlay.name]) + '. Please re'
+                                'move them manually if required.')
         else:
             raise Exception('Overlay "' + overlay.name + '" already in the loca'
                             'l list!')

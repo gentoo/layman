@@ -1,3 +1,9 @@
+2008-11-14  Gunnar Wrobel  <p@rdus.de>
+
+	* layman/db.py (DB.add): Do not remove directories if adding an
+	overlay failed (#236945)
+	http://bugs.gentoo.org/show_bug.cgi?id=236945
+
 2008-06-02  Gunnar Wrobel  <p@rdus.de>
 
 	* ebuild/layman-1.2.0.ebuild: Ebuild for 1.2.0
