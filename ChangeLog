@@ -1,5 +1,9 @@
 2008-11-14  Gunnar Wrobel  <p@rdus.de>
 
+	* layman/overlays/git.py (GitOverlay.add): layman git: handle
+	git+ssh://, ssh:// correctly
+	http://bugs.gentoo.org/show_bug.cgi?id=230702
+
 	* layman/overlays/overlay.py: layman-1.2.0-r1, TR locale
 	error (#235165)
 	http://bugs.gentoo.org/show_bug.cgi?id=235165

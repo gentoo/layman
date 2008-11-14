@@ -45,8 +45,12 @@ class GitOverlay(Overlay):
 
         self.supported()
 
-        return self.cmd(self.binary_command + ' clone "' + self.src + '/" "'
-                        + path([base, self.name]) + '"')
+        # http:// should get trailing slash, other protocols shouldn't
+        slash = ''
+        if self.src.split(':')[0] == 'http':
+            slash = '/'
+        return self.cmd(self.binary_command + ' clone "' + self.src + slash
+                        + '" "' + path([base, self.name]) + '"')
 
     def sync(self, base):
         '''Sync overlay.'''
