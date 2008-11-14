@@ -24,7 +24,7 @@ __version__ = "$Id: db.py 309 2007-04-09 16:23:38Z wrobel $"
 #
 #-------------------------------------------------------------------------------
 
-import os, codecs, os.path, urllib2, re, md5
+import os, codecs, os.path, urllib2, re, hashlib
 
 from   layman.utils             import path
 from   layman.overlay           import Overlays
@@ -321,7 +321,7 @@ class RemoteDB(Overlays):
 
         OUT.debug('Generating cache path.', 6)
 
-        return base + '_' + md5.md5(url).hexdigest() + '.xml'
+        return base + '_' + hashlib.md5(url).hexdigest() + '.xml'
 
 #===============================================================================
 #
@@ -335,7 +335,7 @@ class MakeConf:
 
     Check that an add/remove cycle does not modify the make.conf:
 
-    >>> import md5
+    >>> import hashlib
     >>> write = os.tmpnam()
     >>> here = os.path.dirname(os.path.realpath(__file__))
     >>> config = {'local_list' :
@@ -346,7 +346,7 @@ class MakeConf:
     ...           'quietness':3}
     >>> b = DB(config)
     >>> a = MakeConf(config, b.overlays)
-    >>> o_md5 = str(md5.md5(open(here + '/tests/testfiles/make.conf').read()).hexdigest())
+    >>> o_md5 = str(hashlib.md5(open(here + '/tests/testfiles/make.conf').read()).hexdigest())
     >>> a.path = write
     >>> a.add(b.overlays['wrobel-stable'])
     >>> [i.name for i in a.overlays]
@@ -361,7 +361,7 @@ class MakeConf:
     >>> [i.name for i in a.overlays]
     [u'wrobel', u'wrobel-stable']
     >>> a.delete(b.overlays['wrobel'])
-    >>> n_md5 = str(md5.md5(open(write).read()).hexdigest())
+    >>> n_md5 = str(hashlib.md5(open(write).read()).hexdigest())
     >>> o_md5 == n_md5
     True
     >>> os.unlink(write)

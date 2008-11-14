@@ -24,7 +24,7 @@ __version__ = "$Id: overlay.py 273 2006-12-30 15:54:50Z wrobel $"
 #
 #-------------------------------------------------------------------------------
 
-import sys, types, re, os, os.path, shutil, popen2
+import sys, types, re, os, os.path, shutil, subprocess
 
 from   layman.utils             import node_to_dict, dict_to_node, path
 
@@ -161,12 +161,9 @@ class Overlay:
         if not self.quiet:
             return os.system(command)
         else:
-            cmd = popen2.Popen4(command)
-            cmd.fromchild.readlines()
+            cmd = subprocess.Popen([command], stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE, close_fds=True)
             result = cmd.wait()
-            cmd.fromchild.readlines()
-            cmd.fromchild.close()
-            cmd.tochild.close()
             return result
 
     def __str__(self):
