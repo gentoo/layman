@@ -96,7 +96,8 @@ class Sync:
 	    self.selection = self.db.overlays.keys()
 
         enc = sys.getfilesystemencoding()
-        self.selection = [i.decode(enc) for i in self.selection]
+        if enc:
+            self.selection = [i.decode(enc) for i in self.selection]
 
     def run(self):
         '''Synchronize the overlays.'''
@@ -157,7 +158,8 @@ class Add:
         self.selection = config['add']
 
         enc = sys.getfilesystemencoding()
-        self.selection = [i.decode(enc) for i in self.selection]
+        if enc:
+            self.selection = [i.decode(enc) for i in self.selection]
 
         if 'ALL' in self.selection:
             self.selection = self.rdb.overlays.keys()
@@ -204,7 +206,8 @@ class Delete:
         self.selection = config['delete']
 
         enc = sys.getfilesystemencoding()
-        self.selection = [i.decode(enc) for i in self.selection]
+        if enc:
+            self.selection = [i.decode(enc) for i in self.selection]
 
         if 'ALL' in self.selection:
             self.selection = self.db.overlays.keys()
@@ -281,7 +284,8 @@ class Info:
         self.selection = config['info']
 
         enc = sys.getfilesystemencoding()
-        self.selection = [i.decode(enc) for i in self.selection]
+        if enc:
+            self.selection = [i.decode(enc) for i in self.selection]
 
         if 'ALL' in self.selection:
             self.selection = self.rdb.overlays.keys()

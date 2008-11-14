@@ -154,8 +154,9 @@ class Overlay:
         OUT.info('Running command "' + command + '"...', 2)
 
         if hasattr(sys.stdout,'encoding'):
-            command = command.encode(sys.stdout.encoding or 
-                                     sys.getfilesystemencoding())
+            enc = sys.stdout.encoding or sys.getfilesystemencoding()
+            if enc:
+                command = command.encode(enc)
 
         if not self.quiet:
             return os.system(command)
