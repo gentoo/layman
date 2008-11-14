@@ -88,7 +88,7 @@ class TarOverlay(Overlay):
         else:
             self.category = ''
 
-    def add(self, base):
+    def add(self, base, quiet = False):
         '''Add overlay.'''
 
         self.supported()
@@ -163,7 +163,7 @@ class TarOverlay(Overlay):
 
         return result
 
-    def sync(self, base):
+    def sync(self, base, quiet = False):
         '''Sync overlay.'''
 
         self.supported()

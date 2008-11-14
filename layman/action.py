@@ -90,6 +90,8 @@ class Sync:
 
         self.rdb = RemoteDB(config)
 
+        self.quiet = config['quiet']
+
         self.selection = config['sync']
 
 	if config['sync_all'] or 'ALL' in self.selection:
@@ -118,7 +120,7 @@ class Sync:
                     'dding the overlay!')
 
             try:
-                self.db.sync(i)
+                self.db.sync(i, self.quiet)
                 success.append('Successfully synchronized overlay "' + i + '".')
             except Exception, error:
                 warnings.append(
@@ -155,6 +157,8 @@ class Add:
 
         self.rdb = RemoteDB(config)
 
+        self.quiet = config['quiet']
+
         self.selection = config['add']
 
         enc = sys.getfilesystemencoding()
@@ -178,7 +182,7 @@ class Add:
 
             if overlay:
                 try:
-                    self.db.add(overlay)
+                    self.db.add(overlay, self.quiet)
                     OUT.info('Successfully added overlay "' + i + '".', 2)
                 except Exception, error:
                     OUT.warn('Failed to add overlay "' + i + '".\nError was: '

@@ -1,5 +1,9 @@
 2008-11-14  Gunnar Wrobel  <p@rdus.de>
 
+	* layman/*: layman: pass --quiet flag down to the version control
+	system (#236165).
+	http://bugs.gentoo.org/show_bug.cgi?id=236165
+
 	* layman/db.py (RemoteDB.path): Use the hashlib library (#237625).
 	http://bugs.gentoo.org/show_bug.cgi?id=237625
 

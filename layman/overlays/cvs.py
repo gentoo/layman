@@ -49,22 +49,32 @@ class CvsOverlay(Overlay):
         else:
             self.subpath = ''
 
-    def add(self, base):
+    def add(self, base, quiet = False):
         '''Add overlay.'''
 
         self.supported()
 
+        if quiet:
+            quiet_option = ' -q'
+        else:
+            quiet_option = ''
+
         return self.cmd('cd "' + base + '" && CVSROOT="' + self.src + '" ' + 
-                        self.binary + ' co -d "' + self.name 
+                        self.binary + quiet_option + ' co -d "' + self.name 
                         + '" "' + self.subpath + '"' )
 
-    def sync(self, base):
+    def sync(self, base, quiet = False):
         '''Sync overlay.'''
 
         self.supported()
 
+        if quiet:
+            quiet_option = ' -q'
+        else:
+            quiet_option = ''
+
         return self.cmd('cd "' + path([base, self.name]) + '" && ' +
-                        self.binary + ' update')
+                        self.binary + quiet_option + ' update')
 
     def supported(self):
         '''Overlay type supported?'''

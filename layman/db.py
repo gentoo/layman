@@ -60,7 +60,7 @@ class DB(Overlays):
 
         OUT.debug('DB handler initiated', 6)
 
-    def add(self, overlay):
+    def add(self, overlay, quiet = False):
         '''
         Add an overlay to the local list of overlays.
 
@@ -106,7 +106,7 @@ class DB(Overlays):
         '''
 
         if overlay.name not in self.overlays.keys():
-            result = overlay.add(self.config['storage'])
+            result = overlay.add(self.config['storage'], quiet)
             if result == 0:
                 if 'priority' in self.config.keys():
                     overlay.set_priority(self.config['priority'])
@@ -185,13 +185,13 @@ class DB(Overlays):
         else:
             raise Exception('No local overlay named "' + overlay.name + '"!')
 
-    def sync(self, overlay_name):
+    def sync(self, overlay_name, quiet = False):
         '''Synchronize the given overlay.'''
 
         overlay = self.select(overlay_name)
 
         if overlay:
-            result = overlay.sync(self.config['storage'])
+            result = overlay.sync(self.config['storage'], quiet)
             if result:
                 raise Exception('Syncing overlay "' + overlay_name + 
                                 '" returned status ' + str(result) + '!')

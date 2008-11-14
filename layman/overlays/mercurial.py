@@ -41,7 +41,7 @@ class MercurialOverlay(Overlay):
 
     binary_command  = '/usr/bin/hg'
 
-    def add(self, base):
+    def add(self, base, quiet = False):
         '''Add overlay.'''
 
         self.supported()
@@ -49,7 +49,7 @@ class MercurialOverlay(Overlay):
         return self.cmd(self.binary_command + ' clone "' + self.src + '/" "' +
                         path([base, self.name]) + '"')
 
-    def sync(self, base):
+    def sync(self, base, quiet = False):
         '''Sync overlay.'''
 
         self.supported()

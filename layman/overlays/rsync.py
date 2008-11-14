@@ -44,7 +44,7 @@ class RsyncOverlay(Overlay):
         '--timeout=180 --exclude="distfiles/*" --exclude="local/*" ' +          \
         '--exclude="packages/*" '
 
-    def add(self, base):
+    def add(self, base, quiet = False):
         '''Add overlay.'''
 
         self.supported()
@@ -53,12 +53,17 @@ class RsyncOverlay(Overlay):
 
         return self.sync(base)
 
-    def sync(self, base):
+    def sync(self, base, quiet = False):
         '''Sync overlay.'''
 
         self.supported()
 
-        return self.cmd(self.base + '"' + self.src + '/" "' +
+        if quiet:
+            quiet_option = '-q '
+        else:
+            quiet_option = ''
+
+        return self.cmd(self.base + quiet_option + '"' + self.src + '/" "' +
                         path([base, self.name]) + '"')
 
     def supported(self):

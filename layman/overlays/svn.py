@@ -40,22 +40,32 @@ class SvnOverlay(Overlay):
 
     binary = '/usr/bin/svn'
 
-    def add(self, base):
+    def add(self, base, quiet = False):
         '''Add overlay.'''
 
         self.supported()
 
         Overlay.add(self, base)
 
-        return self.cmd(self.binary + ' co "' + self.src + '/" "' +
+        if quiet:
+            quiet_option = '-q '
+        else:
+            quiet_option = ''
+
+        return self.cmd(self.binary + ' co ' + quiet_option + '"' + self.src + '/" "' +
                         path([base, self.name]) + '"')
 
-    def sync(self, base):
+    def sync(self, base, quiet = False):
         '''Sync overlay.'''
 
         self.supported()
 
-        return self.cmd(self.binary + ' update "' + path([base, self.name]) +
+        if quiet:
+            quiet_option = '-q '
+        else:
+            quiet_option = ''
+
+        return self.cmd(self.binary + ' up ' + quiet_option + '"' + path([base, self.name]) +
                         '"')
 
     def supported(self):

@@ -40,25 +40,35 @@ class GitOverlay(Overlay):
 
     binary_command  = '/usr/bin/git'
 
-    def add(self, base):
+    def add(self, base, quiet = False):
         '''Add overlay.'''
 
         self.supported()
 
+        if quiet:
+            quiet_option = '-q '
+        else:
+            quiet_option = ''
+ 
         # http:// should get trailing slash, other protocols shouldn't
         slash = ''
         if self.src.split(':')[0] == 'http':
             slash = '/'
-        return self.cmd(self.binary_command + ' clone "' + self.src + slash
+        return self.cmd(self.binary_command + ' clone ' + quiet_option + '"' + self.src + slash
                         + '" "' + path([base, self.name]) + '"')
 
-    def sync(self, base):
+    def sync(self, base, quiet = False):
         '''Sync overlay.'''
 
         self.supported()
 
+        if quiet:
+            quiet_option = '-q '
+        else:
+            quiet_option = ''
+ 
         return self.cmd('cd "' + path([base, self.name]) + '" && '
-                        + self.binary_command + ' pull')
+                        + self.binary_command + ' pull' + quiet_option)
 
     def supported(self):
         '''Overlay type supported?'''

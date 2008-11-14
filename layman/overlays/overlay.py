@@ -123,7 +123,7 @@ class Overlay:
 
         return dict_to_node(self.data, document, 'overlay')
 
-    def add(self, base):
+    def add(self, base, quiet = False):
         '''Add the overlay.'''
 
         mdir = path([base, self.name])
@@ -134,7 +134,7 @@ class Overlay:
 
         os.makedirs(mdir)
 
-    def sync(self, base):
+    def sync(self, base, quiet = False):
         '''Sync the overlay.'''
         pass
 
