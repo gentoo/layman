@@ -8,7 +8,7 @@
 #             Handles git overlays
 #
 # Copyright:
-#             (c) 2005 - 2006 Gunnar Wrobel, Stefan Schweizer
+#             (c) 2005 - 2008 Gunnar Wrobel, Stefan Schweizer
 #             Distributed under the terms of the GNU General Public License v2
 #
 # Author(s):

@@ -8,7 +8,7 @@
 #             Handles darcs overlays
 #
 # Copyright:
-#             (c) 2005 - 2006 Gunnar Wrobel, Andres Loeh
+#             (c) 2005 - 2008 Gunnar Wrobel, Andres Loeh
 #             Distributed under the terms of the GNU General Public License v2
 #
 # Author(s):

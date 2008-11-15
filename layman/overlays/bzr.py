@@ -8,7 +8,7 @@
 #             Handles bzr overlays
 #
 # Copyright:
-#             (c) 2005 - 2006 Adrian Perez, Gunnar Wrobel
+#             (c) 2005 - 2008 Adrian Perez, Gunnar Wrobel
 #             Distributed under the terms of the GNU General Public License v2
 #
 # Author(s):
