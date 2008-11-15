@@ -1,6 +1,22 @@
 CHANGES
 -------
 
+Version 1.2.1 - Released 2008/11/15
+===================================
+
+ - Pass --quiet flag down to the version control
+   system (#236165).
+
+ - Fixes for python-2.6 (#237625)
+
+ - Better locale support (#235165)
+
+ - Handle git+ssh://, ssh:// correctly (#230702)
+
+ - Do not remove directories if adding an
+   overlay failed (#236945)
+
+
 Version 1.2.0 - Released 2008/06/02
 ===================================
 

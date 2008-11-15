@@ -6,24 +6,30 @@
 
 	* layman/*: layman: pass --quiet flag down to the version control
 	system (#236165).
+	Submitted by A. F. T. Arahesis <arfrever.fta@gmail.com>.
 	http://bugs.gentoo.org/show_bug.cgi?id=236165
 
 	* layman/db.py (RemoteDB.path): Use the hashlib library (#237625).
+	Submitted by Mike Auty <ikelos@gentoo.org>.
 	http://bugs.gentoo.org/show_bug.cgi?id=237625
 
 	* layman/overlays/overlay.py (Overlay.cmd): Use the subprocess
 	module (#237625).
+	Submitted by Mike Auty <ikelos@gentoo.org>.
 	http://bugs.gentoo.org/show_bug.cgi?id=237625
 
 	* layman/overlays/git.py (GitOverlay.add): layman git: handle
-	git+ssh://, ssh:// correctly
+	git+ssh://, ssh:// correctly (#230702)
+	Submitted by Donnie Berkholz <dberkholz@gentoo.org>
 	http://bugs.gentoo.org/show_bug.cgi?id=230702
 
 	* layman/overlays/overlay.py: layman-1.2.0-r1, TR locale
 	error (#235165)
+	Submitted by A. F. T. Arahesis <arfrever.fta@gmail.com>.
 	http://bugs.gentoo.org/show_bug.cgi?id=235165
 
 	* layman/action.py: layman-1.2.0-r1, TR locale error (#235165)
+	Submitted by A. F. T. Arahesis <arfrever.fta@gmail.com>.
 	http://bugs.gentoo.org/show_bug.cgi?id=235165
 
 	* layman/db.py (DB.add): Do not remove directories if adding an

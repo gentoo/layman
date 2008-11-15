@@ -4,27 +4,22 @@ Version 1.2.0 - Released 2008/06/02
 FULL CHANGES
 ------------
 
- - Fixed --info call (#198483)
+ - Pass --quiet flag down to the version control
+   system (#236165).
 
- - Added umask setting (#186819)
+ - Fixes for python-2.6 (#237625)
 
- - Switched default storage location from
+ - Better locale support (#235165)
 
-     /usr/portage/local/layman
+ - Handle git+ssh://, ssh:// correctly (#230702)
 
-   to
-
-     /usr/local/portage/layman
-
-   (#219786)
-
- - Added optional version control useflags (#168203)
+ - Do not remove directories if adding an
+   overlay failed (#236945)
 
 SHORT CHANGES
 -------------
 
- layman-1.2.0 fixes a few minor bugs and changes the default storage
- location from /usr/portage/local/layman to /usr/local/portage/layman.
+ layman-1.2.1 is a bug fix release that fixes a few minor bugs.
 
 FRESHMEAT
 =========
