@@ -1,25 +1,22 @@
-Version 1.2.0 - Released 2008/06/02
+Version 1.2.2 - Released 2008/12/28
 ===================================
 
 FULL CHANGES
 ------------
 
- - Pass --quiet flag down to the version control
-   system (#236165).
+ - layman -L: better use of screen real estate for source URLs
+   (#251032)
 
- - Fixes for python-2.6 (#237625)
+ - Execute subprocesses in a shell. Fixes app-portage/layman-1.2.1:
+   --quietness=2 is broken (#247792)
 
- - Better locale support (#235165)
-
- - Handle git+ssh://, ssh:// correctly (#230702)
-
- - Do not remove directories if adding an
-   overlay failed (#236945)
+ - app-portage/layman - 'layman -S --quiet' yields "git: 'pull-q' is
+   not a git-command." (#247964)
 
 SHORT CHANGES
 -------------
 
- layman-1.2.1 is a bug fix release that fixes a few minor bugs.
+ layman-1.2.2 is a bug fix release that fixes a few minor bugs.
 
 FRESHMEAT
 =========

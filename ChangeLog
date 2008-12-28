@@ -1,3 +1,25 @@
+2008-12-28  Gunnar Wrobel  <p@rdus.de>
+
+	* layman/version.py (VERSION): Bump to 1.2.2.
+
+	* layman/overlays/overlay.py (Overlay.short_list.terminal_width):
+	layman -L: better use of screen real estate for source
+	URLs (#251032).
+	Submitted by Martin von Gagern <Martin.vGagern@gmx.net>.
+	https://bugs.gentoo.org/show_bug.cgi?id=251032
+
+2008-12-03  Gunnar Wrobel  <p@rdus.de>
+
+	* layman/overlays/overlay.py (Overlay.cmd): Execute subprocesses
+	in a shell. Fixes app-portage/layman-1.2.1: --quietness=2 is
+	broken (#247792).
+	http://bugs.gentoo.org/show_bug.cgi?id=247792
+
+	* layman/overlays/git.py (GitOverlay.sync): app-portage/layman -
+	'layman -S --quiet' yields "git: 'pull-q' is not a
+	git-command." (#247964)
+	http://bugs.gentoo.org/show_bug.cgi?id=247964
+	
 2008-11-15  Gunnar Wrobel  <p@rdus.de>
 
 	* layman/version.py (VERSION): Bump to 1.2.1.

@@ -1,6 +1,19 @@
 CHANGES
 -------
 
+Version 1.2.2 - Released 2008/12/28
+===================================
+
+ - layman -L: better use of screen real estate for source URLs
+   (#251032)
+
+ - Execute subprocesses in a shell. Fixes app-portage/layman-1.2.1:
+   --quietness=2 is broken (#247792)
+
+ - app-portage/layman - 'layman -S --quiet' yields "git: 'pull-q' is
+   not a git-command." (#247964)
+
+
 Version 1.2.1 - Released 2008/11/15
 ===================================
 

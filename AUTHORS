@@ -17,3 +17,4 @@ Mike Auty        (ikelos@gentoo.org)       - Updates for python-2.6
 A. F. T. Arahesis (arfrever.fta@gmail.com) - Quieten the VC systems
                                            - Better locale support.
 Donnie Berkholz  (dberkholz@gentoo.org)    - git support fixes
+Martin von Gagern (Martin.vGagern@gmx.net) - Better list format.

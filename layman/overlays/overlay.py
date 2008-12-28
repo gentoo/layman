@@ -161,8 +161,10 @@ class Overlay:
         if not self.quiet:
             return os.system(command)
         else:
-            cmd = subprocess.Popen([command], stdout=subprocess.PIPE,
-                                   stderr=subprocess.PIPE, close_fds=True)
+            cmd = subprocess.Popen([command], shell = True,
+                                   stdout = subprocess.PIPE,
+                                   stderr = subprocess.PIPE,
+                                   close_fds = True)
             result = cmd.wait()
             return result
 
@@ -220,8 +222,8 @@ class Overlay:
         >>> document = xml.dom.minidom.parseString(document)
         >>> overlays = document.getElementsByTagName('overlay')
         >>> a = Overlay(overlays[0])
-        >>> print a.short_list()
-        wrobel                    [None      ] (source: https://overlays.gentoo.or...)
+        >>> print a.short_list() #doctest: +ELLIPSIS
+        wrobel                    [None      ] (https://overlays.gentoo.or...)
         '''
 
         def pad(string, length):
@@ -231,9 +233,32 @@ class Overlay:
             else:
                 return string[:length - 3] + '...'
 
+        def terminal_width():
+            '''Determine width of terminal window.'''
+            try:
+                width = int(os.environ['COLUMNS'])
+                if width > 0:
+                    return width
+            except:
+                pass
+            try:
+                import struct, fcntl, termios
+                query = struct.pack('HHHH', 0, 0, 0, 0)
+                response = fcntl.ioctl(1, termios.TIOCGWINSZ, query)
+                width = struct.unpack('HHHH', response)[1]
+                if width > 0:
+                    return width
+            except:
+                pass
+            return 80
+
         name   = pad(self.name, 25)
         mtype  = ' [' + pad(self.type, 10) + ']'
-        source = ' (source: ' + pad(self.src, 29) + ')'
+        srclen = terminal_width() - 43
+        source = self.src
+        if len(source) > srclen:
+            source = source.replace("overlays.gentoo.org", "o.g.o")
+        source = ' (' + pad(source, srclen) + ')'
 
         return name + mtype + source
 

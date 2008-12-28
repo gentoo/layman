@@ -90,7 +90,7 @@ class Sync:
 
         self.rdb = RemoteDB(config)
 
-        self.quiet = config['quiet']
+        self.quiet = int(config['quietness']) < 3
 
         self.selection = config['sync']
 
@@ -119,6 +119,7 @@ class Sync:
                     'as correct location. Please consider removing and rea'
                     'dding the overlay!')
 
+            self.db.sync(i, self.quiet)
             try:
                 self.db.sync(i, self.quiet)
                 success.append('Successfully synchronized overlay "' + i + '".')
@@ -157,7 +158,7 @@ class Add:
 
         self.rdb = RemoteDB(config)
 
-        self.quiet = config['quiet']
+        self.quiet = int(config['quietness']) < 3
 
         self.selection = config['add']
 
@@ -338,8 +339,8 @@ class List:
     >>> a = List(config)
     >>> a.rdb.cache()
     >>> OUT.color_off()
-    >>> a.run()
-    * wrobel                    [Subversion] (source: https://overlays.gentoo.or...)
+    >>> a.run()  #doctest: +ELLIPSIS
+    * wrobel                    [Subversion] (https://overlays.gentoo.or...)
     0
     >>> a.config['verbose'] = True
     >>> a.run()

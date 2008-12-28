@@ -209,9 +209,9 @@ class Overlays:
         <BLANKLINE>
 
         >>> for i in a.list(False):
-        ...     print i[0]
-        wrobel                    [Subversion] (source: https://overlays.gentoo.or...)
-        wrobel-stable             [Rsync     ] (source: rsync://gunnarwrobel.de/wr...)
+        ...     print i[0]  #doctest: +ELLIPSIS
+        wrobel                    [Subversion] (https://overlays.gentoo.or...)
+        wrobel-stable             [Rsync     ] (rsync://gunnarwrobel.de/wr...)
         '''
         result = []
 

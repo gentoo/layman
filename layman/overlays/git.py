@@ -63,7 +63,7 @@ class GitOverlay(Overlay):
         self.supported()
 
         if quiet:
-            quiet_option = '-q '
+            quiet_option = ' -q'
         else:
             quiet_option = ''
  
