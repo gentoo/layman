@@ -1,22 +1,17 @@
-Version 1.2.2 - Released 2008/12/28
+Version 1.2.3 - Released 2009/01/01
 ===================================
 
 FULL CHANGES
 ------------
 
- - layman -L: better use of screen real estate for source URLs
-   (#251032)
+ - Support setting the terminal screen width (also fixes #253016)
 
- - Execute subprocesses in a shell. Fixes app-portage/layman-1.2.1:
-   --quietness=2 is broken (#247792)
-
- - app-portage/layman - 'layman -S --quiet' yields "git: 'pull-q' is
-   not a git-command." (#247964)
+ - layman -S fetches each overlay twice (#253241)
 
 SHORT CHANGES
 -------------
 
- layman-1.2.2 is a bug fix release that fixes a few minor bugs.
+ layman-1.2.3 is a bug fix release that fixes a few minor bugs.
 
 FRESHMEAT
 =========

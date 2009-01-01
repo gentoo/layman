@@ -1,6 +1,14 @@
 CHANGES
 -------
 
+Version 1.2.3 - Released 2009/01/01
+===================================
+
+ - Support setting the terminal screen width (also fixes #253016)
+
+ - layman -S fetches each overlay twice (#253241)
+
+
 Version 1.2.2 - Released 2008/12/28
 ===================================
 

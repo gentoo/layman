@@ -52,7 +52,7 @@ class Config(object):
         >>> a['overlays']
         '\\nhttp://www.gentoo.org/proj/en/overlays/layman-global.txt'
         >>> sorted(a.keys())
-        ['cache', 'config', 'local_list', 'make_conf', 'nocheck', 'overlays', 'proxy', 'quietness', 'storage', 'umask']
+        ['cache', 'config', 'local_list', 'make_conf', 'nocheck', 'overlays', 'proxy', 'quietness', 'storage', 'umask', 'width']
         '''
 
         self.defaults = {'config'    : '/etc/layman/layman.cfg',
@@ -196,6 +196,15 @@ class Config(object):
                          help = 'Set the level of output (0-4). Default: 4. Once'
                          ' you set this below 2 the same warning as given for --'
                          'quiet applies! ')
+
+        group.add_option('-W',
+                         '--width',
+                         action = 'store',
+                         type = 'int',
+                         default = '0',
+                         help = 'Sets the screen width. This setting is usually '
+                         'not required as layman is capable of detecting the ava'
+                         'available number of columns automatically.')
 
         group.add_option('-k',
                          '--nocheck',

@@ -119,7 +119,6 @@ class Sync:
                     'as correct location. Please consider removing and rea'
                     'dding the overlay!')
 
-            self.db.sync(i, self.quiet)
             try:
                 self.db.sync(i, self.quiet)
                 success.append('Successfully synchronized overlay "' + i + '".')
@@ -335,12 +334,13 @@ class List:
     ...           'proxy'  : None,
     ...           'nocheck'    : False,
     ...           'verbose': False,
-    ...           'quietness':3}
+    ...           'quietness':3,
+    ...           'width':80}
     >>> a = List(config)
     >>> a.rdb.cache()
     >>> OUT.color_off()
-    >>> a.run()  #doctest: +ELLIPSIS
-    * wrobel                    [Subversion] (https://overlays.gentoo.or...)
+    >>> a.run()
+    * wrobel                    [Subversion] (https://o.g.o/svn/dev/wrobel         )
     0
     >>> a.config['verbose'] = True
     >>> a.run()
@@ -377,7 +377,7 @@ class List:
     def run(self):
         ''' List the available overlays.'''
 
-        for i in self.rdb.list(self.config['verbose']):
+        for i in self.rdb.list(self.config['verbose'], self.config['width']):
             # Is the overlay supported?
             if i[1]:
                 # Is this an official overlay?

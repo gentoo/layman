@@ -214,7 +214,7 @@ class Overlay:
 
         return result
 
-    def short_list(self):
+    def short_list(self, width = 0):
         '''
         >>> here = os.path.dirname(os.path.realpath(__file__))
         >>> document = open(here + '/../tests/testfiles/global-overlays.xml').read()
@@ -222,8 +222,8 @@ class Overlay:
         >>> document = xml.dom.minidom.parseString(document)
         >>> overlays = document.getElementsByTagName('overlay')
         >>> a = Overlay(overlays[0])
-        >>> print a.short_list() #doctest: +ELLIPSIS
-        wrobel                    [None      ] (https://overlays.gentoo.or...)
+        >>> print a.short_list(80)
+        wrobel                    [None      ] (https://o.g.o/svn/dev/wrobel         )
         '''
 
         def pad(string, length):
@@ -254,7 +254,9 @@ class Overlay:
 
         name   = pad(self.name, 25)
         mtype  = ' [' + pad(self.type, 10) + ']'
-        srclen = terminal_width() - 43
+        if not width:
+            width = terminal_width()
+        srclen = width - 43
         source = self.src
         if len(source) > srclen:
             source = source.replace("overlays.gentoo.org", "o.g.o")

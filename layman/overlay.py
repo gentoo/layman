@@ -181,7 +181,7 @@ class Overlays:
         if overlay in self.overlays.keys():
             return self.overlays[overlay]
 
-    def list(self, verbose = False):
+    def list(self, verbose = False, width = 0):
         '''
         List all overlays.
 
@@ -208,10 +208,10 @@ class Overlays:
           A collection of ebuilds from Gunnar Wrobel [wrobel@gentoo.org].
         <BLANKLINE>
 
-        >>> for i in a.list(False):
-        ...     print i[0]  #doctest: +ELLIPSIS
-        wrobel                    [Subversion] (https://overlays.gentoo.or...)
-        wrobel-stable             [Rsync     ] (rsync://gunnarwrobel.de/wr...)
+        >>> for i in a.list(False, 80):
+        ...     print i[0]
+        wrobel                    [Subversion] (https://o.g.o/svn/dev/wrobel         )
+        wrobel-stable             [Rsync     ] (rsync://gunnarwrobel.de/wrobel-stable)
         '''
         result = []
 
@@ -221,7 +221,7 @@ class Overlays:
                 result.append((str(overlay), overlay.is_supported(),
                                overlay.is_official()))
             else:
-                result.append((overlay.short_list(), overlay.is_supported(),
+                result.append((overlay.short_list(width), overlay.is_supported(),
                                overlay.is_official()))
 
         result = sorted(result)
