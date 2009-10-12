@@ -1,3 +1,9 @@
+2009-10-12  Gunnar Wrobel  <p@rdus.de>
+
+	* layman/db.py (DB.add): app-portage/layman:output grammar
+	error (#259188)
+	http://bugs.gentoo.org/show_bug.cgi?id=259188
+
 2009-01-01  Gunnar Wrobel  <p@rdus.de>
 
 	* layman/version.py (VERSION): Bump to 1.2.3.

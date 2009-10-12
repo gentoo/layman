@@ -116,8 +116,8 @@ class DB(Overlays):
                 make_conf.add(overlay)
             else:
                 raise Exception('Adding the overlay failed! Possible remains of'
-                                ' the opration have NOT been removed and may be'
-                                ' left at ' + path([self.config['storage'],
+                                ' the operation have NOT been removed and may b'
+                                'e left at ' + path([self.config['storage'],
                                                   overlay.name]) + '. Please re'
                                 'move them manually if required.')
         else:
