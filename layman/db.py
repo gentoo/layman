@@ -342,7 +342,7 @@ class MakeConf:
     ...           here + '/tests/testfiles/global-overlays.xml',
     ...           'make_conf' : here + '/tests/testfiles/make.conf',
     ...           'nocheck'    : True,
-    ...           'storage'   : '/usr/portage/local/layman',
+    ...           'storage'   : '/usr/local/portage/layman',
     ...           'quietness':3}
     >>> b = DB(config)
     >>> a = MakeConf(config, b.overlays)
@@ -390,7 +390,7 @@ class MakeConf:
         ...           here + '/tests/testfiles/global-overlays.xml',
         ...           'make_conf' : here + '/tests/testfiles/make.conf',
         ...           'nocheck'    : True,
-        ...           'storage'   : '/usr/portage/local/layman',
+        ...           'storage'   : '/usr/local/portage/layman',
         ...           'quietness':3}
         >>> c = DB(config)
         >>> a = MakeConf(config, c.overlays)
@@ -401,7 +401,7 @@ class MakeConf:
         >>> [i.name for i in b.overlays]
         [u'wrobel', u'wrobel-stable']
         >>> b.extra
-        [u'/usr/portage/local/ebuilds/testing', u'/usr/portage/local/ebuilds/stable', u'/usr/portage/local/kolab2', u'/usr/portage/local/gentoo-webapps-overlay/experimental', u'/usr/portage/local/gentoo-webapps-overlay/production-ready']
+        [u'/usr/local/portage/ebuilds/testing', u'/usr/local/portage/ebuilds/stable', u'/usr/local/portage/kolab2', u'/usr/local/portage/gentoo-webapps-overlay/experimental', u'/usr/local/portage/gentoo-webapps-overlay/production-ready']
 
         >>> os.unlink(write)
         '''
@@ -418,7 +418,7 @@ class MakeConf:
         ...           here + '/tests/testfiles/global-overlays.xml',
         ...           'make_conf' : here + '/tests/testfiles/make.conf',
         ...           'nocheck'    : True,
-        ...           'storage'   : '/usr/portage/local/layman',
+        ...           'storage'   : '/usr/local/portage/layman',
         ...           'quietness':3}
         >>> c = DB(config)
         >>> a = MakeConf(config, c.overlays)
@@ -429,7 +429,7 @@ class MakeConf:
         >>> [i.name for i in b.overlays]
         []
         >>> b.extra
-        [u'/usr/portage/local/ebuilds/testing', u'/usr/portage/local/ebuilds/stable', u'/usr/portage/local/kolab2', u'/usr/portage/local/gentoo-webapps-overlay/experimental', u'/usr/portage/local/gentoo-webapps-overlay/production-ready']
+        [u'/usr/local/portage/ebuilds/testing', u'/usr/local/portage/ebuilds/stable', u'/usr/local/portage/kolab2', u'/usr/local/portage/gentoo-webapps-overlay/experimental', u'/usr/local/portage/gentoo-webapps-overlay/production-ready']
 
         >>> os.unlink(write)
         '''
@@ -447,14 +447,14 @@ class MakeConf:
         ...           here + '/tests/testfiles/global-overlays.xml',
         ...           'make_conf' : here + '/tests/testfiles/make.conf',
         ...           'nocheck'    : True,
-        ...           'storage'   : '/usr/portage/local/layman',
+        ...           'storage'   : '/usr/local/portage/layman',
         ...           'quietness':3}
         >>> c = DB(config)
         >>> a = MakeConf(config, c.overlays)
         >>> [i.name for i in a.overlays]
         [u'wrobel-stable']
         >>> a.extra
-        [u'/usr/portage/local/ebuilds/testing', u'/usr/portage/local/ebuilds/stable', u'/usr/portage/local/kolab2', u'/usr/portage/local/gentoo-webapps-overlay/experimental', u'/usr/portage/local/gentoo-webapps-overlay/production-ready']
+        [u'/usr/local/portage/ebuilds/testing', u'/usr/local/portage/ebuilds/stable', u'/usr/local/portage/kolab2', u'/usr/local/portage/gentoo-webapps-overlay/experimental', u'/usr/local/portage/gentoo-webapps-overlay/production-ready']
         '''
         if os.path.isfile(self.path):
             self.content()
@@ -502,7 +502,7 @@ class MakeConf:
         ...           here + '/tests/testfiles/global-overlays.xml',
         ...           'make_conf' : here + '/tests/testfiles/make.conf',
         ...           'nocheck'    : True,
-        ...           'storage'   : '/usr/portage/local/layman',
+        ...           'storage'   : '/usr/local/portage/layman',
         ...           'quietness':3}
         >>> c = DB(config)
         >>> a = MakeConf(config, c.overlays)
@@ -513,7 +513,7 @@ class MakeConf:
         >>> [i.name for i in b.overlays]
         [u'wrobel-stable']
         >>> b.extra
-        [u'/usr/portage/local/ebuilds/testing', u'/usr/portage/local/ebuilds/stable', u'/usr/portage/local/kolab2', u'/usr/portage/local/gentoo-webapps-overlay/experimental', u'/usr/portage/local/gentoo-webapps-overlay/production-ready']
+        [u'/usr/local/portage/ebuilds/testing', u'/usr/local/portage/ebuilds/stable', u'/usr/local/portage/kolab2', u'/usr/local/portage/gentoo-webapps-overlay/experimental', u'/usr/local/portage/gentoo-webapps-overlay/production-ready']
 
         >>> os.unlink(write)
         '''

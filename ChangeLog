@@ -1,5 +1,8 @@
 2009-10-12  Gunnar Wrobel  <p@rdus.de>
 
+	* doc/layman.8.xml: Old layman path in new documentation (#271457)
+	http://bugs.gentoo.org/show_bug.cgi?id=271457
+
 	* layman/db.py (DB.add): app-portage/layman:output grammar
 	error (#259188)
 	http://bugs.gentoo.org/show_bug.cgi?id=259188
