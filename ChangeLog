@@ -1,5 +1,10 @@
 2009-10-12  Gunnar Wrobel  <p@rdus.de>
 
+	* layman/overlays/cvs.py (CvsOverlay.sync): app-portage/layman cvs
+	update command needs to include -d or it dosn't checkout new
+	directorys (#278807)
+	http://bugs.gentoo.org/show_bug.cgi?id=278807
+
 	* doc/layman.8.xml: Old layman path in new documentation (#271457)
 	http://bugs.gentoo.org/show_bug.cgi?id=271457
 

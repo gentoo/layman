@@ -74,7 +74,7 @@ class CvsOverlay(Overlay):
             quiet_option = ''
 
         return self.cmd('cd "' + path([base, self.name]) + '" && ' +
-                        self.binary + quiet_option + ' update')
+                        self.binary + quiet_option + ' update -d')
 
     def supported(self):
         '''Overlay type supported?'''
