@@ -195,11 +195,11 @@
     <refentry id="layman-manpage">
       <refentryinfo>
 	<title>layman</title>
-	<date>September 2007</date>
+	<date>December 2009</date>
 	<productname>layman</productname>
-	<productnumber>1.1</productnumber>
+	<productnumber>1.2.4</productnumber>
 	<copyright>
-	  <year>2005-2008</year>
+	  <year>2005-2009</year>
 	  <holder>Gunnar Wrobel</holder>
 	</copyright>
 	<legalnotice>

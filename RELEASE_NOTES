@@ -1,17 +1,28 @@
-Version 1.2.3 - Released 2009/01/01
+Version 1.2.4 - Released 2009/12/05
 ===================================
 
 FULL CHANGES
 ------------
 
- - Support setting the terminal screen width (also fixes #253016)
+ - Add option "-d" to calls of "cvs update" so it checks out new
+   directories properly (#278807)
 
- - layman -S fetches each overlay twice (#253241)
+ - Fix reading of CDATA sections
+
+ - Add support for repositories.xml database format
+
+ - Substitute path "/usr/portage/local/layman" by "/usr/local/portage/layman"
+   in the documentation (#271457)
+
+ - Fix grammar errors in program output (#259188)
+
 
 SHORT CHANGES
 -------------
 
- layman-1.2.3 is a bug fix release that fixes a few minor bugs.
+ layman-1.2.4 comes with both new features as well as bug fixes,
+ most importantly a major bug affecting CVS-based overlays.
+
 
 FRESHMEAT
 =========
