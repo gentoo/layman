@@ -112,7 +112,9 @@ def node_to_dict(node):
     for child in node.childNodes:
         if child.nodeType == child.TEXT_NODE:
             text = text + child.data
-        if child.nodeType == child.ELEMENT_NODE:
+        elif child.nodeType == child.CDATA_SECTION_NODE:
+            text = text + child.data
+        elif child.nodeType == child.ELEMENT_NODE:
             index = 1
             while ('<' + child.tagName + '>' + str(index)) in result.keys():
                 index += 1
