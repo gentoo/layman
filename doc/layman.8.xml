@@ -22,7 +22,7 @@
     </authorgroup>
 
     <copyright>
-      <year>2005-2008</year>
+      <year>2005-2009</year>
       <holder>Gunnar Wrobel</holder>
     </copyright>
   </articleinfo>
@@ -618,7 +618,7 @@
 	    <listitem>
 	      <para>Specifies the URL for the remote list of all
 	      available overlays. The default is
-	      <filename>http://www.gentoo.org/proj/en/overlays/layman-global.txt</filename>. You
+	      <filename>http://www.gentoo.org/proj/en/overlays/repositories.xml</filename>. You
 	      can specify several URLs here (one per line). The
 	      contents will get merged to a single list of
 	      overlays. This allows to add a personal collection of
@@ -664,7 +664,7 @@
 	  files. In order for this to be possible the script needs an
 	  external list of possible overlay sources. There is a
 	  centralized list available at <ulink
-	  url="http://www.gentoo.org/proj/en/overlays/layman-global.txt"/>
+	  url="http://www.gentoo.org/proj/en/overlays/repositories.xml"/>
 	  but nothing will prevent you from using or publishing your
 	  own list of overlays. The location of the remote lists can
 	  also be modified using the <option>--overlays</option>
@@ -857,26 +857,26 @@
 	  <para>
 	    Layman uses a central list of overlays in XML format. The file looks like this:
 	    <example>
-	      <title>An example overlay.xml file</title>
+	      <title>An example overlays.xml file</title>
 	      <programlisting>
-	      &lt;?xml version="1.0" ?&gt;
-	      &lt;layman&gt;
-	      &lt;overlays&gt;
-	      &lt;overlay
-	      type = "svn"
-	      src  = "https://mydomain.net/svn/myoverlay/"
-	      contact = "me@mydomain.net"
-	      name = "myoverlay"&gt;
-	      
-	      &lt;link&gt;
-	      http://mydomain.net/myoverlay
-	      &lt;/link&gt;
-	      
-	      &lt;description&gt;
-	      Contains some of my ebuilds.
-	      &lt;/description&gt;
-	      &lt;/overlay&gt;
-	      &lt;/overlays&gt;
+	      &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+	      &lt;!DOCTYPE repositories SYSTEM "/dtd/repositories.dtd"&gt;
+	      &lt;repositories xmlns="" version="1.0"&gt;
+	        &lt;repo quality="experimental" status="official"&gt;
+	          &lt;name&gt;gnome&lt;/name&gt;
+	          &lt;description&gt;experimental gnome ebuilds&lt;/description&gt;
+	          &lt;homepage&gt;http://git.overlays.gentoo.org/gitweb/?p=proj/gnome.git;a=summary&lt;/homepage&gt;
+	          &lt;owner type="project"&gt;
+	            &lt;email&gt;gnome@gentoo.org&lt;/email&gt;
+	            &lt;name&gt;GNOME herd&lt;/name&gt;
+	          &lt;/owner&gt;
+	          &lt;source type="git"&gt;git://git.overlays.gentoo.org/proj/gnome.git&lt;/source&gt;
+	          &lt;source type="git"&gt;http://git.overlays.gentoo.org/gitroot/proj/gnome.git&lt;/source&gt;
+	          &lt;source type="git"&gt;git+ssh://git@git.overlays.gentoo.org/proj/gnome.git&lt;/source&gt;
+	          &lt;feed&gt;http://git.overlays.gentoo.org/gitweb/?p=proj/gnome.git;a=atom&lt;/feed&gt;
+	          &lt;feed&gt;http://git.overlays.gentoo.org/gitweb/?p=proj/gnome.git;a=rss&lt;/feed&gt;
+	        &lt;/repo&gt;
+	      &lt;/repositories&gt;
 	      </programlisting>
 	    </example>
 	  </para>
@@ -904,7 +904,7 @@
 	  <para>
 	    The global list of overlays used by
 	    <command>layman</command> lies at
-	    <filename>http://www.gentoo.org/proj/en/overlays/layman-global.txt</filename>.
+	    <filename>http://www.gentoo.org/proj/en/overlays/repositories.xml</filename>.
 	  </para>
 
 	  <para>

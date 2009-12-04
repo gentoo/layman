@@ -8,11 +8,13 @@
 #             Base class for the different overlay types.
 #
 # Copyright:
-#             (c) 2005 - 2008 Gunnar Wrobel
+#             (c) 2005 - 2009 Gunnar Wrobel
+#             (c) 2009        Sebastian Pipping
 #             Distributed under the terms of the GNU General Public License v2
 #
 # Author(s):
 #             Gunnar Wrobel <wrobel@gentoo.org>
+#             Sebastian Pipping <sebastian@pipping.org>
 #
 ''' Basic overlay class.'''
 
@@ -55,7 +57,7 @@ class Overlay:
         True
         >>> a.src
         u'https://overlays.gentoo.org/svn/dev/wrobel'
-        >>> a.contact
+        >>> a.owner_email
         u'nobody@gentoo.org'
         >>> a.description
         u'Test'
@@ -69,27 +71,40 @@ class Overlay:
 
         self.data = node_to_dict(xml)
 
-        if '&name' in self.data.keys():
+        if '<name>1' in self.data.keys():
+            self.name = self.data['<name>1']['@'].strip()
+        elif '&name' in self.data.keys():
             self.name = self.data['&name']
         else:
-            raise Exception('Overlay is missing a "name" attribute!')
+            raise Exception('Overlay is missing a "name" entry!')
 
-        if '&src' in self.data.keys():
+        if '<source>1' in self.data.keys():
+            self.src = self.data['<source>1']['@'].strip()
+        elif '&src' in self.data.keys():
             self.src = self.data['&src']
         else:
-            raise Exception('Overlay "' + self.name + '" is missing a "src" '
-                            'attribute!')
+            raise Exception('Overlay "' + self.name + '" is missing a "source" '
+                            'entry!')
 
-        if '&contact' in self.data.keys():
-            self.contact = self.data['&contact']
+        if '<owner>1' in self.data.keys() and \
+                '<email>1' in self.data['<owner>1']:
+            self.owner_email = self.data['<owner>1']['<email>1']['@'].strip()
+            if '<name>1' in self.data['<owner>1']:
+                self.owner_name = self.data['<owner>1']['<name>1']['@'].strip()
+            else:
+                self.owner_name = None
+        elif '&contact' in self.data.keys():
+            self.owner_email = self.data['&contact']
+            self.owner_name = None
         else:
-            self.contact = ''
+            self.owner_email = ''
+            self.owner_name = None
             if not ignore:
                 raise Exception('Overlay "' + self.name + '" is missing a '
-				'"contact" attribute!')
+                                '"owner.email" entry!')
             elif ignore == 1:
                 OUT.warn('Overlay "' + self.name + '" is missing a '
-                         '"contact" attribute!', 4)
+                         '"owner.email" entry!', 4)
 
         if '<description>1' in self.data.keys():
             self.description = self.data['<description>1']['@'].strip()
@@ -193,7 +208,10 @@ class Overlay:
         result += self.name + u'\n' + (len(self.name) * u'~')
 
         result += u'\nSource  : ' + self.src
-        result += u'\nContact : ' + self.contact
+        if self.owner_name != None:
+            result += u'\nContact : %s <%s>' % (self.owner_name, self.owner_email)
+        else:
+            result += u'\nContact : ' + self.owner_email
         result += u'\nType    : ' + self.type
         result += u'; Priority: ' + str(self.priority) + u'\n'
 
@@ -204,13 +222,14 @@ class Overlay:
         result += u'\n  '.join((u'\n' + description).split(u'\n'))
         result += u'\n'
 
-        if '<link>1' in self.data.keys():
-            link = self.data['<link>1']['@'].strip()
+        for key in (e for e in ('<homepage>1', '<link>1') if e in self.data.keys()):
+            link = self.data[key]['@'].strip()
             link = re.compile(u' +').sub(u' ', link)
             link = re.compile(u'\n ').sub(u'\n', link)
             result += u'\nLink:\n'
             result += u'\n  '.join((u'\n' + link).split(u'\n'))
             result += u'\n'
+            break
 
         return result
 

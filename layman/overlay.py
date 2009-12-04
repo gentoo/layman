@@ -8,11 +8,13 @@
 #             Access to an xml list of overlays
 #
 # Copyright:
-#             (c) 2005 - 2008 Gunnar Wrobel
+#             (c) 2005 - 2009 Gunnar Wrobel
+#             (c) 2009        Sebastian Pipping
 #             Distributed under the terms of the GNU General Public License v2
 #
 # Author(s):
 #             Gunnar Wrobel <wrobel@gentoo.org>
+#             Sebastian Pipping <sebastian@pipping.org>
 #
 '''Main handler for overlays.'''
 
@@ -110,14 +112,19 @@ class Overlays:
             raise Exception('Failed to parse the overlay list!\nError was:\n'
                             + str(error))
 
-        overlays = document.getElementsByTagName('overlay')
+        overlays = document.getElementsByTagName('overlay') + \
+                document.getElementsByTagName('repo')
 
         for overlay in overlays:
 
             OUT.debug('Parsing overlay entry', 8)
+            try:
+                element_to_scan = overlay.getElementsByTagName('source')[0]
+            except IndexError:
+                element_to_scan = overlay
 
-            for index in range(0, overlay.attributes.length):
-                attr = overlay.attributes.item(index)
+            for index in range(0, element_to_scan.attributes.length):
+                attr = element_to_scan.attributes.item(index)
                 if attr.name == 'type':
                     if attr.nodeValue in OVERLAY_TYPES.keys():
                         try:
@@ -151,7 +158,7 @@ class Overlays:
 
         imp = xml.dom.minidom.getDOMImplementation()
 
-        doc = imp.createDocument('layman', 'overlays', None)
+        doc = imp.createDocument('layman', 'repositories', None)
 
         root =  doc.childNodes[0]
 

@@ -18,3 +18,4 @@ A. F. T. Arahesis (arfrever.fta@gmail.com) - Quieten the VC systems
                                            - Better locale support.
 Donnie Berkholz  (dberkholz@gentoo.org)    - git support fixes
 Martin von Gagern (Martin.vGagern@gmx.net) - Better list format.
+Sebastian Pipping (sebastian@pipping.org)  - repositories.xml support

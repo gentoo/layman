@@ -8,11 +8,13 @@
 #             Handles layman configuration
 #
 # Copyright:
-#             (c) 2005 - 2008 Gunnar Wrobel
+#             (c) 2005 - 2009 Gunnar Wrobel
+#             (c) 2009        Sebastian Pipping
 #             Distributed under the terms of the GNU General Public License v2
 #
 # Author(s):
 #             Gunnar Wrobel <wrobel@gentoo.org>
+#             Sebastian Pipping <sebastian@pipping.org>
 #
 '''Defines the configuration options and provides parsing functionality.'''
 
@@ -50,7 +52,7 @@ class Config(object):
         >>> sys.argv.append(here + '/../etc/layman.cfg')
         >>> a = Config()
         >>> a['overlays']
-        '\\nhttp://www.gentoo.org/proj/en/overlays/layman-global.txt'
+        '\\nhttp://www.gentoo.org/proj/en/overlays/repositories.xml'
         >>> sorted(a.keys())
         ['cache', 'config', 'local_list', 'make_conf', 'nocheck', 'overlays', 'proxy', 'quietness', 'storage', 'umask', 'width']
         '''
@@ -64,8 +66,7 @@ class Config(object):
                          'proxy'     : '',
                          'umask'     : '0022',
                          'overlays'  :
-                         'http://www.gentoo.org/proj/en/overlays/layman-global.'
-                         'txt',}
+                         'http://www.gentoo.org/proj/en/overlays/repositories.xml',}
 
 
         self.parser = OptionParser(
