@@ -1,0 +1,6 @@
+*~
+*.pyc
+/doc/layman.8
+/doc/layman.8.html
+/dist
+/MANIFEST
