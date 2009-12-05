@@ -1,61 +1,63 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>layman</title><meta name="generator" content="DocBook XSL Stylesheets V1.73.2"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="article" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="id212600"></a>layman</h2></div><div><div class="authorgroup"><div class="author"><h3 class="author"><span class="firstname">Gunnar</span> <span class="surname">Wrobel</span></h3><div class="affiliation"><div class="address"><p><br>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>layman</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="article" title="layman"><div class="titlepage"><div><div><h2 class="title"><a name="id2711154"></a>layman</h2></div><div><div class="authorgroup"><div class="author"><h3 class="author"><span class="firstname">Gunnar</span> <span class="surname">Wrobel</span></h3><div class="affiliation"><div class="address"><p><br>
 	    <code class="email">&lt;<a class="email" href="mailto:wrobel@gentoo.org">wrobel@gentoo.org</a>&gt;</code><br>
 	    <span class="otheraddr"><br>
 	      <a class="ulink" href="http://gunnarwrobel.de" target="_top">http://gunnarwrobel.de</a><br>
 	    </span><br>
-	  </p></div></div></div></div></div><div><p class="copyright">Copyright © 2005-2008 Gunnar Wrobel</p></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="#id259170">Overview</a></span></dt><dt><span class="section"><a href="#id258171">External links</a></span></dt><dt><span class="section"><a href="#layman-reference">Reference</a></span></dt></dl></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id259170"></a>Overview</h2></div></div></div><div class="itemizedlist"><ul type="disc"><li><p>
-	  <a class="link" href="#layman-synopsis" title="Synopsis">Synopsis</a>
-	</p></li></ul></div><div class="itemizedlist"><ul type="disc"><li><p>
-	  <a class="link" href="#layman-description" title="Description">Description</a>
-	</p></li></ul></div><div class="itemizedlist"><ul type="disc"><li><p>
-	  <a class="link" href="#layman-actions" title="Actions">Action flags</a>
-	</p></li></ul></div><div class="itemizedlist"><ul type="disc"><li><p>
-	  <a class="link" href="#layman-other-options" title="Other options">Other options</a>
-	</p></li></ul></div><div class="itemizedlist"><ul type="disc"><li><p>
-	  <a class="link" href="#layman-configuration" title="Configuration">Configuration</a>
-	</p></li></ul></div><div class="itemizedlist"><ul type="disc"><li><p>
-	  <a class="link" href="#layman-remote" title="Overlay lists">Overlay lists</a>
-	</p></li></ul></div><div class="itemizedlist"><ul type="disc"><li><p>
-	  <a class="link" href="#layman-local" title="Local cache">Layman cache</a>
-	</p></li></ul></div><div class="itemizedlist"><ul type="disc"><li><p>
-	  <a class="link" href="#layman-make-conf" title="Handling /etc/make.conf">Handling make.conf</a>
-	</p></li></ul></div><div class="itemizedlist"><ul type="disc"><li><p>
-	  <a class="link" href="#layman-update" title="Adding, removing and updating overlays">Handle overlays</a>
-	</p></li></ul></div><div class="itemizedlist"><ul type="disc"><li><p>
-	  <a class="link" href="#layman-list" title="List overlays">List overlays</a>
-	</p></li></ul></div><div class="itemizedlist"><ul type="disc"><li><p>
-	  <a class="link" href="#layman-search" title="Searching ebuilds in overlays">Searching ebuilds in overlays</a>
-	</p></li></ul></div><div class="itemizedlist"><ul type="disc"><li><p>
-	  <a class="link" href="#layman-types" title="Overlay types">Overlay types</a>
-	</p></li></ul></div><div class="itemizedlist"><ul type="disc"><li><p>
-	  <a class="link" href="#layman-global" title="Overlay lists">Get your overlay published to the world</a>
-	</p></li></ul></div><div class="itemizedlist"><ul type="disc"><li><p>
-	  <a class="link" href="#layman-examples" title="Examples">Examples</a>
-	</p></li></ul></div><div class="itemizedlist"><ul type="disc"><li><p>
-	  <a class="link" href="#layman-files" title="Files">Layman files</a>
-	</p></li></ul></div><div class="itemizedlist"><ul type="disc"><li><p>
-	  <a class="link" href="#layman-bugs" title="Reporting bugs">Reporting bugs</a>
-	</p></li></ul></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id258171"></a>External links</h2></div></div></div><div class="itemizedlist"><ul type="disc"><li><p>
-	  <a class="ulink" href="http://sourceforge.net/projects/layman/" target="_top">Layman project page on SourceForge</a>
-	</p></li><li><p>
-	  <a class="ulink" href="http://overlays.gentoo.org" target="_top">Gentoo Overlays project</a>
-	</p></li><li><p>
-	  <a class="ulink" href="http://ohloh.net/projects/layman/" target="_top">Layman project page on Ohloh</a>
-	</p></li><li><p>
-	  <a class="ulink" href="http://freshmeat.net/projects/layman/" target="_top">Layman project page on Freshmeat</a>
-	</p></li><li><p>
-	  <a class="ulink" href="http://bugs.gentoo.org/" target="_top">Bug tracker</a>
-	</p></li><li><p>
-	  <a class="ulink" href="http://gentoo-wiki.com/Portage_Overlay_Listing#Layman" target="_top">Wiki</a>
-	</p></li><li><p>
-	  <a class="ulink" href="http://log.onthebrink.de/feeds/posts/default/-/layman" target="_top">Blog</a>
-	</p></li><li><p>
-	  <a class="ulink" href="http://www.google.com/reader/public/atom/user/02645926629531261525/label/%5Bproject%5D%20layman" target="_top">Combined RSS feed</a>
-	</p></li></ul></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="layman-reference"></a>Reference</h2></div></div></div><div class="refentry" lang="en"><a name="layman-manpage"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>layman &#8212; 
+	  </p></div></div></div></div></div><div><p class="copyright">Copyright © 2005-2009 Gunnar Wrobel</p></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="#id2711238">Overview</a></span></dt><dt><span class="section"><a href="#id2711561">External links</a></span></dt><dt><span class="section"><a href="#layman-reference">Reference</a></span></dt><dd><dl><dt><span class="refentrytitle"><a href="#layman-manpage">layman</a></span><span class="refpurpose"> &#8212; 
 	  manage your local repository of Gentoo overlays
-	</p></div><div class="refsynopsisdiv"><a name="layman-synopsis"></a><h2>Synopsis</h2><div class="cmdsynopsis"><p><code class="command">layman</code>   [-a] |  [--add]   [ALL] |  [<em class="replaceable"><code>overlay</code></em>] </p></div><div class="cmdsynopsis"><p><code class="command">layman</code>   [-d] |  [--delete]   [ALL] |  [<em class="replaceable"><code>overlay</code></em>] </p></div><div class="cmdsynopsis"><p><code class="command">layman</code>   [-s] |  [--sync]   [ALL] |  [<em class="replaceable"><code>overlay</code></em>] </p></div><div class="cmdsynopsis"><p><code class="command">layman</code>   [-i] |  [--info]   [ALL] |  [<em class="replaceable"><code>overlay</code></em>] </p></div><div class="cmdsynopsis"><p><code class="command">layman</code>   [-S] |  [--sync-all] </p></div><div class="cmdsynopsis"><p><code class="command">layman</code>   [-L] |  [--list] </p></div><div class="cmdsynopsis"><p><code class="command">layman</code>   [-l] |  [--list-local] </p></div><div class="cmdsynopsis"><p><code class="command">layman</code>   [-f] |  [--fetch] </p></div></div><div class="refsection" lang="en"><a name="layman-description"></a><h2>Description</h2><p><span class="command"><strong>layman</strong></span> is a script that allows you to
+	</span></dt></dl></dd></dl></div><div class="section" title="Overview"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id2711238"></a>Overview</h2></div></div></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+	  <a class="link" href="#layman-synopsis" title="Synopsis">Synopsis</a>
+	</p></li></ul></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+	  <a class="link" href="#layman-description" title="Description">Description</a>
+	</p></li></ul></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+	  <a class="link" href="#layman-actions" title="Actions">Action flags</a>
+	</p></li></ul></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+	  <a class="link" href="#layman-other-options" title="Other options">Other options</a>
+	</p></li></ul></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+	  <a class="link" href="#layman-configuration" title="Configuration">Configuration</a>
+	</p></li></ul></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+	  <a class="link" href="#layman-remote" title="Overlay lists">Overlay lists</a>
+	</p></li></ul></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+	  <a class="link" href="#layman-local" title="Local cache">Layman cache</a>
+	</p></li></ul></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+	  <a class="link" href="#layman-make-conf" title="Handling /etc/make.conf">Handling make.conf</a>
+	</p></li></ul></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+	  <a class="link" href="#layman-update" title="Adding, removing and updating overlays">Handle overlays</a>
+	</p></li></ul></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+	  <a class="link" href="#layman-list" title="List overlays">List overlays</a>
+	</p></li></ul></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+	  <a class="link" href="#layman-search" title="Searching ebuilds in overlays">Searching ebuilds in overlays</a>
+	</p></li></ul></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+	  <a class="link" href="#layman-types" title="Overlay types">Overlay types</a>
+	</p></li></ul></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+	  <a class="link" href="#layman-global" title="Overlay lists">Get your overlay published to the world</a>
+	</p></li></ul></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+	  <a class="link" href="#layman-examples" title="Examples">Examples</a>
+	</p></li></ul></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+	  <a class="link" href="#layman-files" title="Files">Layman files</a>
+	</p></li></ul></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+	  <a class="link" href="#layman-bugs" title="Reporting bugs">Reporting bugs</a>
+	</p></li></ul></div></div><div class="section" title="External links"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id2711561"></a>External links</h2></div></div></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+	  <a class="ulink" href="http://sourceforge.net/projects/layman/" target="_top">Layman project page on SourceForge</a>
+	</p></li><li class="listitem"><p>
+	  <a class="ulink" href="http://overlays.gentoo.org" target="_top">Gentoo Overlays project</a>
+	</p></li><li class="listitem"><p>
+	  <a class="ulink" href="http://ohloh.net/projects/layman/" target="_top">Layman project page on Ohloh</a>
+	</p></li><li class="listitem"><p>
+	  <a class="ulink" href="http://freshmeat.net/projects/layman/" target="_top">Layman project page on Freshmeat</a>
+	</p></li><li class="listitem"><p>
+	  <a class="ulink" href="http://bugs.gentoo.org/" target="_top">Bug tracker</a>
+	</p></li><li class="listitem"><p>
+	  <a class="ulink" href="http://gentoo-wiki.com/Portage_Overlay_Listing#Layman" target="_top">Wiki</a>
+	</p></li><li class="listitem"><p>
+	  <a class="ulink" href="http://log.onthebrink.de/feeds/posts/default/-/layman" target="_top">Blog</a>
+	</p></li><li class="listitem"><p>
+	  <a class="ulink" href="http://www.google.com/reader/public/atom/user/02645926629531261525/label/%5Bproject%5D%20layman" target="_top">Combined RSS feed</a>
+	</p></li></ul></div></div><div class="section" title="Reference"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="layman-reference"></a>Reference</h2></div></div></div><div class="refentry" title="layman"><a name="layman-manpage"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>layman &#8212; 
+	  manage your local repository of Gentoo overlays
+	</p></div><div class="refsynopsisdiv" title="Synopsis"><a name="layman-synopsis"></a><h2>Synopsis</h2><div class="cmdsynopsis"><p><code class="command">layman</code>   [-a] |  [--add]   [ALL] |  [<em class="replaceable"><code>overlay</code></em>] </p></div><div class="cmdsynopsis"><p><code class="command">layman</code>   [-d] |  [--delete]   [ALL] |  [<em class="replaceable"><code>overlay</code></em>] </p></div><div class="cmdsynopsis"><p><code class="command">layman</code>   [-s] |  [--sync]   [ALL] |  [<em class="replaceable"><code>overlay</code></em>] </p></div><div class="cmdsynopsis"><p><code class="command">layman</code>   [-i] |  [--info]   [ALL] |  [<em class="replaceable"><code>overlay</code></em>] </p></div><div class="cmdsynopsis"><p><code class="command">layman</code>   [-S] |  [--sync-all] </p></div><div class="cmdsynopsis"><p><code class="command">layman</code>   [-L] |  [--list] </p></div><div class="cmdsynopsis"><p><code class="command">layman</code>   [-l] |  [--list-local] </p></div><div class="cmdsynopsis"><p><code class="command">layman</code>   [-f] |  [--fetch] </p></div></div><div class="refsection" title="Description"><a name="layman-description"></a><h2>Description</h2><p><span class="command"><strong>layman</strong></span> is a script that allows you to
 	add, remove and update Gentoo overlays from a variety of
-	sources.</p><div class="refsection" lang="en"><a name="id299890"></a><h3>WARNING</h3><p><span class="command"><strong>layman</strong></span> makes it easy to retrieve and
+	sources.</p><div class="refsection" title="WARNING"><a name="id2760405"></a><h3>WARNING</h3><p><span class="command"><strong>layman</strong></span> makes it easy to retrieve and
 	  update overlays for Gentoo. In addition it makes it TRIVIAL
 	  to break your system. 
 	  </p><p>The main portage tree provides you with high quality ebuilds
@@ -67,7 +69,7 @@
 	  from an overlay.
 	  </p><p>To ensure the security of your system you MUST read the
 	  source of the ebuild you are about to install. 
-	  </p></div></div><div class="refsection" lang="en"><a name="layman-options"></a><h2>Options</h2><div class="refsection" lang="en"><a name="layman-actions"></a><h3>Actions</h3><p>List of possible <span class="command"><strong>layman</strong></span> actions.</p><div class="variablelist"><dl><dt><span class="term"><code class="option">-f</code>, </span><span class="term"><code class="option">--fetch</code></span></dt><dd><p>Fetches the remote list of overlays. You will
+	  </p></div></div><div class="refsection" title="Options"><a name="layman-options"></a><h2>Options</h2><div class="refsection" title="Actions"><a name="layman-actions"></a><h3>Actions</h3><p>List of possible <span class="command"><strong>layman</strong></span> actions.</p><div class="variablelist"><dl><dt><span class="term"><code class="option">-f</code>, </span><span class="term"><code class="option">--fetch</code></span></dt><dd><p>Fetches the remote list of overlays. You will
 		usually NOT need to explicitly specify this option. The
 		fetch operation will be performed automatically once you
 		run the sync, sync-all, or list action. You can prevent
@@ -75,7 +77,7 @@
 		your locally installed overlays. Specify "ALL" to add
 		all overlays from the remote list.</p></dd><dt><span class="term"><code class="option">-d</code> <em class="replaceable"><code>overlay</code></em>, </span><span class="term"><code class="option">--delete</code> <em class="replaceable"><code>overlay</code></em></span></dt><dd><p>Remove the given overlay from your locally installed
 		overlays. Specify "ALL" to remove all overlays</p></dd><dt><span class="term"><code class="option">-s</code> <em class="replaceable"><code>overlay</code></em>, </span><span class="term"><code class="option">--sync</code> <em class="replaceable"><code>overlay</code></em></span></dt><dd><p>Update the specified overlay. Use "ALL" as
-		parameter to synchronize all overlays</p></dd><dt><span class="term"><code class="option">-i</code> <em class="replaceable"><code>overlay</code></em>, </span><span class="term"><code class="option">--info</code> <em class="replaceable"><code>overlay</code></em></span></dt><dd><p>Display all available information about the specified overlay.</p></dd><dt><span class="term"><code class="option">-S</code>, </span><span class="term"><code class="option">--sync-all</code></span></dt><dd><p>Update all overlays. Shortcut for -s ALL.</p></dd><dt><span class="term"><code class="option">-L</code>, </span><span class="term"><code class="option">--list</code></span></dt><dd><p>List the contents of the remote list.</p></dd><dt><span class="term"><code class="option">-l</code>, </span><span class="term"><code class="option">--list-local</code></span></dt><dd><p>List the locally installed overlays.</p></dd></dl></div></div><div class="refsection" lang="en"><a name="layman-other-options"></a><h3>Other options</h3><p>List of other available <span class="command"><strong>layman</strong></span> options.</p><div class="variablelist"><dl><dt><span class="term"><code class="option">-c</code> <em class="replaceable"><code>path</code></em>, </span><span class="term"><code class="option">--config</code> <em class="replaceable"><code>path</code></em></span></dt><dd><p>Path to an alternative configuration file.</p></dd><dt><span class="term"><code class="option">-o</code> <em class="replaceable"><code>url</code></em>, </span><span class="term"><code class="option">--overlays</code> <em class="replaceable"><code>url</code></em></span></dt><dd><p>Specifies the location of additional overlay
+		parameter to synchronize all overlays</p></dd><dt><span class="term"><code class="option">-i</code> <em class="replaceable"><code>overlay</code></em>, </span><span class="term"><code class="option">--info</code> <em class="replaceable"><code>overlay</code></em></span></dt><dd><p>Display all available information about the specified overlay.</p></dd><dt><span class="term"><code class="option">-S</code>, </span><span class="term"><code class="option">--sync-all</code></span></dt><dd><p>Update all overlays. Shortcut for -s ALL.</p></dd><dt><span class="term"><code class="option">-L</code>, </span><span class="term"><code class="option">--list</code></span></dt><dd><p>List the contents of the remote list.</p></dd><dt><span class="term"><code class="option">-l</code>, </span><span class="term"><code class="option">--list-local</code></span></dt><dd><p>List the locally installed overlays.</p></dd></dl></div></div><div class="refsection" title="Other options"><a name="layman-other-options"></a><h3>Other options</h3><p>List of other available <span class="command"><strong>layman</strong></span> options.</p><div class="variablelist"><dl><dt><span class="term"><code class="option">-c</code> <em class="replaceable"><code>path</code></em>, </span><span class="term"><code class="option">--config</code> <em class="replaceable"><code>path</code></em></span></dt><dd><p>Path to an alternative configuration file.</p></dd><dt><span class="term"><code class="option">-o</code> <em class="replaceable"><code>url</code></em>, </span><span class="term"><code class="option">--overlays</code> <em class="replaceable"><code>url</code></em></span></dt><dd><p>Specifies the location of additional overlay
 		lists. You can use this flag several times and the
 		specified URLs will get temporarily appended to the list
 		of URLs you specified in your config file. You may also
@@ -110,13 +112,13 @@
 		order of entries in the make.conf file. The lower the
 		priority, the earlier in the list the entry will be
 		mentioned. Use a value between 0 and 100. The default
-		value is 50.</p></dd></dl></div></div></div><div class="refsection" lang="en"><a name="layman-configuration"></a><h2>Configuration</h2><p><span class="command"><strong>layman</strong></span> reads configuration parameters
+		value is 50.</p></dd></dl></div></div></div><div class="refsection" title="Configuration"><a name="layman-configuration"></a><h2>Configuration</h2><p><span class="command"><strong>layman</strong></span> reads configuration parameters
 	from the file
 	<code class="filename">/etc/layman/layman.cfg</code> by
 	default. This file provides seven possible settings.</p><div class="variablelist"><dl><dt><span class="term"><code class="option">storage</code></span></dt><dd><p>Directory that will be used to store the overlays
 	      and all additional data <span class="command"><strong>layman</strong></span>
 	      needs. The default is
-	      <code class="filename">/usr/portage/local/layman</code>. layman
+	      <code class="filename">/usr/local/portage/layman</code>. layman
 	      uses a location within the /usr/portage hierarchy instead
 	      of <code class="filename">/var</code> in order to
 	      store its data. This decision has been made to support
@@ -144,25 +146,25 @@
 	      end of <code class="filename">/etc/make.conf</code>. This is the
 	      reason why <span class="command"><strong>layman</strong></span> suggests running
 	      "echo "source
-	      <code class="filename">/usr/portage/local/layman/make.conf</code>" &gt;&gt;
+	      <code class="filename">/usr/local/portage/layman/make.conf</code>" &gt;&gt;
 	      <code class="filename">/etc/make.conf</code>" after it has been
 	      installed.</p></dd><dt><span class="term"><code class="option">overlays</code></span></dt><dd><p>Specifies the URL for the remote list of all
 	      available overlays. The default is
-	      <code class="filename">http://www.gentoo.org/proj/en/overlays/layman-global.txt</code>. You
+	      <code class="filename">http://www.gentoo.org/proj/en/overlays/repositories.xml</code>. You
 	      can specify several URLs here (one per line). The
 	      contents will get merged to a single list of
 	      overlays. This allows to add a personal collection of
 	      overlays that are not present in the global list.</p></dd><dt><span class="term"><code class="option">proxy</code></span></dt><dd><p>Specify your proxy in case you have to use
 	      one.</p></dd><dt><span class="term"><code class="option">nocheck</code></span></dt><dd><p>Set to "yes" if <span class="command"><strong>layman</strong></span> should stop
 	      worrying about overlays with missing a contact address or
-	      the description.</p></dd></dl></div></div><div class="refsection" lang="en"><a name="layman-handling"></a><h2>Handling overlays</h2><p><span class="command"><strong>layman</strong></span> intends to provide easy
+	      the description.</p></dd></dl></div></div><div class="refsection" title="Handling overlays"><a name="layman-handling"></a><h2>Handling overlays</h2><p><span class="command"><strong>layman</strong></span> intends to provide easy
 	maintenance of Gentoo overlays while not requiring any
 	configuration.
-	</p><div class="refsection" lang="en"><a name="layman-remote"></a><h3>Overlay lists</h3><p><span class="command"><strong>layman</strong></span> allows you to fetch an
+	</p><div class="refsection" title="Overlay lists"><a name="layman-remote"></a><h3>Overlay lists</h3><p><span class="command"><strong>layman</strong></span> allows you to fetch an
 	  overlay without the need to modify any configuration
 	  files. In order for this to be possible the script needs an
 	  external list of possible overlay sources. There is a
-	  centralized list available at <a class="ulink" href="http://www.gentoo.org/proj/en/overlays/layman-global.txt" target="_top">http://www.gentoo.org/proj/en/overlays/layman-global.txt</a>
+	  centralized list available at <a class="ulink" href="http://www.gentoo.org/proj/en/overlays/repositories.xml" target="_top">http://www.gentoo.org/proj/en/overlays/repositories.xml</a>
 	  but nothing will prevent you from using or publishing your
 	  own list of overlays. The location of the remote lists can
 	  also be modified using the <code class="option">--overlays</code>
@@ -186,13 +188,13 @@
 	  the <span class="command"><strong>layman</strong></span> configuration file. Layman
 	  will also respect the <span class="command"><strong>http_proxy</strong></span>
 	  environment variable in case you set it.
-	  </p></div><div class="refsection" lang="en"><a name="layman-local"></a><h3>Local cache</h3><p><span class="command"><strong>layman</strong></span> stores a local copy of the
+	  </p></div><div class="refsection" title="Local cache"><a name="layman-local"></a><h3>Local cache</h3><p><span class="command"><strong>layman</strong></span> stores a local copy of the
 	  fetched remote list. It will be stored in
-	  <code class="filename">/usr/portage/local/layman/cache.xml</code>
+	  <code class="filename">/usr/local/portage/layman/cache.xml</code>
 	  by default. There exists only one such cache file and it
 	  will be overwritten every time you
 	  run <span class="command"><strong>layman</strong></span>.
-	  </p></div><div class="refsection" lang="en"><a name="layman-make-conf"></a><h3>Handling <code class="filename">/etc/make.conf</code></h3><p>Since <span class="command"><strong>layman</strong></span> is designed to
+	  </p></div><div class="refsection" title="Handling /etc/make.conf"><a name="layman-make-conf"></a><h3>Handling <code class="filename">/etc/make.conf</code></h3><p>Since <span class="command"><strong>layman</strong></span> is designed to
 	  automatically handle the inclusion of overlays into your
 	  system it needs to be able to modify
 	  the <span class="command"><strong>PORTDIR_OVERLAY</strong></span> variable in your
@@ -211,7 +213,7 @@
 	  sourced within the
 	  standard <code class="filename">/etc/make.conf</code> file. Just add the following line to the end of your 
 	  <code class="filename">/etc/make.conf</code> file:
-	  </p><p>source /usr/portage/local/layman/make.conf</p><p><code class="filename">/usr/portage/local/layman/make.conf</code>
+	  </p><p>source /usr/local/portage/layman/make.conf</p><p><code class="filename">/usr/local/portage/layman/make.conf</code>
 	  is the default provided in the layman
 	  configuration. Change this file name in case you decide to
 	  store it somewhere else.
@@ -221,7 +223,7 @@
 	  original <span class="command"><strong>PORTDIR_OVERLAY</strong></span> variable from
 	  the make.conf file. Layman will simply add new overlays to
 	  this variable and all your old entries will remain in there.
-	  </p></div><div class="refsection" lang="en"><a name="layman-update"></a><h3>Adding, removing and updating overlays</h3><p>Once a remote list of overlays has been fetched,
+	  </p></div><div class="refsection" title="Adding, removing and updating overlays"><a name="layman-update"></a><h3>Adding, removing and updating overlays</h3><p>Once a remote list of overlays has been fetched,
 	  <span class="command"><strong>layman</strong></span> allows to add overlays from the
 	  remote list to your system. The script will try to fetch
 	  the overlay. If this is successful the overlay information
@@ -236,7 +238,7 @@
 	  <span class="command"><strong>layman</strong></span> you can run the script with the 
 	  <code class="option">--sync ALL</code> option or
 	  the <code class="option">--sync-all</code> flag.
-	  </p></div><div class="refsection" lang="en"><a name="layman-list"></a><h3>List overlays</h3><p><span class="command"><strong>layman</strong></span> provides the
+	  </p></div><div class="refsection" title="List overlays"><a name="layman-list"></a><h3>List overlays</h3><p><span class="command"><strong>layman</strong></span> provides the
 	  <code class="option">--list</code> and <code class="option">--list-local</code>
 	  options to print a list of available respectively
 	  installed overlays.
@@ -253,49 +255,49 @@
 	  layman-1.0.7 and if you'd like to return to the old
 	  behavior you may use the k option flag or set the nocheck
 	  option in the configuration file.
-	  </p></div><div class="refsection" lang="en"><a name="layman-search"></a><h3>Searching ebuilds in overlays</h3><p>
+	  </p></div><div class="refsection" title="Searching ebuilds in overlays"><a name="layman-search"></a><h3>Searching ebuilds in overlays</h3><p>
 	    You can search through the ebuilds available in the
 	    overlays on <a class="ulink" href="http://overlays.gentoo.org" target="_top">http://overlays.gentoo.org</a> by
 	    using "eix". Emerge the package and run
 	    <span class="command"><strong>update-eix-remote update</strong></span>.
-	  </p></div><div class="refsection" lang="en"><a name="layman-types"></a><h3>Overlay types</h3><p>Currently <span class="command"><strong>layman</strong></span> supports overlays that
+	  </p></div><div class="refsection" title="Overlay types"><a name="layman-types"></a><h3>Overlay types</h3><p>Currently <span class="command"><strong>layman</strong></span> supports overlays that
 	  are exported via <span class="command"><strong>rsync</strong></span>,
 	  <span class="command"><strong>subversion</strong></span>, <span class="command"><strong>bzr</strong></span>, 
 	  <span class="command"><strong>darcs</strong></span>, <span class="command"><strong>git</strong></span>, 
 	  <span class="command"><strong>mercurial</strong></span> or provided
 	  as <span class="command"><strong>tar</strong></span> packages.
-	  </p></div></div><div class="refsection" lang="en"><a name="layman-global"></a><h2>Overlay lists</h2><div class="refsection" lang="en"><a name="id301016"></a><h3>Overlay list format</h3><p>
+	  </p></div></div><div class="refsection" title="Overlay lists"><a name="layman-global"></a><h2>Overlay lists</h2><div class="refsection" title="Overlay list format"><a name="id2761631"></a><h3>Overlay list format</h3><p>
 	    Layman uses a central list of overlays in XML format. The file looks like this:
-	    </p><div class="example"><a name="id301024"></a><p class="title"><b>Example 1. An example overlay.xml file</b></p><div class="example-contents"><pre class="programlisting">
-	      &lt;?xml version="1.0" ?&gt;
-	      &lt;layman&gt;
-	      &lt;overlays&gt;
-	      &lt;overlay
-	      type = "svn"
-	      src  = "https://mydomain.net/svn/myoverlay/"
-	      contact = "me@mydomain.net"
-	      name = "myoverlay"&gt;
-	      
-	      &lt;link&gt;
-	      http://mydomain.net/myoverlay
-	      &lt;/link&gt;
-	      
-	      &lt;description&gt;
-	      Contains some of my ebuilds.
-	      &lt;/description&gt;
-	      &lt;/overlay&gt;
-	      &lt;/overlays&gt;
+	    </p><div class="example"><a name="id2761640"></a><p class="title"><b>Example 1. An example overlays.xml file</b></p><div class="example-contents"><pre class="programlisting">
+	      &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+	      &lt;!DOCTYPE repositories SYSTEM "/dtd/repositories.dtd"&gt;
+	      &lt;repositories xmlns="" version="1.0"&gt;
+	        &lt;repo quality="experimental" status="official"&gt;
+	          &lt;name&gt;gnome&lt;/name&gt;
+	          &lt;description&gt;experimental gnome ebuilds&lt;/description&gt;
+	          &lt;homepage&gt;http://git.overlays.gentoo.org/gitweb/?p=proj/gnome.git;a=summary&lt;/homepage&gt;
+	          &lt;owner type="project"&gt;
+	            &lt;email&gt;gnome@gentoo.org&lt;/email&gt;
+	            &lt;name&gt;GNOME herd&lt;/name&gt;
+	          &lt;/owner&gt;
+	          &lt;source type="git"&gt;git://git.overlays.gentoo.org/proj/gnome.git&lt;/source&gt;
+	          &lt;source type="git"&gt;http://git.overlays.gentoo.org/gitroot/proj/gnome.git&lt;/source&gt;
+	          &lt;source type="git"&gt;git+ssh://git@git.overlays.gentoo.org/proj/gnome.git&lt;/source&gt;
+	          &lt;feed&gt;http://git.overlays.gentoo.org/gitweb/?p=proj/gnome.git;a=atom&lt;/feed&gt;
+	          &lt;feed&gt;http://git.overlays.gentoo.org/gitweb/?p=proj/gnome.git;a=rss&lt;/feed&gt;
+	        &lt;/repo&gt;
+	      &lt;/repositories&gt;
 	      </pre></div></div><p><br class="example-break">
-	  </p></div><div class="refsection" lang="en"><a name="id301042"></a><h3>Adding an overlay locally</h3><p>
+	  </p></div><div class="refsection" title="Adding an overlay locally"><a name="id2761689"></a><h3>Adding an overlay locally</h3><p>
 	    Simply create an overlay list in the format described
 	    above and run <span class="command"><strong>layman</strong></span> with the
 	    <code class="option">-o</code> switch. You need to
 	    prepend local file URLs with
 	    <strong class="userinput"><code>file://</code></strong>.
-	  </p></div><div class="refsection" lang="en"><a name="id301066"></a><h3>Adding an overlay globally</h3><p>
+	  </p></div><div class="refsection" title="Adding an overlay globally"><a name="id2761715"></a><h3>Adding an overlay globally</h3><p>
 	    The global list of overlays used by
 	    <span class="command"><strong>layman</strong></span> lies at
-	    <code class="filename">http://www.gentoo.org/proj/en/overlays/layman-global.txt</code>.
+	    <code class="filename">http://www.gentoo.org/proj/en/overlays/repositories.xml</code>.
 	  </p><p>
 	    All Gentoo developers have access to this location via CVS
 	    and can modify the list of overlays.
@@ -305,12 +307,10 @@
 	    at <code class="email">&lt;<a class="email" href="mailto:overlays@gentoo.org">overlays@gentoo.org</a>&gt;</code>. You can also join
 	    <strong class="userinput"><code>#gentoo-overlays</code></strong> on
 	    <code class="filename">irc.freenode.net</code>.
-	  </p></div></div><div class="refsection" lang="en"><a name="layman-examples"></a><h2>Examples</h2><div class="refsection" lang="en"><a name="id301117"></a><h3>Installing an overlay</h3><p><strong class="userinput"><code>layman -f -a wrobel</code></strong></p><p>This would add the overlay with the id
+	  </p></div></div><div class="refsection" title="Examples"><a name="layman-examples"></a><h2>Examples</h2><div class="refsection" title="Installing an overlay"><a name="id2761770"></a><h3>Installing an overlay</h3><p><strong class="userinput"><code>layman -f -a wrobel</code></strong></p><p>This would add the overlay with the id
 	  <span class="command"><strong>wrobel</strong></span> to your list of installed
-	  overlays.</p></div><div class="refsection" lang="en"><a name="id301138"></a><h3>Syncing your overlays</h3><p><strong class="userinput"><code>layman -s ALL</code></strong></p><p>This updates all overlays</p></div><div class="refsection" lang="en"><a name="id301154"></a><h3>Performing several actions at the same time</h3><p><strong class="userinput"><code>layman -f -a wrobel -a webapps-experimental</code></strong></p><p>This fetches the remote list and immediately adds two
-	  overlays</p></div></div><div class="refsection" lang="en"><a name="layman-files"></a><h2>Files</h2><div class="variablelist"><dl><dt><span class="term"><code class="filename">/etc/layman/layman.cfg</code></span></dt><dd><p>Configuration file, holding the defaults for
-	      <span class="command"><strong>layman</strong></span></p></dd></dl></div></div><div class="refsection" lang="en"><a name="layman-bugs"></a><h2>Reporting bugs</h2><p>
+	  overlays.</p></div><div class="refsection" title="Syncing your overlays"><a name="id2761792"></a><h3>Syncing your overlays</h3><p><strong class="userinput"><code>layman -s ALL</code></strong></p><p>This updates all overlays</p></div><div class="refsection" title="Performing several actions at the same time"><a name="id2761808"></a><h3>Performing several actions at the same time</h3><p><strong class="userinput"><code>layman -f -a wrobel -a webapps-experimental</code></strong></p><p>This fetches the remote list and immediately adds two
+	  overlays</p></div></div><div class="refsection" title="Files"><a name="layman-files"></a><h2>Files</h2><div class="variablelist"><dl><dt><span class="term"><code class="filename">/etc/layman/layman.cfg</code></span></dt><dd><p>Configuration file, holding the defaults for
+	      <span class="command"><strong>layman</strong></span></p></dd></dl></div></div><div class="refsection" title="Reporting bugs"><a name="layman-bugs"></a><h2>Reporting bugs</h2><p>
 	  Please report bugs you might find at <a class="ulink" href="http://bugs.gentoo.org" target="_top">http://bugs.gentoo.org</a>
-	</p></div></div></div></div>
-<script type="text/javascript">var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));</script><script type="text/javascript">var pageTracker = _gat._getTracker("UA-3244527-15");pageTracker._initData();pageTracker._trackPageview();</script>
-</body></html>
+	</p></div></div></div></div></body></html>
