@@ -1,6 +1,6 @@
 .PHONY: www
 www:
-	cp trunk/layman/doc/layman.8.html www/index.html
+	cp doc/layman.8.html www/index.html
 
 .PHONY: release
 release:
