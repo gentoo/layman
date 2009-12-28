@@ -62,6 +62,7 @@ class TarOverlay(Overlay):
     '''
 
     type = 'Tar'
+    type_key = 'tar'
 
     binary = u'/bin/tar'
 
@@ -69,22 +70,22 @@ class TarOverlay(Overlay):
 
         Overlay.__init__(self, xml, ignore)
 
-        if '&format' in self.data.keys():
-            self.format = self.data['&format']
+        if 'format' in xml.attrib:
+            self.format = xml.attrib['format']
         else:
             self.format = ''
 
-        if '&subpath' in self.data.keys():
-            self.subpath = self.data['&subpath']
+        if 'subpath' in xml.attrib:
+            self.subpath = xml.attrib['subpath']
         else:
             self.subpath = ''
 
-        if '&category' in self.data.keys():
+        if 'category' in xml.attrib:
             if self.subpath:
                 raise Exception('Cannot use "category" and "subpath" at the same'
                                 ' time!')
 
-            self.category = self.data['&category']
+            self.category = xml.attrib['category']
         else:
             self.category = ''
 

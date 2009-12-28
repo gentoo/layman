@@ -37,6 +37,7 @@ class GitOverlay(Overlay):
     ''' Handles git overlays.'''
 
     type = 'Git'
+    type_key = 'git'
 
     binary_command  = '/usr/bin/git'
 

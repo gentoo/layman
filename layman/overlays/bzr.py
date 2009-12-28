@@ -39,6 +39,7 @@ class BzrOverlay(Overlay):
     ''' Handles bzr overlays.'''
 
     type = 'Bzr'
+    type_key = 'bzr'
 
     binary_command  = '/usr/bin/bzr'
 

@@ -15,6 +15,7 @@
 # Author(s):
 #             Gunnar Wrobel <wrobel@gentoo.org>
 #             Sebastian Pipping <sebastian@pipping.org>
+#             Christian Groschupp <christian@groschupp.org>
 #
 '''Main handler for overlays.'''
 
@@ -26,7 +27,8 @@ __version__ = "$Id: overlay.py 273 2006-12-30 15:54:50Z wrobel $"
 #
 #-------------------------------------------------------------------------------
 
-import sys, codecs, os, os.path, xml.dom.minidom
+import sys, codecs, os, os.path
+import elementtree.ElementTree as ET
 
 from   layman.overlays.bzr       import BzrOverlay
 from   layman.overlays.darcs     import DarcsOverlay
@@ -45,14 +47,16 @@ from   layman.debug              import OUT
 #
 #-------------------------------------------------------------------------------
 
-OVERLAY_TYPES = {'git'       : GitOverlay,
-                 'cvs'       : CvsOverlay,
-                 'svn'       : SvnOverlay,
-                 'rsync'     : RsyncOverlay,
-                 'tar'       : TarOverlay,
-                 'bzr'       : BzrOverlay,
-                 'mercurial' : MercurialOverlay,
-                 'darcs'     : DarcsOverlay}
+OVERLAY_TYPES = dict((e.type_key, e) for e in (
+    GitOverlay,
+    CvsOverlay,
+    SvnOverlay,
+    RsyncOverlay,
+    TarOverlay,
+    BzrOverlay,
+    MercurialOverlay,
+    DarcsOverlay
+))
 
 #===============================================================================
 #
@@ -81,17 +85,15 @@ class Overlays:
         '''Read the overlay definition file.'''
 
         try:
-
-            document = open(path).read()
+            document = open(path, 'r').read()
 
         except Exception, error:
             raise IOError('Failed to read the overlay list at ("'
                           + path + '")!\nError was:\n' + str(error))
 
-
         self.read(document)
 
-    def read(self, document):
+    def read(self, text):
         '''
         Read an xml list of overlays.
 
@@ -101,34 +103,28 @@ class Overlays:
         >>> a.overlays.keys()
         [u'wrobel', u'wrobel-stable']
 
-        >>> a.overlays['wrobel-stable'].data['&src']
+        >>> a.overlays['wrobel-stable'].src
         u'rsync://gunnarwrobel.de/wrobel-stable'
         '''
-        try:
-
-            document = xml.dom.minidom.parseString(document)
-
-        except Exception, error:
-            raise Exception('Failed to parse the overlay list!\nError was:\n'
-                            + str(error))
-
-        overlays = document.getElementsByTagName('overlay') + \
-                document.getElementsByTagName('repo')
+        document = ET.fromstring(text)
+        overlays = document.findall('overlay') + \
+                document.findall('repo')
 
         for overlay in overlays:
-
             OUT.debug('Parsing overlay entry', 8)
-            try:
-                element_to_scan = overlay.getElementsByTagName('source')[0]
-            except IndexError:
+            
+            _source = overlay.find('source')
+            if _source != None:
+                element_to_scan = _source
+            else:
                 element_to_scan = overlay
 
-            for index in range(0, element_to_scan.attributes.length):
-                attr = element_to_scan.attributes.item(index)
-                if attr.name == 'type':
-                    if attr.nodeValue in OVERLAY_TYPES.keys():
+            for attr_name in element_to_scan.attrib.keys():
+                if attr_name == 'type':
+                    overlay_type = element_to_scan.attrib['type']
+                    if overlay_type in OVERLAY_TYPES.keys():
                         try:
-                            ovl = OVERLAY_TYPES[attr.nodeValue](overlay,
+                            ovl = OVERLAY_TYPES[overlay_type](overlay,
                                                                 self.ignore,
                                                                 self.quiet)
                             self.overlays[ovl.name] = ovl
@@ -136,7 +132,8 @@ class Overlays:
                             OUT.warn(str(error), 3)
                     else:
                         raise Exception('Unknown overlay type "' +
-                                        attr.nodeValue + '"!')
+                                        overlay_type + '"!')
+                    break
 
     def write(self, path):
         '''
@@ -156,22 +153,16 @@ class Overlays:
         >>> os.unlink(write)
         '''
 
-        imp = xml.dom.minidom.getDOMImplementation()
-
-        doc = imp.createDocument('layman', 'repositories', None)
-
-        root =  doc.childNodes[0]
-
-        for name, overlay in self.overlays.items():
-
-            root.appendChild(overlay.to_minidom(doc))
-
+        xml = ET.Element('repositories', version="1.0")
+        xml[:] = [e.to_minidom() for e in self.overlays.values()]
+        tree = ET.ElementTree(xml)
         try:
-
-            out_file = codecs.open(path, 'w', 'utf-8')
-
-            doc.writexml(out_file, '', '  ', '\n')
-
+            f = open(path, 'w')
+            f.write("""\
+<?xml version="1.0" encoding="UTF-8"?>
+""")
+            tree.write(f, encoding='utf-8')
+            f.close()
         except Exception, error:
             raise Exception('Failed to write to local overlays file: '
                             + path + '\nError was:\n' + str(error))
@@ -182,7 +173,7 @@ class Overlays:
 
         >>> here = os.path.dirname(os.path.realpath(__file__))
         >>> a = Overlays([here + '/tests/testfiles/global-overlays.xml', ])
-        >>> a.select('wrobel-stable').data['&src']
+        >>> a.select('wrobel-stable').src
         u'rsync://gunnarwrobel.de/wrobel-stable'
         '''
         if overlay in self.overlays.keys():

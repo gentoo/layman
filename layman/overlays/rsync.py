@@ -37,6 +37,7 @@ class RsyncOverlay(Overlay):
     ''' Handles rsync overlays.'''
 
     type = 'Rsync'
+    type_key = 'rsync'
 
     binary = '/usr/bin/rsync'
 

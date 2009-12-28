@@ -38,6 +38,7 @@ class MercurialOverlay(Overlay):
     ''' Handles mercurial overlays.'''
 
     type = 'Mercurial'
+    type_key = 'mercurial'
 
     binary_command  = '/usr/bin/hg'
 

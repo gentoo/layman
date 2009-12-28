@@ -15,6 +15,7 @@
 # Author(s):
 #             Gunnar Wrobel <wrobel@gentoo.org>
 #             Sebastian Pipping <sebastian@pipping.org>
+#             Christian Groschupp <christian@groschupp.org>
 #
 ''' Basic overlay class.'''
 
@@ -27,8 +28,9 @@ __version__ = "$Id: overlay.py 273 2006-12-30 15:54:50Z wrobel $"
 #-------------------------------------------------------------------------------
 
 import sys, types, re, os, os.path, shutil, subprocess
+import elementtree.ElementTree as ET
 
-from   layman.utils             import node_to_dict, dict_to_node, path
+from   layman.utils             import path, ensure_unicode
 
 from   layman.debug             import OUT
 
@@ -46,10 +48,9 @@ class Overlay:
     def __init__(self, xml, ignore = 0, quiet = False):
         '''
         >>> here = os.path.dirname(os.path.realpath(__file__))
-        >>> document = open(here + '/../tests/testfiles/global-overlays.xml').read()
-        >>> import xml.dom.minidom
-        >>> document = xml.dom.minidom.parseString(document)
-        >>> overlays = document.getElementsByTagName('overlay')
+        >>> import elementtree.ElementTree as ET
+        >>> document = ET.parse(here + '/../tests/testfiles/global-overlays.xml')
+        >>> overlays = document.findall('overlay') + document.findall('repo')
         >>> a = Overlay(overlays[0])
         >>> a.name
         u'wrobel'
@@ -69,32 +70,36 @@ class Overlay:
         '''
         self.quiet = quiet
 
-        self.data = node_to_dict(xml)
-
-        if '<name>1' in self.data.keys():
-            self.name = self.data['<name>1']['@'].strip()
-        elif '&name' in self.data.keys():
-            self.name = self.data['&name']
+        _name = xml.find('name')
+        if _name != None:
+            self.name = ensure_unicode(_name.text)
+        elif 'name' in xml.attrib:
+            self.name = ensure_unicode(xml.attrib['name'])
         else:
             raise Exception('Overlay is missing a "name" entry!')
 
-        if '<source>1' in self.data.keys():
-            self.src = self.data['<source>1']['@'].strip()
-        elif '&src' in self.data.keys():
-            self.src = self.data['&src']
+        _source = xml.find('source')
+        if _source != None:
+            self.src = ensure_unicode(_source.text.strip())
+        elif 'src' in xml.attrib:
+            self.src = ensure_unicode(xml.attrib['src'])
         else:
-            raise Exception('Overlay "' + self.name + '" is missing a "source" '
-                            'entry!')
+            raise Exception('Overlay "' + self.name + '" is missing a "source" entry!')
 
-        if '<owner>1' in self.data.keys() and \
-                '<email>1' in self.data['<owner>1']:
-            self.owner_email = self.data['<owner>1']['<email>1']['@'].strip()
-            if '<name>1' in self.data['<owner>1']:
-                self.owner_name = self.data['<owner>1']['<name>1']['@'].strip()
+        _owner = xml.find('owner')
+        if _owner == None:
+            _email = None
+        else:
+            _email = _owner.find('email')
+        if _owner != None and _email != None:
+            self.owner_email = ensure_unicode(_email.text.strip())
+            _name = _owner.find('name')
+            if _name != None:
+                self.owner_name = ensure_unicode(_name.text.strip())
             else:
                 self.owner_name = None
-        elif '&contact' in self.data.keys():
-            self.owner_email = self.data['&contact']
+        elif 'contact' in xml.attrib:
+            self.owner_email = ensure_unicode(xml.attrib['contact'])
             self.owner_name = None
         else:
             self.owner_email = ''
@@ -106,37 +111,73 @@ class Overlay:
                 OUT.warn('Overlay "' + self.name + '" is missing a '
                          '"owner.email" entry!', 4)
 
-        if '<description>1' in self.data.keys():
-            self.description = self.data['<description>1']['@'].strip()
+
+        _desc = xml.find('description')
+        if _desc != None:
+            self.description = ensure_unicode(_desc.text.strip())
         else:
             self.description = ''
             if not ignore:
                 raise Exception('Overlay "' + self.name + '" is missing a '
-				'"description" entry!')
+	                                '"description" entry!')
             elif ignore == 1:
                 OUT.warn('Overlay "' + self.name + '" is missing a '
-			 '"description" entry!', 4)
+                         '"description" entry!', 4)
 
-        if '&status' in self.data.keys():
-            self.status = self.data['&status']
+        if 'status' in xml.attrib:
+            self.status = ensure_unicode(xml.attrib['status'])
         else:
-            self.status = ''
+            self.status = None
 
-        if '&priority' in self.data.keys():
-            self.priority = int(self.data['&priority'])
+        if 'priority' in xml.attrib:
+            self.priority = int(xml.attrib['priority'])
         else:
             self.priority = 50
+
+        h = xml.find('homepage')
+        l = xml.find('link')
+        if h != None:
+            self.homepage = ensure_unicode(h.text.strip())
+        elif l != None:
+            self.homepage = ensure_unicode(l.text.strip())
+        else:
+            self.homepage = None
 
     def set_priority(self, priority):
         '''Set the priority of this overlay.'''
 
-        self.data['&priority'] = str(priority)
         self.priority = int(priority)
 
-    def to_minidom(self, document):
+    def to_minidom(self):
         '''Convert to xml.'''
 
-        return dict_to_node(self.data, document, 'overlay')
+        repo = ET.Element('repo')
+        if self.status != None:
+            repo.attrib['status'] = self.status
+        repo.attrib['priority'] = str(self.priority)
+        name = ET.Element('name')
+        name.text = self.name
+        repo.append(name)
+        desc = ET.Element('description')
+        desc.text = self.description
+        repo.append(desc)
+        if self.homepage != None:
+            homepage = ET.Element('homepage')
+            homepage.text = self.homepage
+            repo.append(homepage)
+        owner = ET.Element('owner')
+        repo.append(owner)
+        owner_email = ET.Element('email')
+        owner_email.text = self.owner_email
+        owner.append(owner_email)
+        if self.owner_name != None:
+            owner_name = ET.Element('name')
+            owner_name.text = self.owner_name
+            owner.append(owner_name)
+        source = ET.Element('source', type=self.__class__.type_key)
+        source.text = self.src
+        repo.append(source)
+        return repo
 
     def add(self, base, quiet = False):
         '''Add the overlay.'''
@@ -186,10 +227,9 @@ class Overlay:
     def __str__(self):
         '''
         >>> here = os.path.dirname(os.path.realpath(__file__))
-        >>> document = open(here + '/../tests/testfiles/global-overlays.xml').read()
-        >>> import xml.dom.minidom
-        >>> document = xml.dom.minidom.parseString(document)
-        >>> overlays = document.getElementsByTagName('overlay')
+        >>> import elementtree.ElementTree as ET
+        >>> document = ET.parse(here + '/../tests/testfiles/global-overlays.xml')
+        >>> overlays = document.findall('overlay') + document.findall('repo')
         >>> a = Overlay(overlays[0])
         >>> print str(a)
         wrobel
@@ -222,24 +262,22 @@ class Overlay:
         result += u'\n  '.join((u'\n' + description).split(u'\n'))
         result += u'\n'
 
-        for key in (e for e in ('<homepage>1', '<link>1') if e in self.data.keys()):
-            link = self.data[key]['@'].strip()
+        if self.homepage != None:
+            link = self.homepage
             link = re.compile(u' +').sub(u' ', link)
             link = re.compile(u'\n ').sub(u'\n', link)
             result += u'\nLink:\n'
             result += u'\n  '.join((u'\n' + link).split(u'\n'))
             result += u'\n'
-            break
 
         return result
 
     def short_list(self, width = 0):
         '''
         >>> here = os.path.dirname(os.path.realpath(__file__))
-        >>> document = open(here + '/../tests/testfiles/global-overlays.xml').read()
-        >>> import xml.dom.minidom
-        >>> document = xml.dom.minidom.parseString(document)
-        >>> overlays = document.getElementsByTagName('overlay')
+        >>> import elementtree.ElementTree as ET
+        >>> document = ET.parse(here + '/../tests/testfiles/global-overlays.xml')
+        >>> overlays = document.findall('repo') + document.findall('overlay')
         >>> a = Overlay(overlays[0])
         >>> print a.short_list(80)
         wrobel                    [None      ] (https://o.g.o/svn/dev/wrobel         )

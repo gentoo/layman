@@ -37,6 +37,7 @@ class SvnOverlay(Overlay):
     ''' Handles subversion overlays.'''
 
     type = 'Subversion'
+    type_key = 'svn'
 
     binary = '/usr/bin/svn'
 

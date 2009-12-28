@@ -13,6 +13,8 @@
 #
 # Author(s):
 #             Gunnar Wrobel <wrobel@gentoo.org>
+#             Sebastian Pipping <sebastian@pipping.org>
+#             Christian Groschupp <christian@groschupp.org>
 #
 
 '''Utility functions to deal with xml nodes. '''
@@ -33,130 +35,11 @@ import types, re
 #
 #-------------------------------------------------------------------------------
 
-def node_to_text(node):
-    '''
-    Reduces an xml node to its text elements. The function does not
-    collect the text nodes recursively.
-
-    >>> import xml.dom.minidom
-    >>> imp = xml.dom.minidom.getDOMImplementation()
-    >>> doc = imp.createDocument('test', 'root', None)
-    >>> root =  doc.childNodes[0]
-    >>> node = doc.createTextNode('text')
-    >>> a = root.appendChild(node)
-    >>> node = doc.createElement('text')
-    >>> node2 = doc.createTextNode('text')
-    >>> a = node.appendChild(node2)
-    >>> a = root.appendChild(node)
-    >>> node = doc.createTextNode('text')
-    >>> a = root.appendChild(node)
-    >>> doc.toprettyxml('', '') #doctest: +ELLIPSIS
-    '<?xml version="1.0" ?>...<root>text<text>text</text>text</root>'
-
-    >>> node_to_text(root)
-    'texttext'
-
-    '''
-    text = ''
-
-    for child in node.childNodes:
-        if child.nodeType == child.TEXT_NODE:
-            text = text + child.data
-
-    return text
-
-def node_to_dict(node):
-    ''' Converts a xml node to a dictionary. The function collects the
-    nodes recursively. Attributes will be prepended with '&', child
-    nodes will be surrounded with tags. An index will be appended
-    since several child nodes with the same tag may exist. Text
-    elements will be collapsed and stored in a n entry prepended with
-    '@'. Comments will be ignored.
-
-    >>> import xml.dom.minidom
-    >>> imp = xml.dom.minidom.getDOMImplementation()
-    >>> doc = imp.createDocument('test', 'root', None)
-    >>> root =  doc.childNodes[0]
-    >>> node = doc.createTextNode('text')
-    >>> a = root.appendChild(node)
-    >>> node = doc.createElement('text')
-    >>> node2 = doc.createTextNode('text')
-    >>> comm = doc.createComment('comment')
-    >>> attr = doc.createAttribute('&attr')
-    >>> a = node.appendChild(node2)
-    >>> a = root.appendChild(comm)
-    >>> node.setAttributeNode(attr)
-    >>> node.setAttribute('&attr','test')
-    >>> a = root.appendChild(node)
-    >>> node3 = doc.createElement('text')
-    >>> a = root.appendChild(node3)
-    >>> node = doc.createTextNode('text')
-    >>> a = root.appendChild(node)
-    >>> doc.toprettyxml('', '') #doctest: +ELLIPSIS
-    '<?xml version="1.0" ?>...<root>text<!--comment--><text &attr="test">text</text><text/>text</root>'
-
-    >>> node_to_dict(root)
-    {'<text>1': {'@': 'text', '&&attr': 'test'}, '<text>2': {'@': ''}, '@': 'texttext'}
-
-    '''
-    result = {}
-
-    # Map the attributes
-    for index in range(0, node.attributes.length):
-        attr = node.attributes.item(index)
-        result['&' +  attr.name] = attr.nodeValue
-
-    text = ''
-
-    # Map the nodes
-    for child in node.childNodes:
-        if child.nodeType == child.TEXT_NODE:
-            text = text + child.data
-        elif child.nodeType == child.CDATA_SECTION_NODE:
-            text = text + child.data
-        elif child.nodeType == child.ELEMENT_NODE:
-            index = 1
-            while ('<' + child.tagName + '>' + str(index)) in result.keys():
-                index += 1
-            result['<' + child.tagName + '>' + str(index)] = node_to_dict(child)
-
-    result['@'] = text
-
-    return result
-
-def dict_to_node(data, document, root_name):
-    ''' Reverts the node_to_dict operation.
-
-    >>> import xml.dom.minidom
-    >>> imp = xml.dom.minidom.getDOMImplementation()
-    >>> doc = imp.createDocument('test', 'root', None)
-    >>> a = {'<text>1': {'@': 'text', '&&attr': 'test'}, '<text>2': {'@': ''}, '@': 'texttext'}
-    >>> doc.childNodes[0] = dict_to_node(a, doc, 'root')
-    >>> doc.toprettyxml('', '') #doctest: +ELLIPSIS
-    '<?xml version="1.0" ?>...<root><text &attr="test">text</text><text></text>texttext</root>'
-
-    '''
-    node = document.createElement(root_name)
-
-    for i, j in data.items():
-
-        if i[0] == '&':
-            attr = document.createAttribute(i[1:])
-            node.setAttributeNode(attr)
-            node.setAttribute(i[1:], j)
-        if i[0] == '<':
-            k = i[1:]
-            while k[-1] in '0123456789':
-                k = k[:-1]
-            child = dict_to_node(data[i],
-                                 document,
-                                 k[:-1])
-            node.appendChild(child)
-        if i[0] == '@':
-            child = document.createTextNode(j)
-            node.appendChild(child)
-
-    return node
+def ensure_unicode(obj, encoding='utf-8'):
+    if isinstance(obj, basestring):
+        if not isinstance(obj, unicode):
+            obj = unicode(obj, encoding)
+    return obj
 
 def path(path_elements):
     '''

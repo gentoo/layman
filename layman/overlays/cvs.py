@@ -37,6 +37,7 @@ class CvsOverlay(Overlay):
     ''' Handles cvs overlays.'''
 
     type = 'cvs'
+    type_key = 'cvs'
 
     binary = '/usr/bin/cvs'
 
@@ -44,8 +45,8 @@ class CvsOverlay(Overlay):
 
         Overlay.__init__(self, xml, ignore, quiet)
 
-        if '&subpath' in self.data.keys():
-            self.subpath = self.data['&subpath']
+        if 'subpath' in xml.attrib:
+            self.subpath = xml.attrib['subpath']
         else:
             self.subpath = ''
 

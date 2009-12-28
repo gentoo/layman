@@ -38,6 +38,7 @@ class DarcsOverlay(Overlay):
     ''' Handles darcs overlays.'''
 
     type = 'Darcs'
+    type_key = 'darcs'
 
     binary_command  = '/usr/bin/darcs'
 
