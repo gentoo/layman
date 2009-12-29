@@ -349,6 +349,9 @@ class Overlay:
 
         return self.status == 'official'
 
+    def command(self):
+        return self.config['%s_command' % self.__class__.type_key]
+
 #================================================================================
 #
 # Testing

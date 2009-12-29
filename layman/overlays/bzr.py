@@ -41,8 +41,6 @@ class BzrOverlay(Overlay):
     type = 'Bzr'
     type_key = 'bzr'
 
-    binary_command  = '/usr/bin/bzr'
-
     def __init__(self, xml, config, ignore = 0, quiet = False):
 
         Overlay.__init__(self, xml, config, ignore)
@@ -52,7 +50,7 @@ class BzrOverlay(Overlay):
 
         self.supported()
 
-        return self.cmd(self.binary_command + ' get "' + self.src + '/" "' +\
+        return self.cmd(self.command() + ' get "' + self.src + '/" "' +\
                         path([base, self.name]) + '"')
 
     def sync(self, base, quiet = False):
@@ -61,11 +59,11 @@ class BzrOverlay(Overlay):
         self.supported()
 
         return self.cmd('cd "' + path([base, self.name]) + '" && ' +          \
-                        self.binary_command + ' pull --overwrite "' + self.src \
+                        self.command() + ' pull --overwrite "' + self.src \
                         + '"')
 
     def supported(self):
         '''Overlay type supported?'''
 
-        return Overlay.supported(self, [(self.binary_command,  'bzr',
+        return Overlay.supported(self, [(self.command(),  'bzr',
                                          'dev-util/bzr'),])

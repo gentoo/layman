@@ -101,8 +101,8 @@ class Overlays:
         Read an xml list of overlays.
 
         >>> here = os.path.dirname(os.path.realpath(__file__))
-
-        >>> a = Overlays([here + '/tests/testfiles/global-overlays.xml', ], dict())
+        >>> config = {'svn_command': '/usr/bin/svn', 'rsync_command':'/usr/bin/rsync'}
+        >>> a = Overlays([here + '/tests/testfiles/global-overlays.xml', ], config)
         >>> a.overlays.keys()
         [u'wrobel', u'wrobel-stable']
 
@@ -145,8 +145,8 @@ class Overlays:
 
         >>> write = os.tmpnam()
         >>> here = os.path.dirname(os.path.realpath(__file__))
-
-        >>> a = Overlays([here + '/tests/testfiles/global-overlays.xml', ], dict())
+        >>> config = {'svn_command': '/usr/bin/svn', 'rsync_command':'/usr/bin/rsync'}
+        >>> a = Overlays([here + '/tests/testfiles/global-overlays.xml', ], config)
         >>> b = Overlays([write,], dict())
         >>> b.overlays['wrobel-stable'] = a.overlays['wrobel-stable']
         >>> b.write(write)
@@ -177,7 +177,8 @@ class Overlays:
         Select an overlay from the list.
 
         >>> here = os.path.dirname(os.path.realpath(__file__))
-        >>> a = Overlays([here + '/tests/testfiles/global-overlays.xml', ], dict())
+        >>> config = {'svn_command': '/usr/bin/svn', 'rsync_command':'/usr/bin/rsync'}
+        >>> a = Overlays([here + '/tests/testfiles/global-overlays.xml', ], config)
         >>> a.select('wrobel-stable').src
         u'rsync://gunnarwrobel.de/wrobel-stable'
         '''
@@ -189,7 +190,8 @@ class Overlays:
         List all overlays.
 
         >>> here = os.path.dirname(os.path.realpath(__file__))
-        >>> a = Overlays([here + '/tests/testfiles/global-overlays.xml', ], dict())
+        >>> config = {'svn_command': '/usr/bin/svn', 'rsync_command':'/usr/bin/rsync'}
+        >>> a = Overlays([here + '/tests/testfiles/global-overlays.xml', ], config)
         >>> for i in a.list(True):
         ...     print i[0]
         wrobel

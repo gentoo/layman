@@ -6,6 +6,8 @@ TODO
 
  - Migrate XML handling from minidom to ElementTree (also fixes #261666)
 
+ - Allow overriding of VCS commands
+
 
 Version 1.2.4 - Released 2009/12/05
 ===================================

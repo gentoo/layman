@@ -54,7 +54,7 @@ class Config(object):
         >>> a['overlays']
         '\\nhttp://www.gentoo.org/proj/en/overlays/repositories.xml'
         >>> sorted(a.keys())
-        ['cache', 'config', 'local_list', 'make_conf', 'nocheck', 'overlays', 'proxy', 'quietness', 'storage', 'umask', 'width']
+        ['bzr_command', 'cache', 'config', 'cvs_command', 'darcs_command', 'git_command', 'local_list', 'make_conf', 'mercurial_command', 'nocheck', 'overlays', 'proxy', 'quietness', 'rsync_command', 'storage', 'svn_command', 'tar_command', 'umask', 'width']
         '''
 
         self.defaults = {'config'    : '/etc/layman/layman.cfg',
@@ -66,7 +66,15 @@ class Config(object):
                          'proxy'     : '',
                          'umask'     : '0022',
                          'overlays'  :
-                         'http://www.gentoo.org/proj/en/overlays/repositories.xml',}
+                         'http://www.gentoo.org/proj/en/overlays/repositories.xml',
+                         'bzr_command': '/usr/bin/bzr',
+                         'cvs_command': '/usr/bin/cvs',
+                         'darcs_command': '/usr/bin/darcs',
+                         'git_command': '/usr/bin/git',
+                         'mercurial_command': '/usr/bin/hg',
+                         'rsync_command': '/usr/bin/rsync',
+                         'svn_command': '/usr/bin/svn',
+                         'tar_command': '/bin/tar', }
 
 
         self.parser = OptionParser(

@@ -47,7 +47,9 @@ class Fetch:
     ...           'cache' : cache,
     ...           'nocheck'    : True,
     ...           'proxy' : None,
-    ...           'quietness':3}
+    ...           'quietness':3,
+    ...           'svn_command':'/usr/bin/svn',
+    ...           'rsync_command':'/usr/bin/rsync'}
     >>> a = Fetch(config)
     >>> a.run()
     0
@@ -261,7 +263,9 @@ class Info:
     ...           'info'   : ['wrobel'],
     ...           'nocheck'    : False,
     ...           'verbose': False,
-    ...           'quietness':3}
+    ...           'quietness':3,
+    ...           'svn_command':'/usr/bin/svn',
+    ...           'rsync_command':'/usr/bin/rsync'}
     >>> a = Info(config)
     >>> a.rdb.cache()
     >>> OUT.color_off()
@@ -335,7 +339,9 @@ class List:
     ...           'nocheck'    : False,
     ...           'verbose': False,
     ...           'quietness':3,
-    ...           'width':80}
+    ...           'width':80,
+    ...           'svn_command':'/usr/bin/svn',
+    ...           'rsync_command':'/usr/bin/rsync'}
     >>> a = List(config)
     >>> a.rdb.cache()
     >>> OUT.color_off()

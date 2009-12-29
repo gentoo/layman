@@ -39,8 +39,6 @@ class CvsOverlay(Overlay):
     type = 'cvs'
     type_key = 'cvs'
 
-    binary = '/usr/bin/cvs'
-
     def __init__(self, xml, config, ignore = 0, quiet = False):
 
         Overlay.__init__(self, xml, config, ignore, quiet)
@@ -60,8 +58,8 @@ class CvsOverlay(Overlay):
         else:
             quiet_option = ''
 
-        return self.cmd('cd "' + base + '" && CVSROOT="' + self.src + '" ' + 
-                        self.binary + quiet_option + ' co -d "' + self.name 
+        return self.cmd('cd "' + base + '" && CVSROOT="' + self.src + '" ' +
+                        self.command() + quiet_option + ' co -d "' + self.name
                         + '" "' + self.subpath + '"' )
 
     def sync(self, base, quiet = False):
@@ -75,10 +73,10 @@ class CvsOverlay(Overlay):
             quiet_option = ''
 
         return self.cmd('cd "' + path([base, self.name]) + '" && ' +
-                        self.binary + quiet_option + ' update -d')
+                        self.command() + quiet_option + ' update -d')
 
     def supported(self):
         '''Overlay type supported?'''
 
-        return Overlay.supported(self, [(self.binary,  'cvs',
+        return Overlay.supported(self, [(self.command(),  'cvs',
                                          'dev-util/cvs'),])

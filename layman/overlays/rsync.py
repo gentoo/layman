@@ -39,11 +39,6 @@ class RsyncOverlay(Overlay):
     type = 'Rsync'
     type_key = 'rsync'
 
-    binary = '/usr/bin/rsync'
-
-    base = binary + ' -rlptDvz --progress --delete --delete-after ' +           \
-        '--timeout=180 --exclude="distfiles/*" --exclude="local/*" ' +          \
-        '--exclude="packages/*" '
 
     def __init__(self, xml, config, ignore = 0, quiet = False):
 
@@ -68,11 +63,15 @@ class RsyncOverlay(Overlay):
         else:
             quiet_option = ''
 
-        return self.cmd(self.base + quiet_option + '"' + self.src + '/" "' +
+        _command = self.command() + ' -rlptDvz --progress --delete --delete-after ' +\
+                '--timeout=180 --exclude="distfiles/*" --exclude="local/*" ' +\
+                '--exclude="packages/*" '
+
+        return self.cmd(_command + quiet_option + '"' + self.src + '/" "' +
                         path([base, self.name]) + '"')
 
     def supported(self):
         '''Overlay type supported?'''
 
-        return Overlay.supported(self, [(self.binary,  'rsync',
+        return Overlay.supported(self, [(self.command(),  'rsync',
                                          'net-misc/rsync'),])

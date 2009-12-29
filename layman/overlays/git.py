@@ -39,8 +39,6 @@ class GitOverlay(Overlay):
     type = 'Git'
     type_key = 'git'
 
-    binary_command  = '/usr/bin/git'
-
     def __init__(self, xml, config, ignore = 0, quiet = False):
 
         Overlay.__init__(self, xml, config, ignore)
@@ -59,7 +57,7 @@ class GitOverlay(Overlay):
         slash = ''
         if self.src.split(':')[0] == 'http':
             slash = '/'
-        return self.cmd(self.binary_command + ' clone ' + quiet_option + '"' + self.src + slash
+        return self.cmd(self.command() + ' clone ' + quiet_option + '"' + self.src + slash
                         + '" "' + path([base, self.name]) + '"')
 
     def sync(self, base, quiet = False):
@@ -73,10 +71,10 @@ class GitOverlay(Overlay):
             quiet_option = ''
  
         return self.cmd('cd "' + path([base, self.name]) + '" && '
-                        + self.binary_command + ' pull' + quiet_option)
+                        + self.command() + ' pull' + quiet_option)
 
     def supported(self):
         '''Overlay type supported?'''
 
-        return Overlay.supported(self, [(self.binary_command,  'git',
+        return Overlay.supported(self, [(self.command(),  'git',
                                          'dev-util/git'),])

@@ -40,8 +40,6 @@ class MercurialOverlay(Overlay):
     type = 'Mercurial'
     type_key = 'mercurial'
 
-    binary_command  = '/usr/bin/hg'
-
     def __init__(self, xml, config, ignore = 0, quiet = False):
 
         Overlay.__init__(self, xml, config, ignore)
@@ -51,7 +49,7 @@ class MercurialOverlay(Overlay):
 
         self.supported()
 
-        return self.cmd(self.binary_command + ' clone "' + self.src + '/" "' +
+        return self.cmd(self.command() + ' clone "' + self.src + '/" "' +
                         path([base, self.name]) + '"')
 
     def sync(self, base, quiet = False):
@@ -60,10 +58,10 @@ class MercurialOverlay(Overlay):
         self.supported()
 
         return self.cmd('cd "' + path([base, self.name]) + '" && ' +
-                        self.binary_command + ' pull -u "' + self.src + '"')
+                        self.command() + ' pull -u "' + self.src + '"')
 
     def supported(self):
         '''Overlay type supported?'''
 
-        return Overlay.supported(self, [(self.binary_command,  'mercurial',
+        return Overlay.supported(self, [(self.command(),  'mercurial',
                                          'dev-util/mercurial'),])

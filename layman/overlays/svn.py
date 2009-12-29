@@ -39,8 +39,6 @@ class SvnOverlay(Overlay):
     type = 'Subversion'
     type_key = 'svn'
 
-    binary = '/usr/bin/svn'
-
     def __init__(self, xml, config, ignore = 0, quiet = False):
 
         Overlay.__init__(self, xml, config, ignore)
@@ -57,7 +55,7 @@ class SvnOverlay(Overlay):
         else:
             quiet_option = ''
 
-        return self.cmd(self.binary + ' co ' + quiet_option + '"' + self.src + '/" "' +
+        return self.cmd(self.command() + ' co ' + quiet_option + '"' + self.src + '/" "' +
                         path([base, self.name]) + '"')
 
     def sync(self, base, quiet = False):
@@ -70,11 +68,11 @@ class SvnOverlay(Overlay):
         else:
             quiet_option = ''
 
-        return self.cmd(self.binary + ' up ' + quiet_option + '"' + path([base, self.name]) +
+        return self.cmd(self.command() + ' up ' + quiet_option + '"' + path([base, self.name]) +
                         '"')
 
     def supported(self):
         '''Overlay type supported?'''
 
-        return Overlay.supported(self, [(self.binary,  'svn',
+        return Overlay.supported(self, [(self.command(),  'svn',
                                          'dev-util/subversion'),])

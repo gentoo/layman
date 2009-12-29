@@ -40,8 +40,6 @@ class DarcsOverlay(Overlay):
     type = 'Darcs'
     type_key = 'darcs'
 
-    binary_command  = '/usr/bin/darcs'
-
     def __init__(self, xml, config, ignore = 0, quiet = False):
 
         Overlay.__init__(self, xml, config, ignore)
@@ -51,7 +49,7 @@ class DarcsOverlay(Overlay):
 
         self.supported()
 
-        return self.cmd(self.binary_command + ' get --partial "' + self.src +
+        return self.cmd(self.command() + ' get --partial "' + self.src +
                         '/" "' + path([base, self.name]) + '"')
 
     def sync(self, base, quiet = False):
@@ -60,10 +58,10 @@ class DarcsOverlay(Overlay):
         self.supported()
 
         return self.cmd('cd "' + path([base, self.name]) + '" && ' +
-                        self.binary_command + ' pull --all "' + self.src + '"')
+                        self.command() + ' pull --all "' + self.src + '"')
 
     def supported(self):
         '''Overlay type supported?'''
 
-        return Overlay.supported(self, [(self.binary_command,  'darcs',
+        return Overlay.supported(self, [(self.command(),  'darcs',
                                          'dev-util/darcs'),])

@@ -50,6 +50,7 @@ class TarOverlay(Overlay):
     ...     self.subpath = 'layman-test'
     ...     self.format = 'bz2'
     ...     self.quiet = False
+    ...     self.config = {'tar_command':'/bin/tar'}
     >>> testdir = os.tmpnam()
     >>> os.mkdir(testdir)
     >>> a = DummyTar()
@@ -63,8 +64,6 @@ class TarOverlay(Overlay):
 
     type = 'Tar'
     type_key = 'tar'
-
-    binary = u'/bin/tar'
 
     def __init__(self, xml, config, ignore = 0, quiet = False):
 
@@ -139,7 +138,7 @@ class TarOverlay(Overlay):
 
         os.makedirs(target)
 
-        result = self.cmd(self.binary + u' -v -x ' + opt + u' -f "' + pkg
+        result = self.cmd(self.command() + u' -v -x ' + opt + u' -f "' + pkg
                           + u'" -C "' + target + u'"')
 
         if self.subpath:
@@ -176,7 +175,7 @@ class TarOverlay(Overlay):
     def supported(self):
         '''Overlay type supported?'''
 
-        return Overlay.supported(self, [(self.binary,  'tar', 'app-arch/tar'), ])
+        return Overlay.supported(self, [(self.command(),  'tar', 'app-arch/tar'), ])
 
 if __name__ == '__main__':
     import doctest
