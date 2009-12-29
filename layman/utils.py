@@ -43,6 +43,24 @@ def ensure_unicode(obj, encoding='utf-8'):
             obj = unicode(obj, encoding)
     return obj
 
+# From <http://effbot.org/zone/element-lib.htm>
+# BEGIN
+def indent(elem, level=0):
+    i = "\n" + level*"  "
+    if len(elem):
+        if not elem.text or not elem.text.strip():
+            elem.text = i + "  "
+        if not elem.tail or not elem.tail.strip():
+            elem.tail = i
+        for elem in elem:
+            indent(elem, level+1)
+        if not elem.tail or not elem.tail.strip():
+            elem.tail = i
+    else:
+        if level and (not elem.tail or not elem.tail.strip()):
+            elem.tail = i
+# END
+
 def path(path_elements):
     '''
     Concatenate a path from several elements.

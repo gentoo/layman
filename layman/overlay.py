@@ -41,6 +41,7 @@ from   layman.overlays.rsync     import RsyncOverlay
 from   layman.overlays.tar       import TarOverlay
 
 from   layman.debug              import OUT
+from   layman.utils              import indent
 
 #===============================================================================
 #
@@ -156,6 +157,7 @@ class Overlays:
 
         xml = ET.Element('repositories', version="1.0")
         xml[:] = [e.to_minidom() for e in self.overlays.values()]
+        indent(xml)
         tree = ET.ElementTree(xml)
         try:
             f = open(path, 'w')
