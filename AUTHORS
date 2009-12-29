@@ -9,13 +9,15 @@ Written by
 Contributors:
 ~~~~~~~~~~~~~
 
-Stefan Schweizer (genstef@gentoo.org)      - git overlay support
-Adrian Perez     (moebius@connectical.net) - bzr overlay support
-Andres Loeh      (kosmikus@gentoo.org)     - darcs overlay support
-Samuel Tardieu   (sam@rfc1149.net)         - mercurial overlay support
-Mike Auty        (ikelos@gentoo.org)       - Updates for python-2.6
-A. F. T. Arahesis (arfrever.fta@gmail.com) - Quieten the VC systems
-                                           - Better locale support.
-Donnie Berkholz  (dberkholz@gentoo.org)    - git support fixes
-Martin von Gagern (Martin.vGagern@gmx.net) - Better list format.
-Sebastian Pipping (sebastian@pipping.org)  - repositories.xml support
+Stefan Schweizer (genstef@gentoo.org)          - git overlay support
+Adrian Perez     (moebius@connectical.net)     - bzr overlay support
+Andres Loeh      (kosmikus@gentoo.org)         - darcs overlay support
+Samuel Tardieu   (sam@rfc1149.net)             - mercurial overlay support
+Mike Auty        (ikelos@gentoo.org)           - Updates for python-2.6
+A. F. T. Arahesis (arfrever.fta@gmail.com)     - Quieten the VC systems
+                                               - Better locale support.
+Donnie Berkholz  (dberkholz@gentoo.org)        - git support fixes
+Martin von Gagern (Martin.vGagern@gmx.net)     - Better list format.
+Sebastian Pipping (sebastian@pipping.org)      - repositories.xml support
+                                               - ElementTree migration
+Christian Groschupp (christian@groschupp.org)  - ElementTree migration
