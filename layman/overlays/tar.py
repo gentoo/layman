@@ -66,9 +66,9 @@ class TarOverlay(Overlay):
 
     binary = u'/bin/tar'
 
-    def __init__(self, xml, ignore = 0, quiet = False):
+    def __init__(self, xml, config, ignore = 0, quiet = False):
 
-        Overlay.__init__(self, xml, ignore)
+        Overlay.__init__(self, xml, config, ignore)
 
         if 'format' in xml.attrib:
             self.format = xml.attrib['format']

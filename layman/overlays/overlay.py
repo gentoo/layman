@@ -46,13 +46,13 @@ class Overlay:
 
     type = 'None'
 
-    def __init__(self, xml, ignore = 0, quiet = False):
+    def __init__(self, xml, config, ignore = 0, quiet = False):
         '''
         >>> here = os.path.dirname(os.path.realpath(__file__))
         >>> import xml.etree.ElementTree as ET # Python 2.5
         >>> document = ET.parse(here + '/../tests/testfiles/global-overlays.xml')
         >>> overlays = document.findall('overlay') + document.findall('repo')
-        >>> a = Overlay(overlays[0])
+        >>> a = Overlay(overlays[0], dict())
         >>> a.name
         u'wrobel'
         >>> a.is_official()
@@ -65,10 +65,11 @@ class Overlay:
         u'Test'
         >>> a.priority
         10
-        >>> b = Overlay(overlays[1])
+        >>> b = Overlay(overlays[1], dict())
         >>> b.is_official()
         False
         '''
+        self.config = config
         self.quiet = quiet
 
         _name = xml.find('name')
@@ -231,7 +232,7 @@ class Overlay:
         >>> import xml.etree.ElementTree as ET # Python 2.5
         >>> document = ET.parse(here + '/../tests/testfiles/global-overlays.xml')
         >>> overlays = document.findall('overlay') + document.findall('repo')
-        >>> a = Overlay(overlays[0])
+        >>> a = Overlay(overlays[0], dict())
         >>> print str(a)
         wrobel
         ~~~~~~
@@ -279,7 +280,7 @@ class Overlay:
         >>> import xml.etree.ElementTree as ET # Python 2.5
         >>> document = ET.parse(here + '/../tests/testfiles/global-overlays.xml')
         >>> overlays = document.findall('repo') + document.findall('overlay')
-        >>> a = Overlay(overlays[0])
+        >>> a = Overlay(overlays[0], dict())
         >>> print a.short_list(80)
         wrobel                    [None      ] (https://o.g.o/svn/dev/wrobel         )
         '''

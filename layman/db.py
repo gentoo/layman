@@ -54,7 +54,8 @@ class DB(Overlays):
         quiet = int(config['quietness']) < 3
 
         Overlays.__init__(self, 
-                          [config['local_list'], ], 
+                          [config['local_list'], ],
+                          config,
                           ignore, 
                           quiet)
 
@@ -89,7 +90,7 @@ class DB(Overlays):
 
         # >>> b.add(a.select('wrobel-stable')) #doctest: +ELLIPSIS
         # * Running command "/usr/bin/rsync -rlptDvz --progress --delete --delete-after --timeout=180 --exclude="distfiles/*" --exclude="local/*" --exclude="packages/*" "rsync://gunnarwrobel.de/wrobel-stable/*" "/tmp/file.../wrobel-stable""...
-        # >>> c = Overlays([write, ])
+        # >>> c = Overlays([write, ], dict())
         # >>> c.overlays.keys()
         # [u'wrobel-stable']
 
@@ -156,12 +157,12 @@ class DB(Overlays):
         # * Running command "/usr/bin/rsync -rlptDvz --progress --delete --delete-after --timeout=180 --exclude="distfiles/*" --exclude="local/*" --exclude="packages/*" "rsync://gunnarwrobel.de/wrobel-stable/*" "/tmp/file.../wrobel-stable""...
         # >>> b.add(a.select('wrobel')) #doctest: +ELLIPSIS
         # * Running command "/usr/bin/svn co "https://overlays.gentoo.org/svn/dev/wrobel/" "/tmp/file.../wrobel""...
-        # >>> c = Overlays([write, ])
+        # >>> c = Overlays([write, ], dict())
         # >>> c.overlays.keys()
         # [u'wrobel', u'wrobel-stable']
 
         # >>> b.delete(b.select('wrobel'))
-        # >>> c = Overlays([write, ])
+        # >>> c = Overlays([write, ], dict())
         # >>> c.overlays.keys()
         # [u'wrobel-stable']
 
@@ -234,7 +235,7 @@ class RemoteDB(Overlays):
 
         quiet = int(config['quietness']) < 3
 
-        Overlays.__init__(self, paths, ignore, quiet)
+        Overlays.__init__(self, paths, config, ignore, quiet)
 
     def cache(self):
         '''

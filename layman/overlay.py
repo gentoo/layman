@@ -69,8 +69,9 @@ OVERLAY_TYPES = dict((e.type_key, e) for e in (
 class Overlays:
     ''' Handle a list of overlays.'''
 
-    def __init__(self, paths, ignore = 0, quiet = False):
+    def __init__(self, paths, config, ignore = 0, quiet = False):
 
+        self.config = config
         self.quiet = quiet
         self.paths = paths
         self.ignore = ignore
@@ -101,7 +102,7 @@ class Overlays:
 
         >>> here = os.path.dirname(os.path.realpath(__file__))
 
-        >>> a = Overlays([here + '/tests/testfiles/global-overlays.xml', ])
+        >>> a = Overlays([here + '/tests/testfiles/global-overlays.xml', ], dict())
         >>> a.overlays.keys()
         [u'wrobel', u'wrobel-stable']
 
@@ -127,6 +128,7 @@ class Overlays:
                     if overlay_type in OVERLAY_TYPES.keys():
                         try:
                             ovl = OVERLAY_TYPES[overlay_type](overlay,
+                                                                self.config,
                                                                 self.ignore,
                                                                 self.quiet)
                             self.overlays[ovl.name] = ovl
@@ -144,11 +146,11 @@ class Overlays:
         >>> write = os.tmpnam()
         >>> here = os.path.dirname(os.path.realpath(__file__))
 
-        >>> a = Overlays([here + '/tests/testfiles/global-overlays.xml', ])
-        >>> b = Overlays([write,])
+        >>> a = Overlays([here + '/tests/testfiles/global-overlays.xml', ], dict())
+        >>> b = Overlays([write,], dict())
         >>> b.overlays['wrobel-stable'] = a.overlays['wrobel-stable']
         >>> b.write(write)
-        >>> c = Overlays([write,])
+        >>> c = Overlays([write,], dict())
         >>> c.overlays.keys()
         [u'wrobel-stable']
 
@@ -175,7 +177,7 @@ class Overlays:
         Select an overlay from the list.
 
         >>> here = os.path.dirname(os.path.realpath(__file__))
-        >>> a = Overlays([here + '/tests/testfiles/global-overlays.xml', ])
+        >>> a = Overlays([here + '/tests/testfiles/global-overlays.xml', ], dict())
         >>> a.select('wrobel-stable').src
         u'rsync://gunnarwrobel.de/wrobel-stable'
         '''
@@ -187,7 +189,7 @@ class Overlays:
         List all overlays.
 
         >>> here = os.path.dirname(os.path.realpath(__file__))
-        >>> a = Overlays([here + '/tests/testfiles/global-overlays.xml', ])
+        >>> a = Overlays([here + '/tests/testfiles/global-overlays.xml', ], dict())
         >>> for i in a.list(True):
         ...     print i[0]
         wrobel

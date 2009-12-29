@@ -41,9 +41,9 @@ class CvsOverlay(Overlay):
 
     binary = '/usr/bin/cvs'
 
-    def __init__(self, xml, ignore = 0, quiet = False):
+    def __init__(self, xml, config, ignore = 0, quiet = False):
 
-        Overlay.__init__(self, xml, ignore, quiet)
+        Overlay.__init__(self, xml, config, ignore, quiet)
 
         if 'subpath' in xml.attrib:
             self.subpath = xml.attrib['subpath']

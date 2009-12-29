@@ -42,6 +42,10 @@ class DarcsOverlay(Overlay):
 
     binary_command  = '/usr/bin/darcs'
 
+    def __init__(self, xml, config, ignore = 0, quiet = False):
+
+        Overlay.__init__(self, xml, config, ignore)
+
     def add(self, base, quiet = False):
         '''Add overlay.'''
 

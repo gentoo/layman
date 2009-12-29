@@ -45,6 +45,10 @@ class RsyncOverlay(Overlay):
         '--timeout=180 --exclude="distfiles/*" --exclude="local/*" ' +          \
         '--exclude="packages/*" '
 
+    def __init__(self, xml, config, ignore = 0, quiet = False):
+
+        Overlay.__init__(self, xml, config, ignore)
+
     def add(self, base, quiet = False):
         '''Add overlay.'''
 
