@@ -10,6 +10,7 @@
 # Copyright:
 #             (c) 2005 - 2009 Gunnar Wrobel
 #             (c) 2009        Sebastian Pipping
+#             (c) 2009        Christian Groschupp
 #             Distributed under the terms of the GNU General Public License v2
 #
 # Author(s):
