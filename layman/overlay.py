@@ -158,7 +158,7 @@ class Overlays:
         '''
 
         xml = ET.Element('repositories', version="1.0")
-        xml[:] = [e.to_minidom() for e in self.overlays.values()]
+        xml[:] = [e.to_xml() for e in self.overlays.values()]
         indent(xml)
         tree = ET.ElementTree(xml)
         try:

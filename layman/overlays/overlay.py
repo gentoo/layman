@@ -150,7 +150,7 @@ class Overlay:
 
         self.priority = int(priority)
 
-    def to_minidom(self):
+    def to_xml(self):
         '''Convert to xml.'''
 
         repo = ET.Element('repo')
