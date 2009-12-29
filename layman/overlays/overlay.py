@@ -74,7 +74,7 @@ class Overlay:
 
         _name = xml.find('name')
         if _name != None:
-            self.name = ensure_unicode(_name.text)
+            self.name = ensure_unicode(_name.text.strip())
         elif 'name' in xml.attrib:
             self.name = ensure_unicode(xml.attrib['name'])
         else:
