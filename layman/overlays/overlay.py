@@ -49,7 +49,7 @@ class Overlay:
     def __init__(self, xml, ignore = 0, quiet = False):
         '''
         >>> here = os.path.dirname(os.path.realpath(__file__))
-        >>> import elementtree.ElementTree as ET
+        >>> import xml.etree.ElementTree as ET # Python 2.5
         >>> document = ET.parse(here + '/../tests/testfiles/global-overlays.xml')
         >>> overlays = document.findall('overlay') + document.findall('repo')
         >>> a = Overlay(overlays[0])
@@ -228,7 +228,7 @@ class Overlay:
     def __str__(self):
         '''
         >>> here = os.path.dirname(os.path.realpath(__file__))
-        >>> import elementtree.ElementTree as ET
+        >>> import xml.etree.ElementTree as ET # Python 2.5
         >>> document = ET.parse(here + '/../tests/testfiles/global-overlays.xml')
         >>> overlays = document.findall('overlay') + document.findall('repo')
         >>> a = Overlay(overlays[0])
@@ -276,7 +276,7 @@ class Overlay:
     def short_list(self, width = 0):
         '''
         >>> here = os.path.dirname(os.path.realpath(__file__))
-        >>> import elementtree.ElementTree as ET
+        >>> import xml.etree.ElementTree as ET # Python 2.5
         >>> document = ET.parse(here + '/../tests/testfiles/global-overlays.xml')
         >>> overlays = document.findall('repo') + document.findall('overlay')
         >>> a = Overlay(overlays[0])
