@@ -327,9 +327,21 @@ class Overlay:
         '''Is the overlay type supported?'''
 
         if binaries:
-            for mpath, mtype, package in binaries:
-                if not os.path.exists(mpath):
-                    raise Exception('Binary ' + mpath + ' seems to be missing!'
+            for command, mtype, package in binaries:
+                found = False
+                if os.path.isabs(command):
+                    kind = 'Binary'
+                    found = os.path.exists(command)
+                else:
+                    kind = 'Command'
+                    for d in os.environ['PATH'].split(os.pathsep):
+                        f = os.path.join(d, command)
+                        if os.path.exists(f):
+                            found = True
+                            break
+
+                if not found:
+                    raise Exception(kind + ' ' + command + ' seems to be missing!'
                                     ' Overlay type "' + mtype + '" not support'
                                     'ed. Did you emerge ' + package + '?')
 

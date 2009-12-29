@@ -8,6 +8,8 @@ TODO
 
  - Allow overriding of VCS commands
 
+ - Allow running VCS from PATH (fixes #280539)
+
 
 Version 1.2.4 - Released 2009/12/05
 ===================================
