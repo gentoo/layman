@@ -55,8 +55,8 @@ class SvnOverlay(Overlay):
         else:
             quiet_option = ''
 
-        return self.cmd(self.command() + ' co ' + quiet_option + '"' + self.src + '/" "' +
-                        path([base, self.name]) + '"')
+        return self.cmd(self.command() + ' co ' + quiet_option +
+                        '"' + self.src + '/@" "' + path([base, self.name]) + '"')
 
     def sync(self, base, quiet = False):
         '''Sync overlay.'''
@@ -68,8 +68,8 @@ class SvnOverlay(Overlay):
         else:
             quiet_option = ''
 
-        return self.cmd(self.command() + ' up ' + quiet_option + '"' + path([base, self.name]) +
-                        '"')
+        return self.cmd(self.command() + ' up ' + quiet_option +
+                        '"' + path([base, self.name + '@']) + '"')
 
     def supported(self):
         '''Overlay type supported?'''

@@ -10,6 +10,9 @@ TODO
 
  - Allow running VCS from PATH (fixes #280539)
 
+ - Fix handling of Subversion overlays whose name contains
+   one or more '@' characters (#295018)
+
 
 Version 1.2.4 - Released 2009/12/05
 ===================================
