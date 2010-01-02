@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layman>
+	<overlay contact="media-video@gentoo.org"
+			name="multimedia"
+			src="git://gitorious.org/gentoo-multimedia/gentoo-multimedia.git"
+			status="official"
+			type="git">
+		<link>http://gitorious.org/gentoo-multimedia</link>
+		<description>Repository for development of (mostly bleeding-edge)
+		multimedia packages for Gentoo Linux. This is the official overlay
+		for Gentoo’s media herds.</description>
+	</overlay>
+</layman>

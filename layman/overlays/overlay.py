@@ -29,6 +29,7 @@ __version__ = "$Id: overlay.py 273 2006-12-30 15:54:50Z wrobel $"
 #-------------------------------------------------------------------------------
 
 import sys, types, re, os, os.path, shutil, subprocess
+import codecs
 import xml.etree.ElementTree as ET # Python 2.5
 
 from   layman.utils             import path, ensure_unicode
@@ -226,6 +227,15 @@ class Overlay:
             result = cmd.wait()
             return result
 
+    def _get_encoding(self):
+        if hasattr(sys.stdout, 'encoding'):
+            return sys.stdout.encoding
+        else:
+            return 'ascii'
+
+    def _encode(self, unicode_text):
+        return codecs.encode(unicode_text, self._get_encoding(), 'replace')
+
     def __str__(self):
         '''
         >>> here = os.path.dirname(os.path.realpath(__file__))
@@ -272,7 +282,7 @@ class Overlay:
             result += u'\n  '.join((u'\n' + link).split(u'\n'))
             result += u'\n'
 
-        return result
+        return self._encode(result)
 
     def short_list(self, width = 0):
         '''
@@ -321,7 +331,7 @@ class Overlay:
             source = source.replace("overlays.gentoo.org", "o.g.o")
         source = ' (' + pad(source, srclen) + ')'
 
-        return name + mtype + source
+        return self._encode(name + mtype + source)
 
     def supported(self, binaries = []):
         '''Is the overlay type supported?'''

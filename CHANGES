@@ -13,6 +13,8 @@ TODO
  - Fix handling of Subversion overlays whose name contains
    one or more '@' characters (#295018)
 
+ - Fix handling of non-ASCII characters (#286290)
+
 
 Version 1.2.4 - Released 2009/12/05
 ===================================
