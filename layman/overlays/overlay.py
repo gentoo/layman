@@ -30,6 +30,7 @@ __version__ = "$Id: overlay.py 273 2006-12-30 15:54:50Z wrobel $"
 
 import sys, types, re, os, os.path, shutil, subprocess
 import codecs
+import locale
 import xml.etree.ElementTree as ET # Python 2.5
 
 from   layman.utils             import path, ensure_unicode
@@ -228,10 +229,11 @@ class Overlay:
             return result
 
     def _get_encoding(self):
-        if hasattr(sys.stdout, 'encoding'):
+        if hasattr(sys.stdout, 'encoding') \
+                and sys.stdout.encoding != None:
             return sys.stdout.encoding
         else:
-            return 'ascii'
+            return locale.getpreferredencoding()
 
     def _encode(self, unicode_text):
         return codecs.encode(unicode_text, self._get_encoding(), 'replace')
