@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layman>
+  <overlay
+      name="a_name"
+      contact="a_owner@example.org"
+      type="tar"
+      src="http://example.org/a.tar.bz2"
+      format="bz2"
+      category="a_cat">
+    <description>a_desc</description>
+  </overlay>
+  <overlay
+      name="b_name"
+      contact="b_owner@example.org"
+      type="tar"
+      src="http://example.org/b.tar.gz"
+      subpath="b_path">
+    <description>b_desc</description>
+  </overlay>
+  <overlay
+      name="c_name"
+      contact="c_owner@example.org"
+      type="cvs"
+      src=":pserver:username@example.org:/usr/local/cvs-repository"
+      subpath="c_path">
+    <description>c_desc</description>
+  </overlay>
+</layman>

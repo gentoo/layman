@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE repositories SYSTEM "/dtd/repositories.dtd">
+<repositories xmlns="" version="1.0">
+  <repo>
+    <name>a_name</name>
+    <description>a_desc</description>
+    <owner>
+      <email>a_owner@example.org</email>
+    </owner>
+    <source type="tar" format="bz2">http://example.org/a.tar.bz2</source>
+    <category>a_cat</category>
+  </repo>
+  <repo>
+    <name>b_name</name>
+    <description>b_desc</description>
+    <owner>
+      <email>b_owner@example.org</email>
+    </owner>
+    <source type="tar">http://example.org/b.tar.gz</source>
+    <subpath>b_path</subpath>
+  </repo>
+  <repo>
+    <name>c_name</name>
+    <description>c_desc</description>
+    <owner>
+      <email>c_owner@example.org</email>
+    </owner>
+    <source type="cvs">:pserver:username@example.org:/usr/local/cvs-repository</source>
+    <subpath>c_path</subpath>
+  </repo>
+</repositories>

@@ -39,5 +39,31 @@ class Unicode(unittest.TestCase):
         self._overlays_bug(286290)
 
 
+class FormatSubpathCategory(unittest.TestCase):
+    def _run(self, number):
+        config = {}
+        filename1 = os.path.join(HERE, 'testfiles',
+                'format-subpath-category-%d.xml' % number)
+
+        # Read, write, re-read, compare
+        os1 = Overlays([filename1], config)
+        filename2 = os.tmpnam()
+        os1.write(filename2)
+        os2 = Overlays([filename2], config)
+        os.unlink(filename2)
+        self.assertTrue(os1 == os2)
+
+        # Pass original overlays
+        return os1
+
+    def test(self):
+        os1 = self._run(1)
+        os2 = self._run(2)
+
+        # Same content from old/layman-global.txt
+        #   and new/repositories.xml format?
+        self.assertTrue(os1 == os2)
+
+
 if __name__ == '__main__':
     unittest.main()
