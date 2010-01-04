@@ -27,7 +27,7 @@ __version__ = "$Id: tar.py 310 2007-04-09 16:30:40Z wrobel $"
 import os, os.path, sys, urllib2, shutil
 import xml.etree.ElementTree as ET # Python 2.5
 
-from   layman.utils             import path
+from   layman.utils             import path, ensure_unicode
 from   layman.overlays.overlay  import Overlay
 
 #===============================================================================
@@ -70,24 +70,29 @@ class TarOverlay(Overlay):
 
         Overlay.__init__(self, xml, config, ignore)
 
-        if 'format' in xml.attrib:
-            self.format = xml.attrib['format']
-        else:
-            self.format = ''
+        # Handle attribute format of old layman-global.txt format
+        # See _set_source() for repositories.xml variant
+        if not self.format and 'format' in xml.attrib:
+            self.format = ensure_unicode(xml.attrib['format'])
 
-        if 'subpath' in xml.attrib:
-            self.subpath = xml.attrib['subpath']
+        _subpath = xml.find('subpath')
+        if _subpath != None:
+            self.subpath = ensure_unicode(_subpath.text.strip())
+        elif 'subpath' in xml.attrib:
+            self.subpath = ensure_unicode(xml.attrib['subpath'])
         else:
             self.subpath = ''
 
-        if 'category' in xml.attrib:
-            if self.subpath:
-                raise Exception('Cannot use "category" and "subpath" at the same'
-                                ' time!')
-
-            self.category = xml.attrib['category']
+        _category = xml.find('category')
+        if _category != None:
+            self.category = ensure_unicode(_category.text.strip())
+        elif 'category' in xml.attrib:
+            self.category = ensure_unicode(xml.attrib['category'])
         else:
             self.category = ''
+
+        if self.subpath and self.category:
+            raise Exception('Cannot use "category" and "subpath" at the same time!')
 
     def __eq__(self, other):
         res = super(TarOverlay, self).__eq__(other) \
@@ -98,6 +103,15 @@ class TarOverlay(Overlay):
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
+    # overrider
+    def _set_source(self, source_elem):
+        # Handle attribute format of new repositories.xml format
+        if 'format' in source_elem.attrib:
+            self.format = ensure_unicode(source_elem.attrib['format'])
+        else:
+            self.format = ''
+        super(TarOverlay, self)._set_source(source_elem)
 
     # overrider
     def to_xml(self):

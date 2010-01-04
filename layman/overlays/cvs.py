@@ -26,7 +26,7 @@ __version__ = "$Id$"
 
 import xml.etree.ElementTree as ET # Python 2.5
 
-from   layman.utils             import path
+from   layman.utils             import path, ensure_unicode
 from   layman.overlays.overlay  import Overlay
 
 #===============================================================================
@@ -45,8 +45,11 @@ class CvsOverlay(Overlay):
 
         Overlay.__init__(self, xml, config, ignore, quiet)
 
-        if 'subpath' in xml.attrib:
-            self.subpath = xml.attrib['subpath']
+        _subpath = xml.find('subpath')
+        if _subpath != None:
+            self.subpath = ensure_unicode(_subpath.text.strip())
+        elif 'subpath' in xml.attrib:
+            self.subpath = ensure_unicode(xml.attrib['subpath'])
         else:
             self.subpath = ''
 
