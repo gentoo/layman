@@ -1,27 +1,26 @@
-Version 1.2.4 - Released 2009/12/05
+Version 1.2.5 - Released 2010/01/04
 ===================================
 
 FULL CHANGES
 ------------
 
- - Add option "-d" to calls of "cvs update" so it checks out new
-   directories properly (#278807)
+ - Allow overriding of VCS commands
 
- - Fix reading of CDATA sections
+ - Migrate XML handling from minidom to ElementTree (also fixes #261666)
 
- - Add support for repositories.xml database format
+ - Allow running VCS from PATH (fixes #280539)
 
- - Substitute path "/usr/portage/local/layman" by "/usr/local/portage/layman"
-   in the documentation (#271457)
+ - Fix handling of Subversion overlays whose name contains
+   one or more '@' characters (#295018)
 
- - Fix grammar errors in program output (#259188)
+ - Fix handling of non-ASCII characters (#286290)
 
 
 SHORT CHANGES
 -------------
 
- layman-1.2.4 comes with both new features as well as bug fixes,
- most importantly a major bug affecting CVS-based overlays.
+ layman-1.2.5 introduces overriding of VCS commands to be used.
+ Besides that 1.2.5 is mostly a bugfix release.
 
 
 FRESHMEAT

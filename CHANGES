@@ -1,12 +1,12 @@
 CHANGES
 -------
 
-TODO
+Version 1.2.5 - Released 2010/01/04
 ===================================
 
- - Migrate XML handling from minidom to ElementTree (also fixes #261666)
-
  - Allow overriding of VCS commands
+
+ - Migrate XML handling from minidom to ElementTree (also fixes #261666)
 
  - Allow running VCS from PATH (fixes #280539)
 
