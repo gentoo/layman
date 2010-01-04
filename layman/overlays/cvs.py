@@ -24,6 +24,8 @@ __version__ = "$Id$"
 #
 #-------------------------------------------------------------------------------
 
+import xml.etree.ElementTree as ET # Python 2.5
+
 from   layman.utils             import path
 from   layman.overlays.overlay  import Overlay
 
@@ -55,6 +57,15 @@ class CvsOverlay(Overlay):
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
+    # overrider
+    def to_xml(self):
+        repo = super(CvsOverlay, self).to_xml()
+        if self.subpath:
+            _subpath = ET.Element('subpath')
+            _subpath.text = self.subpath
+            repo.append(_subpath)
+        return repo
 
     def add(self, base, quiet = False):
         '''Add overlay.'''

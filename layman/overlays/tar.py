@@ -25,6 +25,7 @@ __version__ = "$Id: tar.py 310 2007-04-09 16:30:40Z wrobel $"
 #-------------------------------------------------------------------------------
 
 import os, os.path, sys, urllib2, shutil
+import xml.etree.ElementTree as ET # Python 2.5
 
 from   layman.utils             import path
 from   layman.overlays.overlay  import Overlay
@@ -97,6 +98,21 @@ class TarOverlay(Overlay):
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
+    # overrider
+    def to_xml(self):
+        repo = super(TarOverlay, self).to_xml()
+        if self.format:
+            repo.find('source').attrib['format'] = self.format
+        if self.subpath:
+            _subpath = ET.Element('subpath')
+            _subpath.text = self.subpath
+            repo.append(_subpath)
+        if self.category:
+            _category = ET.Element('category')
+            _category.text = self.category
+            repo.append(_category)
+        return repo
 
     def add(self, base, quiet = False):
         '''Add overlay.'''
