@@ -43,7 +43,7 @@ from   layman.debug             import OUT
 #
 #-------------------------------------------------------------------------------
 
-class Overlay:
+class Overlay(object):
     ''' Derive the real implementations from this.'''
 
     type = 'None'
