@@ -84,6 +84,15 @@ class Overlays:
             if os.path.exists(path):
                 self.read_file(path)
 
+    def __eq__(self, other):
+        for key in set(self.overlays.keys() + other.overlays.keys()):
+            if self.overlays[key] != other.overlays[key]:
+                return False
+        return True
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def read_file(self, path):
         '''Read the overlay definition file.'''
 

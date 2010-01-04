@@ -88,6 +88,16 @@ class TarOverlay(Overlay):
         else:
             self.category = ''
 
+    def __eq__(self, other):
+        res = super(TarOverlay, self).__eq__(other) \
+            and self.format == other.format \
+            and self.subpath == other.subpath \
+            and self.category == other.category
+        return res
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def add(self, base, quiet = False):
         '''Add overlay.'''
 

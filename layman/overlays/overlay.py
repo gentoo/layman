@@ -147,6 +147,16 @@ class Overlay(object):
         else:
             self.homepage = None
 
+    def __eq__(self, other):
+        for i in ('description', 'homepage', 'name', 'owner_email',
+                'owner_name', 'priority', 'src', 'status'):
+            if getattr(self, i) != getattr(other, i):
+                return False
+        return True
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def set_priority(self, priority):
         '''Set the priority of this overlay.'''
 

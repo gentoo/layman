@@ -48,6 +48,14 @@ class CvsOverlay(Overlay):
         else:
             self.subpath = ''
 
+    def __eq__(self, other):
+        res = super(CvsOverlay, self).__eq__(other) \
+            and self.subpath == other.subpath
+        return res
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def add(self, base, quiet = False):
         '''Add overlay.'''
 
