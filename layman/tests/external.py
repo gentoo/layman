@@ -18,6 +18,7 @@
 import unittest
 import os
 from layman.overlay import Overlays
+from warnings import filterwarnings, resetwarnings
 
 HERE = os.path.dirname(os.path.realpath(__file__))
 
@@ -66,4 +67,6 @@ class FormatSubpathCategory(unittest.TestCase):
 
 
 if __name__ == '__main__':
+    filterwarnings('ignore')
     unittest.main()
+    resetwarnings()
