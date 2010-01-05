@@ -1,6 +1,12 @@
 CHANGES
 -------
 
+Version TODO
+===================================
+
+ - Warn on lack of write permissions (fixes #260218)
+
+
 Version 1.2.5 - Released 2010/01/04
 ===================================
 
