@@ -478,7 +478,7 @@ class Actions:
         # Make fetching the overlay list a default action
         if not 'nofetch' in config.keys():
             # Actions that implicitely call the fetch operation before
-            fetch_actions = ['fetch', 'sync', 'sync_all', 'list']
+            fetch_actions = ['sync', 'sync_all', 'list']
             for i in fetch_actions:
                 if i in config.keys():
                     # Implicitely call fetch, break loop
