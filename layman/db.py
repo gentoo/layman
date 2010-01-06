@@ -266,12 +266,12 @@ class RemoteDB(Overlays):
             mpath = self.path(url)
 
             # Check for sufficient privileges
-            if not os.access(mpath, os.W_OK):
-                OUT.warn('You do not have permission to update the cache.')
+            if os.path.exists(mpath) and not os.access(mpath, os.W_OK):
+                OUT.warn('You do not have permission to update the cache (%s).' % mpath)
                 import getpass
                 if getpass.getuser() != 'root':
                     OUT.warn('Hint: You are not root.')
-                return
+                continue
 
             try:
 
