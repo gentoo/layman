@@ -49,7 +49,6 @@ class TarOverlay(Overlay):
     ...     here = os.path.dirname(os.path.realpath(__file__))
     ...     self.src  = 'file://' + here + '/../tests/testfiles/layman-test.tar.bz2'
     ...     self.subpath = 'layman-test'
-    ...     self.format = 'bz2'
     ...     self.quiet = False
     ...     self.config = {'tar_command':'/bin/tar'}
     >>> testdir = os.tmpnam()
@@ -57,7 +56,7 @@ class TarOverlay(Overlay):
     >>> a = DummyTar()
     >>> OUT.color_off()
     >>> a.add(testdir) #doctest: +ELLIPSIS
-    * Running command "/bin/tar -v -x -j -f...
+    * Running command "/bin/tar -v -x -f...
     >>> sorted(os.listdir(testdir + '/dummy'))
     ['app-admin', 'app-portage']
     >>> shutil.rmtree(testdir)
@@ -69,11 +68,6 @@ class TarOverlay(Overlay):
     def __init__(self, xml, config, ignore = 0, quiet = False):
 
         Overlay.__init__(self, xml, config, ignore)
-
-        # Handle attribute format of old layman-global.txt format
-        # See _set_source() for repositories.xml variant
-        if not self.format and 'format' in xml.attrib:
-            self.format = ensure_unicode(xml.attrib['format'])
 
         _subpath = xml.find('subpath')
         if _subpath != None:
@@ -96,7 +90,6 @@ class TarOverlay(Overlay):
 
     def __eq__(self, other):
         res = super(TarOverlay, self).__eq__(other) \
-            and self.format == other.format \
             and self.subpath == other.subpath \
             and self.category == other.category
         return res
@@ -105,19 +98,8 @@ class TarOverlay(Overlay):
         return not self.__eq__(other)
 
     # overrider
-    def _set_source(self, source_elem):
-        # Handle attribute format of new repositories.xml format
-        if 'format' in source_elem.attrib:
-            self.format = ensure_unicode(source_elem.attrib['format'])
-        else:
-            self.format = ''
-        super(TarOverlay, self)._set_source(source_elem)
-
-    # overrider
     def to_xml(self):
         repo = super(TarOverlay, self).to_xml()
-        if self.format:
-            repo.find('source').attrib['format'] = self.format
         if self.subpath:
             _subpath = ET.Element('subpath')
             _subpath.text = self.subpath
@@ -139,14 +121,13 @@ class TarOverlay(Overlay):
             raise Exception('Directory ' + mdir + ' already exists. Will not ov'
                             'erwrite its contents!')
 
-        if self.format == 'bz2' or (not self.format and self.src[-3:] == 'bz2'):
-            ext = 'bz2'
-            opt = '-j'
-        elif self.format == 'gz' or (not self.format and self.src[-2:] == 'gz'):
-            ext = 'gz'
-            opt = '-z'
-        else:
-            raise Exception('Unsupported file format!')
+        ext = '.noidea'
+        for i in [('tar.%s' % e) for e in ('bz2', 'gz', 'lzma', 'xz', 'Z')] \
+                + ['tgz', 'tbz', 'taz', 'tlz', 'txz']:
+            candidate_ext = '.%s' % i
+            if self.src.endswith(candidate_ext):
+                ext = candidate_ext
+                break
 
         try:
 
@@ -156,7 +137,7 @@ class TarOverlay(Overlay):
             raise Exception('Failed to fetch the tar package from: '
                             + self.src + '\nError was:' + str(error))
 
-        pkg = path([base, self.name + '.tar.' + ext])
+        pkg = path([base, self.name + ext])
 
         try:
 
@@ -178,7 +159,7 @@ class TarOverlay(Overlay):
 
         os.makedirs(target)
 
-        result = self.cmd(self.command() + u' -v -x ' + opt + u' -f "' + pkg
+        result = self.cmd(self.command() + u' -v -x' + u' -f "' + pkg
                           + u'" -C "' + target + u'"')
 
         if self.subpath:
