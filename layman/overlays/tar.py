@@ -105,7 +105,7 @@ class TarOverlay(Overlay):
             raise Exception('Directory ' + mdir + ' already exists. Will not ov'
                             'erwrite its contents!')
 
-        ext = '.noidea'
+        ext = '.tar.noidea'
         for i in [('tar.%s' % e) for e in ('bz2', 'gz', 'lzma', 'xz', 'Z')] \
                 + ['tgz', 'tbz', 'taz', 'tlz', 'txz']:
             candidate_ext = '.%s' % i
