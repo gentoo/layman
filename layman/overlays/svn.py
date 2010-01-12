@@ -41,14 +41,14 @@ class SvnOverlay(Overlay):
 
     def __init__(self, xml, config, ignore = 0, quiet = False):
 
-        Overlay.__init__(self, xml, config, ignore)
+        super(SvnOverlay, self).__init__(xml, config, ignore)
 
     def add(self, base, quiet = False):
         '''Add overlay.'''
 
         self.supported()
 
-        Overlay.add(self, base)
+        super(SvnOverlay, self).add(base)
 
         if quiet:
             quiet_option = '-q '
@@ -74,5 +74,5 @@ class SvnOverlay(Overlay):
     def supported(self):
         '''Overlay type supported?'''
 
-        return Overlay.supported(self, [(self.command(),  'svn',
+        return super(SvnOverlay, self).supported([(self.command(),  'svn',
                                          'dev-util/subversion'),])

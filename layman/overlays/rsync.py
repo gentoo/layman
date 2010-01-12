@@ -42,14 +42,14 @@ class RsyncOverlay(Overlay):
 
     def __init__(self, xml, config, ignore = 0, quiet = False):
 
-        Overlay.__init__(self, xml, config, ignore)
+        super(RsyncOverlay, self).__init__(xml, config, ignore)
 
     def add(self, base, quiet = False):
         '''Add overlay.'''
 
         self.supported()
 
-        Overlay.add(self, base)
+        super(RsyncOverlay, self).add(base)
 
         return self.sync(base)
 
@@ -73,5 +73,5 @@ class RsyncOverlay(Overlay):
     def supported(self):
         '''Overlay type supported?'''
 
-        return Overlay.supported(self, [(self.command(),  'rsync',
+        return super(RsyncOverlay, self).supported([(self.command(),  'rsync',
                                          'net-misc/rsync'),])

@@ -43,7 +43,7 @@ class CvsOverlay(Overlay):
 
     def __init__(self, xml, config, ignore = 0, quiet = False):
 
-        Overlay.__init__(self, xml, config, ignore, quiet)
+        super(CvsOverlay, self).__init__(xml, config, ignore, quiet)
 
         _subpath = xml.find('subpath')
         if _subpath != None:
@@ -100,5 +100,5 @@ class CvsOverlay(Overlay):
     def supported(self):
         '''Overlay type supported?'''
 
-        return Overlay.supported(self, [(self.command(),  'cvs',
+        return super(CvsOverlay, self).supported([(self.command(),  'cvs',
                                          'dev-util/cvs'),])

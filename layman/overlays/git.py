@@ -41,7 +41,7 @@ class GitOverlay(Overlay):
 
     def __init__(self, xml, config, ignore = 0, quiet = False):
 
-        Overlay.__init__(self, xml, config, ignore)
+        super(GitOverlay, self).__init__(xml, config, ignore)
 
     def add(self, base, quiet = False):
         '''Add overlay.'''
@@ -76,5 +76,5 @@ class GitOverlay(Overlay):
     def supported(self):
         '''Overlay type supported?'''
 
-        return Overlay.supported(self, [(self.command(),  'git',
+        return super(GitOverlay, self).supported([(self.command(),  'git',
                                          'dev-util/git'),])

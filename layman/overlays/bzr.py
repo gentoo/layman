@@ -43,7 +43,7 @@ class BzrOverlay(Overlay):
 
     def __init__(self, xml, config, ignore = 0, quiet = False):
 
-        Overlay.__init__(self, xml, config, ignore)
+        super(BzrOverlay, self).__init__(xml, config, ignore)
 
     def add(self, base, quiet = False):
         '''Add overlay.'''
@@ -65,5 +65,5 @@ class BzrOverlay(Overlay):
     def supported(self):
         '''Overlay type supported?'''
 
-        return Overlay.supported(self, [(self.command(),  'bzr',
+        return super(BzrOverlay, self).supported([(self.command(),  'bzr',
                                          'dev-util/bzr'),])

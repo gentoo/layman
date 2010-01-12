@@ -67,7 +67,7 @@ class TarOverlay(Overlay):
 
     def __init__(self, xml, config, ignore = 0, quiet = False):
 
-        Overlay.__init__(self, xml, config, ignore)
+        super(TarOverlay, self).__init__(xml, config, ignore)
 
         _subpath = xml.find('subpath')
         if _subpath != None:
@@ -177,7 +177,7 @@ class TarOverlay(Overlay):
     def supported(self):
         '''Overlay type supported?'''
 
-        return Overlay.supported(self, [(self.command(),  'tar', 'app-arch/tar'), ])
+        return super(TarOverlay, self).supported([(self.command(),  'tar', 'app-arch/tar'), ])
 
 if __name__ == '__main__':
     import doctest

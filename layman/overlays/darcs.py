@@ -42,7 +42,7 @@ class DarcsOverlay(Overlay):
 
     def __init__(self, xml, config, ignore = 0, quiet = False):
 
-        Overlay.__init__(self, xml, config, ignore)
+        super(DarcsOverlay, self).__init__(xml, config, ignore)
 
     def add(self, base, quiet = False):
         '''Add overlay.'''
@@ -63,5 +63,5 @@ class DarcsOverlay(Overlay):
     def supported(self):
         '''Overlay type supported?'''
 
-        return Overlay.supported(self, [(self.command(),  'darcs',
+        return super(DarcsOverlay, self).supported([(self.command(),  'darcs',
                                          'dev-util/darcs'),])
