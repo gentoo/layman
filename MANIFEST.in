@@ -3,7 +3,9 @@ include CHANGES
 include COPYING
 include INSTALL
 include README
+include RELEASE_NOTES
 include etc/layman.cfg
 include doc/layman.8
 include doc/layman.8.html
+include doc/layman.8.xml
 recursive-include layman/tests *

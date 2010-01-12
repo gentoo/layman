@@ -17,6 +17,8 @@ Version TODO
  - Make missing overlay directory not fail removal of that overlay
    from the local list
 
+ - Start shipping doc sources and release notes with release archives
+
 
 Version 1.2.5 - Released 2010/01/04
 ===================================
