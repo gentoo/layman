@@ -4,6 +4,6 @@ www:
 
 .PHONY: release
 release:
-	rm -rf dist
-	cd doc && make
+	rm -rf dist MANIFEST
+	$(MAKE) -C doc
 	./setup.py sdist
