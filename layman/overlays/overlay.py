@@ -347,46 +347,10 @@ class Overlay(object):
 
         return self._encode(name + mtype + source)
 
-    def supported(self, binaries = []):
-        '''Is the overlay type supported?'''
-
-        if binaries:
-            for command, mtype, package in binaries:
-                found = False
-                if os.path.isabs(command):
-                    kind = 'Binary'
-                    found = os.path.exists(command)
-                else:
-                    kind = 'Command'
-                    for d in os.environ['PATH'].split(os.pathsep):
-                        f = os.path.join(d, command)
-                        if os.path.exists(f):
-                            found = True
-                            break
-
-                if not found:
-                    raise Exception(kind + ' ' + command + ' seems to be missing!'
-                                    ' Overlay type "' + mtype + '" not support'
-                                    'ed. Did you emerge ' + package + '?')
-
-        return True
-
-    def is_supported(self):
-        '''Is the overlay type supported?'''
-
-        try:
-            self.supported()
-            return True
-        except Exception, error:
-            return False
-
     def is_official(self):
         '''Is the overlay official?'''
 
         return self.status == 'official'
-
-    def command(self):
-        return self.config['%s_command' % self.__class__.type_key]
 
 #================================================================================
 #
