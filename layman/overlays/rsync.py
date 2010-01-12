@@ -26,6 +26,7 @@ __version__ = "$Id: rsync.py 236 2006-09-05 20:39:37Z wrobel $"
 
 from   layman.utils             import path
 from   layman.overlays.overlay  import Overlay
+from   layman.overlays.source   import OverlaySource
 
 #===============================================================================
 #
@@ -33,7 +34,7 @@ from   layman.overlays.overlay  import Overlay
 #
 #-------------------------------------------------------------------------------
 
-class RsyncOverlay(Overlay):
+class RsyncOverlay(OverlaySource):
     ''' Handles rsync overlays.'''
 
     type = 'Rsync'

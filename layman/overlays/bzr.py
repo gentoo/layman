@@ -28,6 +28,7 @@ __version__ = "$Id: bzr.py 236 2006-09-05 20:39:37Z wrobel $"
 
 from   layman.utils             import path
 from   layman.overlays.overlay  import Overlay
+from   layman.overlays.source   import OverlaySource
 
 #===============================================================================
 #
@@ -35,7 +36,7 @@ from   layman.overlays.overlay  import Overlay
 #
 #-------------------------------------------------------------------------------
 
-class BzrOverlay(Overlay):
+class BzrOverlay(OverlaySource):
     ''' Handles bzr overlays.'''
 
     type = 'Bzr'

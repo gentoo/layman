@@ -27,6 +27,7 @@ __version__ = "$Id: mercurial.py 236 2006-09-05 20:39:37Z wrobel $"
 
 from   layman.utils             import path
 from   layman.overlays.overlay  import Overlay
+from   layman.overlays.source   import OverlaySource
 
 #===============================================================================
 #
@@ -34,7 +35,7 @@ from   layman.overlays.overlay  import Overlay
 #
 #-------------------------------------------------------------------------------
 
-class MercurialOverlay(Overlay):
+class MercurialOverlay(OverlaySource):
     ''' Handles mercurial overlays.'''
 
     type = 'Mercurial'

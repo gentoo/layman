@@ -26,6 +26,7 @@ __version__ = "$Id: git.py 146 2006-05-27 09:52:36Z wrobel $"
 
 from   layman.utils             import path
 from   layman.overlays.overlay  import Overlay
+from   layman.overlays.source   import OverlaySource
 
 #===============================================================================
 #
@@ -33,7 +34,7 @@ from   layman.overlays.overlay  import Overlay
 #
 #-------------------------------------------------------------------------------
 
-class GitOverlay(Overlay):
+class GitOverlay(OverlaySource):
     ''' Handles git overlays.'''
 
     type = 'Git'
