@@ -89,7 +89,8 @@ class Overlay(object):
                 _source.text = xml.attrib['src']
             else:
                 raise Exception('Overlay "' + self.name + '" is missing a "source" entry!')
-        self._set_source(_source)
+        self.src = ensure_unicode(_source.text.strip())
+
 
         _owner = xml.find('owner')
         if _owner == None:
@@ -157,9 +158,6 @@ class Overlay(object):
 
     def __ne__(self, other):
         return not self.__eq__(other)
-
-    def _set_source(self, source_elem):
-        self.src = ensure_unicode(source_elem.text.strip())
 
     def set_priority(self, priority):
         '''Set the priority of this overlay.'''
