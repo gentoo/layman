@@ -77,21 +77,9 @@ class TarOverlay(Overlay):
         else:
             self.subpath = ''
 
-        _category = xml.find('category')
-        if _category != None:
-            self.category = ensure_unicode(_category.text.strip())
-        elif 'category' in xml.attrib:
-            self.category = ensure_unicode(xml.attrib['category'])
-        else:
-            self.category = ''
-
-        if self.subpath and self.category:
-            raise Exception('Cannot use "category" and "subpath" at the same time!')
-
     def __eq__(self, other):
         res = super(TarOverlay, self).__eq__(other) \
-            and self.subpath == other.subpath \
-            and self.category == other.category
+            and self.subpath == other.subpath
         return res
 
     def __ne__(self, other):
@@ -104,10 +92,6 @@ class TarOverlay(Overlay):
             _subpath = ET.Element('subpath')
             _subpath.text = self.subpath
             repo.append(_subpath)
-        if self.category:
-            _category = ET.Element('category')
-            _category.text = self.category
-            repo.append(_category)
         return repo
 
     def add(self, base, quiet = False):
@@ -152,10 +136,7 @@ class TarOverlay(Overlay):
         if self.subpath:
             target = path([base, 'tmp'])
         else:
-            if self.category:
-                target = mdir + '/' + self.category
-            else:
-                target = mdir
+            target = mdir
 
         os.makedirs(target)
 

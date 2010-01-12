@@ -9,6 +9,9 @@ Version TODO
  - Migrate to GNU tar's compression format auto-detection
    (Requires GNU tar 1.15 or later, released in 2005)
 
+ - Drop support for broken tar overlays with missing category level
+   (and missing profiles/repo_name as a consequence)
+
 
 Version 1.2.5 - Released 2010/01/04
 ===================================
