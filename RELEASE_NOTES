@@ -1,26 +1,32 @@
-Version 1.2.5 - Released 2010/01/04
+Version 1.2.6 - Released 2010/01/12
 ===================================
 
 FULL CHANGES
 ------------
 
- - Allow overriding of VCS commands
+ - Warn on lack of write permissions (fixes #260218)
 
- - Migrate XML handling from minidom to ElementTree (also fixes #261666)
+ - Migrate to GNU tar's compression format auto-detection
+   which adds potential support for more types of compressed
+   tar archives (LZMA, xz or Z) as a side-effect
+   (Requires GNU tar 1.15 or later, released in 2005)
 
- - Allow running VCS from PATH (fixes #280539)
+ - Drop support for broken tar overlays with missing category level
+   (and missing profiles/repo_name as a consequence)
 
- - Fix handling of Subversion overlays whose name contains
-   one or more '@' characters (#295018)
+ - Make missing overlay directory not fail removal of that overlay
+   from the local list
 
- - Fix handling of non-ASCII characters (#286290)
+ - Start shipping doc sources and release notes with release archives
+
+ - Start shipping test suite files missing from the 1.2.5 release
 
 
 SHORT CHANGES
 -------------
 
- layman-1.2.5 introduces overriding of VCS commands to be used.
- Besides that 1.2.5 is mostly a bugfix release.
+ layman-1.2.6 introduces support for tar overlays that are compressed
+ with an algorithm other than gzip or bzip2.  That, plus minor fixes.
 
 
 FRESHMEAT

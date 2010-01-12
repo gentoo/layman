@@ -1,7 +1,7 @@
 CHANGES
 -------
 
-Version TODO
+Version 1.2.6 - Released 2010/01/12
 ===================================
 
  - Warn on lack of write permissions (fixes #260218)
@@ -18,6 +18,8 @@ Version TODO
    from the local list
 
  - Start shipping doc sources and release notes with release archives
+
+ - Start shipping test suite files missing from the 1.2.5 release
 
 
 Version 1.2.5 - Released 2010/01/04

@@ -20,7 +20,7 @@
 __version__ = "$Id: version.py 309 2007-04-09 16:23:38Z wrobel $"
 
 
-VERSION = '1.2.5'
+VERSION = '1.2.6'
 
 if __name__ == '__main__':
     print VERSION
