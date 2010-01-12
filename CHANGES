@@ -14,6 +14,9 @@ Version TODO
  - Drop support for broken tar overlays with missing category level
    (and missing profiles/repo_name as a consequence)
 
+ - Make missing overlay directory not fail removal of that overlay
+   from the local list
+
 
 Version 1.2.5 - Released 2010/01/04
 ===================================

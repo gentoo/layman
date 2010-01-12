@@ -217,8 +217,8 @@ class Overlay(object):
         mdir = path([base, self.name])
 
         if not os.path.exists(mdir):
-            raise Exception('Directory ' + mdir + ' does not exist. Cannot remo'
-                            've the overlay!')
+            OUT.warn('Directory ' + mdir + ' did not exist, no files deleted.')
+            return
 
         shutil.rmtree(mdir)
 
