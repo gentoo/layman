@@ -7,6 +7,8 @@ Version TODO
  - Warn on lack of write permissions (fixes #260218)
 
  - Migrate to GNU tar's compression format auto-detection
+   which adds potential support for more types of compressed
+   tar archives (LZMA, xz or Z) as a side-effect
    (Requires GNU tar 1.15 or later, released in 2005)
 
  - Drop support for broken tar overlays with missing category level
