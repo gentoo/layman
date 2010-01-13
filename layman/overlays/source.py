@@ -14,11 +14,45 @@
 #             Sebastian Pipping <sebastian@pipping.org>
 
 import os
-from layman.overlays.overlay import Overlay
+import sys
+import shutil
+import subprocess
+from layman.debug import OUT
+from layman.utils import path
 
-class OverlaySource(Overlay):
-    def __init__(self, xml, config, ignore = 0, quiet = False):
-        super(OverlaySource, self).__init__(xml, config, ignore, quiet)
+class OverlaySource(object):
+
+    def __init__(self, parent, xml, config, _location, ignore = 0, quiet = False):
+        self.parent = parent
+        self.src = _location
+        self.config = config
+        self.ignore = ignore
+        self.quiet = quiet
+
+    def add(self, base, quiet = False):
+        '''Add the overlay.'''
+
+        mdir = path([base, self.parent.name])
+
+        if os.path.exists(mdir):
+            raise Exception('Directory ' + mdir + ' already exists. Will not ov'
+                            'erwrite its contents!')
+
+        os.makedirs(mdir)
+
+    def sync(self, base, quiet = False):
+        '''Sync the overlay.'''
+        pass
+
+    def delete(self, base):
+        '''Delete the overlay.'''
+        mdir = path([base, self.parent.name])
+
+        if not os.path.exists(mdir):
+            OUT.warn('Directory ' + mdir + ' did not exist, no files deleted.')
+            return
+
+        shutil.rmtree(mdir)
 
     def supported(self, binaries = []):
         '''Is the overlay type supported?'''
@@ -55,3 +89,26 @@ class OverlaySource(Overlay):
 
     def command(self):
         return self.config['%s_command' % self.__class__.type_key]
+
+    def cmd(self, command):
+        '''Run a command.'''
+
+        OUT.info('Running command "' + command + '"...', 2)
+
+        if hasattr(sys.stdout,'encoding'):
+            enc = sys.stdout.encoding or sys.getfilesystemencoding()
+            if enc:
+                command = command.encode(enc)
+
+        if not self.quiet:
+            return os.system(command)
+        else:
+            cmd = subprocess.Popen([command], shell = True,
+                                   stdout = subprocess.PIPE,
+                                   stderr = subprocess.PIPE,
+                                   close_fds = True)
+            result = cmd.wait()
+            return result
+
+    def to_xml_hook(self, repo_elem):
+        pass

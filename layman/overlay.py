@@ -31,34 +31,9 @@ __version__ = "$Id: overlay.py 273 2006-12-30 15:54:50Z wrobel $"
 import sys, codecs, os, os.path
 import xml.etree.ElementTree as ET # Python 2.5
 
-from   layman.overlays.bzr       import BzrOverlay
-from   layman.overlays.darcs     import DarcsOverlay
-from   layman.overlays.git       import GitOverlay
-from   layman.overlays.mercurial import MercurialOverlay
-from   layman.overlays.cvs       import CvsOverlay
-from   layman.overlays.svn       import SvnOverlay
-from   layman.overlays.rsync     import RsyncOverlay
-from   layman.overlays.tar       import TarOverlay
-
 from   layman.debug              import OUT
 from   layman.utils              import indent
-
-#===============================================================================
-#
-# Constants
-#
-#-------------------------------------------------------------------------------
-
-OVERLAY_TYPES = dict((e.type_key, e) for e in (
-    GitOverlay,
-    CvsOverlay,
-    SvnOverlay,
-    RsyncOverlay,
-    TarOverlay,
-    BzrOverlay,
-    MercurialOverlay,
-    DarcsOverlay
-))
+from   layman.overlays.overlay   import Overlay
 
 #===============================================================================
 #
@@ -124,29 +99,12 @@ class Overlays:
 
         for overlay in overlays:
             OUT.debug('Parsing overlay entry', 8)
-            
-            _source = overlay.find('source')
-            if _source != None:
-                element_to_scan = _source
-            else:
-                element_to_scan = overlay
+            try:
+                ovl = Overlay(overlay, self.config, self.ignore, self.quiet)
+                self.overlays[ovl.name] = ovl
+            except Exception, error:
+                OUT.warn(str(error), 3)
 
-            for attr_name in element_to_scan.attrib.keys():
-                if attr_name == 'type':
-                    overlay_type = element_to_scan.attrib['type']
-                    if overlay_type in OVERLAY_TYPES.keys():
-                        try:
-                            ovl = OVERLAY_TYPES[overlay_type](overlay,
-                                                                self.config,
-                                                                self.ignore,
-                                                                self.quiet)
-                            self.overlays[ovl.name] = ovl
-                        except Exception, error:
-                            OUT.warn(str(error), 3)
-                    else:
-                        raise Exception('Unknown overlay type "' +
-                                        overlay_type + '"!')
-                    break
 
     def write(self, path):
         '''

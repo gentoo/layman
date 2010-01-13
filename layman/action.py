@@ -113,12 +113,14 @@ class Sync:
         for i in self.selection:
             ordb = self.rdb.select(i)
             odb = self.db.select(i)
-            if ordb and odb and ordb.src != odb.src:
+            current_src = odb.sources[0].src
+            available_srcs = set(e.src for e in ordb.sources)
+            if ordb and odb and not current_src in available_srcs:
                 warnings.append(
                     'The source of the overlay "' + i + '" seems to have c'
-                    'hanged. You currently sync from "' + odb.src + '" whi'
-                    'le the global layman list reports "' + ordb.src + '" '
-                    'as correct location. Please consider removing and rea'
+                    'hanged. You currently sync from "' + current_src + '" whi'
+                    'le the global layman list reports "' + '" and "'.join(available_srcs) + '" '
+                    'as correct location(s). Please consider removing and rea'
                     'dding the overlay!')
 
             try:

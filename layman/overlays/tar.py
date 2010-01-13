@@ -28,7 +28,6 @@ import os, os.path, sys, urllib2, shutil
 import xml.etree.ElementTree as ET # Python 2.5
 
 from   layman.utils             import path, ensure_unicode
-from   layman.overlays.overlay  import Overlay
 from   layman.overlays.source   import OverlaySource
 
 #===============================================================================
@@ -66,9 +65,9 @@ class TarOverlay(OverlaySource):
     type = 'Tar'
     type_key = 'tar'
 
-    def __init__(self, xml, config, ignore = 0, quiet = False):
+    def __init__(self, parent, xml, config, _location, ignore = 0, quiet = False):
 
-        super(TarOverlay, self).__init__(xml, config, ignore)
+        super(TarOverlay, self).__init__(parent, xml, config, _location, ignore, quiet)
 
         _subpath = xml.find('subpath')
         if _subpath != None:
@@ -87,20 +86,19 @@ class TarOverlay(OverlaySource):
         return not self.__eq__(other)
 
     # overrider
-    def to_xml(self):
-        repo = super(TarOverlay, self).to_xml()
+    def to_xml_hook(self, repo_elem):
         if self.subpath:
             _subpath = ET.Element('subpath')
             _subpath.text = self.subpath
-            repo.append(_subpath)
-        return repo
+            repo_elem.append(_subpath)
+            del _subpath
 
     def add(self, base, quiet = False):
         '''Add overlay.'''
 
         self.supported()
 
-        mdir = path([base, self.name])
+        mdir = path([base, self.parent.name])
 
         if os.path.exists(mdir):
             raise Exception('Directory ' + mdir + ' already exists. Will not ov'
@@ -122,7 +120,7 @@ class TarOverlay(OverlaySource):
             raise Exception('Failed to fetch the tar package from: '
                             + self.src + '\nError was:' + str(error))
 
-        pkg = path([base, self.name + ext])
+        pkg = path([base, self.parent.name + ext])
 
         try:
 

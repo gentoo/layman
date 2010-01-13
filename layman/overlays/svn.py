@@ -25,7 +25,6 @@ __version__ = "$Id: svn.py 236 2006-09-05 20:39:37Z wrobel $"
 #-------------------------------------------------------------------------------
 
 from   layman.utils             import path
-from   layman.overlays.overlay  import Overlay
 from   layman.overlays.source   import OverlaySource
 
 #===============================================================================
@@ -40,9 +39,9 @@ class SvnOverlay(OverlaySource):
     type = 'Subversion'
     type_key = 'svn'
 
-    def __init__(self, xml, config, ignore = 0, quiet = False):
+    def __init__(self, parent, xml, config, _location, ignore = 0, quiet = False):
 
-        super(SvnOverlay, self).__init__(xml, config, ignore)
+        super(SvnOverlay, self).__init__(parent, xml, config, _location, ignore, quiet)
 
     def add(self, base, quiet = False):
         '''Add overlay.'''
@@ -57,7 +56,7 @@ class SvnOverlay(OverlaySource):
             quiet_option = ''
 
         return self.cmd(self.command() + ' co ' + quiet_option +
-                        '"' + self.src + '/@" "' + path([base, self.name]) + '"')
+                        '"' + self.src + '/@" "' + path([base, self.parent.name]) + '"')
 
     def sync(self, base, quiet = False):
         '''Sync overlay.'''
@@ -70,7 +69,7 @@ class SvnOverlay(OverlaySource):
             quiet_option = ''
 
         return self.cmd(self.command() + ' up ' + quiet_option +
-                        '"' + path([base, self.name + '@']) + '"')
+                        '"' + path([base, self.parent.name + '@']) + '"')
 
     def supported(self):
         '''Overlay type supported?'''

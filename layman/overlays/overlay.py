@@ -28,7 +28,7 @@ __version__ = "$Id: overlay.py 273 2006-12-30 15:54:50Z wrobel $"
 #
 #-------------------------------------------------------------------------------
 
-import sys, types, re, os, os.path, shutil, subprocess
+import sys, re, os, os.path
 import codecs
 import locale
 import xml.etree.ElementTree as ET # Python 2.5
@@ -36,6 +36,32 @@ import xml.etree.ElementTree as ET # Python 2.5
 from   layman.utils             import path, ensure_unicode
 
 from   layman.debug             import OUT
+
+from   layman.overlays.bzr       import BzrOverlay
+from   layman.overlays.darcs     import DarcsOverlay
+from   layman.overlays.git       import GitOverlay
+from   layman.overlays.mercurial import MercurialOverlay
+from   layman.overlays.cvs       import CvsOverlay
+from   layman.overlays.svn       import SvnOverlay
+from   layman.overlays.rsync     import RsyncOverlay
+from   layman.overlays.tar       import TarOverlay
+
+#===============================================================================
+#
+# Constants
+#
+#-------------------------------------------------------------------------------
+
+OVERLAY_TYPES = dict((e.type_key, e) for e in (
+    GitOverlay,
+    CvsOverlay,
+    SvnOverlay,
+    RsyncOverlay,
+    TarOverlay,
+    BzrOverlay,
+    MercurialOverlay,
+    DarcsOverlay
+))
 
 #===============================================================================
 #
@@ -82,14 +108,29 @@ class Overlay(object):
         else:
             raise Exception('Overlay is missing a "name" entry!')
 
-        _source = xml.find('source')
-        if _source == None:
-            if 'src' in xml.attrib:
-                _source = ET.Element('source')
-                _source.text = xml.attrib['src']
-            else:
-                raise Exception('Overlay "' + self.name + '" is missing a "source" entry!')
-        self.src = ensure_unicode(_source.text.strip())
+        _sources = xml.findall('source')
+        if _sources:
+            _sources = [e for e in _sources if 'type' in e.attrib]
+        elif ('src' in xml.attrib) and ('type' in xml.attrib):
+                s = ET.Element('source', type=xml.attrib['type'])
+                s.text = xml.attrib['src']
+                _sources = [s]
+                del s
+
+        if not _sources:
+            raise Exception('Overlay "' + self.name + '" is missing a "source" entry!')
+
+
+        def create_overlay_source(source_elem):
+            _type = source_elem.attrib['type']
+            try:
+                _class = OVERLAY_TYPES[_type]
+            except KeyError:
+                raise Exception('Unknown overlay type "%s"!' % _type)
+            _location = ensure_unicode(source_elem.text.strip())
+            return _class(self, xml, config, _location, ignore, quiet)
+
+        self.sources = map(create_overlay_source, _sources)
 
 
         _owner = xml.find('owner')
@@ -190,55 +231,37 @@ class Overlay(object):
             owner_name = ET.Element('name')
             owner_name.text = self.owner_name
             owner.append(owner_name)
-        source = ET.Element('source', type=self.__class__.type_key)
-        source.text = self.src
-        repo.append(source)
+        for i in self.sources:
+            source = ET.Element('source', type=i.__class__.type_key)
+            source.text = i.src
+            repo.append(source)
+            del source
+        for i in self.sources:
+            # NOTE: Two loops on purpose so the
+            # hooks are called with all sources in
+            i.to_xml_hook(repo)
         return repo
 
     def add(self, base, quiet = False):
-        '''Add the overlay.'''
-
-        mdir = path([base, self.name])
-
-        if os.path.exists(mdir):
-            raise Exception('Directory ' + mdir + ' already exists. Will not ov'
-                            'erwrite its contents!')
-
-        os.makedirs(mdir)
+        res = 1
+        for s in self.sources:
+            try:
+                res = s.add(base, quiet)
+                if res == 0:
+                    # Worked, throw other sources away
+                    self.sources = [s]
+                    break
+            except Exception, error:
+                OUT.warn(str(error), 4)
+        return res
 
     def sync(self, base, quiet = False):
-        '''Sync the overlay.'''
-        pass
+        assert len(self.sources) == 1
+        return self.sources[0].sync(base, quiet)
 
     def delete(self, base):
-        '''Delete the overlay.'''
-        mdir = path([base, self.name])
-
-        if not os.path.exists(mdir):
-            OUT.warn('Directory ' + mdir + ' did not exist, no files deleted.')
-            return
-
-        shutil.rmtree(mdir)
-
-    def cmd(self, command):
-        '''Run a command.'''
-
-        OUT.info('Running command "' + command + '"...', 2)
-
-        if hasattr(sys.stdout,'encoding'):
-            enc = sys.stdout.encoding or sys.getfilesystemencoding()
-            if enc:
-                command = command.encode(enc)
-
-        if not self.quiet:
-            return os.system(command)
-        else:
-            cmd = subprocess.Popen([command], shell = True,
-                                   stdout = subprocess.PIPE,
-                                   stderr = subprocess.PIPE,
-                                   close_fds = True)
-            result = cmd.wait()
-            return result
+        assert len(self.sources) == 1
+        return self.sources[0].delete(base)
 
     def _get_encoding(self):
         if hasattr(sys.stdout, 'encoding') \
@@ -273,7 +296,14 @@ class Overlay(object):
 
         result += self.name + u'\n' + (len(self.name) * u'~')
 
-        result += u'\nSource  : ' + self.src
+        if len(self.sources) == 1:
+            result += u'\nSource  : ' + self.sources[0].src
+        else:
+            result += u'\nSources:'
+            for i, v in enumerate(self.sources):
+                result += '\n  %d. %s' % (i + 1, v.src)
+            result += '\n'
+
         if self.owner_name != None:
             result += u'\nContact : %s <%s>' % (self.owner_name, self.owner_email)
         else:
@@ -340,7 +370,7 @@ class Overlay(object):
         if not width:
             width = terminal_width()
         srclen = width - 43
-        source = self.src
+        source = self.sources[0].src
         if len(source) > srclen:
             source = source.replace("overlays.gentoo.org", "o.g.o")
         source = ' (' + pad(source, srclen) + ')'
@@ -351,6 +381,9 @@ class Overlay(object):
         '''Is the overlay official?'''
 
         return self.status == 'official'
+
+    def is_supported(self):
+        return any(e.is_supported() for e in self.sources)
 
 #================================================================================
 #

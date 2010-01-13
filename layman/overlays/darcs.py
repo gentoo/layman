@@ -26,7 +26,6 @@ __version__ = "$Id: darcs.py 236 2006-09-05 20:39:37Z wrobel $"
 #-------------------------------------------------------------------------------
 
 from   layman.utils             import path
-from   layman.overlays.overlay  import Overlay
 from   layman.overlays.source   import OverlaySource
 
 #===============================================================================
@@ -41,9 +40,9 @@ class DarcsOverlay(OverlaySource):
     type = 'Darcs'
     type_key = 'darcs'
 
-    def __init__(self, xml, config, ignore = 0, quiet = False):
+    def __init__(self, parent, xml, config, _location, ignore = 0, quiet = False):
 
-        super(DarcsOverlay, self).__init__(xml, config, ignore)
+        super(DarcsOverlay, self).__init__(parent, xml, config, _location, ignore, quiet)
 
     def add(self, base, quiet = False):
         '''Add overlay.'''
@@ -51,14 +50,14 @@ class DarcsOverlay(OverlaySource):
         self.supported()
 
         return self.cmd(self.command() + ' get --partial "' + self.src +
-                        '/" "' + path([base, self.name]) + '"')
+                        '/" "' + path([base, self.parent.name]) + '"')
 
     def sync(self, base, quiet = False):
         '''Sync overlay.'''
 
         self.supported()
 
-        return self.cmd('cd "' + path([base, self.name]) + '" && ' +
+        return self.cmd('cd "' + path([base, self.parent.name]) + '" && ' +
                         self.command() + ' pull --all "' + self.src + '"')
 
     def supported(self):

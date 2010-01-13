@@ -25,7 +25,6 @@ __version__ = "$Id: rsync.py 236 2006-09-05 20:39:37Z wrobel $"
 #-------------------------------------------------------------------------------
 
 from   layman.utils             import path
-from   layman.overlays.overlay  import Overlay
 from   layman.overlays.source   import OverlaySource
 
 #===============================================================================
@@ -41,9 +40,9 @@ class RsyncOverlay(OverlaySource):
     type_key = 'rsync'
 
 
-    def __init__(self, xml, config, ignore = 0, quiet = False):
+    def __init__(self, parent, xml, config, _location, ignore = 0, quiet = False):
 
-        super(RsyncOverlay, self).__init__(xml, config, ignore)
+        super(RsyncOverlay, self).__init__(parent, xml, config, _location, ignore, quiet)
 
     def add(self, base, quiet = False):
         '''Add overlay.'''
@@ -69,7 +68,7 @@ class RsyncOverlay(OverlaySource):
                 '--exclude="packages/*" '
 
         return self.cmd(_command + quiet_option + '"' + self.src + '/" "' +
-                        path([base, self.name]) + '"')
+                        path([base, self.parent.name]) + '"')
 
     def supported(self):
         '''Overlay type supported?'''

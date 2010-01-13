@@ -25,7 +25,6 @@ __version__ = "$Id: git.py 146 2006-05-27 09:52:36Z wrobel $"
 #-------------------------------------------------------------------------------
 
 from   layman.utils             import path
-from   layman.overlays.overlay  import Overlay
 from   layman.overlays.source   import OverlaySource
 
 #===============================================================================
@@ -40,9 +39,9 @@ class GitOverlay(OverlaySource):
     type = 'Git'
     type_key = 'git'
 
-    def __init__(self, xml, config, ignore = 0, quiet = False):
+    def __init__(self, parent, xml, config, _location, ignore = 0, quiet = False):
 
-        super(GitOverlay, self).__init__(xml, config, ignore)
+        super(GitOverlay, self).__init__(parent, xml, config, _location, ignore, quiet)
 
     def add(self, base, quiet = False):
         '''Add overlay.'''
@@ -59,7 +58,7 @@ class GitOverlay(OverlaySource):
         if self.src.split(':')[0] == 'http':
             slash = '/'
         return self.cmd(self.command() + ' clone ' + quiet_option + '"' + self.src + slash
-                        + '" "' + path([base, self.name]) + '"')
+                        + '" "' + path([base, self.parent.name]) + '"')
 
     def sync(self, base, quiet = False):
         '''Sync overlay.'''
@@ -71,7 +70,7 @@ class GitOverlay(OverlaySource):
         else:
             quiet_option = ''
  
-        return self.cmd('cd "' + path([base, self.name]) + '" && '
+        return self.cmd('cd "' + path([base, self.parent.name]) + '" && '
                         + self.command() + ' pull' + quiet_option)
 
     def supported(self):

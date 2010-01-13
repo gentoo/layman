@@ -27,7 +27,6 @@ __version__ = "$Id$"
 import xml.etree.ElementTree as ET # Python 2.5
 
 from   layman.utils             import path, ensure_unicode
-from   layman.overlays.overlay  import Overlay
 from   layman.overlays.source   import OverlaySource
 
 #===============================================================================
@@ -42,9 +41,9 @@ class CvsOverlay(OverlaySource):
     type = 'cvs'
     type_key = 'cvs'
 
-    def __init__(self, xml, config, ignore = 0, quiet = False):
+    def __init__(self, parent, xml, config, _location, ignore = 0, quiet = False):
 
-        super(CvsOverlay, self).__init__(xml, config, ignore, quiet)
+        super(CvsOverlay, self).__init__(xml, parent, config, _location, ignore, quiet)
 
         _subpath = xml.find('subpath')
         if _subpath != None:
@@ -63,13 +62,12 @@ class CvsOverlay(OverlaySource):
         return not self.__eq__(other)
 
     # overrider
-    def to_xml(self):
-        repo = super(CvsOverlay, self).to_xml()
+    def to_xml_hook(self, repo_elem):
         if self.subpath:
             _subpath = ET.Element('subpath')
             _subpath.text = self.subpath
-            repo.append(_subpath)
-        return repo
+            repo_elem.append(_subpath)
+            del _subpath
 
     def add(self, base, quiet = False):
         '''Add overlay.'''
@@ -82,7 +80,7 @@ class CvsOverlay(OverlaySource):
             quiet_option = ''
 
         return self.cmd('cd "' + base + '" && CVSROOT="' + self.src + '" ' +
-                        self.command() + quiet_option + ' co -d "' + self.name
+                        self.command() + quiet_option + ' co -d "' + self.parent.name
                         + '" "' + self.subpath + '"' )
 
     def sync(self, base, quiet = False):
@@ -95,7 +93,7 @@ class CvsOverlay(OverlaySource):
         else:
             quiet_option = ''
 
-        return self.cmd('cd "' + path([base, self.name]) + '" && ' +
+        return self.cmd('cd "' + path([base, self.parent.name]) + '" && ' +
                         self.command() + quiet_option + ' update -d')
 
     def supported(self):
