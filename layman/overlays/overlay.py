@@ -190,9 +190,11 @@ class Overlay(object):
 
     def __eq__(self, other):
         for i in ('description', 'homepage', 'name', 'owner_email',
-                'owner_name', 'priority', 'src', 'status'):
+                'owner_name', 'priority', 'status'):
             if getattr(self, i) != getattr(other, i):
                 return False
+        if set(self.source_uris()) != set(other.source_uris()):
+            return False
         return True
 
     def __ne__(self, other):

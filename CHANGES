@@ -4,8 +4,6 @@ CHANGES
 Version TODO
 ===================================
 
- - TODO make test suite work again
-
  - Add support for several sources per overlay (also fixes #280472)
      On addition all sources will be probed until a working
      one is found.  This should help Layman through many firewalls.
