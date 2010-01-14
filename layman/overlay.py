@@ -90,8 +90,8 @@ class Overlays:
         >>> a.overlays.keys()
         [u'wrobel', u'wrobel-stable']
 
-        >>> a.overlays['wrobel-stable'].src
-        u'rsync://gunnarwrobel.de/wrobel-stable'
+        >>> list(a.overlays['wrobel-stable'].source_uris())
+        [u'rsync://gunnarwrobel.de/wrobel-stable']
         '''
         document = ET.fromstring(text)
         overlays = document.findall('overlay') + \
@@ -146,8 +146,8 @@ class Overlays:
         >>> here = os.path.dirname(os.path.realpath(__file__))
         >>> config = {'svn_command': '/usr/bin/svn', 'rsync_command':'/usr/bin/rsync'}
         >>> a = Overlays([here + '/tests/testfiles/global-overlays.xml', ], config)
-        >>> a.select('wrobel-stable').src
-        u'rsync://gunnarwrobel.de/wrobel-stable'
+        >>> list(a.select('wrobel-stable').source_uris())
+        [u'rsync://gunnarwrobel.de/wrobel-stable']
         '''
         if overlay in self.overlays.keys():
             return self.overlays[overlay]

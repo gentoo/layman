@@ -83,8 +83,8 @@ class Overlay(object):
         u'wrobel'
         >>> a.is_official()
         True
-        >>> a.src
-        u'https://overlays.gentoo.org/svn/dev/wrobel'
+        >>> list(a.source_uris())
+        [u'https://overlays.gentoo.org/svn/dev/wrobel']
         >>> a.owner_email
         u'nobody@gentoo.org'
         >>> a.description
@@ -391,6 +391,10 @@ class Overlay(object):
 
     def is_supported(self):
         return any(e.is_supported() for e in self.sources)
+
+    def source_uris(self):
+        for i in self.sources:
+            yield i.src
 
 #================================================================================
 #
