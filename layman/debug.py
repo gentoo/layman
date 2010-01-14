@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #################################################################################
 # LAYMAN - DEBUGGING FUNCTIONS
 #################################################################################
@@ -352,7 +353,12 @@ class Message:
             error = str(error)
 
         for i in error.split('\n'):
+            # NOTE: Forced flushing ensures that stdout and stderr
+            # stay in nice order.  This is a workaround for calls like
+            # "layman -L |& less".
+            sys.stdout.flush()
             print >> self.error_out, self.maybe_color('red', '* ') + i
+            self.error_out.flush()
         self.has_error = True
 
     def die (self, error):
