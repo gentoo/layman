@@ -39,21 +39,28 @@ from   layman.overlays.source   import OverlaySource
 class TarOverlay(OverlaySource):
     ''' Handles tar overlays.
 
-    A dummy tar handler that overwrites the __init__ method
-    so that we don't need to provide xml input:
-
     >>> from   layman.debug             import OUT
-    >>> class DummyTar(TarOverlay):
-    ...   def __init__(self):
-    ...     self.name = 'dummy'
-    ...     here = os.path.dirname(os.path.realpath(__file__))
-    ...     self.src  = 'file://' + here + '/../tests/testfiles/layman-test.tar.bz2'
-    ...     self.subpath = 'layman-test'
-    ...     self.quiet = False
-    ...     self.config = {'tar_command':'/bin/tar'}
+    >>> import xml.etree.ElementTree as ET # Python 2.5
+    >>> repo = ET.Element('repo')
+    >>> repo_name = ET.Element('name')
+    >>> repo_name.text = 'dummy'
+    >>> desc = ET.Element('description')
+    >>> desc.text = 'Dummy description'
+    >>> owner = ET.Element('owner')
+    >>> owner_email = ET.Element('email')
+    >>> owner_email.text = 'dummy@example.org'
+    >>> owner[:] = [owner_email]
+    >>> source = ET.Element('source', type='tar')
+    >>> here = os.path.dirname(os.path.realpath(__file__))
+    >>> source.text = 'file://' + here + '/../tests/testfiles/layman-test.tar.bz2'
+    >>> subpath = ET.Element('subpath')
+    >>> subpath.text = 'layman-test'
+    >>> repo[:] = [repo_name, desc, owner, source, subpath]
+    >>> config = {'tar_command':'/bin/tar'}
     >>> testdir = os.tmpnam()
     >>> os.mkdir(testdir)
-    >>> a = DummyTar()
+    >>> from layman.overlays.overlay import Overlay
+    >>> a = Overlay(repo, config, quiet=False)
     >>> OUT.color_off()
     >>> a.add(testdir) #doctest: +ELLIPSIS
     * Running command "/bin/tar -v -x -f...
