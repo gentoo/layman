@@ -10,6 +10,8 @@ Version TODO
      On addition all sources will be probed until a working
      one is found.  This should help Layman through many firewalls.
 
+ - Improve usage display
+
 
 Version 1.2.6 - Released 2010/01/12
 ===================================

@@ -38,6 +38,12 @@ from   layman.version           import VERSION
 #
 #-------------------------------------------------------------------------------
 
+_USAGE = """
+
+layman (-a|-d|-s|-i) OVERLAY
+layman -f [-o URL]
+layman (-l|-L|-S)"""
+
 class Config(object):
     '''Handles the configuration.'''
 
@@ -78,8 +84,7 @@ class Config(object):
 
 
         self.parser = OptionParser(
-            usage   = '\n\nlayman -a/-d/-S|overlay\nlayman -f [-o url]\nlayman' \
-            ' -l|-L',
+            usage   = _USAGE,
             version = VERSION)
 
         #-----------------------------------------------------------------
