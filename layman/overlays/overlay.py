@@ -72,8 +72,6 @@ OVERLAY_TYPES = dict((e.type_key, e) for e in (
 class Overlay(object):
     ''' Derive the real implementations from this.'''
 
-    type = 'None'
-
     def __init__(self, xml, config, ignore = 0, quiet = False):
         '''
         >>> here = os.path.dirname(os.path.realpath(__file__))
@@ -308,7 +306,10 @@ class Overlay(object):
             result += u'\nContact : %s <%s>' % (self.owner_name, self.owner_email)
         else:
             result += u'\nContact : ' + self.owner_email
-        result += u'\nType    : ' + self.type
+        if len(self.sources) == 1:
+            result += u'\nType    : ' + self.sources[0].type
+        else:
+            result += u'\nType    : ' + '/'.join(sorted(set(e.type for e in self.sources)))
         result += u'; Priority: ' + str(self.priority) + u'\n'
 
         description = self.description
@@ -366,7 +367,13 @@ class Overlay(object):
             return 80
 
         name   = pad(self.name, 25)
-        mtype  = ' [' + pad(self.type, 10) + ']'
+
+        if len(set(e.type for e in self.sources)) == 1:
+            _type = self.sources[0].type
+        else:
+            _type = '%s/..' % self.sources[0].type
+
+        mtype  = ' [' + pad(_type, 10) + ']'
         if not width:
             width = terminal_width()
         srclen = width - 43
