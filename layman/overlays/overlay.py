@@ -283,7 +283,7 @@ class Overlay(object):
         ~~~~~~
         Source  : https://overlays.gentoo.org/svn/dev/wrobel
         Contact : nobody@gentoo.org
-        Type    : None; Priority: 10
+        Type    : Subversion; Priority: 10
         <BLANKLINE>
         Description:
           Test
@@ -337,7 +337,7 @@ class Overlay(object):
         >>> overlays = document.findall('repo') + document.findall('overlay')
         >>> a = Overlay(overlays[0], dict())
         >>> print a.short_list(80)
-        wrobel                    [None      ] (https://o.g.o/svn/dev/wrobel         )
+        wrobel                    [Subversion] (https://o.g.o/svn/dev/wrobel         )
         '''
 
         def pad(string, length):
