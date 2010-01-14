@@ -377,7 +377,7 @@ class Overlay(object):
         if not width:
             width = terminal_width()
         srclen = width - 43
-        source = self.sources[0].src
+        source = ', '.join(self.source_uris())
         if len(source) > srclen:
             source = source.replace("overlays.gentoo.org", "o.g.o")
         source = ' (' + pad(source, srclen) + ')'
