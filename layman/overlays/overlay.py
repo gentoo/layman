@@ -63,6 +63,9 @@ OVERLAY_TYPES = dict((e.type_key, e) for e in (
     DarcsOverlay
 ))
 
+QUALITY_LEVELS = 'core|stable|testing|experimental|graveyard'.split('|')
+
+
 #===============================================================================
 #
 # Class Overlay
@@ -174,6 +177,11 @@ class Overlay(object):
         else:
             self.status = None
 
+        self.quality = u'experimental'
+        if 'quality' in xml.attrib:
+            if xml.attrib['quality'] in set(QUALITY_LEVELS):
+                self.quality = ensure_unicode(xml.attrib['quality'])
+
         if 'priority' in xml.attrib:
             self.priority = int(xml.attrib['priority'])
         else:
@@ -214,6 +222,7 @@ class Overlay(object):
         repo = ET.Element('repo')
         if self.status != None:
             repo.attrib['status'] = self.status
+        repo.attrib['quality'] = self.quality
         repo.attrib['priority'] = str(self.priority)
         name = ET.Element('name')
         name.text = self.name
@@ -294,6 +303,7 @@ class Overlay(object):
         Source  : https://overlays.gentoo.org/svn/dev/wrobel
         Contact : nobody@gentoo.org
         Type    : Subversion; Priority: 10
+        Quality : experimental
         <BLANKLINE>
         Description:
           Test
@@ -321,6 +331,8 @@ class Overlay(object):
         else:
             result += u'\nType    : ' + '/'.join(sorted(set(e.type for e in self.sources)))
         result += u'; Priority: ' + str(self.priority) + u'\n'
+        result += u'Quality : ' + self.quality + u'\n'
+
 
         description = self.description
         description = re.compile(u' +').sub(u' ', description)

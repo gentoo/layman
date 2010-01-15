@@ -166,6 +166,7 @@ class Overlays:
         Source  : https://overlays.gentoo.org/svn/dev/wrobel
         Contact : nobody@gentoo.org
         Type    : Subversion; Priority: 10
+        Quality : experimental
         <BLANKLINE>
         Description:
           Test
@@ -175,6 +176,7 @@ class Overlays:
         Source  : rsync://gunnarwrobel.de/wrobel-stable
         Contact : nobody@gentoo.org
         Type    : Rsync; Priority: 50
+        Quality : experimental
         <BLANKLINE>
         Description:
           A collection of ebuilds from Gunnar Wrobel [wrobel@gentoo.org].

@@ -277,6 +277,7 @@ class Info:
     * Source  : https://overlays.gentoo.org/svn/dev/wrobel
     * Contact : nobody@gentoo.org
     * Type    : Subversion; Priority: 10
+    * Quality : experimental
     * 
     * Description:
     *   Test
@@ -357,6 +358,7 @@ class List:
     * Source  : https://overlays.gentoo.org/svn/dev/wrobel
     * Contact : nobody@gentoo.org
     * Type    : Subversion; Priority: 10
+    * Quality : experimental
     * 
     * Description:
     *   Test
@@ -368,6 +370,7 @@ class List:
     * Source  : rsync://gunnarwrobel.de/wrobel-stable
     * Contact : nobody@gentoo.org
     * Type    : Rsync; Priority: 50
+    * Quality : experimental
     * 
     * Description:
     *   A collection of ebuilds from Gunnar Wrobel [wrobel@gentoo.org].
