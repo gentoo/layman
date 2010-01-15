@@ -2,15 +2,6 @@
 <!DOCTYPE repositories SYSTEM "/dtd/repositories.dtd">
 <repositories xmlns="" version="1.0">
   <repo>
-    <name>a_name</name>
-    <description>a_desc</description>
-    <owner>
-      <email>a_owner@example.org</email>
-    </owner>
-    <source type="tar" format="bz2">http://example.org/a.tar.bz2</source>
-    <category>a_cat</category>
-  </repo>
-  <repo>
     <name>b_name</name>
     <description>b_desc</description>
     <owner>

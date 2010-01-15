@@ -44,7 +44,7 @@ class FormatSubpathCategory(unittest.TestCase):
     def _run(self, number):
         config = {}
         filename1 = os.path.join(HERE, 'testfiles',
-                'format-subpath-category-%d.xml' % number)
+                'subpath-%d.xml' % number)
 
         # Read, write, re-read, compare
         os1 = Overlays([filename1], config)
