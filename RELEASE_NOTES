@@ -1,32 +1,29 @@
-Version 1.2.6 - Released 2010/01/12
-===================================
+Version 1.3.0_rc1 - Released 2010/01/15
+=======================================
 
 FULL CHANGES
 ------------
 
- - Warn on lack of write permissions (fixes #260218)
+ - Add support for several sources per overlay (also fixes #280472)
+     When adding an overlay all sources will be probed until a working
+     one is found.  This should help Layman through some firewalls.
 
- - Migrate to GNU tar's compression format auto-detection
-   which adds potential support for more types of compressed
-   tar archives (LZMA, xz or Z) as a side-effect
-   (Requires GNU tar 1.15 or later, released in 2005)
+ - Display related directory when deleting overlays
 
- - Drop support for broken tar overlays with missing category level
-   (and missing profiles/repo_name as a consequence)
+ - Improve overlay info display (i.e. layman -i):
+   - Add quality indicator (keep in mind: no guarantee)
+   - Add feed URIs
+   - Fix whitespace handling for description field
 
- - Make missing overlay directory not fail removal of that overlay
-   from the local list
-
- - Start shipping doc sources and release notes with release archives
-
- - Start shipping test suite files missing from the 1.2.5 release
+ - Improve layman usage display
 
 
 SHORT CHANGES
 -------------
 
- layman-1.2.6 introduces support for tar overlays that are compressed
- with an algorithm other than gzip or bzip2.  That, plus minor fixes.
+ layman-1.3.0_rc1 introduces support for several sources per overlay.
+ Also, "layman -i OVERLAY" now makes full use of metadata that arrived
+ with the migration from layman-global.txt to the repositories.xml format.
 
 
 FRESHMEAT
