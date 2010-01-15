@@ -52,6 +52,7 @@ class OverlaySource(object):
             OUT.warn('Directory ' + mdir + ' did not exist, no files deleted.')
             return
 
+        OUT.info('Deleting directory "%s"' % mdir, 2)
         shutil.rmtree(mdir)
 
     def supported(self, binaries = []):
