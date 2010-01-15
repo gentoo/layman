@@ -207,8 +207,11 @@ class Overlay(object):
                 'owner_name', 'priority', 'status'):
             if getattr(self, i) != getattr(other, i):
                 return False
-        if set(self.source_uris()) != set(other.source_uris()):
-            return False
+        for i in self.sources + other.sources:
+            if not i in self.sources:
+                return False
+            if not i in other.sources:
+                return False
         return True
 
     def __ne__(self, other):
