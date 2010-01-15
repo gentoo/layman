@@ -188,6 +188,9 @@ class Overlay(object):
         else:
             self.homepage = None
 
+        self.feeds = [ensure_unicode(e.text.strip()) for e in xml.findall('feed')]
+
+
     def __eq__(self, other):
         for i in ('description', 'homepage', 'name', 'owner_email',
                 'owner_name', 'priority', 'status'):
@@ -240,6 +243,11 @@ class Overlay(object):
             # NOTE: Two loops on purpose so the
             # hooks are called with all sources in
             i.to_xml_hook(repo)
+        for i in self.feeds:
+            feed = ET.Element('feed')
+            feed.text = i
+            repo.append(feed)
+            del feed
         return repo
 
     def add(self, base, quiet = False):
@@ -325,8 +333,14 @@ class Overlay(object):
             link = self.homepage
             link = re.compile(u' +').sub(u' ', link)
             link = re.compile(u'\n ').sub(u'\n', link)
-            result += u'\nLink:\n'
+            result += u'\nLink:'
             result += u'\n  '.join((u'\n' + link).split(u'\n'))
+            result += u'\n'
+
+        if self.feeds:
+            result += u'\n%s:' % ((len(self.feeds) == 1) and "Feed" or "Feeds")
+            for i in self.feeds:
+               result += u'\n  %s' % i
             result += u'\n'
 
         return self._encode(result)
