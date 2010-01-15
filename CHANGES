@@ -8,9 +8,10 @@ Version TODO
      On addition all sources will be probed until a working
      one is found.  This should help Layman through many firewalls.
 
- - Include more information in overlay info display (i.e. layman -i):
-   - quality indicator (not guarantee)
-   - feed URIs
+ - Improve overlay info display (i.e. layman -i):
+   - Add quality indicator (not guarantee)
+   - Add feed URIs
+   - Fix whitspace handling for description field
 
  - Improve usage display
 

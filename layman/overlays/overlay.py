@@ -65,6 +65,7 @@ OVERLAY_TYPES = dict((e.type_key, e) for e in (
 
 QUALITY_LEVELS = 'core|stable|testing|experimental|graveyard'.split('|')
 
+WHITESPACE_REGEX = re.compile('\s+')
 
 #===============================================================================
 #
@@ -162,7 +163,9 @@ class Overlay(object):
 
         _desc = xml.find('description')
         if _desc != None:
-            self.description = ensure_unicode(_desc.text.strip())
+            d = WHITESPACE_REGEX.sub(' ', _desc.text.strip())
+            self.description = ensure_unicode(d)
+            del d
         else:
             self.description = ''
             if not ignore:
