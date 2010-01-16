@@ -149,8 +149,9 @@ class Overlays:
         >>> list(a.select('wrobel-stable').source_uris())
         [u'rsync://gunnarwrobel.de/wrobel-stable']
         '''
-        if overlay in self.overlays.keys():
-            return self.overlays[overlay]
+        if not overlay in self.overlays.keys():
+            raise Exception('No overlay "%s" in database' % overlay)
+        return self.overlays[overlay]
 
     def list(self, verbose = False, width = 0):
         '''

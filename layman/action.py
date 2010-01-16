@@ -111,17 +111,41 @@ class Sync:
         warnings = []
         success  = []
         for i in self.selection:
-            ordb = self.rdb.select(i)
-            odb = self.db.select(i)
-            current_src = odb.sources[0].src
-            available_srcs = set(e.src for e in ordb.sources)
-            if ordb and odb and not current_src in available_srcs:
-                warnings.append(
-                    'The source of the overlay "' + i + '" seems to have c'
-                    'hanged. You currently sync from "' + current_src + '" whi'
-                    'le the global layman list reports "' + '" and "'.join(available_srcs) + '" '
-                    'as correct location(s). Please consider removing and rea'
-                    'dding the overlay!')
+            try:
+                ordb = self.rdb.select(i)
+            except:
+                warnings.append(\
+                    'Overlay "%s" could not be found in the remote lists.\n'
+                    'Please check if it has been renamed and re-add if necessary.' % i)
+            else:
+                odb = self.db.select(i)
+                current_src = odb.sources[0].src
+                available_srcs = set(e.src for e in ordb.sources)
+                if ordb and odb and not current_src in available_srcs:
+                    if len(available_srcs) == 1:
+                        plural = ''
+                        candidates = '  %s' % tuple(available_srcs)[0]
+                    else:
+                        plural = 's'
+                        candidates = '\n'.join(('  %d. %s' % (i + 1, v)) for i, v in enumerate(available_srcs))
+
+                    warnings.append(
+                        'The source of the overlay "%(repo_name)s" seems to have changed.\n'
+                        'You currently sync from\n'
+                        '\n'
+                        '  %(current_src)s\n'
+                        '\n'
+                        'while the remote lists report\n'
+                        '\n'
+                        '%(candidates)s\n'
+                        '\n'
+                        'as correct location%(plural)s.\n'
+                        'Please consider removing and re-adding the overlay.' % {
+                            'repo_name':i,
+                            'current_src':current_src,
+                            'candidates':candidates,
+                            'plural':plural,
+                            })
 
             try:
                 self.db.sync(i, self.quiet)
