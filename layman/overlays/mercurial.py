@@ -50,14 +50,14 @@ class MercurialOverlay(OverlaySource):
         self.supported()
 
         return self.cmd(self.command() + ' clone "' + self.src + '/" "' +
-                        path([base, self.name]) + '"')
+                        path([base, self.parent.name]) + '"')
 
     def sync(self, base, quiet = False):
         '''Sync overlay.'''
 
         self.supported()
 
-        return self.cmd('cd "' + path([base, self.name]) + '" && ' +
+        return self.cmd('cd "' + path([base, self.parent.name]) + '" && ' +
                         self.command() + ' pull -u "' + self.src + '"')
 
     def supported(self):

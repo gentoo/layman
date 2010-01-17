@@ -99,8 +99,6 @@ class Overlay(object):
         >>> b.is_official()
         False
         '''
-        self.config = config
-        self.quiet = quiet
 
         _name = xml.find('name')
         if _name != None:
