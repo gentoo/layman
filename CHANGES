@@ -7,6 +7,8 @@ Version TODO
  - Syncing failed for overlays that no longer exist in the remote
    lists with no need to (bug #301174)
 
+ - No longer treat sync warnings like errors (bug #301327)
+
  - Fix faults introduced at refactoring (bug #301253)
 
 

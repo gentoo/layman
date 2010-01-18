@@ -108,6 +108,7 @@ class Sync:
 
         OUT.debug('Updating selected overlays', 6)
 
+        fatals = []
         warnings = []
         success  = []
         for i in self.selection:
@@ -151,7 +152,7 @@ class Sync:
                 self.db.sync(i, self.quiet)
                 success.append('Successfully synchronized overlay "' + i + '".')
             except Exception, error:
-                warnings.append(
+                fatals.append(
                     'Failed to sync overlay "' + i + '".\nError was: '
                     + str(error))
 
@@ -161,9 +162,14 @@ class Sync:
                 OUT.info(i, 3)
                 
         if warnings:
-            OUT.warn('\nErrors:\n------\n', 2)
+            OUT.warn('\nWarnings:\n------\n', 2)
             for i in warnings:
                 OUT.warn(i + '\n', 2)
+
+        if fatals:
+            OUT.error('\nErrors:\n------\n')
+            for i in fatals:
+                OUT.error(i + '\n')
             return 1
 
         return 0
