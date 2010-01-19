@@ -64,7 +64,7 @@ class Config(object):
         '''
 
         self.defaults = {'config'    : '/etc/layman/layman.cfg',
-                         'storage'   : '/usr/local/portage/layman',
+                         'storage'   : '/var/lib/layman',
                          'cache'     : '%(storage)s/cache',
                          'local_list': '%(storage)s/overlays.xml',
                          'make_conf' : '%(storage)s/make.conf',

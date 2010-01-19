@@ -4,6 +4,9 @@ CHANGES
 Version TODO
 =======================================
 
+ - Move storage default from /usr/local/portage/layman
+   to /var/lib/layman (fixes bug #253725)
+
  - Syncing failed for overlays that no longer exist in the remote
    lists with no need to (bug #301174)
 

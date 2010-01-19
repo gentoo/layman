@@ -351,7 +351,7 @@ class MakeConf:
     ...           here + '/tests/testfiles/global-overlays.xml',
     ...           'make_conf' : here + '/tests/testfiles/make.conf',
     ...           'nocheck'    : True,
-    ...           'storage'   : '/usr/local/portage/layman',
+    ...           'storage'   : '/var/lib/layman',
     ...           'quietness':3}
     >>> b = DB(config)
     >>> a = MakeConf(config, b.overlays)
@@ -399,7 +399,7 @@ class MakeConf:
         ...           here + '/tests/testfiles/global-overlays.xml',
         ...           'make_conf' : here + '/tests/testfiles/make.conf',
         ...           'nocheck'    : True,
-        ...           'storage'   : '/usr/local/portage/layman',
+        ...           'storage'   : '/var/lib/layman',
         ...           'quietness':3}
         >>> c = DB(config)
         >>> a = MakeConf(config, c.overlays)
@@ -427,7 +427,7 @@ class MakeConf:
         ...           here + '/tests/testfiles/global-overlays.xml',
         ...           'make_conf' : here + '/tests/testfiles/make.conf',
         ...           'nocheck'    : True,
-        ...           'storage'   : '/usr/local/portage/layman',
+        ...           'storage'   : '/var/lib/layman',
         ...           'quietness':3}
         >>> c = DB(config)
         >>> a = MakeConf(config, c.overlays)
@@ -456,7 +456,7 @@ class MakeConf:
         ...           here + '/tests/testfiles/global-overlays.xml',
         ...           'make_conf' : here + '/tests/testfiles/make.conf',
         ...           'nocheck'    : True,
-        ...           'storage'   : '/usr/local/portage/layman',
+        ...           'storage'   : '/var/lib/layman',
         ...           'quietness':3}
         >>> c = DB(config)
         >>> a = MakeConf(config, c.overlays)
@@ -511,7 +511,7 @@ class MakeConf:
         ...           here + '/tests/testfiles/global-overlays.xml',
         ...           'make_conf' : here + '/tests/testfiles/make.conf',
         ...           'nocheck'    : True,
-        ...           'storage'   : '/usr/local/portage/layman',
+        ...           'storage'   : '/var/lib/layman',
         ...           'quietness':3}
         >>> c = DB(config)
         >>> a = MakeConf(config, c.overlays)

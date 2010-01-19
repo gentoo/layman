@@ -558,7 +558,7 @@
 	      <para>Directory that will be used to store the overlays
 	      and all additional data <command>layman</command>
 	      needs. The default is
-	      <filename>/usr/local/portage/layman</filename>. layman
+	      <filename>/var/lib/layman</filename>. layman
 	      uses a location within the /usr/portage hierarchy instead
 	      of <filename>/var</filename> in order to
 	      store its data. This decision has been made to support
@@ -607,7 +607,7 @@
 	      end of <filename>/etc/make.conf</filename>. This is the
 	      reason why <command>layman</command> suggests running
 	      "echo "source
-	      <filename>/usr/local/portage/layman/make.conf</filename>" >>
+	      <filename>/var/lib/layman/make.conf</filename>" >>
 	      <filename>/etc/make.conf</filename>" after it has been
 	      installed.</para>
 	    </listitem>
@@ -706,7 +706,7 @@
 
 	  <para><command>layman</command> stores a local copy of the
 	  fetched remote list. It will be stored in
-	  <filename>/usr/local/portage/layman/cache.xml</filename>
+	  <filename>/var/lib/layman/cache.xml</filename>
 	  by default. There exists only one such cache file and it
 	  will be overwritten every time you
 	  run <command>layman</command>.
@@ -741,9 +741,9 @@
 	  <filename>/etc/make.conf</filename> file:
 	  </para>
 
-	  <para>source /usr/local/portage/layman/make.conf</para>
+	  <para>source /var/lib/layman/make.conf</para>
 
-	  <para><filename>/usr/local/portage/layman/make.conf</filename>
+	  <para><filename>/var/lib/layman/make.conf</filename>
 	  is the default provided in the layman
 	  configuration. Change this file name in case you decide to
 	  store it somewhere else.
