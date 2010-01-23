@@ -43,7 +43,7 @@ class CvsOverlay(OverlaySource):
 
     def __init__(self, parent, xml, config, _location, ignore = 0, quiet = False):
 
-        super(CvsOverlay, self).__init__(xml, parent, config, _location, ignore, quiet)
+        super(CvsOverlay, self).__init__(parent, xml, config, _location, ignore, quiet)
 
         _subpath = xml.find('subpath')
         if _subpath != None:
