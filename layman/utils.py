@@ -29,7 +29,8 @@ __version__ = '$Id: utils.py 236 2006-09-05 20:39:37Z wrobel $'
 #
 #-------------------------------------------------------------------------------
 
-import types, re
+import types, re, os
+from layman.debug import OUT
 
 #===============================================================================
 #
@@ -101,6 +102,21 @@ def path(path_elements):
         pathname = pathname[:-1]
 
     return pathname
+
+def delete_empty_directory(mdir):
+    if os.path.exists(mdir) and not os.listdir(mdir):
+        # Check for sufficient privileges
+        if os.access(mdir, os.W_OK):
+            OUT.info('Deleting _empty_ directory "%s"' % mdir, 2)
+            try:
+                os.rmdir(mdir)
+            except OSError, error:
+                OUT.warn(str(error))
+        else:
+            OUT.warn('Insufficient permissions to delete _empty_ folder "%s".' % mdir)
+            import getpass
+            if getpass.getuser() != 'root':
+                OUT.warn('Hint: You are not root.')
 
 #===============================================================================
 #

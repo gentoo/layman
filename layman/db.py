@@ -26,7 +26,7 @@ __version__ = "$Id: db.py 309 2007-04-09 16:23:38Z wrobel $"
 
 import os, codecs, os.path, urllib2, re, hashlib
 
-from   layman.utils             import path
+from   layman.utils             import path, delete_empty_directory
 from   layman.overlay           import Overlays, UnknownOverlayException
 
 from   layman.debug             import OUT
@@ -116,11 +116,16 @@ class DB(Overlays):
                 make_conf = MakeConf(self.config, self.overlays)
                 make_conf.add(overlay)
             else:
-                raise Exception('Adding the overlay failed! Possible remains of'
-                                ' the operation have NOT been removed and may b'
-                                'e left at ' + path([self.config['storage'],
-                                                  overlay.name]) + '. Please re'
-                                'move them manually if required.')
+                mdir = path([self.config['storage'], overlay.name])
+                delete_empty_directory(mdir)
+                if os.path.exists(mdir):
+                    raise Exception('Adding overlay "%s" failed!'
+                                ' Possible remains of the operation have NOT'
+                                ' been removed and may be left at "%s".'
+                                ' Please remove them manually if required.' \
+                                % (overlay.name, mdir))
+                else:
+                    raise Exception('Adding overlay "%s" failed!' % overlay.name)
         else:
             raise Exception('Overlay "' + overlay.name + '" already in the loca'
                             'l list!')

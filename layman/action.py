@@ -27,7 +27,7 @@ __version__ = "$Id: action.py 312 2007-04-09 19:45:49Z wrobel $"
 import os, sys
 
 from   layman.db                import DB, RemoteDB, UnknownOverlayException
-
+from   layman.utils             import path, delete_empty_directory
 from   layman.debug             import OUT
 
 #===============================================================================
@@ -266,6 +266,10 @@ class Delete:
                 overlay = self.db.select(i)
             except UnknownOverlayException, error:
                 OUT.warn(str(error), 2)
+
+                mdir = path([self.db.config['storage'], i])
+                delete_empty_directory(mdir)
+
                 result = 1
             else:
                 OUT.debug('Selected overlay', 7)
