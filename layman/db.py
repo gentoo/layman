@@ -27,7 +27,7 @@ __version__ = "$Id: db.py 309 2007-04-09 16:23:38Z wrobel $"
 import os, codecs, os.path, urllib2, re, hashlib
 
 from   layman.utils             import path
-from   layman.overlay           import Overlays
+from   layman.overlay           import Overlays, UnknownOverlayException
 
 from   layman.debug             import OUT
 
@@ -189,15 +189,11 @@ class DB(Overlays):
     def sync(self, overlay_name, quiet = False):
         '''Synchronize the given overlay.'''
 
-        overlay = self.select(overlay_name)
-
-        if overlay:
-            result = overlay.sync(self.config['storage'], quiet)
-            if result:
-                raise Exception('Syncing overlay "' + overlay_name + 
-                                '" returned status ' + str(result) + '!')
-        else:
-            raise Exception('No such overlay ("' + overlay_name + '")!')
+        overlay = self.select(overlay_name) # UnknownOverlayException
+        result = overlay.sync(self.config['storage'], quiet)
+        if result:
+            raise Exception('Syncing overlay "' + overlay_name +
+                            '" returned status ' + str(result) + '!')
 
 #===============================================================================
 #

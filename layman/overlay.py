@@ -37,6 +37,18 @@ from   layman.overlays.overlay   import Overlay
 
 #===============================================================================
 #
+# Class UnknownOverlayException
+#
+#-------------------------------------------------------------------------------
+
+class UnknownOverlayException(Exception):
+    def __init__(self, repo_name):
+        message = 'Overlay "%s" does not exist.' % repo_name
+        super(UnknownOverlayException, self).__init__(message)
+
+
+#===============================================================================
+#
 # Class Overlays
 #
 #-------------------------------------------------------------------------------
@@ -150,7 +162,7 @@ class Overlays:
         [u'rsync://gunnarwrobel.de/wrobel-stable']
         '''
         if not overlay in self.overlays.keys():
-            raise Exception('No overlay "%s" in database' % overlay)
+            raise UnknownOverlayException(overlay)
         return self.overlays[overlay]
 
     def list(self, verbose = False, width = 0):

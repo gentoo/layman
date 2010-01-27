@@ -26,7 +26,7 @@ __version__ = "$Id: action.py 312 2007-04-09 19:45:49Z wrobel $"
 
 import os, sys
 
-from   layman.db                import DB, RemoteDB
+from   layman.db                import DB, RemoteDB, UnknownOverlayException
 
 from   layman.debug             import OUT
 
@@ -113,13 +113,18 @@ class Sync:
         success  = []
         for i in self.selection:
             try:
+                odb = self.db.select(i)
+            except UnknownOverlayException, error:
+                fatals.append(str(error))
+                continue
+
+            try:
                 ordb = self.rdb.select(i)
-            except:
+            except UnknownOverlayException:
                 warnings.append(\
                     'Overlay "%s" could not be found in the remote lists.\n'
                     'Please check if it has been renamed and re-add if necessary.' % i)
             else:
-                odb = self.db.select(i)
                 current_src = odb.sources[0].src
                 available_srcs = set(e.src for e in ordb.sources)
                 if ordb and odb and not current_src in available_srcs:
@@ -210,11 +215,13 @@ class Add:
         result = 0
 
         for i in self.selection:
-            overlay = self.rdb.select(i)
-
-            OUT.debug('Selected overlay', 7)
-
-            if overlay:
+            try:
+                overlay = self.rdb.select(i)
+            except UnknownOverlayException, error:
+                OUT.warn(str(error), 2)
+                result = 1
+            else:
+                OUT.debug('Selected overlay', 7)
                 try:
                     self.db.add(overlay, self.quiet)
                     OUT.info('Successfully added overlay "' + i + '".', 2)
@@ -222,9 +229,6 @@ class Add:
                     OUT.warn('Failed to add overlay "' + i + '".\nError was: '
                              + str(error), 2)
                     result = 1
-            else:
-                OUT.warn('Overlay "' + i + '" does not exist!', 2)
-                result = 1
 
         return result
 
@@ -258,11 +262,13 @@ class Delete:
         result = 0
 
         for i in self.selection:
-            overlay = self.db.select(i)
-
-            OUT.debug('Selected overlay', 7)
-
-            if overlay:
+            try:
+                overlay = self.db.select(i)
+            except UnknownOverlayException, error:
+                OUT.warn(str(error), 2)
+                result = 1
+            else:
+                OUT.debug('Selected overlay', 7)
                 try:
                     self.db.delete(overlay)
                     OUT.info('Successfully deleted overlay "' + i + '".', 2)
@@ -270,9 +276,6 @@ class Delete:
                     OUT.warn('Failed to delete overlay "' + i + '".\nError was: '
                              + str(error), 2)
                     result = 1
-            else:
-                OUT.warn('Overlay "' + i + '" does not exist!', 2)
-                result = 1
 
         return result
 
@@ -337,9 +340,12 @@ class Info:
         result = 0
 
         for i in self.selection:
-            overlay = self.rdb.select(i)
-
-            if overlay:
+            try:
+                overlay = self.rdb.select(i)
+            except UnknownOverlayException, error:
+                OUT.warn(str(error), 2)
+                result = 1
+            else:
                 # Is the overlay supported?
                 OUT.info(overlay.__str__(), 1)
                 if not overlay.is_official():
@@ -347,9 +353,6 @@ class Info:
                 if not overlay.is_supported():
                     OUT.error('*** You are lacking the necessary tools to install t'
                               'his overlay ***\n')
-            else:
-                OUT.warn('Overlay "' + i + '" does not exist!', 2)
-                result = 1
 
         return result
 
