@@ -52,7 +52,7 @@ import unittest, doctest, sys
 import layman.action             #CT
 import layman.config             #CT
 import layman.db                 #CT
-import layman.overlay            #CT
+import layman.dbbase             #CT
 import layman.utils              #CT
 import layman.overlays.overlay   #CT
 import layman.overlays.tar       #CT
@@ -68,7 +68,7 @@ def test_suite():
         doctest.DocTestSuite(layman.action),
         doctest.DocTestSuite(layman.config),
         doctest.DocTestSuite(layman.db),
-        doctest.DocTestSuite(layman.overlay),
+        doctest.DocTestSuite(layman.dbbase),
         doctest.DocTestSuite(layman.utils),
         doctest.DocTestSuite(layman.overlays.overlay),
         doctest.DocTestSuite(layman.overlays.tar),

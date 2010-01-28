@@ -27,7 +27,7 @@ __version__ = "$Id: db.py 309 2007-04-09 16:23:38Z wrobel $"
 import os, codecs, os.path, urllib2, re, hashlib
 
 from   layman.utils             import path, delete_empty_directory
-from   layman.overlay           import Overlays, UnknownOverlayException
+from   layman.dbbase            import DbBase, UnknownOverlayException
 
 from   layman.debug             import OUT
 
@@ -37,7 +37,7 @@ from   layman.debug             import OUT
 #
 #-------------------------------------------------------------------------------
 
-class DB(Overlays):
+class DB(DbBase):
     ''' Handle the list of local overlays.'''
 
     def __init__(self, config):
@@ -53,7 +53,7 @@ class DB(Overlays):
 
         quiet = int(config['quietness']) < 3
 
-        Overlays.__init__(self, 
+        DbBase.__init__(self,
                           [config['local_list'], ],
                           config,
                           ignore, 
@@ -90,7 +90,7 @@ class DB(Overlays):
 
         # >>> b.add(a.select('wrobel-stable')) #doctest: +ELLIPSIS
         # * Running command "/usr/bin/rsync -rlptDvz --progress --delete --delete-after --timeout=180 --exclude="distfiles/*" --exclude="local/*" --exclude="packages/*" "rsync://gunnarwrobel.de/wrobel-stable/*" "/tmp/file.../wrobel-stable""...
-        # >>> c = Overlays([write, ], dict())
+        # >>> c = DbBase([write, ], dict())
         # >>> c.overlays.keys()
         # [u'wrobel-stable']
 
@@ -162,12 +162,12 @@ class DB(Overlays):
         # * Running command "/usr/bin/rsync -rlptDvz --progress --delete --delete-after --timeout=180 --exclude="distfiles/*" --exclude="local/*" --exclude="packages/*" "rsync://gunnarwrobel.de/wrobel-stable/*" "/tmp/file.../wrobel-stable""...
         # >>> b.add(a.select('wrobel')) #doctest: +ELLIPSIS
         # * Running command "/usr/bin/svn co "https://overlays.gentoo.org/svn/dev/wrobel/" "/tmp/file.../wrobel""...
-        # >>> c = Overlays([write, ], dict())
+        # >>> c = DbBase([write, ], dict())
         # >>> c.overlays.keys()
         # [u'wrobel', u'wrobel-stable']
 
         # >>> b.delete(b.select('wrobel'))
-        # >>> c = Overlays([write, ], dict())
+        # >>> c = DbBase([write, ], dict())
         # >>> c.overlays.keys()
         # [u'wrobel-stable']
 
@@ -206,7 +206,7 @@ class DB(Overlays):
 #
 #-------------------------------------------------------------------------------
 
-class RemoteDB(Overlays):
+class RemoteDB(DbBase):
     '''Handles fetching the remote overlay list.'''
 
     def __init__(self, config):
@@ -236,7 +236,7 @@ class RemoteDB(Overlays):
 
         quiet = int(config['quietness']) < 3
 
-        Overlays.__init__(self, paths, config, ignore, quiet)
+        DbBase.__init__(self, paths, config, ignore, quiet)
 
     def cache(self):
         '''

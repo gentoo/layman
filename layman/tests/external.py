@@ -17,7 +17,7 @@
 
 import unittest
 import os
-from layman.overlay import Overlays
+from layman.dbbase import DbBase
 from warnings import filterwarnings, resetwarnings
 
 HERE = os.path.dirname(os.path.realpath(__file__))
@@ -27,7 +27,7 @@ class Unicode(unittest.TestCase):
     def _overlays_bug(self, number):
         config = {}
         filename = os.path.join(HERE, 'testfiles', 'overlays_bug_%d.xml' % number)
-        o = Overlays([filename], config)
+        o = DbBase([filename], config)
         for verbose in (True, False):
             for t in o.list(verbose=verbose):
                 print t[0]
@@ -47,10 +47,10 @@ class FormatSubpathCategory(unittest.TestCase):
                 'subpath-%d.xml' % number)
 
         # Read, write, re-read, compare
-        os1 = Overlays([filename1], config)
+        os1 = DbBase([filename1], config)
         filename2 = os.tmpnam()
         os1.write(filename2)
-        os2 = Overlays([filename2], config)
+        os2 = DbBase([filename2], config)
         os.unlink(filename2)
         self.assertTrue(os1 == os2)
 

@@ -49,11 +49,11 @@ class UnknownOverlayException(Exception):
 
 #===============================================================================
 #
-# Class Overlays
+# Class DbBase
 #
 #-------------------------------------------------------------------------------
 
-class Overlays:
+class DbBase:
     ''' Handle a list of overlays.'''
 
     def __init__(self, paths, config, ignore = 0, quiet = False):
@@ -98,7 +98,7 @@ class Overlays:
 
         >>> here = os.path.dirname(os.path.realpath(__file__))
         >>> config = {'svn_command': '/usr/bin/svn', 'rsync_command':'/usr/bin/rsync'}
-        >>> a = Overlays([here + '/tests/testfiles/global-overlays.xml', ], config)
+        >>> a = DbBase([here + '/tests/testfiles/global-overlays.xml', ], config)
         >>> a.overlays.keys()
         [u'wrobel', u'wrobel-stable']
 
@@ -125,11 +125,11 @@ class Overlays:
         >>> write = os.tmpnam()
         >>> here = os.path.dirname(os.path.realpath(__file__))
         >>> config = {'svn_command': '/usr/bin/svn', 'rsync_command':'/usr/bin/rsync'}
-        >>> a = Overlays([here + '/tests/testfiles/global-overlays.xml', ], config)
-        >>> b = Overlays([write,], dict())
+        >>> a = DbBase([here + '/tests/testfiles/global-overlays.xml', ], config)
+        >>> b = DbBase([write,], dict())
         >>> b.overlays['wrobel-stable'] = a.overlays['wrobel-stable']
         >>> b.write(write)
-        >>> c = Overlays([write,], dict())
+        >>> c = DbBase([write,], dict())
         >>> c.overlays.keys()
         [u'wrobel-stable']
 
@@ -157,7 +157,7 @@ class Overlays:
 
         >>> here = os.path.dirname(os.path.realpath(__file__))
         >>> config = {'svn_command': '/usr/bin/svn', 'rsync_command':'/usr/bin/rsync'}
-        >>> a = Overlays([here + '/tests/testfiles/global-overlays.xml', ], config)
+        >>> a = DbBase([here + '/tests/testfiles/global-overlays.xml', ], config)
         >>> list(a.select('wrobel-stable').source_uris())
         [u'rsync://gunnarwrobel.de/wrobel-stable']
         '''
@@ -171,7 +171,7 @@ class Overlays:
 
         >>> here = os.path.dirname(os.path.realpath(__file__))
         >>> config = {'svn_command': '/usr/bin/svn', 'rsync_command':'/usr/bin/rsync'}
-        >>> a = Overlays([here + '/tests/testfiles/global-overlays.xml', ], config)
+        >>> a = DbBase([here + '/tests/testfiles/global-overlays.xml', ], config)
         >>> for i in a.list(True):
         ...     print i[0]
         wrobel
