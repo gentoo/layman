@@ -1,15 +1,15 @@
 CHANGES
 -------
 
-Version TODO
+Version 1.3.1 - Released 2010/02/05
 ===================================
 
  - Fix handling of CVS overlays (bug #301689)
      Thanks for the patch to Dmitry Karasik!
 
- - Fix handling of non-existing overlays
+ - Fix handling of non-existing overlays (bug #301612)
 
- - Now delete empty overlay directories ..
+ - Now delete empty overlay directories (bug #301612) ..
    - on deletion of a non-existing overlay and
    - after failed addition of an overlay.
 

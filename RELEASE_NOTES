@@ -1,26 +1,24 @@
-Version 1.3.0 - Released 2010/01/19
+Version 1.3.1 - Released 2010/02/05
 ===================================
 
 FULL CHANGES
 ------------
 
- - Move storage default from /usr/local/portage/layman
-   to /var/lib/layman (fixes bug #253725)
+ - Fix handling of CVS overlays (bug #301689)
+     Thanks for the patch to Dmitry Karasik!
 
- - Syncing failed for overlays that no longer exist in the remote
-   lists without need to (bug #301174)
+ - Fix handling of non-existing overlays (bug #301612)
 
- - No longer treat sync warnings like errors (bug #301327)
-
- - Fix faults introduced at refactoring (bug #301253)
+ - Now delete empty overlay directories (bug #301612) ..
+   - on deletion of a non-existing overlay and
+   - after failed addition of an overlay.
 
 
 SHORT CHANGES
 -------------
 
- layman-1.3.0 fixes expected rough edges from 1.3.0_rc1.
- Thanks to everyone reporting bugs, i.e. thanks to
- Piotr Mitas, Albert W. Hopkins and tman/cornicx.
+ layman-1.3.1 is a bugfix release: Adding/deleting/syncing
+ overlays did not work in all cases.
 
 
 FRESHMEAT
