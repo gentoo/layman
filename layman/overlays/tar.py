@@ -24,7 +24,7 @@ __version__ = "$Id: tar.py 310 2007-04-09 16:30:40Z wrobel $"
 #
 #-------------------------------------------------------------------------------
 
-import os, os.path, sys, urllib2, shutil
+import os, os.path, sys, urllib2, shutil, tempfile
 import xml.etree.ElementTree as ET # Python 2.5
 
 from   layman.utils             import path, ensure_unicode
@@ -100,17 +100,7 @@ class TarOverlay(OverlaySource):
             repo_elem.append(_subpath)
             del _subpath
 
-    def add(self, base, quiet = False):
-        '''Add overlay.'''
-
-        self.supported()
-
-        mdir = path([base, self.parent.name])
-
-        if os.path.exists(mdir):
-            raise Exception('Directory ' + mdir + ' already exists. Will not ov'
-                            'erwrite its contents!')
-
+    def _extract(self, base, tar_url, dest_dir):
         ext = '.tar.noidea'
         for i in [('tar.%s' % e) for e in ('bz2', 'gz', 'lzma', 'xz', 'Z')] \
                 + ['tgz', 'tbz', 'taz', 'tlz', 'txz']:
@@ -120,9 +110,7 @@ class TarOverlay(OverlaySource):
                 break
 
         try:
-
-            tar = urllib2.urlopen(self.src).read()
-
+            tar = urllib2.urlopen(tar_url).read()
         except Exception, error:
             raise Exception('Failed to fetch the tar package from: '
                             + self.src + '\nError was:' + str(error))
@@ -130,55 +118,71 @@ class TarOverlay(OverlaySource):
         pkg = path([base, self.parent.name + ext])
 
         try:
-
             out_file = open(pkg, 'w')
             out_file.write(tar)
             out_file.close()
-
         except Exception, error:
             raise Exception('Failed to store tar package in '
                             + pkg + '\nError was:' + str(error))
 
-        if self.subpath:
-            target = path([base, 'tmp'])
-        else:
-            target = mdir
-
-        os.makedirs(target)
-
         result = self.cmd(self.command() + u' -v -x' + u' -f "' + pkg
-                          + u'" -C "' + target + u'"')
+                          + u'" -C "' + dest_dir + u'"')
 
-        if self.subpath:
-            source = target + '/' + self.subpath
+        os.unlink(pkg)
+        return result
+
+    def _add_unchecked(self, base, quiet):
+        final_path = path([base, self.parent.name])
+        temp_path = tempfile.mkdtemp(dir=base)
+        result = self._extract(base=base, tar_url=self.src, dest_dir=temp_path)
+        if result == 0:
+            if self.subpath:
+                source = temp_path + '/' + self.subpath
+            else:
+                source = temp_path
+
             if os.path.exists(source):
+                if os.path.exists(final_path):
+                    self.delete(base)
+
                 try:
-                    os.rename(source, mdir)
+                    os.rename(source, final_path)
                 except Exception, error:
                     raise Exception('Failed to rename tar subdirectory ' +
-                                    source + ' to ' + mdir + '\nError was:'
+                                    source + ' to ' + final_path + '\nError was:'
                                     + str(error))
+                os.chmod(final_path, 0755)
             else:
                 raise Exception('Given subpath "' + source + '" does not exist '
                                 ' in the tar package!')
+
+        if os.path.exists(temp_path):
             try:
-                shutil.rmtree(target)
+                OUT.info('Deleting directory "%s"' % temp_path, 2)
+                shutil.rmtree(temp_path)
             except Exception, error:
                 raise Exception('Failed to remove unnecessary tar structure "'
-                                + target + '"\nError was:' + str(error))
-
-        os.unlink(pkg)
+                                + temp_path + '"\nError was:' + str(error))
 
         return result
 
-    def sync(self, base, quiet = False):
-        '''Sync overlay.'''
+    def add(self, base, quiet = False):
+        '''Add overlay.'''
 
         self.supported()
 
-        self.delete(base)
+        final_path = path([base, self.parent.name])
 
-        self.add(base)
+        if os.path.exists(final_path):
+            raise Exception('Directory ' + final_path + ' already exists. Will not ov'
+                            'erwrite its contents!')
+
+        return self._add_unchecked(base, quiet)
+
+    def sync(self, base, quiet = False):
+        '''Sync overlay.'''
+        self.supported()
+        self._add_unchecked(base, quiet)
 
     def supported(self):
         '''Overlay type supported?'''
