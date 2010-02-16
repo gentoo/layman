@@ -127,7 +127,7 @@ class TarAddRemoveSync(unittest.TestCase):
 
         # Cleanup
         os.unlink(temp_collection_path)
-        shutil.rmtree(temp_dir_path)
+        os.rmdir(temp_dir_path)
 
 
 if __name__ == '__main__':

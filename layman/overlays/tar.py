@@ -28,6 +28,7 @@ import os, os.path, sys, urllib2, shutil, tempfile
 import xml.etree.ElementTree as ET # Python 2.5
 
 from   layman.utils             import path, ensure_unicode
+from   layman.debug             import OUT
 from   layman.overlays.source   import OverlaySource
 
 #===============================================================================
@@ -132,9 +133,25 @@ class TarOverlay(OverlaySource):
         return result
 
     def _add_unchecked(self, base, quiet):
+        def try_to_wipe(path):
+            if not os.path.exists(path):
+                return
+
+            try:
+                OUT.info('Deleting directory "%s"' % path, 2)
+                shutil.rmtree(path)
+            except Exception, error:
+                raise Exception('Failed to remove unnecessary tar structure "'
+                                + path + '"\nError was:' + str(error))
+
         final_path = path([base, self.parent.name])
         temp_path = tempfile.mkdtemp(dir=base)
-        result = self._extract(base=base, tar_url=self.src, dest_dir=temp_path)
+        try:
+            result = self._extract(base=base, tar_url=self.src, dest_dir=temp_path)
+        except Exception, error:
+            try_to_wipe(temp_path)
+            raise error
+
         if result == 0:
             if self.subpath:
                 source = temp_path + '/' + self.subpath
@@ -156,14 +173,7 @@ class TarOverlay(OverlaySource):
                 raise Exception('Given subpath "' + source + '" does not exist '
                                 ' in the tar package!')
 
-        if os.path.exists(temp_path):
-            try:
-                OUT.info('Deleting directory "%s"' % temp_path, 2)
-                shutil.rmtree(temp_path)
-            except Exception, error:
-                raise Exception('Failed to remove unnecessary tar structure "'
-                                + temp_path + '"\nError was:' + str(error))
-
+        try_to_wipe(temp_path)
         return result
 
     def add(self, base, quiet = False):
