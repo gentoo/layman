@@ -17,6 +17,9 @@
 
 import unittest
 import os
+import tempfile
+import shutil
+import urllib
 from layman.dbbase import DbBase
 from warnings import filterwarnings, resetwarnings
 
@@ -64,6 +67,67 @@ class FormatSubpathCategory(unittest.TestCase):
         # Same content from old/layman-global.txt
         #   and new/repositories.xml format?
         self.assertTrue(os1 == os2)
+
+
+# http://bugs.gentoo.org/show_bug.cgi?id=304547
+class TarAddRemoveSync(unittest.TestCase):
+    def test(self):
+        repo_name = 'tar-test-overlay'
+        tar_source_path = os.path.join(HERE, 'testfiles', 'layman-test.tar.bz2')
+
+        # Duplicate test tarball (so we have it deletable for later)
+        (_, temp_tarball_path) = tempfile.mkstemp()
+        shutil.copyfile(tar_source_path, temp_tarball_path)
+
+        # Write overlay collection XML
+        xml_text = """\
+<?xml version="1.0" encoding="UTF-8"?>
+<repositories xmlns="" version="1.0">
+  <repo quality="experimental" status="unofficial">
+    <name>%(repo_name)s</name>
+    <description>XXXXXXXXXXX</description>
+    <owner>
+      <email>foo@exmaple.org</email>
+    </owner>
+    <source type="tar">file://%(temp_tarball_url)s</source>
+  </repo>
+</repositories>
+""" % {     'temp_tarball_url':urllib.pathname2url(temp_tarball_path),
+            'repo_name':repo_name}
+        (fd, temp_collection_path) = tempfile.mkstemp()
+        f = os.fdopen(fd, 'w')
+        f.write(xml_text)
+        f.close()
+
+        # Make playground directory
+        temp_dir_path = tempfile.mkdtemp()
+
+        # Make DB from it
+        config = {'tar_command':'/bin/tar'}
+        db = DbBase([temp_collection_path], config)
+
+        specific_overlay_path = os.path.join(temp_dir_path, repo_name)
+        o = db.select('tar-test-overlay')
+
+        # Actual testcase
+        o.add(temp_dir_path)
+        self.assertTrue(os.path.exists(specific_overlay_path))
+        # (1/2) Sync with source available
+        o.sync(temp_dir_path)
+        self.assertTrue(os.path.exists(specific_overlay_path))
+        os.unlink(temp_tarball_path)
+        try:
+            # (2/2) Sync with source _not_ available
+            o.sync(temp_dir_path)
+        except:
+            pass
+        self.assertTrue(os.path.exists(specific_overlay_path))
+        o.delete(temp_dir_path)
+        self.assertFalse(os.path.exists(specific_overlay_path))
+
+        # Cleanup
+        os.unlink(temp_collection_path)
+        shutil.rmtree(temp_dir_path)
 
 
 if __name__ == '__main__':
