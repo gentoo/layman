@@ -44,6 +44,8 @@ def require_supported(binaries):
 
 class OverlaySource(object):
 
+    type_key = None
+
     def __init__(self, parent, xml, config, _location, ignore = 0, quiet = False):
         self.parent = parent
         self.src = _location
