@@ -435,5 +435,5 @@ class Overlay(object):
 #--------------------------------------------------------------------------------
 
 if __name__ == '__main__':
-    import doctest, sys
+    import doctest
     doctest.testmod(sys.modules[__name__])

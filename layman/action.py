@@ -560,7 +560,7 @@ class Actions:
 #-------------------------------------------------------------------------------
 
 if __name__ == '__main__':
-    import doctest, sys
+    import doctest
 
     # Ignore warnings here. We are just testing
     from warnings     import filterwarnings, resetwarnings
