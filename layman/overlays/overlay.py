@@ -130,7 +130,7 @@ class Overlay(object):
             _location = ensure_unicode(source_elem.text.strip())
             return _class(self, xml, config, _location, ignore, quiet)
 
-        self.sources = map(create_overlay_source, _sources)
+        self.sources = [create_overlay_source(e) for e in _sources]
 
 
         _owner = xml.find('owner')
