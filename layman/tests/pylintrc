@@ -1,0 +1,19 @@
+[MESSAGES CONTROL]
+
+# Disable all messages in the listed categories (IRCWEF).
+disable-msg-cat=IRC
+
+# Disable the message(s) with the given id(s).
+#   :W0613: *Unused argument %r*
+#   :W0702: *No exception type(s) specified*
+#   :W0703: *Catch "Exception"*
+disable-msg=W0613,W0702,W0703
+
+
+[REPORTS]
+
+# Include message's id in output
+include-ids=yes
+
+# Tells whether to display a full report or only the messages
+reports=no
