@@ -25,7 +25,7 @@ __version__ = "$Id: git.py 146 2006-05-27 09:52:36Z wrobel $"
 #-------------------------------------------------------------------------------
 
 from   layman.utils             import path
-from   layman.overlays.source   import OverlaySource
+from   layman.overlays.source   import OverlaySource, require_supported
 
 #===============================================================================
 #
@@ -76,5 +76,5 @@ class GitOverlay(OverlaySource):
     def supported(self):
         '''Overlay type supported?'''
 
-        return super(GitOverlay, self).supported([(self.command(),  'git',
+        return require_supported([(self.command(),  'git',
                                          'dev-util/git'),])

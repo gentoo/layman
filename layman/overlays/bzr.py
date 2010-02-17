@@ -27,7 +27,7 @@ __version__ = "$Id: bzr.py 236 2006-09-05 20:39:37Z wrobel $"
 #-------------------------------------------------------------------------------
 
 from   layman.utils             import path
-from   layman.overlays.source   import OverlaySource
+from   layman.overlays.source   import OverlaySource, require_supported
 
 #===============================================================================
 #
@@ -65,5 +65,5 @@ class BzrOverlay(OverlaySource):
     def supported(self):
         '''Overlay type supported?'''
 
-        return super(BzrOverlay, self).supported([(self.command(),  'bzr',
+        return require_supported([(self.command(),  'bzr',
                                          'dev-util/bzr'),])

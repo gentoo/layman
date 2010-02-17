@@ -25,7 +25,7 @@ __version__ = "$Id: rsync.py 236 2006-09-05 20:39:37Z wrobel $"
 #-------------------------------------------------------------------------------
 
 from   layman.utils             import path
-from   layman.overlays.source   import OverlaySource
+from   layman.overlays.source   import OverlaySource, require_supported
 
 #===============================================================================
 #
@@ -73,5 +73,5 @@ class RsyncOverlay(OverlaySource):
     def supported(self):
         '''Overlay type supported?'''
 
-        return super(RsyncOverlay, self).supported([(self.command(),  'rsync',
+        return require_supported([(self.command(),  'rsync',
                                          'net-misc/rsync'),])

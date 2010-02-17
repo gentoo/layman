@@ -29,7 +29,7 @@ import xml.etree.ElementTree as ET # Python 2.5
 
 from   layman.utils             import path, ensure_unicode
 from   layman.debug             import OUT
-from   layman.overlays.source   import OverlaySource
+from   layman.overlays.source   import OverlaySource, require_supported
 
 #===============================================================================
 #
@@ -197,7 +197,7 @@ class TarOverlay(OverlaySource):
     def supported(self):
         '''Overlay type supported?'''
 
-        return super(TarOverlay, self).supported([(self.command(),  'tar', 'app-arch/tar'), ])
+        return require_supported([(self.command(),  'tar', 'app-arch/tar'), ])
 
 if __name__ == '__main__':
     import doctest

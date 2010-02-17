@@ -20,6 +20,28 @@ import subprocess
 from layman.debug import OUT
 from layman.utils import path
 
+
+def require_supported(binaries):
+    for command, mtype, package in binaries:
+        found = False
+        if os.path.isabs(command):
+            kind = 'Binary'
+            found = os.path.exists(command)
+        else:
+            kind = 'Command'
+            for d in os.environ['PATH'].split(os.pathsep):
+                f = os.path.join(d, command)
+                if os.path.exists(f):
+                    found = True
+                    break
+
+        if not found:
+            raise Exception(kind + ' ' + command + ' seems to be missing!'
+                            ' Overlay type "' + mtype + '" not support'
+                            'ed. Did you emerge ' + package + '?')
+    return True
+
+
 class OverlaySource(object):
 
     def __init__(self, parent, xml, config, _location, ignore = 0, quiet = False):
@@ -61,28 +83,8 @@ class OverlaySource(object):
         OUT.info('Deleting directory "%s"' % mdir, 2)
         shutil.rmtree(mdir)
 
-    def supported(self, binaries = []):
+    def supported(self):
         '''Is the overlay type supported?'''
-
-        if binaries:
-            for command, mtype, package in binaries:
-                found = False
-                if os.path.isabs(command):
-                    kind = 'Binary'
-                    found = os.path.exists(command)
-                else:
-                    kind = 'Command'
-                    for d in os.environ['PATH'].split(os.pathsep):
-                        f = os.path.join(d, command)
-                        if os.path.exists(f):
-                            found = True
-                            break
-
-                if not found:
-                    raise Exception(kind + ' ' + command + ' seems to be missing!'
-                                    ' Overlay type "' + mtype + '" not support'
-                                    'ed. Did you emerge ' + package + '?')
-
         return True
 
     def is_supported(self):

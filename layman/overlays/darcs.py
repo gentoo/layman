@@ -26,7 +26,7 @@ __version__ = "$Id: darcs.py 236 2006-09-05 20:39:37Z wrobel $"
 #-------------------------------------------------------------------------------
 
 from   layman.utils             import path
-from   layman.overlays.source   import OverlaySource
+from   layman.overlays.source   import OverlaySource, require_supported
 
 #===============================================================================
 #
@@ -63,5 +63,5 @@ class DarcsOverlay(OverlaySource):
     def supported(self):
         '''Overlay type supported?'''
 
-        return super(DarcsOverlay, self).supported([(self.command(),  'darcs',
+        return require_supported([(self.command(),  'darcs',
                                          'dev-util/darcs'),])

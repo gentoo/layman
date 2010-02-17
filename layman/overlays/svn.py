@@ -25,7 +25,7 @@ __version__ = "$Id: svn.py 236 2006-09-05 20:39:37Z wrobel $"
 #-------------------------------------------------------------------------------
 
 from   layman.utils             import path
-from   layman.overlays.source   import OverlaySource
+from   layman.overlays.source   import OverlaySource, require_supported
 
 #===============================================================================
 #
@@ -74,5 +74,5 @@ class SvnOverlay(OverlaySource):
     def supported(self):
         '''Overlay type supported?'''
 
-        return super(SvnOverlay, self).supported([(self.command(),  'svn',
+        return require_supported([(self.command(),  'svn',
                                          'dev-util/subversion'),])

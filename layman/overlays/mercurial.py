@@ -26,7 +26,7 @@ __version__ = "$Id: mercurial.py 236 2006-09-05 20:39:37Z wrobel $"
 #-------------------------------------------------------------------------------
 
 from   layman.utils             import path
-from   layman.overlays.source   import OverlaySource
+from   layman.overlays.source   import OverlaySource, require_supported
 
 #===============================================================================
 #
@@ -63,5 +63,5 @@ class MercurialOverlay(OverlaySource):
     def supported(self):
         '''Overlay type supported?'''
 
-        return super(MercurialOverlay, self).supported([(self.command(),  'mercurial',
+        return require_supported([(self.command(),  'mercurial',
                                          'dev-util/mercurial'),])
