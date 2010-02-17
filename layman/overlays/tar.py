@@ -133,16 +133,16 @@ class TarOverlay(OverlaySource):
         return result
 
     def _add_unchecked(self, base, quiet):
-        def try_to_wipe(path):
-            if not os.path.exists(path):
+        def try_to_wipe(folder):
+            if not os.path.exists(folder):
                 return
 
             try:
-                OUT.info('Deleting directory "%s"' % path, 2)
-                shutil.rmtree(path)
+                OUT.info('Deleting directory "%s"' % folder, 2)
+                shutil.rmtree(folder)
             except Exception, error:
                 raise Exception('Failed to remove unnecessary tar structure "'
-                                + path + '"\nError was:' + str(error))
+                                + folder + '"\nError was:' + str(error))
 
         final_path = path([base, self.parent.name])
         temp_path = tempfile.mkdtemp(dir=base)
