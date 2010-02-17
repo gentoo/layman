@@ -236,7 +236,7 @@ class Config(object):
 
         # Parse the command line first since we need to get the config
         # file option.
-        (self.options, args) = self.parser.parse_args()
+        self.options = self.parser.parse_args()[0]
 
         # handle debugging
         OUT.cli_handle(self.options)
@@ -314,7 +314,7 @@ class Config(object):
 
         OUT.debug('Retrieving keys', 8)
 
-        keys += [name for name, value in self.config.items('MAIN')
+        keys += [name for name, _ in self.config.items('MAIN')
                  if not name in keys]
 
         OUT.debug('Retrieving keys', 8)

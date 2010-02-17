@@ -202,7 +202,7 @@ class DbBase:
         '''
         result = []
 
-        for name, overlay in self.overlays.items():
+        for _, overlay in self.overlays.items():
 
             if verbose:
                 result.append((str(overlay), overlay.is_supported(),

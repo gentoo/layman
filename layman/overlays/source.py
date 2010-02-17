@@ -95,7 +95,7 @@ class OverlaySource(object):
         try:
             self.supported()
             return True
-        except Exception, error:
+        except:
             return False
 
     def command(self):
