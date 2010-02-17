@@ -107,7 +107,7 @@ class Message:
         group = OptionGroup(parser,
                             '<Debugging options>',
                             'Control the debugging features of '
-			    + self.debug_env)
+                            + self.debug_env)
 
         group.add_option('--debug',
                          action = 'store_true',

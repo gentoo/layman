@@ -112,10 +112,10 @@ class Overlay(object):
         if _sources:
             _sources = [e for e in _sources if 'type' in e.attrib]
         elif ('src' in xml.attrib) and ('type' in xml.attrib):
-                s = ET.Element('source', type=xml.attrib['type'])
-                s.text = xml.attrib['src']
-                _sources = [s]
-                del s
+            s = ET.Element('source', type=xml.attrib['type'])
+            s.text = xml.attrib['src']
+            _sources = [s]
+            del s
 
         if not _sources:
             raise Exception('Overlay "' + self.name + '" is missing a "source" entry!')
@@ -168,7 +168,7 @@ class Overlay(object):
             self.description = ''
             if not ignore:
                 raise Exception('Overlay "' + self.name + '" is missing a '
-	                                '"description" entry!')
+                        '"description" entry!')
             elif ignore == 1:
                 OUT.warn('Overlay "' + self.name + '" is missing a '
                          '"description" entry!', 4)
@@ -356,7 +356,7 @@ class Overlay(object):
         if self.feeds:
             result += u'\n%s:' % ((len(self.feeds) == 1) and "Feed" or "Feeds")
             for i in self.feeds:
-               result += u'\n  %s' % i
+                result += u'\n  %s' % i
             result += u'\n'
 
         return self._encode(result)

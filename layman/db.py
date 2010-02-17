@@ -221,9 +221,9 @@ class RemoteDB(DbBase):
             self.proxies['http'] = os.getenv('http_proxy')
 
         if self.proxies:
-	    proxy_handler = urllib2.ProxyHandler(self.proxies)
-	    opener = urllib2.build_opener(proxy_handler)
-	    urllib2.install_opener(opener)
+            proxy_handler = urllib2.ProxyHandler(self.proxies)
+            opener = urllib2.build_opener(proxy_handler)
+            urllib2.install_opener(opener)
 
         self.urls  = [i.strip() for i in config['overlays'].split('\n') if i]
 

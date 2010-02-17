@@ -96,8 +96,8 @@ class Sync:
 
         self.selection = config['sync']
 
-	if config['sync_all'] or 'ALL' in self.selection:
-	    self.selection = self.db.overlays.keys()
+        if config['sync_all'] or 'ALL' in self.selection:
+            self.selection = self.db.overlays.keys()
 
         enc = sys.getfilesystemencoding()
         if enc:
