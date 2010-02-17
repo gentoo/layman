@@ -27,7 +27,7 @@ __version__ = "$Id: db.py 309 2007-04-09 16:23:38Z wrobel $"
 import os, codecs, os.path, urllib2, re, hashlib
 
 from   layman.utils             import path, delete_empty_directory
-from   layman.dbbase            import DbBase, UnknownOverlayException
+from   layman.dbbase            import DbBase
 
 from   layman.debug             import OUT
 
@@ -194,7 +194,7 @@ class DB(DbBase):
     def sync(self, overlay_name, quiet = False):
         '''Synchronize the given overlay.'''
 
-        overlay = self.select(overlay_name) # UnknownOverlayException
+        overlay = self.select(overlay_name)
         result = overlay.sync(self.config['storage'], quiet)
         if result:
             raise Exception('Syncing overlay "' + overlay_name +

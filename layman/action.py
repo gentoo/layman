@@ -26,7 +26,8 @@ __version__ = "$Id: action.py 312 2007-04-09 19:45:49Z wrobel $"
 
 import os, sys
 
-from   layman.db                import DB, RemoteDB, UnknownOverlayException
+from   layman.dbbase            import UnknownOverlayException
+from   layman.db                import DB, RemoteDB
 from   layman.utils             import path, delete_empty_directory
 from   layman.debug             import OUT
 

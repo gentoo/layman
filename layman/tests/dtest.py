@@ -24,7 +24,7 @@ __version__ = '$Id: dtest.py 237 2006-09-05 21:18:54Z wrobel $'
 #
 #-------------------------------------------------------------------------------
 
-import unittest, doctest, sys
+import unittest, doctest
 
 # On module creation:
 

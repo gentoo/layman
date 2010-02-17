@@ -33,7 +33,7 @@ import codecs
 import locale
 import xml.etree.ElementTree as ET # Python 2.5
 
-from   layman.utils             import path, ensure_unicode
+from   layman.utils             import ensure_unicode
 
 from   layman.debug             import OUT
 
