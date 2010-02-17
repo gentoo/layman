@@ -51,9 +51,12 @@ class Message:
                  info_level = 4,
                  warn_level = 4,
                  col = True,
-                 mth = ['*'],
-                 obj = ['*'],
-                 var = ['*']):
+                 mth = None,
+                 obj = None,
+                 var = None):
+        if mth == None: mth = ['*']
+        if obj == None: obj = ['*']
+        if var == None: var = ['*']
 
         # A description of the module that is being debugged
         self.debug_env = module
