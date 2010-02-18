@@ -94,7 +94,7 @@ class DbBase:
 
     def read(self, text):
         '''
-        Read an xml list of overlays.
+        Read an xml list of overlays (adding to and potentially overwriting existing entries)
 
         >>> here = os.path.dirname(os.path.realpath(__file__))
         >>> config = {'svn_command': '/usr/bin/svn', 'rsync_command':'/usr/bin/rsync'}
@@ -113,9 +113,10 @@ class DbBase:
             OUT.debug('Parsing overlay entry', 8)
             try:
                 ovl = Overlay(overlay, self.config, self.ignore, self.quiet)
-                self.overlays[ovl.name] = ovl
             except Exception, error:
                 OUT.warn(str(error), 3)
+            else:
+                self.overlays[ovl.name] = ovl
 
 
     def write(self, path):
