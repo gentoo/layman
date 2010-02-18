@@ -499,11 +499,11 @@ class ListLocal:
 
 #===============================================================================
 #
-# Class Actions
+# MAIN
 #
 #-------------------------------------------------------------------------------
 
-class Actions:
+def main(config):
     '''Dispatches to the actions the user selected. '''
 
     # Given in order of precedence
@@ -516,7 +516,7 @@ class Actions:
                ('list',       List),
                ('list_local', ListLocal),]
 
-    def __init__(self, config):
+    if True:  # A hack to save diff with indentation changes only
 
         # Make fetching the overlay list a default action
         if not 'nofetch' in config.keys():
@@ -539,7 +539,7 @@ class Actions:
             OUT.die('Failed setting to umask "' + umask + '"!\nError was: ' 
                     + str(error))
 
-        for i in self.actions:
+        for i in actions:
 
             OUT.debug('Checking for action', 7)
 
@@ -553,7 +553,7 @@ class Actions:
             sys.exit(0)
         else:
             sys.exit(1)
-            
+
 #===============================================================================
 #
 # Testing

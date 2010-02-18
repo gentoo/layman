@@ -47,7 +47,7 @@ layman (-l|-L|-S)"""
 class Config(object):
     '''Handles the configuration.'''
 
-    def __init__(self):
+    def __init__(self, args=None):
         '''
         Creates and describes all possible polymeraZe options and creates
         a debugging object.
@@ -62,6 +62,8 @@ class Config(object):
         >>> sorted(a.keys())
         ['bzr_command', 'cache', 'config', 'cvs_command', 'darcs_command', 'git_command', 'local_list', 'make_conf', 'mercurial_command', 'nocheck', 'overlays', 'proxy', 'quietness', 'rsync_command', 'storage', 'svn_command', 'tar_command', 'umask', 'width']
         '''
+        if args == None:
+            args = sys.argv
 
         self.defaults = {'config'    : '/etc/layman/layman.cfg',
                          'storage'   : '/var/lib/layman',
@@ -236,7 +238,7 @@ class Config(object):
 
         # Parse the command line first since we need to get the config
         # file option.
-        self.options = self.parser.parse_args()[0]
+        self.options = self.parser.parse_args(args)[0]
 
         # handle debugging
         OUT.cli_handle(self.options)
