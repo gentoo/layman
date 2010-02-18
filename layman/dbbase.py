@@ -29,6 +29,7 @@ __version__ = "$Id: overlay.py 273 2006-12-30 15:54:50Z wrobel $"
 #-------------------------------------------------------------------------------
 
 import sys, os, os.path
+import xml
 import xml.etree.ElementTree as ET # Python 2.5
 
 from   layman.debug              import OUT
@@ -46,6 +47,23 @@ class UnknownOverlayException(Exception):
         message = 'Overlay "%s" does not exist.' % repo_name
         super(UnknownOverlayException, self).__init__(message)
 
+#===============================================================================
+#
+# Class BrokenOverlayCatalog
+#
+#-------------------------------------------------------------------------------
+
+class BrokenOverlayCatalog(ValueError):
+    def __init__(self, origin, expat_error, hint=None):
+        if hint == None:
+            hint = ''
+        else:
+            hint = '\nHint: %s' % hint
+
+        super(BrokenOverlayCatalog, self).__init__(
+            'XML parsing failed for "%(origin)s" (line %(line)d, column %(column)d)%(hint)s' % \
+            {'line':expat_error.lineno, 'column':expat_error.offset + 1, 'origin':origin, 'hint':hint})
+
 
 #===============================================================================
 #
@@ -56,7 +74,7 @@ class UnknownOverlayException(Exception):
 class DbBase:
     ''' Handle a list of overlays.'''
 
-    def __init__(self, paths, config, ignore = 0, quiet = False):
+    def __init__(self, paths, config, ignore = 0, quiet = False, ignore_init_read_errors=False):
 
         self.config = config
         self.quiet = quiet
@@ -68,8 +86,13 @@ class DbBase:
         OUT.debug('Initializing overlay list handler', 8)
 
         for path in self.paths:
-            if os.path.exists(path):
+            if not os.path.exists(path):
+                continue
+
+            try:
                 self.read_file(path)
+            except Exception, error:
+                if not ignore_init_read_errors: raise error
 
     def __eq__(self, other):
         for key in set(self.overlays.keys() + other.overlays.keys()):
@@ -90,9 +113,14 @@ class DbBase:
             raise IOError('Failed to read the overlay list at ("'
                           + path + '")!\nError was:\n' + str(error))
 
-        self.read(document)
+        self.read(document, origin=path)
 
-    def read(self, text):
+    def _broken_catalog_hint(self):
+        this_function_name = sys._getframe().f_code.co_name
+        raise NotImplementedError('Method "%s.%s" not implemented' % \
+                (self.__class__.__name__, this_function_name))
+
+    def read(self, text, origin):
         '''
         Read an xml list of overlays (adding to and potentially overwriting existing entries)
 
@@ -105,7 +133,11 @@ class DbBase:
         >>> list(a.overlays['wrobel-stable'].source_uris())
         [u'rsync://gunnarwrobel.de/wrobel-stable']
         '''
-        document = ET.fromstring(text)
+        try:
+            document = ET.fromstring(text)
+        except xml.parsers.expat.ExpatError, error:
+            raise BrokenOverlayCatalog(origin, error, self._broken_catalog_hint())
+
         overlays = document.findall('overlay') + \
                 document.findall('repo')
 

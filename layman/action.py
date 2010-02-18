@@ -26,7 +26,7 @@ __version__ = "$Id: action.py 312 2007-04-09 19:45:49Z wrobel $"
 
 import os, sys
 
-from   layman.dbbase            import UnknownOverlayException
+from   layman.dbbase            import UnknownOverlayException, BrokenOverlayCatalog
 from   layman.db                import DB, RemoteDB
 from   layman.utils             import path, delete_empty_directory
 from   layman.debug             import OUT
@@ -66,7 +66,7 @@ class Fetch:
     '''
 
     def __init__(self, config):
-        self.db = RemoteDB(config)
+        self.db = RemoteDB(config, ignore_init_read_errors=True)
 
     def run(self):
         '''Fetch the overlay listing.'''
@@ -544,7 +544,12 @@ def main(config):
             OUT.debug('Checking for action', 7)
 
             if i[0] in config.keys():
-                result += i[1](config).run()
+                try:
+                    result += i[1](config).run()
+                except Exception, error:
+                    OUT.error(str(error))
+                    result = -1  # So it cannot remain 0, i.e. success
+                    break
 
         # Reset umask
         os.umask(old_umask)

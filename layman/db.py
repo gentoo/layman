@@ -62,6 +62,10 @@ class DB(DbBase):
 
         OUT.debug('DB handler initiated', 6)
 
+    # overrider
+    def _broken_catalog_hint(self):
+        return ''
+
     def add(self, overlay, quiet = False):
         '''
         Add an overlay to the local list of overlays.
@@ -210,7 +214,7 @@ class DB(DbBase):
 class RemoteDB(DbBase):
     '''Handles fetching the remote overlay list.'''
 
-    def __init__(self, config):
+    def __init__(self, config, ignore_init_read_errors=False):
 
         self.config = config
 
@@ -237,7 +241,11 @@ class RemoteDB(DbBase):
 
         quiet = int(config['quietness']) < 3
 
-        DbBase.__init__(self, paths, config, ignore, quiet)
+        DbBase.__init__(self, paths, config, ignore, quiet, ignore_init_read_errors)
+
+    # overrider
+    def _broken_catalog_hint(self):
+        return 'Try running "sudo layman -f" to re-fetch that file'
 
     def cache(self):
         '''
@@ -292,7 +300,7 @@ class RemoteDB(DbBase):
                 # Before we overwrite the old cache, check that the downloaded
                 # file is intact and can be parsed
                 try:
-                    self.read(olist)
+                    self.read(olist, origin=url)
                 except Exception, error:
                     raise IOError('Failed to parse the overlays list fetched fr'
                                   'om ' + url + '\nThis means that the download'
