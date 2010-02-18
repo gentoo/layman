@@ -315,16 +315,6 @@ class RemoteDB(DbBase):
                 OUT.warn('Failed to update the overlay list from: '
                          + url + '\nError was:\n' + str(error))
 
-            try:
-                # Finally parse the contents of the cache
-                self.read_file(mpath)
-            except IOError, error:
-                OUT.warn('Failed to read a cached version of the overlay list f'
-                         'rom ' + url + '. You probably did not download the fi'
-                         'le before. The corresponding entry in your layman.cfg'
-                         ' file will be disregarded.\nError was:\n' + str(error)
-                         )
-
     def path(self, url):
         '''Return a unique file name for the url.'''
 
