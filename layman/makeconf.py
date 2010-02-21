@@ -19,6 +19,8 @@ import os
 import codecs
 import re
 
+from layman.utils import path
+
 #===============================================================================
 #
 # Helper class MakeConf
