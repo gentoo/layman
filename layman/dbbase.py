@@ -169,10 +169,10 @@ class DbBase:
         >>> os.unlink(write)
         '''
 
-        xml = ET.Element('repositories', version="1.0")
-        xml[:] = [e.to_xml() for e in self.overlays.values()]
-        indent(xml)
-        tree = ET.ElementTree(xml)
+        tree = ET.Element('repositories', version="1.0")
+        tree[:] = [e.to_xml() for e in self.overlays.values()]
+        indent(tree)
+        tree = ET.ElementTree(tree)
         try:
             f = open(path, 'w')
             f.write("""\
