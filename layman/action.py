@@ -368,8 +368,36 @@ class Info:
 #-------------------------------------------------------------------------------
 
 class List(object):
-    def __init__(self, config):
+    def __init__(self, config, db):
         self.config = config
+        self.db = db
+
+    def _run(self, complain):
+        for summary, supported, official \
+                in self.db.list(self.config['verbose'], self.config['width']):
+            # Is the overlay supported?
+            if supported:
+                # Is this an official overlay?
+                if official:
+                    OUT.info(summary, 1)
+                # Unofficial overlays will only be listed if we are not
+                # checking or listing verbose
+                elif complain:
+                    # Give a reason why this is marked yellow if it is a verbose
+                    # listing
+                    if self.config['verbose']:
+                        OUT.warn('*** This is no official gentoo overlay ***\n', 1)
+                    OUT.warn(summary, 1)
+            # Unsupported overlays will only be listed if we are not checking
+            # or listing verbose
+            elif complain:
+                # Give a reason why this is marked red if it is a verbose
+                # listing
+                if self.config['verbose']:
+                    OUT.error('*** You are lacking the necessary tools '
+                              'to install this overlay ***\n')
+                OUT.error(summary)
+
 
 #===============================================================================
 #
@@ -394,7 +422,7 @@ class ListRemote(List):
     ...           'svn_command':'/usr/bin/svn',
     ...           'rsync_command':'/usr/bin/rsync'}
     >>> a = ListRemote(config)
-    >>> a.rdb.cache()
+    >>> a.db.cache()
     >>> OUT.color_off()
     >>> a.run()
     * wrobel                    [Subversion] (https://o.g.o/svn/dev/wrobel         )
@@ -427,38 +455,16 @@ class ListRemote(List):
     '''
 
     def __init__(self, config):
-
         OUT.debug('Creating RemoteDB handler', 6)
-
-        self.rdb    = RemoteDB(config)
-        super(ListRemote, self).__init__(config)
+        super(ListRemote, self).__init__(config, RemoteDB(config))
 
     def run(self):
         ''' List the available overlays.'''
 
-        for i in self.rdb.list(self.config['verbose'], self.config['width']):
-            # Is the overlay supported?
-            if i[1]:
-                # Is this an official overlay?
-                if i[2]:
-                    OUT.info(i[0], 1)
-                # Unofficial overlays will only be listed if we are not
-                # checking or listing verbose
-                elif self.config['nocheck'] or self.config['verbose']:
-                    # Give a reason why this is marked yellow if it is a verbose
-                    # listing
-                    if self.config['verbose']:
-                        OUT.warn('*** This is no official gentoo overlay ***\n', 1)
-                    OUT.warn(i[0], 1)
-            # Unsupported overlays will only be listed if we are not checking
-            # or listing verbose
-            elif self.config['nocheck'] or self.config['verbose']:
-                # Give a reason why this is marked red if it is a verbose
-                # listing
-                if self.config['verbose']:
-                    OUT.error('*** You are lacking the necessary tools to insta'
-                              'll this overlay ***\n')
-                OUT.error(i[0])
+        OUT.debug('Printing remote overlays.', 8)
+
+        _complain = self.config['nocheck'] or self.config['verbose']
+        self._run(complain=_complain)
 
         return 0
 
@@ -472,38 +478,15 @@ class ListLocal(List):
     ''' Lists the local overlays.'''
 
     def __init__(self, config):
-        self.db = DB(config)
-        super(ListLocal, self).__init__(config)
+        OUT.debug('Creating DB handler', 6)
+        super(ListLocal, self).__init__(config, DB(config))
 
     def run(self):
         '''List the overlays.'''
 
-        for i in self.db.list(self.config['verbose']):
+        OUT.debug('Printing local overlays.', 8)
 
-            OUT.debug('Printing local overlay.', 8)
-
-            # Is the overlay supported?
-            if i[1]:
-                # Is this an official overlay?
-                if i[2]:
-                    OUT.info(i[0], 1)
-                # Unofficial overlays will only be listed if we are not
-                # checking or listing verbose
-                else:
-                    # Give a reason why this is marked yellow if it is a verbose
-                    # listing
-                    if self.config['verbose']:
-                        OUT.warn('*** This is no official gentoo overlay ***\n', 1)
-                    OUT.warn(i[0], 1)
-            # Unsupported overlays will only be listed if we are not checking
-            # or listing verbose
-            else:
-                # Give a reason why this is marked red if it is a verbose
-                # listing
-                if self.config['verbose']:
-                    OUT.error('*** You are lacking the necessary tools to insta'
-                              'll this overlay ***\n')
-                OUT.error(i[0])
+        self._run(complain=True)
 
         return 0
 
