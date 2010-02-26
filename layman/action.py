@@ -367,7 +367,17 @@ class Info:
 #
 #-------------------------------------------------------------------------------
 
-class List:
+class List(object):
+    def __init__(self, config):
+        self.config = config
+
+#===============================================================================
+#
+# Class ListRemote
+#
+#-------------------------------------------------------------------------------
+
+class ListRemote(List):
     ''' Lists the available overlays.
 
     >>> import os
@@ -383,7 +393,7 @@ class List:
     ...           'width':80,
     ...           'svn_command':'/usr/bin/svn',
     ...           'rsync_command':'/usr/bin/rsync'}
-    >>> a = List(config)
+    >>> a = ListRemote(config)
     >>> a.rdb.cache()
     >>> OUT.color_off()
     >>> a.run()
@@ -421,7 +431,7 @@ class List:
         OUT.debug('Creating RemoteDB handler', 6)
 
         self.rdb    = RemoteDB(config)
-        self.config = config
+        super(ListRemote, self).__init__(config)
 
     def run(self):
         ''' List the available overlays.'''
@@ -458,12 +468,12 @@ class List:
 #
 #-------------------------------------------------------------------------------
 
-class ListLocal:
+class ListLocal(List):
     ''' Lists the local overlays.'''
 
     def __init__(self, config):
         self.db = DB(config)
-        self.config = config
+        super(ListLocal, self).__init__(config)
 
     def run(self):
         '''List the overlays.'''
@@ -513,7 +523,7 @@ def main(config):
                ('info',       Info),
                ('sync_all',   Sync),
                ('delete',     Delete),
-               ('list',       List),
+               ('list',       ListRemote),
                ('list_local', ListLocal),]
 
     if True:  # A hack to save diff with indentation changes only
