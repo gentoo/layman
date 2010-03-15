@@ -100,9 +100,15 @@ class Overlay(object):
         False
         '''
 
+        def strip_text(node):
+            res = node.text
+            if res is None:
+                return ''
+            return res.strip()
+
         _name = xml.find('name')
         if _name != None:
-            self.name = ensure_unicode(_name.text.strip())
+            self.name = ensure_unicode(strip_text(_name))
         elif 'name' in xml.attrib:
             self.name = ensure_unicode(xml.attrib['name'])
         else:
@@ -127,7 +133,7 @@ class Overlay(object):
                 _class = OVERLAY_TYPES[_type]
             except KeyError:
                 raise Exception('Unknown overlay type "%s"!' % _type)
-            _location = ensure_unicode(source_elem.text.strip())
+            _location = ensure_unicode(strip_text(source_elem))
             return _class(self, xml, config, _location, ignore, quiet)
 
         self.sources = [create_overlay_source(e) for e in _sources]
@@ -139,10 +145,10 @@ class Overlay(object):
         else:
             _email = _owner.find('email')
         if _owner != None and _email != None:
-            self.owner_email = ensure_unicode(_email.text.strip())
+            self.owner_email = ensure_unicode(strip_text(_email))
             _name = _owner.find('name')
             if _name != None:
-                self.owner_name = ensure_unicode(_name.text.strip())
+                self.owner_name = ensure_unicode(strip_text(_name))
             else:
                 self.owner_name = None
         elif 'contact' in xml.attrib:
@@ -161,7 +167,7 @@ class Overlay(object):
 
         _desc = xml.find('description')
         if _desc != None:
-            d = WHITESPACE_REGEX.sub(' ', _desc.text.strip())
+            d = WHITESPACE_REGEX.sub(' ', strip_text(_desc))
             self.description = ensure_unicode(d)
             del d
         else:
@@ -191,13 +197,13 @@ class Overlay(object):
         h = xml.find('homepage')
         l = xml.find('link')
         if h != None:
-            self.homepage = ensure_unicode(h.text.strip())
+            self.homepage = ensure_unicode(strip_text(h))
         elif l != None:
-            self.homepage = ensure_unicode(l.text.strip())
+            self.homepage = ensure_unicode(strip_text(l))
         else:
             self.homepage = None
 
-        self.feeds = [ensure_unicode(e.text.strip()) for e in xml.findall('feed')]
+        self.feeds = [ensure_unicode(strip_text(e)) for e in xml.findall('feed')]
 
 
     def __eq__(self, other):
