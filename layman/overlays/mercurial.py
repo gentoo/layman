@@ -64,4 +64,4 @@ class MercurialOverlay(OverlaySource):
         '''Overlay type supported?'''
 
         return require_supported([(self.command(),  'mercurial',
-                                         'dev-util/mercurial'),])
+                                         'dev-vcs/mercurial'),])

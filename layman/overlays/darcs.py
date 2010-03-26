@@ -64,4 +64,4 @@ class DarcsOverlay(OverlaySource):
         '''Overlay type supported?'''
 
         return require_supported([(self.command(),  'darcs',
-                                         'dev-util/darcs'),])
+                                         'dev-vcs/darcs'),])

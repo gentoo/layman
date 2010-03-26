@@ -77,4 +77,4 @@ class GitOverlay(OverlaySource):
         '''Overlay type supported?'''
 
         return require_supported([(self.command(),  'git',
-                                         'dev-util/git'),])
+                                         'dev-vcs/git'),])
