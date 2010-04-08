@@ -10,6 +10,9 @@ Version TODO
 
  - Extend in-config docs on proxy handling (bug #300651)
 
+ - Propagate move of bzr, darcs, git, mercurial from
+   dev-util/* to dev-vcs/* (bug #311419)
+
 
 Version 1.3.2 - Released 2010/02/20
 ===================================
