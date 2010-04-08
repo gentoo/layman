@@ -1,18 +1,26 @@
-Version 1.3.2 - Released 2010/02/20
+Version 1.3.3 - Released 2010/04/08
 ===================================
 
 FULL CHANGES
 ------------
 
- - Fix syncing of tar overlays (bug #304547)
+ - Fix syncing of SVN overlays for users of SVN <1.6.5 (bug #313303)
 
- - Hint about broken overlay catalog (bug #304781)
+ - Fix handling of empty XML entities (bug #309617)
+
+ - Fix missing import (bug #306143)
+
+ - Extend in-config docs on proxy handling (bug #300651)
+
+ - Propagate move of bzr, darcs, git, mercurial from
+   dev-util/* to dev-vcs/* (bug #311419)
 
 
 SHORT CHANGES
 -------------
 
- layman-1.3.2 is a bugfix release.
+ layman-1.3.3 is a bugfix release.  Everyone is recommended
+ to upgrade.
 
 
 FRESHMEAT

@@ -1,7 +1,7 @@
 CHANGES
 -------
 
-Version TODO
+Version 1.3.3 - Released 2010/04/08
 ===================================
 
  - Fix syncing of SVN overlays for users of SVN <1.6.5 (bug #313303)
