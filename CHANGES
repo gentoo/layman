@@ -4,6 +4,8 @@ CHANGES
 Version TODO
 ===================================
 
+ - Fix syncing of SVN overlays for users of SVN <1.6.5 (bug #313303)
+
  - Fix handling of empty XML entities (bug #309617)
 
  - Fix missing import (bug #306143)

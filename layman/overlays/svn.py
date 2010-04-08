@@ -68,8 +68,16 @@ class SvnOverlay(OverlaySource):
         else:
             quiet_option = ''
 
+        def checkout_location():
+            # Append '@' iff needed
+            # Keeps users of SVN <1.6.5 happy in more cases (bug #313303)
+            repo_part = self.parent.name
+            if self.parent.name.find('@') != -1:
+                repo_part = repo_part + '@'
+            return path([base, repo_part])
+
         return self.cmd(self.command() + ' up ' + quiet_option +
-                        '"' + path([base, self.parent.name + '@']) + '"')
+                        '"' + checkout_location() + '"')
 
     def supported(self):
         '''Overlay type supported?'''
