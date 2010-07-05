@@ -100,4 +100,4 @@ class CvsOverlay(OverlaySource):
         '''Overlay type supported?'''
 
         return require_supported([(self.command(),  'cvs',
-                                         'dev-util/cvs'),])
+                                         'dev-vcs/cvs'),])

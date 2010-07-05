@@ -83,4 +83,4 @@ class SvnOverlay(OverlaySource):
         '''Overlay type supported?'''
 
         return require_supported([(self.command(),  'svn',
-                                         'dev-util/subversion'),])
+                                         'dev-vcs/subversion'),])

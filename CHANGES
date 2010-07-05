@@ -1,6 +1,13 @@
 CHANGES
 -------
 
+Version ???
+===================================
+
+ - Propagate move of cvs and subversion from
+   dev-util/* to dev-vcs/* (bug #311419, bug #307849)
+
+
 Version 1.3.3 - Released 2010/04/08
 ===================================
 
