@@ -33,6 +33,7 @@ int main(int argc, char* argv[])
 	Runner *r = createRunner();
 	r->writeStdout = stdoutWritten;
 	int ret = execute(r, str);
+	
 	if (ret < 0)
 		printf("Execution error\n");
 	
@@ -59,12 +60,43 @@ int execute(Runner *r, char *args)
 	if (ret > 0)
 	{
 		printf("New PID = %d\n", ret);
+		// Listening socket
+		int fd = socket(AF_INET, SOCK_STREAM, 0);
+		if (fd < 0) 
+			printf("ERROR opening socket\n");
+
+		struct sockaddr_in serv_addr;
+
+		memset(&serv_addr, 0, sizeof(serv_addr));
+	
+		int portno = 5555;
+		serv_addr.sin_family = AF_INET;
+		serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+		serv_addr.sin_port = htons(portno);
+	
+		if ((ret = bind(fd, (struct sockaddr *) &serv_addr, sizeof(serv_addr))) < 0) 
+		{
+			printf("ERROR on binding : %d, %d (%s)\n", ret, errno, strerror(errno));
+			return ret;
+		}
+	
+		if ((ret = listen(fd, 5)) < 0)
+			printf("ERROR on listening : %d, %d (%s)\n", ret, errno, strerror(errno));
+
+		while(1)
+		{
+			unsigned int clilen = sizeof(serv_addr);
+			int newfd = accept(fd, (struct sockaddr *) &serv_addr, &clilen);
+
+			char buf[256];
+			int n = read(newfd, buf, 255);
+			buf[n] = '\0';
+			printf("received : %s\n", buf);
+		}
+
 		return ret;
 	}
 	
-	//printf("args = %s\n", args);
-	//int fd = open("out.txt", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-
 	int fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (fd < 0) 
 		printf("ERROR opening socket\n");
@@ -72,15 +104,18 @@ int execute(Runner *r, char *args)
 	struct sockaddr_in serv_addr;
 
 	memset(&serv_addr, 0, sizeof(serv_addr));
+	
 	int portno = 5555;
 	serv_addr.sin_family = AF_INET;
-	serv_addr.sin_addr.s_addr = INADDR_ANY;
+	serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 	serv_addr.sin_port = htons(portno);
-	if (connect(fd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) 
-		printf("ERROR on connecting\n");
 	
-	//listen(fd, 5);
-
+	if ((ret = connect(fd, (struct sockaddr *) &serv_addr, sizeof(serv_addr))) < 0) 
+	{
+		printf("ERROR on connecting : %d, %d (%s)\n", ret, errno, strerror(errno));
+		return ret;
+	}
+	
 	dup2(fd, STDOUT_FILENO);
 	ret = execl("/home/detlev/src/c-portage/src/test.py", "test.py", "app-portage/kuroo4-4.2", "app-portage/kuroo4-4.3", NULL);
 	printf("execl: (%d) %s\n", errno, strerror(errno));
