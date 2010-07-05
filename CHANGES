@@ -8,7 +8,7 @@ Version ???
    dev-util/* to dev-vcs/* (bug #311419, bug #307849)
 
 
-Version 1.3.3 - Released 2010/04/08
+Version 1.3.3 - Released 2010-04-08
 ===================================
 
  - Fix syncing of SVN overlays for users of SVN <1.6.5 (bug #313303)
@@ -23,7 +23,7 @@ Version 1.3.3 - Released 2010/04/08
    dev-util/* to dev-vcs/* (bug #311419)
 
 
-Version 1.3.2 - Released 2010/02/20
+Version 1.3.2 - Released 2010-02-20
 ===================================
 
  - Fix syncing of tar overlays (bug #304547)
@@ -31,7 +31,7 @@ Version 1.3.2 - Released 2010/02/20
  - Hint about broken overlay catalog (bug #304781)
 
 
-Version 1.3.1 - Released 2010/02/05
+Version 1.3.1 - Released 2010-02-05
 ===================================
 
  - Fix handling of CVS overlays (bug #301689)
@@ -44,7 +44,7 @@ Version 1.3.1 - Released 2010/02/05
    - after failed addition of an overlay.
 
 
-Version 1.3.0 - Released 2010/01/19
+Version 1.3.0 - Released 2010-01-19
 ===================================
 
  - Move storage default from /usr/local/portage/layman
@@ -58,7 +58,7 @@ Version 1.3.0 - Released 2010/01/19
  - Fix faults introduced at refactoring (bug #301253)
 
 
-Version 1.3.0_rc1 - Released 2010/01/15
+Version 1.3.0_rc1 - Released 2010-01-15
 =======================================
 
  - Add support for several sources per overlay (also fixes #280472)
@@ -75,7 +75,7 @@ Version 1.3.0_rc1 - Released 2010/01/15
  - Improve layman usage display
 
 
-Version 1.2.6 - Released 2010/01/12
+Version 1.2.6 - Released 2010-01-12
 ===================================
 
  - Warn on lack of write permissions (fixes #260218)
@@ -96,7 +96,7 @@ Version 1.2.6 - Released 2010/01/12
  - Start shipping test suite files missing from the 1.2.5 release
 
 
-Version 1.2.5 - Released 2010/01/04
+Version 1.2.5 - Released 2010-01-04
 ===================================
 
  - Allow overriding of VCS commands
@@ -111,7 +111,7 @@ Version 1.2.5 - Released 2010/01/04
  - Fix handling of non-ASCII characters (#286290)
 
 
-Version 1.2.4 - Released 2009/12/05
+Version 1.2.4 - Released 2009-12-05
 ===================================
 
  - Add option "-d" to calls of "cvs update" so it checks out new
@@ -127,7 +127,7 @@ Version 1.2.4 - Released 2009/12/05
  - Fix grammar errors in program output (#259188)
 
 
-Version 1.2.3 - Released 2009/01/01
+Version 1.2.3 - Released 2009-01-01
 ===================================
 
  - Support setting the terminal screen width (also fixes #253016)
@@ -135,7 +135,7 @@ Version 1.2.3 - Released 2009/01/01
  - layman -S fetches each overlay twice (#253241)
 
 
-Version 1.2.2 - Released 2008/12/28
+Version 1.2.2 - Released 2008-12-28
 ===================================
 
  - layman -L: better use of screen real estate for source URLs
@@ -148,7 +148,7 @@ Version 1.2.2 - Released 2008/12/28
    not a git-command." (#247964)
 
 
-Version 1.2.1 - Released 2008/11/15
+Version 1.2.1 - Released 2008-11-15
 ===================================
 
  - Pass --quiet flag down to the version control
@@ -164,7 +164,7 @@ Version 1.2.1 - Released 2008/11/15
    overlay failed (#236945)
 
 
-Version 1.2.0 - Released 2008/06/02
+Version 1.2.0 - Released 2008-06-02
 ===================================
 
  - Fixed --info call (#198483)
