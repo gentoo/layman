@@ -24,7 +24,7 @@ struct Runner {
 int main(int argc, char* argv[])
 {
 	// Tries to compare 2 packages version.
-	if (argc < 3)
+	/*if (argc < 3)
 	{
 		printf("Please provide 2 packages.\n");
 		return -1;
@@ -33,10 +33,10 @@ int main(int argc, char* argv[])
 	char *str = malloc((strlen(argv[1]) + strlen(argv[2]) + 2) * sizeof(char));
 
 	sprintf(str, "%s %s", argv[1], argv[2]);
-
+	*/
 	Runner *r = createRunner();
 	r->writeStdout = stdoutWritten;
-	int ret = execute(r, str);
+	int ret = execute(r, "");
 	
 	if (ret < 0)
 		printf("Execution error\n");
