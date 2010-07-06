@@ -40,51 +40,17 @@ void insert(PyObjectList* list, PyObject *object)
 	list->count++;
 }
 
-PyObject *elementAt(PyObjectList* list, int pos)
-{
-	if (!list || list->count < pos)
-		return NULL;
-
-	PyObjectListElem *node = list->root;
-	for (int i = 0; i < pos; i++)
-	{
-		node = node->next;
-	}
-	if (!node)
-		return 0;
-
-	return node->object;
-}
-
 PyObject *moduleNamed(const char *name, PyObjectList *list)
 {
 	PyObjectListElem *node = list->root;
 	while (node)
 	{
-		if (strcmp(PyModule_GetName(node->object), name))
+		if (strcmp(PyModule_GetName(node->object), name) == 0)
 			return node->object;
 		node = node->next;
 	}
 	
 	return NULL;
-}
-
-PyObject *toTuple(PyObjectList *list)
-{
-	if (!list)
-		return NULL;
-
-	PyObject *ret = PyTuple_New(list->count);
-	PyObjectListElem *node = list->root;
-	int i = 0;
-	while (node)
-	{
-		if (node->object)
-			PyTuple_SetItem(ret, i++, node->object);
-		node = node->next;
-	}
-
-	return ret;
 }
 
 int listCount(PyObjectList *list)
@@ -112,9 +78,7 @@ void freeList(PyObjectList *list, int deref)
 
 /*
  * Interpreter
- */
-
-/*
+ *
  * A Python interpreter object keeps the context like the loaded modules.
  */
 
@@ -145,8 +109,9 @@ void freeInterpreter(Interpreter *inter)
  * @param interpreter Python interpreter object on which the function should be ran
  * @param module name of the python module in which the function is
  * @param funcName the function name to call
- * @param arg_types printf() like list of arguments TODO:explain more --> See Python documentation
+ * @param arg_types printf() like list of arguments. See Python documentation
  * @param ... arguments for the function
+ * FIXME:why are default arguments necessary ?
  */
 
 PyObject *executeFunction(Interpreter *interpreter, const char *module, const char *funcName, const char* format, ...)
@@ -154,38 +119,17 @@ PyObject *executeFunction(Interpreter *interpreter, const char *module, const ch
 	if (!Py_IsInitialized())
 		Py_Initialize();
 
-	// Make arguments
-	// FIXME: use Py_BuildValue.
-	// FIXME: is it possible to pass this function's arguments to another function ?
-	PyObjectList *argList = createObjectList();
-	int i = 0;
-	while (format[i] != '\0')
+	// Make argument list
+	PyObject *args;
+	if (format == NULL)
+		args = Py_None;
+	else
 	{
-		while(format[i] != '%' && format[i] != '\0')
-			i++;
-		
-		if (format[i] == '\0')
-			break;
+		va_list listArgs;
+		va_start(listArgs, format);
 
-		PyObject *arg = NULL;
-		switch(format[++i])
-		{
-		case 'd': //number
-			break;
-		case 's': //string
-			break;
-		case 'P': //PyObject
-			break;
-		default: //skip or abort ?
-			break;
-		}
-
-		insert(argList, arg);
-		i++;
+		args = Py_VaBuildValue(format, listArgs);
 	}
-
-	PyObject *args = toTuple(argList);
-	freeList(argList, 1);
 
 	// Look for the module.
 	PyObject *mod = 0;
@@ -196,36 +140,77 @@ PyObject *executeFunction(Interpreter *interpreter, const char *module, const ch
 	if (!mod)
 	{
 		mod = PyImport_ImportModule(module);
+		if (!mod)
+			return NULL;
 		insert(interpreter->modules, mod);
 	}
 
-	// Look for the function
-	PyObject *dict = PyModule_GetDict(mod);
-	PyObject *func = PyDict_GetItemString(dict, funcName);
+	/*printf("mod: %p ", mod);
+	PyObject_Print(mod, stdout, 0);
+	printf("\n");*/
 
+	// Look for the function
+	PyObject *func = PyObject_GetAttrString(mod, funcName);
 	if (!PyCallable_Check(func))
 		return NULL;
 
 	// Call the function
-	PyObject *val = PyObject_CallObject(func, args);
+	/*printf("func: %p\n", func);
+	PyObject_Print(func, stdout, 0);
+	printf("\n");*/
+
+	PyObject *val = PyObject_Call(func, args, NULL);
 
 	// Add return value object in a local list so it can be DECREF'ed when the interpreter is deleted.
 	// TODO
-
 	Py_DECREF(args);
 
 	return val;
 }
+/*
+PyObject *executeMethod(PyObject *object, const char *methName, const char* format, ...)
+{
+	if (!Py_IsInitialized())
+		Py_Initialize();
 
+	// Make argument list
+	PyObject *args;
+	if (format == NULL)
+		args = Py_None;
+	else
+	{
+		va_list listArgs;
+		va_start(listArgs, format);
+
+		args = Py_VaBuildValue(format, listArgs);
+	}
+
+	PyObject *ret = PyObject_CallMethod(object, methName, )
+}*/
 
 int main(int argc, char *argv[])
 {
 	Interpreter *in = createInterpreter();
 
-	PyObject *ret = executeFunction(in, "portage.data", "portage_group_warning", "");
+	executeFunction(in, "portage.data", "portage_group_warning", NULL);
+
+	PyObject *arg1 = executeFunction(in, "portage", "pkgsplit", "sI", "app-portage/kuroo4-4.2", 1);
+	PyObject *arg2 = executeFunction(in, "portage", "pkgsplit", "sI", "app-portage/kuroo4-4.1", 1);
+	PyObject *ret = executeFunction(in, "portage", "pkgcmp", "OO", arg1, arg2);
 
 	if (!ret)
 		printf("failed :-( \n");
+	else
+		printf("Return %ld\n", PyLong_AsLong(ret));
+
+	Py_DECREF(ret);
+	Py_DECREF(arg1);
+	Py_DECREF(arg2);
+	
+	PyObject *tbz = executeFunction(in, "portage.output", "ProgressBar", "sIs", "titre", 100, "status");
+	ret = PyObject_CallMethod(tbz, "inc", "I", 25);
+	Py_DECREF(tbz);
+	Py_DECREF(ret);
 
 	freeInterpreter(in);
 
