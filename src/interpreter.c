@@ -1,3 +1,7 @@
+/*
+ * Compile command :
+ * gcc -o interpreter -W -Wall -g --std=c99 -I/usr/include/python3.1/ -lpython3.1 interpreter.c
+ */
 #include <Python.h>
 #include <stdio.h>
 #include <string.h>

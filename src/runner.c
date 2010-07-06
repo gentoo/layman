@@ -1,3 +1,7 @@
+/*
+ * Compile command :
+ * gcc -o runner -W -Wall -g --std=c99 runner.c
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -117,7 +121,7 @@ int execute(Runner *r, char *args)
 	}
 	
 	dup2(fd, STDOUT_FILENO);
-	ret = execl("/home/detlev/src/c-portage/src/test.py", "test.py", "app-portage/kuroo4-4.2", "app-portage/kuroo4-4.3", NULL);
+	ret = execl("./test.py", "test.py", "app-portage/kuroo4-4.2", "app-portage/kuroo4-4.3", NULL);
 	printf("execl: (%d) %s\n", errno, strerror(errno));
 	return ret;
 }
