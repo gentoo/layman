@@ -39,10 +39,9 @@ from   layman.version           import VERSION
 #-------------------------------------------------------------------------------
 
 _USAGE = """
-
-layman (-a|-d|-s|-i) OVERLAY
-layman -f [-o URL]
-layman (-l|-L|-S)"""
+  layman (-a|-d|-s|-i) (OVERLAY|ALL)
+  layman -f [-o URL]
+  layman (-l|-L|-S)"""
 
 class Config(object):
     '''Handles the configuration.'''
