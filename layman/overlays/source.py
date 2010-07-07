@@ -18,7 +18,7 @@ import copy
 import sys
 import shutil
 import subprocess
-from layman.debug import OUT
+#from layman.debug import OUT
 from layman.utils import path
 
 
@@ -58,6 +58,7 @@ class OverlaySource(object):
         self.config = config
         self.ignore = ignore
         self.quiet = quiet
+        self.output = config['output']
 
     def __eq__(self, other):
         return self.src == other.src
@@ -85,10 +86,10 @@ class OverlaySource(object):
         mdir = path([base, self.parent.name])
 
         if not os.path.exists(mdir):
-            OUT.warn('Directory ' + mdir + ' did not exist, no files deleted.')
+            self.output.warn('Directory ' + mdir + ' did not exist, no files deleted.')
             return
 
-        OUT.info('Deleting directory "%s"' % mdir, 2)
+        self.output.info('Deleting directory "%s"' % mdir, 2)
         shutil.rmtree(mdir)
 
     def supported(self):
@@ -127,7 +128,7 @@ class OverlaySource(object):
         if cwd:
             command_repr = '( cd %s  && %s )' % (cwd, command_repr)
 
-        OUT.info('Running... # %s' % command_repr, 2)
+        self.output.info('Running... # %s' % command_repr, 2)
 
         if self.quiet:
             input_source = subprocess.PIPE
@@ -140,7 +141,7 @@ class OverlaySource(object):
         proc = subprocess.Popen(args,
             stdin=input_source,
             stdout=output_target,
-            stderr=output_target,
+            stderr=self.config['stderr'],
             cwd=cwd,
             env=env)
 
@@ -151,7 +152,7 @@ class OverlaySource(object):
         try:
             result = proc.wait()
         except KeyboardInterrupt:
-            OUT.info('Interrupted manually', 2)
+            self.output.info('Interrupted manually', 2)
             result = 1
 
         if self.quiet:

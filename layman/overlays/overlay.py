@@ -35,7 +35,7 @@ import xml.etree.ElementTree as ET # Python 2.5
 
 from   layman.utils             import ensure_unicode
 
-from   layman.debug             import OUT
+#from   layman.debug             import OUT
 
 from   layman.overlays.bzr       import BzrOverlay
 from   layman.overlays.darcs     import DarcsOverlay
@@ -100,6 +100,8 @@ class Overlay(object):
         False
         '''
 
+        self.output = config['output']
+        
         def strip_text(node):
             res = node.text
             if res is None:
@@ -161,7 +163,7 @@ class Overlay(object):
                 raise Exception('Overlay "' + self.name + '" is missing a '
                                 '"owner.email" entry!')
             elif ignore == 1:
-                OUT.warn('Overlay "' + self.name + '" is missing a '
+                self.output.warn('Overlay "' + self.name + '" is missing a '
                          '"owner.email" entry!', 4)
 
 
@@ -176,7 +178,7 @@ class Overlay(object):
                 raise Exception('Overlay "' + self.name + '" is missing a '
                         '"description" entry!')
             elif ignore == 1:
-                OUT.warn('Overlay "' + self.name + '" is missing a '
+                self.output.warn('Overlay "' + self.name + '" is missing a '
                          '"description" entry!', 4)
 
         if 'status' in xml.attrib:
@@ -279,7 +281,7 @@ class Overlay(object):
                     self.sources = [s]
                     break
             except Exception, error:
-                OUT.warn(str(error), 4)
+                self.output.warn(str(error), 4)
         return res
 
     def sync(self, base, quiet = False):

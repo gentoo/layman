@@ -28,7 +28,7 @@ import os, os.path, sys, urllib2, shutil, tempfile
 import xml.etree.ElementTree as ET # Python 2.5
 
 from   layman.utils             import path, ensure_unicode
-from   layman.debug             import OUT
+#from   layman.debug             import OUT
 from   layman.overlays.source   import OverlaySource, require_supported
 
 #===============================================================================
@@ -85,6 +85,8 @@ class TarOverlay(OverlaySource):
         else:
             self.subpath = ''
 
+        self.output = config['output']
+
     def __eq__(self, other):
         res = super(TarOverlay, self).__eq__(other) \
             and self.subpath == other.subpath
@@ -139,7 +141,7 @@ class TarOverlay(OverlaySource):
                 return
 
             try:
-                OUT.info('Deleting directory "%s"' % folder, 2)
+                self.output.info('Deleting directory "%s"' % folder, 2)
                 shutil.rmtree(folder)
             except Exception, error:
                 raise Exception('Failed to remove unnecessary tar structure "'
