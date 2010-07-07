@@ -237,7 +237,13 @@ class Config(object):
 
         # Parse the command line first since we need to get the config
         # file option.
-        self.options = self.parser.parse_args(args)[0]
+        if len(args) == 1:
+            print 'Usage:%s' % _USAGE
+            sys.exit(0)
+
+        (self.options, remain_args) = self.parser.parse_args(args)
+        if len(remain_args) > 1:  # remain_args starts with something like "bin/layman" ...
+            self.parser.error("Unhandled parameters: %s" % ', '.join(('"%s"' % e) for e in remain_args[1:]))
 
         # handle debugging
         OUT.cli_handle(self.options)

@@ -1,6 +1,14 @@
 CHANGES
 -------
 
+Version TODO
+===================================
+
+ - Handle command line calls "layman" and "layman foo" better.
+     Former now shows a usage summary while latter now reports
+     an error.  Both of them kept quiet before.
+
+
 Version 1.3.4 - Released 2010-07-05
 ===================================
 
