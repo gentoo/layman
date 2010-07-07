@@ -30,7 +30,7 @@ from   layman.utils             import path, delete_empty_directory
 from   layman.dbbase            import DbBase
 from   layman.makeconf          import MakeConf
 
-from   layman.debug             import OUT
+#from   layman.debug             import OUT
 
 #===============================================================================
 #
@@ -44,6 +44,7 @@ class DB(DbBase):
     def __init__(self, config):
 
         self.config = config
+        self.output = config['output']
 
         self.path = config['local_list']
 
@@ -60,7 +61,7 @@ class DB(DbBase):
                           ignore, 
                           quiet)
 
-        OUT.debug('DB handler initiated', 6)
+        self.output.debug('DB handler initiated', 6)
 
     # overrider
     def _broken_catalog_hint(self):
@@ -122,7 +123,7 @@ class DB(DbBase):
                 make_conf.add(overlay)
             else:
                 mdir = path([self.config['storage'], overlay.name])
-                delete_empty_directory(mdir)
+                delete_empty_directory(mdir, self.output)
                 if os.path.exists(mdir):
                     raise Exception('Adding overlay "%s" failed!'
                                 ' Possible remains of the operation have NOT'
@@ -154,7 +155,7 @@ class DB(DbBase):
         >>> a = DB(config)
         >>> config['local_list'] = write
         >>> b = DB(config)
-        >>> OUT.color_off()
+        >>> .color_off()
 
         >>> m = MakeConf(config, b.overlays)
         >>> m.path = here + '/tests/testfiles/make.conf'
@@ -217,6 +218,7 @@ class RemoteDB(DbBase):
     def __init__(self, config, ignore_init_read_errors=False):
 
         self.config = config
+        self.output = config['output']
 
         self.proxies = {}
 
@@ -277,10 +279,10 @@ class RemoteDB(DbBase):
 
             # Check for sufficient privileges
             if os.path.exists(mpath) and not os.access(mpath, os.W_OK):
-                OUT.warn('You do not have permission to update the cache (%s).' % mpath)
+                self.output.warn('You do not have permission to update the cache (%s).' % mpath)
                 import getpass
                 if getpass.getuser() != 'root':
-                    OUT.warn('Hint: You are not root.')
+                    self.output.warn('Hint: You are not root.')
                 continue
 
             try:
@@ -320,7 +322,7 @@ class RemoteDB(DbBase):
 
 
             except IOError, error:
-                OUT.warn('Failed to update the overlay list from: '
+                self.output.warn('Failed to update the overlay list from: '
                          + url + '\nError was:\n' + str(error))
 
     def path(self, url):
@@ -328,7 +330,7 @@ class RemoteDB(DbBase):
 
         base = self.config['cache']
 
-        OUT.debug('Generating cache path.', 6)
+        self.output.debug('Generating cache path.', 6)
 
         return base + '_' + hashlib.md5(url).hexdigest() + '.xml'
 

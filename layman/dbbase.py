@@ -32,7 +32,7 @@ import sys, os, os.path
 import xml
 import xml.etree.ElementTree as ET # Python 2.5
 
-from   layman.debug              import OUT
+#from   layman.debug              import OUT
 from   layman.utils              import indent
 from   layman.overlays.overlay   import Overlay
 
@@ -80,10 +80,11 @@ class DbBase:
         self.quiet = quiet
         self.paths = paths
         self.ignore = ignore
+        self.output = config['output']
 
         self.overlays = {}
 
-        OUT.debug('Initializing overlay list handler', 8)
+        self.output.debug('Initializing overlay list handler', 8)
 
         for path in self.paths:
             if not os.path.exists(path):
@@ -142,11 +143,11 @@ class DbBase:
                 document.findall('repo')
 
         for overlay in overlays:
-            OUT.debug('Parsing overlay entry', 8)
+            self.output.debug('Parsing overlay entry', 8)
             try:
                 ovl = Overlay(overlay, self.config, self.ignore, self.quiet)
             except Exception, error:
-                OUT.warn(str(error), 3)
+                self.output.warn(str(error), 3)
             else:
                 self.overlays[ovl.name] = ovl
 
