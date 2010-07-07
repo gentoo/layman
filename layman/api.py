@@ -95,19 +95,19 @@ class LaymanAPI(object):
         results = {}
         for id in repos:
             if not self.is_installed(id):
-                results[i] = True
+                results[id] = True
                 break
             if not self.is_repo(id):
                 self.error(1, UNKNOWN_REPO_ID %id)
-                results[i] = False
+                results[id] = False
                 break
             try:
                 self._installed_db.delete(self._installed_db.select(id))
-                results[i] = True
+                results[id] = True
             except Exception, e:
                 self.error(ERROR_INTERNAL_ERROR,
                         "Failed to disable repository '"+id+"':\n"+str(e))
-                results[i] = False
+                results[id] = False
             self.get_installed(reload=True)
         return results
 
@@ -123,19 +123,19 @@ class LaymanAPI(object):
         results = {}
         for id in repos:
             if self.is_installed(id):
-                results[i] = True
+                results[id] = True
                 break
             if not self.is_repo(id):
                 self.error(1, UNKNOWN_REPO_ID %id)
-                results[i] = False
+                results[id] = False
                 break
             try:
                 self._installed_db.add(self._available_db.select(id), quiet=True)
-                results[i] = True
+                results[id] = True
             except Exception, e:
                 self.error(ERROR_INTERNAL_ERROR,
                         "Failed to enable repository '"+id+"' : "+str(e))
-                results[i] = False
+                results[id] = False
             self.get_installed(reload=True)
         return results
 
@@ -150,12 +150,12 @@ class LaymanAPI(object):
         """
         result = []
 
-        for i in repos:
+        for id in repos:
             if not self.is_repo(id):
                 self.error(1, UNKNOWN_REPO_ID %id)
                 result.append(('', False, False))
             try:
-                overlay = self._available_db.select(i)
+                overlay = self._available_db.select(id)
             except UnknownOverlayException, error:
                 self.error(2, "Error: %s" %str(error))
                 result.append(('', False, False))
@@ -184,19 +184,19 @@ class LaymanAPI(object):
         fatals = []
         warnings = []
         success  = []
-        for i in repos:
+        for id in repos:
             try:
-                odb = self._installed_db.select(i)
+                odb = self._installed_db.select(id)
             except UnknownOverlayException, error:
-                fatals.append((i, str(error)))
+                fatals.append((id, str(error)))
                 continue
 
             try:
-                ordb = self._available_db.select(i)
+                ordb = self._available_db.select(id)
             except UnknownOverlayException:
-                warnings.append((i,
+                warnings.append((id,
                     'Overlay "%s" could not be found in the remote lists.\n'
-                    'Please check if it has been renamed and re-add if necessary.', {'repo_name':i}))
+                    'Please check if it has been renamed and re-add if necessary.', {'repo_name':id}))
             else:
                 current_src = odb.sources[0].src
                 available_srcs = set(e.src for e in ordb.sources)
@@ -206,9 +206,9 @@ class LaymanAPI(object):
                         candidates = '  %s' % tuple(available_srcs)[0]
                     else:
                         plural = 's'
-                        candidates = '\n'.join(('  %d. %s' % (i + 1, v)) for i, v in enumerate(available_srcs))
+                        candidates = '\n'.join(('  %d. %s' % (id + 1, v)) for id, v in enumerate(available_srcs))
 
-                    warnings.append((i,
+                    warnings.append((id,
                         'The source of the overlay "%(repo_name)s" seems to have changed.\n'
                         'You currently sync from\n'
                         '\n'
@@ -220,17 +220,17 @@ class LaymanAPI(object):
                         '\n'
                         'as correct location%(plural)s.\n'
                         'Please consider removing and re-adding the overlay.' , {
-                            'repo_name':i,
+                            'repo_name':id,
                             'current_src':current_src,
                             'candidates':candidates,
                             'plural':plural,
                             }))
 
             try:
-                self._installed_db.sync(i, self.config['quiet'])
-                success.append((i,'Successfully synchronized overlay "' + i + '".'))
+                self._installed_db.sync(id, self.config['quiet'])
+                success.append((id,'Successfully synchronized overlay "' + id + '".'))
             except Exception, error:
-                fatals.append((i,
+                fatals.append((id,
                     'Failed to sync overlay "' + i + '".\nError was: '
                     + str(error)))
 
