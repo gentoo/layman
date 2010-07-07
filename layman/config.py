@@ -46,7 +46,7 @@ _USAGE = """
 class Config(object):
     '''Handles the configuration.'''
 
-    def __init__(self, args=None):
+    def __init__(self, args=None, output=None, stdout=None, stdin=None, stderr=None):
         '''
         Creates and describes all possible polymeraZe options and creates
         a debugging object.
@@ -63,6 +63,11 @@ class Config(object):
         '''
         if args == None:
             args = sys.argv
+
+        self.stdout = stdout if stdout else sys.stdout
+        self.stderr = stderr if stderr else sys.stderr
+        self.stdin = stdin if stdin else sys.stdin
+        self.output = output if output else OUT
 
         self.defaults = {'config'    : '/etc/layman/layman.cfg',
                          'storage'   : '/var/lib/layman',
@@ -233,7 +238,7 @@ class Config(object):
         #-----------------------------------------------------------------
         # Debug Options
 
-        OUT.cli_opts(self.parser)
+        self.output.cli_opts(self.parser)
 
         # Parse the command line first since we need to get the config
         # file option.
@@ -246,16 +251,25 @@ class Config(object):
             self.parser.error("Unhandled parameters: %s" % ', '.join(('"%s"' % e) for e in remain_args[1:]))
 
         # handle debugging
-        OUT.cli_handle(self.options)
+        self.output.cli_handle(self.options)
+
+        # add output to the options
+        self.options.__dict__['output'] = self.output
+
+        # add the std in/out/err to the options
+        self.options.__dict__['stdout'] = self.stdout
+        self.options.__dict__['stdin'] = self.stdin
+        self.options.__dict__['stderr'] = self.stderr
+        
 
         if self.options.__dict__['nocolor']:
-            OUT.color_off()
+            self.output.color_off()
 
         # Fetch only an alternate config setting from the options
         if not self.options.__dict__['config'] is None:
             self.defaults['config'] = self.options.__dict__['config']
 
-            OUT.debug('Got config file at ' + self.defaults['config'], 8)
+            self.output.debug('Got config file at ' + self.defaults['config'], 8)
 
         # Now parse the config file
         self.config = ConfigParser.ConfigParser(self.defaults)
@@ -263,14 +277,14 @@ class Config(object):
 
         # handle quietness
         if self['quiet']:
-            OUT.set_info_level(1)
-            OUT.set_warn_level(1)
+            self.output.set_info_level(1)
+            self.output.set_warn_level(1)
             self.defaults['quietness'] = 0
         elif 'quietness' in self.keys():
-            OUT.set_info_level(int(self['quietness']))
-            OUT.set_warn_level(int(self['quietness']))
+            self.output.set_info_level(int(self['quietness']))
+            self.output.set_warn_level(int(self['quietness']))
 
-        OUT.debug('Reading config file at ' + self.defaults['config'], 8)
+        self.output.debug('Reading config file at ' + self.defaults['config'], 8)
 
         self.config.read(self.defaults['config'])
 
@@ -286,13 +300,13 @@ class Config(object):
             if overlays:
                 return  overlays
 
-        OUT.debug('Retrieving option', 8)
+        self.output.debug('Retrieving option', 8)
 
         if (key in self.options.__dict__.keys()
             and not self.options.__dict__[key] is None):
             return self.options.__dict__[key]
 
-        OUT.debug('Retrieving option', 8)
+        self.output.debug('Retrieving option', 8)
 
         if self.config.has_option('MAIN', key):
             if key == 'nocheck':
@@ -302,34 +316,34 @@ class Config(object):
                     return False
             return self.config.get('MAIN', key)
 
-        OUT.debug('Retrieving option', 8)
+        self.output.debug('Retrieving option', 8)
 
         if key in self.defaults.keys():
             return self.defaults[key]
 
-        OUT.debug('Retrieving option', 8)
+        self.output.debug('Retrieving option', 8)
 
         return None
 
     def keys(self):
         '''Special handler for the configuration keys.'''
 
-        OUT.debug('Retrieving keys', 8)
+        self.output.debug('Retrieving keys', 8)
 
         keys = [i for i in self.options.__dict__.keys()
                 if not self.options.__dict__[i] is None]
 
-        OUT.debug('Retrieving keys', 8)
+        self.output.debug('Retrieving keys', 8)
 
         keys += [name for name, _ in self.config.items('MAIN')
                  if not name in keys]
 
-        OUT.debug('Retrieving keys', 8)
+        self.output.debug('Retrieving keys', 8)
 
         keys += [i for i in self.defaults.keys()
                  if not i in keys]
 
-        OUT.debug('Retrieving keys', 8)
+        self.output.debug('Retrieving keys', 8)
 
         return keys
 
