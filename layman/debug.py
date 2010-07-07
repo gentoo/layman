@@ -44,6 +44,7 @@ class Message:
     #       next time.
 
     def __init__(self, module = '',
+                 out = sys.stdout,
                  err = sys.stderr,
                  dbg = sys.stderr,
                  debugging_level = 4,
@@ -54,6 +55,7 @@ class Message:
                  mth = None,
                  obj = None,
                  var = None):
+
         if mth == None: mth = ['*']
         if obj == None: obj = ['*']
         if var == None: var = ['*']
@@ -66,6 +68,9 @@ class Message:
 
         # Where should the error output go? This can also be a file
         self.error_out = err
+
+        # Where should the normal output go? This can also be a file
+        self.std_out = out
 
         # The higher the level the more information you will get
         self.warn_lev = warn_level
@@ -298,7 +303,7 @@ class Message:
     ## Output Functions
 
     def notice (self, note):
-        print note
+        print >> self.std_out, note
 
     def info (self, info, level = 4):
 
@@ -309,7 +314,7 @@ class Message:
             return
 
         for i in info.split('\n'):
-            print self.maybe_color('green', '* ') + i
+            print  >> self.std_out, self.maybe_color('green', '* ') + i
 
     def status (self, message, status, info = 'ignored'):
 
@@ -322,7 +327,7 @@ class Message:
             return
 
         for i in lines[0:-1]:
-            print self.maybe_color('green', '* ') + i
+            print  >> self.std_out, self.maybe_color('green', '* ') + i
 
         i = lines[-1]
 
@@ -336,7 +341,7 @@ class Message:
         else:
             result = '[' + self.maybe_color('yellow', info) + ']'
 
-        print self.maybe_color('green', '* ') + i + ' ' + '.' * (58 - len(i))  \
+        print  >> self.std_out, self.maybe_color('green', '* ') + i + ' ' + '.' * (58 - len(i))  \
               + ' ' + result
 
     def warn (self, warn, level = 4):
@@ -348,7 +353,7 @@ class Message:
             return
 
         for i in warn.split('\n'):
-            print self.maybe_color('yellow', '* ') + i
+            print  >> self.std_out, self.maybe_color('yellow', '* ') + i
 
     def error (self, error):
 
