@@ -103,20 +103,20 @@ def path(path_elements):
 
     return pathname
 
-def delete_empty_directory(mdir):
+def delete_empty_directory(mdir, output=OUT):
     if os.path.exists(mdir) and not os.listdir(mdir):
         # Check for sufficient privileges
         if os.access(mdir, os.W_OK):
-            OUT.info('Deleting _empty_ directory "%s"' % mdir, 2)
+            output.info('Deleting _empty_ directory "%s"' % mdir, 2)
             try:
                 os.rmdir(mdir)
             except OSError, error:
-                OUT.warn(str(error))
+                output.warn(str(error))
         else:
-            OUT.warn('Insufficient permissions to delete _empty_ folder "%s".' % mdir)
+            output.warn('Insufficient permissions to delete _empty_ folder "%s".' % mdir)
             import getpass
             if getpass.getuser() != 'root':
-                OUT.warn('Hint: You are not root.')
+                output.warn('Hint: You are not root.')
 
 #===============================================================================
 #
