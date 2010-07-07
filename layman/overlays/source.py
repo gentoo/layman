@@ -14,6 +14,7 @@
 #             Sebastian Pipping <sebastian@pipping.org>
 
 import os
+import copy
 import sys
 import shutil
 import subprocess
@@ -21,21 +22,26 @@ from layman.debug import OUT
 from layman.utils import path
 
 
+def _resolve_command(command):
+    if os.path.isabs(command):
+        if not os.path.exists(command):
+            raise Exception('Program "%s" not found' % command)
+        return ('File', command)
+    else:
+        kind = 'Command'
+        env_path = os.environ['PATH']
+        for d in env_path.split(os.pathsep):
+            f = os.path.join(d, command)
+            if os.path.exists(f):
+                return ('Command', f)
+        raise Exception('Cound not resolve command "%s" based on PATH "%s"' % (command, env_path))
+
+
 def require_supported(binaries):
     for command, mtype, package in binaries:
         found = False
-        if os.path.isabs(command):
-            kind = 'Binary'
-            found = os.path.exists(command)
-        else:
-            kind = 'Command'
-            for d in os.environ['PATH'].split(os.pathsep):
-                f = os.path.join(d, command)
-                if os.path.exists(f):
-                    found = True
-                    break
-
-        if not found:
+        kind, path = _resolve_command(command)
+        if not path:
             raise Exception(kind + ' ' + command + ' seems to be missing!'
                             ' Overlay type "' + mtype + '" not support'
                             'ed. Did you emerge ' + package + '?')
@@ -101,25 +107,43 @@ class OverlaySource(object):
     def command(self):
         return self.config['%s_command' % self.__class__.type_key]
 
-    def cmd(self, command):
-        '''Run a command.'''
+    def run_command(self, *args, **kwargs):
+        file_to_run = _resolve_command(self.command())[1]
+        args = (file_to_run, ) + args
+        assert('pwd' not in kwargs)  # Bug detector
 
-        OUT.info('Running command "' + command + '"...', 2)
+        cwd = kwargs.get('cwd', None)
+        env = None
+        env_updates = None
+        if 'env' in kwargs:
+            # Build actual env from surrounding plus updates
+            env_updates = kwargs['env']
+            env = copy.copy(os.environ)
+            env.update(env_updates)
 
-        if hasattr(sys.stdout,'encoding'):
-            enc = sys.stdout.encoding or sys.getfilesystemencoding()
-            if enc:
-                command = command.encode(enc)
+        command_repr = ' '.join(args)
+        if env_updates:
+            command_repr = '%s %s' % (' '.join('%s=%s' % (k, v) for (k, v) in sorted(env_updates.items())), command_repr)
+        if cwd:
+            command_repr = '( cd %s  && %s )' % (cwd, command_repr)
 
-        if not self.quiet:
-            return os.system(command)
+        OUT.info('Running... # %s' % command_repr, 2)
+
+        if self.quiet:
+            output_target = open('/dev/null', 'w')
         else:
-            cmd = subprocess.Popen([command], shell = True,
-                                   stdout = subprocess.PIPE,
-                                   stderr = subprocess.PIPE,
-                                   close_fds = True)
-            result = cmd.wait()
-            return result
+            output_target = None  # i.e. re-use parent file descriptors
+
+        proc = subprocess.Popen(args,
+            stdout=output_target,
+            stderr=output_target,
+            cwd=cwd,
+            env=env)
+
+        if self.quiet:
+            output_target.close()
+
+        return proc.wait()
 
     def to_xml_hook(self, repo_elem):
         pass

@@ -126,8 +126,9 @@ class TarOverlay(OverlaySource):
             raise Exception('Failed to store tar package in '
                             + pkg + '\nError was:' + str(error))
 
-        result = self.cmd(self.command() + u' -v -x' + u' -f "' + pkg
-                          + u'" -C "' + dest_dir + u'"')
+        # tar -v -x -f SOURCE -C TARGET
+        args = ['-v', '-x', '-f', pkg, '-C', dest_dir]
+        result = self.run_command(*args)
 
         os.unlink(pkg)
         return result

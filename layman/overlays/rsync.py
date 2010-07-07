@@ -58,17 +58,15 @@ class RsyncOverlay(OverlaySource):
 
         self.supported()
 
+        # rsync OPTIONS [-q] SOURCE TARGET
+        args = ['-rlptDvz', '--progress', '--delete', '--delete-after', '--timeout=180',
+            '--exclude=distfiles/*', '--exclude=local/*', '--exclude=packages/*']
         if quiet:
-            quiet_option = '-q '
-        else:
-            quiet_option = ''
+            args.append('-q')
+        args.append(self.src + '/')
+        args.append(path([base, self.parent.name]))
 
-        _command = self.command() + ' -rlptDvz --progress --delete --delete-after ' +\
-                '--timeout=180 --exclude="distfiles/*" --exclude="local/*" ' +\
-                '--exclude="packages/*" '
-
-        return self.cmd(_command + quiet_option + '"' + self.src + '/" "' +
-                        path([base, self.parent.name]) + '"')
+        return self.run_command(*args)
 
     def supported(self):
         '''Overlay type supported?'''

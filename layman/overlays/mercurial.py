@@ -49,16 +49,18 @@ class MercurialOverlay(OverlaySource):
 
         self.supported()
 
-        return self.cmd(self.command() + ' clone "' + self.src + '/" "' +
-                        path([base, self.parent.name]) + '"')
+        # hg clone SOURCE TARGET
+        args = ['clone', self.src + '/', path([base, self.parent.name])]
+        return self.run_command(*args)
 
     def sync(self, base, quiet = False):
         '''Sync overlay.'''
 
         self.supported()
 
-        return self.cmd('cd "' + path([base, self.parent.name]) + '" && ' +
-                        self.command() + ' pull -u "' + self.src + '"')
+        # hg pull -u SOURCE
+        args = ['pull', '-u', self.src]
+        return self.run_command(*args, cwd=path([base, self.parent.name]))
 
     def supported(self):
         '''Overlay type supported?'''

@@ -8,6 +8,8 @@ Version TODO
      Former now shows a usage summary while latter now reports
      an error.  Both of them kept quiet before.
 
+ - Replace os.system() by subprocess.Popen()
+
 
 Version 1.3.4 - Released 2010-07-05
 ===================================

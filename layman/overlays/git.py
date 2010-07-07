@@ -48,30 +48,29 @@ class GitOverlay(OverlaySource):
 
         self.supported()
 
+        def fix_git_source(source):
+            # http:// should get trailing slash, other protocols shouldn't
+            if source.split(':')[0] == 'http':
+                return source + '/'
+            return source
+
+        # git clone [-q] SOURCE TARGET
+        args = ['clone']
         if quiet:
-            quiet_option = '-q '
-        else:
-            quiet_option = ''
- 
-        # http:// should get trailing slash, other protocols shouldn't
-        slash = ''
-        if self.src.split(':')[0] == 'http':
-            slash = '/'
-        return self.cmd(self.command() + ' clone ' + quiet_option + '"' + self.src + slash
-                        + '" "' + path([base, self.parent.name]) + '"')
+            args.append('-q')
+        args.append(fix_git_source(self.src))
+        args.append(path([base, self.parent.name]))
+        return self.run_command(*args)
 
     def sync(self, base, quiet = False):
         '''Sync overlay.'''
 
         self.supported()
 
+        args = ['pull']
         if quiet:
-            quiet_option = ' -q'
-        else:
-            quiet_option = ''
- 
-        return self.cmd('cd "' + path([base, self.parent.name]) + '" && '
-                        + self.command() + ' pull' + quiet_option)
+            args.append('-q')
+        return self.run_command(*args, cwd=path([base, self.parent.name]))
 
     def supported(self):
         '''Overlay type supported?'''

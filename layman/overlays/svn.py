@@ -50,23 +50,18 @@ class SvnOverlay(OverlaySource):
 
         super(SvnOverlay, self).add(base)
 
+        args = ['co']
         if quiet:
-            quiet_option = '-q '
-        else:
-            quiet_option = ''
+            args.append('-q')
+        args.append(self.src + '/@')
+        args.append(path([base, self.parent.name]))
 
-        return self.cmd(self.command() + ' co ' + quiet_option +
-                        '"' + self.src + '/@" "' + path([base, self.parent.name]) + '"')
+        return self.run_command(*args)
 
     def sync(self, base, quiet = False):
         '''Sync overlay.'''
 
         self.supported()
-
-        if quiet:
-            quiet_option = '-q '
-        else:
-            quiet_option = ''
 
         def checkout_location():
             # Append '@' iff needed
@@ -76,8 +71,13 @@ class SvnOverlay(OverlaySource):
                 repo_part = repo_part + '@'
             return path([base, repo_part])
 
-        return self.cmd(self.command() + ' up ' + quiet_option +
-                        '"' + checkout_location() + '"')
+        # svn up [-q] TARGET
+        args = ['up']
+        if quiet:
+            args.append('-q')
+        args.append(checkout_location())
+
+        return self.run_command(*args)
 
     def supported(self):
         '''Overlay type supported?'''

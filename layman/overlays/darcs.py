@@ -49,16 +49,18 @@ class DarcsOverlay(OverlaySource):
 
         self.supported()
 
-        return self.cmd(self.command() + ' get --partial "' + self.src +
-                        '/" "' + path([base, self.parent.name]) + '"')
+        # darcs get --partial SOURCE TARGET
+        args = ['get', '--partial', self.src + '/', path([base, self.parent.name])]
+        return self.run_command(*args)
 
     def sync(self, base, quiet = False):
         '''Sync overlay.'''
 
         self.supported()
 
-        return self.cmd('cd "' + path([base, self.parent.name]) + '" && ' +
-                        self.command() + ' pull --all "' + self.src + '"')
+        # darcs pull --all SOURCE
+        args = ['pull', '--all', self.src]
+        return self.run_command(*args, cwd=path([base, self.parent.name]))
 
     def supported(self):
         '''Overlay type supported?'''

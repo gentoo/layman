@@ -74,27 +74,29 @@ class CvsOverlay(OverlaySource):
 
         self.supported()
 
+        # cvs [-q] co -d SOURCE SCOPE
+        args = []
         if quiet:
-            quiet_option = ' -q'
-        else:
-            quiet_option = ''
+            args.append('-q')
+        args.append('co')
+        args.append('-d')
+        args.append(self.parent.name)
+        args.append(self.subpath)
 
-        return self.cmd('cd "' + base + '" && CVSROOT="' + self.src + '" ' +
-                        self.command() + quiet_option + ' co -d "' + self.parent.name
-                        + '" "' + self.subpath + '"' )
+        return self.run_command(*args, cwd=base, env=dict(CVSROOT=self.src))
 
     def sync(self, base, quiet = False):
         '''Sync overlay.'''
 
         self.supported()
 
+        # cvs [-q] update -d
+        args = []
         if quiet:
-            quiet_option = ' -q'
-        else:
-            quiet_option = ''
-
-        return self.cmd('cd "' + path([base, self.parent.name]) + '" && ' +
-                        self.command() + quiet_option + ' update -d')
+            args.append('-q')
+        args.append('update')
+        args.append('-d')
+        return self.run_command(*args, cwd=path([base, self.parent.name]))
 
     def supported(self):
         '''Overlay type supported?'''

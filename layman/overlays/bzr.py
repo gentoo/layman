@@ -50,17 +50,18 @@ class BzrOverlay(OverlaySource):
 
         self.supported()
 
-        return self.cmd(self.command() + ' get "' + self.src + '/" "' +\
-                        path([base, self.parent.name]) + '"')
+        # bzr get SOURCE TARGET
+        args = ['get', self.src + '/', path([base, self.parent.name])]
+        return self.run_command(*args)
 
     def sync(self, base, quiet = False):
         '''Sync overlay.'''
 
         self.supported()
 
-        return self.cmd('cd "' + path([base, self.parent.name]) + '" && ' +          \
-                        self.command() + ' pull --overwrite "' + self.src \
-                        + '"')
+        # bzr pull --overwrite SOURCE
+        args = ['pull', '--overwrite', self.src]
+        return self.run_command(*args, cwd=path([base, self.parent.name]))
 
     def supported(self):
         '''Overlay type supported?'''
