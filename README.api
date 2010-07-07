@@ -1,0 +1,57 @@
+New layman API readme:
+
+
+To use the new LaymanAPI class, so far this is what I've come up with.
+
+big_daddy layman # python
+Python 2.6.5 (release26-maint, May 15 2010, 18:26:37) 
+[GCC 4.4.3] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import layman;from layman.api import LaymanAPI, create_fd;from layman.config import Config
+>>> e=create_fd();o=create_fd();from layman.debug import Message;M=Message(module='layman',out=o[1], err=e[1]);c=Config(output=M, stdout=o[1], stderr=e[1])                                                                                                        
+
+
+>>> # connect the e[0] and o[0] file descriptors to where you want to capture/direct the output #
+... 
+
+
+>>> l=LaymanAPI(config=c, output=M)
+>>> avail=l.get_available()
+>>> avail
+[u'DuPol', u'THE', u'akoya', u'alexcepoi', u'alexxy', u'amielke-overlay', u'anarchy', u'and3k-sunrise', u'arcon', u'armagetron', u'aross', u'bangert', u'bazaar', u'belak', u'benf', u'berkano', u'betagarden', u'betelgeuse', u'bibletime', u'calculate', u'cell', u'centerim', u'chtekk-apps', u'crg', u'd', u'dagger', u'dberkholz', u'deathwing00', u'dertobi123', u'desktop-effects', u'dev-zero', u'devnull', u'dilfridge', u'dirtyepic', u'dotnet', u'dottout', u'drizzt-overlay', u'eatnumber1', u'efika', u'emacs', u'embedded-cross', u'enlightenment', u'eva', u'eyolfson', u'falco', u'ferringb', u'finnish', u'flameeyes-overlay', u'foo-overlay', u'freevo', u'gamerlay', u'games', u'gcc-porting', u'gechi', u'genstef', u'gentoo-arm', u'gentoo-bsd', u'gentoo-china', u'gentoo-quebec', u'gentoo-taiwan', u'gentoojp', u'gnome', u'gnome-live', u'gnr', u'gnustep', u'gpe', u'graaff', u'halcy0n', u'hanno', u'hardened-development', u'haskell', u'hawking', u'hollow', u'hwoarang', u'iElectric', u'ibormuth', u'ikelos', u'init6', u'initng', u'interactive-fiction', u'iwlwifi', u'jasiu', u'java-overlay', u'je_fro', u'jensp', u'jmbsvicetto', u'jokey', u'jyujin', u'kde', u'kde-sunset', u'kerberos', u'keruspe', u'kolab', u'kvm', u'laurentb', u'leio', u'lila-theme', u'liquidx', u'lisp', u'loki_val', u'loongson', u'lordvan', u'lorelei', u'ltsp', u'lu_zero', u'luke-jr', u'lxde', u'm68k', u'maekke', u'maggu2810-overlay', u'mamona', u'marineam-xen', u'matsuu', u'mozilla', u'mpd', u'mrpouet', u'multilib', u'multimedia', u'mv', u'mysql', u'n4g', u'n4g-experimental', u'n8x0', u'nelchael', u'neurogeek', u'neuvoo', u'nirbheek', u'njw', u'nx', u'ohnobinki', u'openmoko', u'openoffice-geki', u'openrc', u'oss-overlay', u'otih', u'pchrist', u'pcsx2', u'pd-overlay', u'pda', u'pentoo', u'perl-experimental', u'php', u'php-4', u'piczu', u'pioto-overlay', u'plan9', u'portato', u'postgresql-experimental', u'postgresql-testing', u'powerman', u'powerpc', u'pro-audio', u'purak', u'pure-funtoo', u'python', u'pythonhead', u'qting-edge', u'rafaelmartins', u'ramereth', u'raw', u'rbu', u'remi', u'rion', u'robbat2', u'roslin', u'rostov', u'rox', u'rubenqba', u'ruby', u's3d', u'sabayon', u'sage-on-gentoo', u'sattvik', u'scarabeus', u'science', u'secondlife', u'seemant', u'serkan-overlay', u'sipx', u'sochotnicky', u'soor-overlay', u'sping', u'steev', u'stormfront', u'stuge', u'sugar', u'suka', u'sunrise', u'swegener', u'tante', u'tcl-8.6', u'tcl-multislot', u'thousand-parsec', u'toolchain', u'trapni', u'trauma', u'tryton', u'turbogears2', u'ub0rlay', u'vdr-devel', u'vdr-testing', u'vdr-xine', u'verlihub', u'vmware', u'voip', u'voyageur', u'vps', u'webapps-experimental', u'wirelay', u'wish', u'wolf31o2', u'wrobel', u'wschlich', u'wschlich-testing', u'x11', u'xemacs', u'xen', u'xfce-dev', u'xgr', u'xhub', u'xmms-zombie', u'xwing', u'zugaina']
+>>> inst=l.get_installed()
+>>> inst
+[u'bazaar', u'hardened-development', u'oss-overlay', u'sping', u'sunrise']
+>>> results = l.sync(['sunrise'])
+>>> results
+([], [('sunrise', 'Successfully synchronized overlay "sunrise".')], [])
+# results are a tuple of (warnings, successes, errors)
+>>> l.get_info(['sunrise'])
+[('sunrise\n~~~~~~~\nSource  : svn://overlays.gentoo.org/proj/sunrise/reviewed/\nContact : sunrise@gentoo.org\nType    : Subversion; Priority: 50\nQuality : experimental\n\nDescription:\n  Ebuilds for bugs assigned to maintainer-wanted\n\nLink:\n  http://overlays.gentoo.org/proj/sunrise\n\nFeed:\n  http://overlays.gentoo.org/proj/sunrise/timeline\n', True, True)]
+>>> l.fetch_remote_list()
+True
+>>> avail = l.get_available()
+>>> avail
+[u'DuPol', u'THE', u'akoya', u'alexcepoi', u'alexxy', u'amielke-overlay', u'anarchy', u'and3k-sunrise', u'arcon', u'armagetron', u'aross', u'bangert', u'bazaar', u'belak', u'benf', u'berkano', u'betagarden', u'betelgeuse', u'bibletime', u'calculate', u'cell', u'centerim', u'chtekk-apps', u'crg', u'd', u'dagger', u'dberkholz', u'deathwing00', u'dertobi123', u'desktop-effects', u'dev-zero', u'devnull', u'dilfridge', u'dirtyepic', u'dotnet', u'dottout', u'drizzt-overlay', u'eatnumber1', u'efika', u'emacs', u'embedded-cross', u'enlightenment', u'eva', u'eyolfson', u'falco', u'ferringb', u'finnish', u'flameeyes-overlay', u'foo-overlay', u'freevo', u'gamerlay', u'games', u'gcc-porting', u'gechi', u'genstef', u'gentoo-arm', u'gentoo-bsd', u'gentoo-china', u'gentoo-quebec', u'gentoo-taiwan', u'gentoojp', u'gnome', u'gnome-live', u'gnr', u'gnustep', u'gpe', u'graaff', u'halcy0n', u'hanno', u'hardened-development', u'haskell', u'hawking', u'hollow', u'hwoarang', u'iElectric', u'ibormuth', u'ikelos', u'init6', u'initng', u'interactive-fiction', u'iwlwifi', u'jasiu', u'java-overlay', u'je_fro', u'jensp', u'jmbsvicetto', u'jokey', u'jyujin', u'kde', u'kde-sunset', u'kerberos', u'keruspe', u'kolab', u'kvm', u'laurentb', u'leio', u'lila-theme', u'liquidx', u'lisp', u'loki_val', u'loongson', u'lordvan', u'lorelei', u'ltsp', u'lu_zero', u'luke-jr', u'lxde', u'm68k', u'maekke', u'maggu2810-overlay', u'mamona', u'marineam-xen', u'matsuu', u'mozilla', u'mpd', u'mrpouet', u'multilib', u'multimedia', u'mv', u'mysql', u'n4g', u'n4g-experimental', u'n8x0', u'nelchael', u'neurogeek', u'neuvoo', u'nirbheek', u'njw', u'nx', u'ohnobinki', u'openmoko', u'openoffice-geki', u'openrc', u'oss-overlay', u'otih', u'pchrist', u'pcsx2', u'pd-overlay', u'pda', u'pentoo', u'perl-experimental', u'php', u'php-4', u'piczu', u'pioto-overlay', u'plan9', u'portato', u'postgresql-experimental', u'postgresql-testing', u'powerman', u'powerpc', u'pro-audio', u'purak', u'pure-funtoo', u'python', u'pythonhead', u'qting-edge', u'rafaelmartins', u'ramereth', u'raw', u'rbu', u'remi', u'rion', u'robbat2', u'roslin', u'rostov', u'rox', u'rubenqba', u'ruby', u's3d', u'sabayon', u'sage-on-gentoo', u'sattvik', u'scarabeus', u'science', u'secondlife', u'seemant', u'serkan-overlay', u'sipx', u'sochotnicky', u'soor-overlay', u'sping', u'steev', u'stormfront', u'stuge', u'sugar', u'suka', u'sunrise', u'swegener', u'tante', u'tcl-8.6', u'tcl-multislot', u'thousand-parsec', u'toolchain', u'trapni', u'trauma', u'tryton', u'turbogears2', u'ub0rlay', u'vdr-devel', u'vdr-testing', u'vdr-xine', u'verlihub', u'vmware', u'voip', u'voyageur', u'vps', u'webapps-experimental', u'wirelay', u'wish', u'wolf31o2', u'wrobel', u'wschlich', u'wschlich-testing', u'x11', u'xemacs', u'xen', u'xfce-dev', u'xgr', u'xhub', u'xmms-zombie', u'xwing', u'zugaina']
+>> results=l.get_info(['sunrise'])
+>>> results[0]
+('sunrise\n~~~~~~~\nSource  : svn://overlays.gentoo.org/proj/sunrise/reviewed/\nContact : sunrise@gentoo.org\nType    : Subversion; Priority: 50\nQuality : experimental\n\nDescription:\n  Ebuilds for bugs assigned to maintainer-wanted\n\nLink:\n  http://overlays.gentoo.org/proj/sunrise\n\nFeed:\n  http://overlays.gentoo.org/proj/sunrise/timeline\n', True, True)
+>>> info,official,supported=results[0]
+>>> info
+'sunrise\n~~~~~~~\nSource  : svn://overlays.gentoo.org/proj/sunrise/reviewed/\nContact : sunrise@gentoo.org\nType    : Subversion; Priority: 50\nQuality : experimental\n\nDescription:\n  Ebuilds for bugs assigned to maintainer-wanted\n\nLink:\n  http://overlays.gentoo.org/proj/sunrise\n\nFeed:\n  http://overlays.gentoo.org/proj/sunrise/timeline\n'
+>>> official
+True
+>>> supported
+True
+>>> 
+>>> results=l.get_info(['sunrise', 'sping'])
+>>> len(results)
+2
+>>> info,official,supported=results[1]
+>>> info
+'sping\n~~~~~\nSource  : git://git.goodpoint.de/overlay-sping.git\nContact : Sebastian Pipping <sping@gentoo.org>\nType    : Git; Priority: 50\nQuality : experimental\n\nDescription:\n  Gentoo overlay of Sebastian Pipping\n\nLink:\n  http://git.goodpoint.de/?p=overlay-sping.git;a=summary\n\nFeed:\n  http://git.goodpoint.de/?p=overlay-sping.git;a=atom\n'
+>>> official
+False
+>>> supported
+True
+>>> 
