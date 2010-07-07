@@ -482,12 +482,13 @@
 	      <term><option>--quiet</option></term>
 	      <listitem>
 		<para>Makes <command>layman</command> completely quiet.
-		This option is dangerous: If the processes spawned by
-		layman when adding or synchronizing overlays require
-		any input layman will hang without telling you
-		why. This might happen for example if your overlay
-		resides in subversion and the SSL certificate of
-		the server needs acceptance.</para>
+		In quiet mode child processes will be run with stdin closed
+		to avoid running into infinite and blindly interactive sessions.
+		Thus a child process may abort once it runs into an
+		situation with need for human interaction.
+		For example this might happen if your overlay
+		resides in Subversion and the SSL certificate of
+		the server needs manual acceptance.</para>
 	      </listitem>
 	    </varlistentry>
 

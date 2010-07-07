@@ -130,20 +130,30 @@ class OverlaySource(object):
         OUT.info('Running... # %s' % command_repr, 2)
 
         if self.quiet:
+            input_source = subprocess.PIPE
             output_target = open('/dev/null', 'w')
         else:
-            output_target = None  # i.e. re-use parent file descriptors
+            # Re-use parent file descriptors
+            input_source = None
+            output_target = None
 
         proc = subprocess.Popen(args,
+            stdin=input_source,
             stdout=output_target,
             stderr=output_target,
             cwd=cwd,
             env=env)
 
         if self.quiet:
+            # Make child non-interactive
+            proc.stdin.close()
+
+        result = proc.wait()
+
+        if self.quiet:
             output_target.close()
 
-        return proc.wait()
+        return result
 
     def to_xml_hook(self, repo_elem):
         pass

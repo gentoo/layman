@@ -10,6 +10,9 @@ Version TODO
 
  - Replace os.system() by subprocess.Popen()
 
+ - Close stdin of child processes when run in quiet mode
+   to avoid running into infinite and blindly interactive sessions.
+
 
 Version 1.3.4 - Released 2010-07-05
 ===================================
