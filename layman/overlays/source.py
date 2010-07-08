@@ -148,7 +148,11 @@ class OverlaySource(object):
             # Make child non-interactive
             proc.stdin.close()
 
-        result = proc.wait()
+        try:
+            result = proc.wait()
+        except KeyboardInterrupt:
+            OUT.info('Interrupted manually', 2)
+            result = 1
 
         if self.quiet:
             output_target.close()

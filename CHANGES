@@ -1,6 +1,13 @@
 CHANGES
 -------
 
+Version TODO
+===================================
+
+ - Fixed: Catch keyboard interrupts (Ctrl+C) while
+     running child processes properly
+
+
 Version 1.4.0 - Released 2010-07-08
 ===================================
 
