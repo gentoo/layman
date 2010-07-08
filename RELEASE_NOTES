@@ -1,18 +1,24 @@
-Version 1.3.4 - Released 2010-07-05
+Version 1.4.0 - Released 2010-07-08
 ===================================
 
 FULL CHANGES
 ------------
 
- - Propagate move of cvs and subversion from
-   dev-util/* to dev-vcs/* (bug #311419, bug #307849)
+ - Handle command line calls "layman" and "layman foo" better.
+     Former now shows a usage summary while latter now reports
+     an error.  Both of them kept quiet before.
+
+ - Replace os.system() by subprocess.Popen()
+
+ - Close stdin of child processes when run in quiet mode
+   to avoid running into infinite and blindly interactive sessions.
 
 
 SHORT CHANGES
 -------------
 
- layman-1.3.4 is a release with minimal fixes.
- Updating is not urgent or important, either.
+ layman-1.4.0 brings larger internal rewrites and minor improvements
+ on usability.  Updating is recommended.
 
 
 FRESHMEAT
