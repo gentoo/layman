@@ -7,8 +7,8 @@ big_daddy layman # python
 Python 2.6.5 (release26-maint, May 15 2010, 18:26:37) 
 [GCC 4.4.3] on linux2
 Type "help", "copyright", "credits" or "license" for more information.
->>> import layman;from layman.api import LaymanAPI, create_fd;from layman.config import Config
->>> e=create_fd();o=create_fd();from layman.debug import Message;M=Message(module='layman',out=o[1], err=e[1]);c=Config(output=M, stdout=o[1], stderr=e[1])                                                                                                        
+>>> import layman;from layman.api import LaymanAPI, create_fd;from layman.config import BareConfig
+>>> e=create_fd();o=create_fd();from layman.debug import Message;M=Message(module='layman',out=o[1], err=e[1]);c=BareConfig(output=M, stdout=o[1], stderr=e[1])
 
 
 >>> # connect the e[0] and o[0] file descriptors to where you want to capture/direct the output #

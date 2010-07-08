@@ -22,7 +22,7 @@ __version__ = "$Id$"
 #
 #-------------------------------------------------------------------------------
 
-from   layman.config            import Config
+from   layman.config            import ArgsParser
 from   layman.action            import main
 
 #===============================================================================
@@ -31,4 +31,4 @@ from   layman.action            import main
 #
 #-------------------------------------------------------------------------------
 
-main(Config())
+main(ArgsParser())

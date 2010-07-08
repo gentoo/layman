@@ -16,7 +16,7 @@
 from sys import stderr, stdin, stdout
 import os, types
 
-from layman.config import Config
+from layman.config import BareConfig
 #from layman.action import Sync
 
 from layman.dbbase import UnknownOverlayException
@@ -30,7 +30,7 @@ ERROR_REPO_NOT_FOUND = -1
 ERROR_INTERNAL_ERROR = -2
 UNKNOWN_REPO_ID = "Repo ID '%s' " + \
         "is not listed in the current available overlays list"
-
+ 
 # In order to redirect output you need to get a Message class instance with the
 # stderr, stdout, stddebug directed to where you want.
 # eg:  output = Message('layman', err=mystderr, dbg=mydebug, out=myoutput)
@@ -49,7 +49,7 @@ class LaymanAPI(object):
         
         self.output = output if output  else OUT
        
-        self.config = config if config else Config(output=output)
+        self.config = config if config else BareConfig(output=output)
         
         self.report_errors = report_errors
         
@@ -176,10 +176,6 @@ class LaymanAPI(object):
         @param repos: ['repo-id1', ...]
         @rtype bool
         """
-        # currently uses a modified Sync class with a few added parameters,
-        # but should be re-written into here for a better fit and output
-        #_sync = Sync(self.config, repos, db=self._installed_db, rdb=self._available_db)
-        #_sync.run()
         
         fatals = []
         warnings = []
@@ -231,7 +227,7 @@ class LaymanAPI(object):
                 success.append((id,'Successfully synchronized overlay "' + id + '".'))
             except Exception, error:
                 fatals.append((id,
-                    'Failed to sync overlay "' + i + '".\nError was: '
+                    'Failed to sync overlay "' + id + '".\nError was: '
                     + str(error)))
 
         return (warnings, success, fatals)

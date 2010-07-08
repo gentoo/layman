@@ -15,6 +15,7 @@
 # Author(s):
 #             Gunnar Wrobel <wrobel@gentoo.org>
 #             Sebastian Pipping <sebastian@pipping.org>
+#             Brian Dolbec <brian.dolbec@gmail.com>
 #
 '''Defines the configuration options and provides parsing functionality.'''
 
@@ -43,8 +44,92 @@ _USAGE = """
   layman -f [-o URL]
   layman (-l|-L|-S)"""
 
-class Config(object):
-    '''Handles the configuration.'''
+class BareConfig(object):
+    '''Handles the configuration only.'''
+
+    def __init__(self, output=None, stdout=None, stdin=None, stderr=None):
+        '''
+        Creates a bare config with defaults and a few output options.
+
+        >>> a = BareConfig()
+        >>> a['overlays']
+        '\\nhttp://www.gentoo.org/proj/en/overlays/repositories.xml'
+        >>> sorted(a.keys())
+        ['bzr_command', 'cache', 'config', 'cvs_command', 'darcs_command',
+        'git_command', 'local_list', 'make_conf', 'mercurial_command',
+        'nocheck', 'overlays', 'proxy', 'quietness', 'rsync_command', 'storage',
+        'svn_command', 'tar_command', 'umask', 'width']
+        '''
+        self._defaults = {'config'    : '/etc/layman/layman.cfg',
+                    'storage'   : '/var/lib/layman',
+                    'cache'     : '%(storage)s/cache',
+                    'local_list': '%(storage)s/overlays.xml',
+                    'make_conf' : '%(storage)s/make.conf',
+                    'nocheck'   : 'yes',
+                    'proxy'     : '',
+                    'umask'     : '0022',
+                    'overlays'  :
+                    'http://www.gentoo.org/proj/en/overlays/repositories.xml',
+                    'bzr_command': '/usr/bin/bzr',
+                    'cvs_command': '/usr/bin/cvs',
+                    'darcs_command': '/usr/bin/darcs',
+                    'git_command': '/usr/bin/git',
+                    'mercurial_command': '/usr/bin/hg',
+                    'rsync_command': '/usr/bin/rsync',
+                    'svn_command': '/usr/bin/svn',
+                    'tar_command': '/bin/tar'
+                    }
+        self._options = {
+                    'stdout': stdout if stdout else sys.stdout,
+                    'stdin': stdin if stdin else sys.stdin,
+                    'stderr': stderr if stderr else sys.stderr,
+                    'output': output if output else OUT,
+                    'quietness': '4',
+                    'width': 0,
+                    'verbose': False,
+                    'quiet': False,
+                    }
+
+
+    def keys(self):
+        '''Special handler for the configuration keys.
+        '''
+        self._options['output'].debug('Retrieving BareConfig options', 8)
+        keys = [i for i in self._options]
+        self._options['output'].debug('Retrieving BareConfig defaults', 8)
+        keys += [i for i in self._defaults
+                 if not i in keys]
+        self._options['output'].debug('Retrieving BareConfig done...', 8)
+        return keys
+
+
+    def get_defaults(self):
+        """returns our defaults dictionary"""
+        return self._defaults
+
+
+    def set_option(self, option, value):
+        """Sets an option to the value """
+        self._options[option] = value
+
+
+    def __getitem__(self, key):
+        self._options['output'].debug('Retrieving BareConfig option', 8)
+        if (key in self._options
+            and not self._options[key] is None):
+            return self._options[key]
+        self._options['output'].debug('Retrieving BareConfig default', 8)
+        if key in self._defaults:
+            if '%(storage)s' in self._defaults[key]:
+                return self._defaults[key]  %{'storage': self._defaults['storage']}
+            return self._defaults[key]
+        return None
+
+
+
+
+class ArgsParser(object):
+    '''Handles the configuration and option parser.'''
 
     def __init__(self, args=None, output=None, stdout=None, stdin=None, stderr=None):
         '''
@@ -55,7 +140,7 @@ class Config(object):
         >>> here = os.path.dirname(os.path.realpath(__file__))
         >>> sys.argv.append('--config')
         >>> sys.argv.append(here + '/../etc/layman.cfg')
-        >>> a = Config()
+        >>> a = ArgsParser()
         >>> a['overlays']
         '\\nhttp://www.gentoo.org/proj/en/overlays/repositories.xml'
         >>> sorted(a.keys())
@@ -69,25 +154,7 @@ class Config(object):
         self.stdin = stdin if stdin else sys.stdin
         self.output = output if output else OUT
 
-        self.defaults = {'config'    : '/etc/layman/layman.cfg',
-                         'storage'   : '/var/lib/layman',
-                         'cache'     : '%(storage)s/cache',
-                         'local_list': '%(storage)s/overlays.xml',
-                         'make_conf' : '%(storage)s/make.conf',
-                         'nocheck'   : 'yes',
-                         'proxy'     : '',
-                         'umask'     : '0022',
-                         'overlays'  :
-                         'http://www.gentoo.org/proj/en/overlays/repositories.xml',
-                         'bzr_command': '/usr/bin/bzr',
-                         'cvs_command': '/usr/bin/cvs',
-                         'darcs_command': '/usr/bin/darcs',
-                         'git_command': '/usr/bin/git',
-                         'mercurial_command': '/usr/bin/hg',
-                         'rsync_command': '/usr/bin/rsync',
-                         'svn_command': '/usr/bin/svn',
-                         'tar_command': '/bin/tar', }
-
+        self.defaults = BareConfig().get_defaults()
 
         self.parser = OptionParser(
             usage   = _USAGE,
