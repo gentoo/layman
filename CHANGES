@@ -7,6 +7,9 @@ Version TODO
  - Fixed: Catch keyboard interrupts (Ctrl+C) while
      running child processes properly
 
+ - Fixed: doctest error in tar overlay code (bug #327491)
+     Thanks to David Abbott for reporting!
+
 
 Version 1.4.0 - Released 2010-07-08
 ===================================

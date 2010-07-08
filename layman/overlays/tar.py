@@ -64,7 +64,7 @@ class TarOverlay(OverlaySource):
     >>> a = Overlay(repo, config, quiet=False)
     >>> OUT.color_off()
     >>> a.add(testdir) #doctest: +ELLIPSIS
-    * Running command "/bin/tar -v -x -f...
+    * Running... # /bin/tar -v -x -f...
     >>> sorted(os.listdir(testdir + '/dummy'))
     ['app-admin', 'app-portage']
     >>> shutil.rmtree(testdir)
