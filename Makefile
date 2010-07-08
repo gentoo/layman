@@ -6,7 +6,7 @@ doc:
 www:
 	cp doc/layman.8.html www/index.html
 
-.PHONY: release
-release: doc
+.PHONY: dist
+dist: doc
 	rm -rf dist MANIFEST
 	./setup.py sdist
