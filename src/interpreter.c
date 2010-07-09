@@ -69,7 +69,9 @@ void freeList(PyObjectList *list, int deref)
 		PyObjectListElem *tmp = node;
 		node = node->next;
 		if (deref)
+		{
 			Py_DECREF(tmp->object);
+		}
 		free(tmp);
 	}
 
@@ -173,7 +175,9 @@ PyObject *executeFunction(const char *module, const char *funcName, const char* 
 	PyObject *val = PyObject_CallObject(func, args);
 
 	if (args != NULL)
+	{
 		Py_DECREF(args);
+	}
 
 	return val;
 }

@@ -93,10 +93,61 @@ int overlayIsOfficial(Overlay *o)
 	return (int) PyLong_AsLong(iso);
 }
 
+int overlayIsSupported(Overlay *o)
+{
+	if (!o || !o->object)
+		return -1;
+
+	PyObject *iss = PyObject_CallMethod(o->object, "is_supported", NULL);
+
+	//TODO:Py_DECREF me !
+
+	return (int) PyLong_AsLong(iss);
+}
+
+const char *overlayShortList(Overlay *o)
+{
+	if (!o || !o->object)
+		return NULL;
+
+	PyObject *sl = PyObject_CallMethod(o->object, "short_list", NULL);
+
+	//TODO:Py_DECREF me !
+
+	return PyBytes_AsString(sl);
+}
+
+const char *overlayStr(Overlay *o)
+{
+	if (!o || !o->object)
+		return NULL;
+
+	PyObject *str = PyObject_CallMethod(o->object, "str", NULL);
+
+	//TODO:Py_DECREF me !
+
+	return PyBytes_AsString(str);
+}
+
+const char *overlayToXml(Overlay *o)
+{
+	if (!o || !o->object)
+		return NULL;
+
+	PyObject *element = PyObject_CallMethod(o->object, "to_xml", NULL);
+	PyObject *str = executeFunction("xml.etree.ElementTree", "tostring", "(O)", element);
+
+	Py_DECREF(element);
+
+	return PyBytes_AsString(str);
+}
+
 void overlayFree(Overlay *o)
 {
 	if (o && o->object)
+	{
 		Py_DECREF(o->object);
+	}
 	if (o)
 		free(o);
 }
