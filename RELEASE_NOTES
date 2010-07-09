@@ -1,24 +1,20 @@
-Version 1.4.0 - Released 2010-07-08
+Version 1.4.1 - Released 2010-07-09
 ===================================
 
 FULL CHANGES
 ------------
 
- - Handle command line calls "layman" and "layman foo" better.
-     Former now shows a usage summary while latter now reports
-     an error.  Both of them kept quiet before.
+ - Fixed: Catch keyboard interrupts (Ctrl+C) while
+     running child processes properly
 
- - Replace os.system() by subprocess.Popen()
-
- - Close stdin of child processes when run in quiet mode
-   to avoid running into infinite and blindly interactive sessions.
+ - Fixed: doctest error in tar overlay code (bug #327491)
+     Thanks to David Abbott for reporting!
 
 
 SHORT CHANGES
 -------------
 
- layman-1.4.0 brings larger internal rewrites and minor improvements
- on usability.  Updating is recommended.
+ layman-1.4.1 is a bugfix release.  Updating is recommended.
 
 
 FRESHMEAT
