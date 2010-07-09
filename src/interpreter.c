@@ -104,6 +104,8 @@ void freeInterpreter(Interpreter *inter)
 	Py_Finalize();
 }
 
+Interpreter *in = 0;
+
 /*
  * printf() like function that executes a python function
  * @param interpreter Python interpreter object on which the function should be ran
@@ -111,18 +113,17 @@ void freeInterpreter(Interpreter *inter)
  * @param funcName the function name to call
  * @param arg_types printf() like list of arguments. See Python documentation
  * @param ... arguments for the function
- * FIXME:why are default arguments necessary ?
  */
 
-PyObject *executeFunction(Interpreter *interpreter, const char *module, const char *funcName, const char* format, ...)
+PyObject *executeFunction(const char *module, const char *funcName, const char* format, ...)
 {
 	if (!Py_IsInitialized())
 		Py_Initialize();
 
 	// Make argument list
 	PyObject *args;
-	if (format == NULL)
-		args = Py_None;
+	if (format == NULL || strcmp(format, "") == 0)
+		args = PyTuple_New(0);
 	else
 	{
 		va_list listArgs;
@@ -133,17 +134,19 @@ PyObject *executeFunction(Interpreter *interpreter, const char *module, const ch
 
 	// Look for the module.
 	PyObject *mod = 0;
-	if (interpreter->modules)
+	if (in->modules)
 	{
-		mod = moduleNamed(module, interpreter->modules);
+		mod = moduleNamed(module, in->modules);
 	}
 	if (!mod)
 	{
 		mod = PyImport_ImportModule(module);
 		if (!mod)
 			return NULL;
-		insert(interpreter->modules, mod);
+		insert(in->modules, mod);
 	}
+
+	//printf("Using module named %s\n", PyModule_GetName(mod));
 
 	/*printf("mod: %p ", mod);
 	PyObject_Print(mod, stdout, 0);
@@ -159,58 +162,122 @@ PyObject *executeFunction(Interpreter *interpreter, const char *module, const ch
 	PyObject_Print(func, stdout, 0);
 	printf("\n");*/
 
-	PyObject *val = PyObject_Call(func, args, NULL);
+	//PyObject_Print(args, stdout, 0);
+	//printf("\n");
 
-	// Add return value object in a local list so it can be DECREF'ed when the interpreter is deleted.
-	// TODO
-	Py_DECREF(args);
+	PyObject *val = PyObject_CallObject(func, args);
+
+	if (args != NULL)
+		Py_DECREF(args);
 
 	return val;
 }
-/*
-PyObject *executeMethod(PyObject *object, const char *methName, const char* format, ...)
+
+typedef struct Overlay Overlay;
+
+struct Overlay
 {
-	if (!Py_IsInitialized())
-		Py_Initialize();
+	PyObject *object;
+};
 
-	// Make argument list
-	PyObject *args;
-	if (format == NULL)
-		args = Py_None;
-	else
-	{
-		va_list listArgs;
-		va_start(listArgs, format);
+/*
+ * FIXME: should the xml argument be an expat element ?
+ */
+Overlay *createOverlay(const char *xml, const char *config, int ignore, int quiet)
+{
+	//First argument must be a xml.etree.Element
+	//PyObject *elem = executeFunction("layman.overlays.overlay", "testfunc", NULL);
+	PyObject *elem = executeFunction("xml.etree.ElementTree", "fromstring", "(s)", xml);
+	if (!elem)
+		return NULL;
 
-		args = Py_VaBuildValue(format, listArgs);
-	}
+	config = config;
+	PyObject *cfg = PyDict_New();
+	if (!cfg)
+		return NULL;
 
-	PyObject *ret = PyObject_CallMethod(object, methName, )
-}*/
+	PyObject *overlay = executeFunction("layman.overlays.overlay", "Overlay", "(OOIb)", elem, cfg, ignore, quiet);
+	if (!overlay)
+		return NULL;
+	Overlay *ret = malloc(sizeof(Overlay));
+	ret->object = overlay;
+
+	return ret;
+}
+
+const char *overlayName(Overlay *o)
+{
+	if (!o || !o->object)
+		return NULL;
+
+	PyObject *name = PyObject_GetAttrString(o->object, "name");
+
+	//TODO:Py_DECREF me !
+
+	return PyBytes_AsString(name);
+}
+
+const char *overlayOwnerEmail(Overlay *o)
+{
+	if (!o || !o->object)
+		return NULL;
+
+	PyObject *ret = PyObject_GetAttrString(o->object, "owner_email");
+
+	//TODO:Py_DECREF me !
+
+	return PyBytes_AsString(ret);
+}
+
+int overlayPriority(Overlay *o)
+{
+	if (!o || !o->object)
+		return -1;
+
+	PyObject *prio = PyObject_GetAttrString(o->object, "priority");
+
+	//TODO:Py_DECREF me !
+
+	return (int) PyLong_AsLong(prio);
+}
+
+const char *overlayDescription(Overlay *o)
+{
+	if (!o || !o->object)
+		return NULL;
+
+	PyObject *desc = PyObject_GetAttrString(o->object, "description");
+
+	//TODO:Py_DECREF me !
+
+	return PyBytes_AsString(desc);
+}
+
+int overlayIsOfficial(Overlay *o)
+{
+	if (!o || !o->object)
+		return -1;
+
+	PyObject *iso = PyObject_CallMethod(o->object, "is_official", NULL);
+
+	//TODO:Py_DECREF me !
+
+	return (int) PyLong_AsLong(iso);
+}
 
 int main(int argc, char *argv[])
 {
-	Interpreter *in = createInterpreter();
-
-	executeFunction(in, "portage.data", "portage_group_warning", NULL);
-
-	PyObject *arg1 = executeFunction(in, "portage", "pkgsplit", "sI", "app-portage/kuroo4-4.2", 1);
-	PyObject *arg2 = executeFunction(in, "portage", "pkgsplit", "sI", "app-portage/kuroo4-4.1", 1);
-	PyObject *ret = executeFunction(in, "portage", "pkgcmp", "OO", arg1, arg2);
-
-	if (!ret)
-		printf("failed :-( \n");
-	else
-		printf("Return %ld\n", PyLong_AsLong(ret));
-
-	Py_DECREF(ret);
-	Py_DECREF(arg1);
-	Py_DECREF(arg2);
+	in = createInterpreter();
 	
-	PyObject *tbz = executeFunction(in, "portage.output", "ProgressBar", "sIs", "titre", 100, "status");
-	ret = PyObject_CallMethod(tbz, "inc", "I", 25);
-	Py_DECREF(tbz);
-	Py_DECREF(ret);
+	Overlay *o = createOverlay("<overlay type='svn' src='https://overlays.gentoo.org/svn/dev/wrobel' contact='nobody@gentoo.org' name='wrobel' status='official' priorit='10'><description>Test</description></overlay>", "", 1, 0);
+
+	if (!o)
+	{
+		printf("Error creating overlay.\n");
+		return 0;
+	}
+	
+	printf("Overlay name = %s, owner email : %s, description : %s, priority : %d, it is %sofficial.\n", overlayName(o), overlayOwnerEmail(o), overlayDescription(o), overlayPriority(o), overlayIsOfficial(o) ? "" : "not ");
 
 	freeInterpreter(in);
 
