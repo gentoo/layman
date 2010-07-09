@@ -142,6 +142,23 @@ const char *overlayToXml(Overlay *o)
 	return PyBytes_AsString(str);
 }
 
+void overlaySetPriority(Overlay *o, int priority)
+{
+	if (!o || !o->object)
+		return;
+
+	PyObject_CallMethod(o->object, "set_priority", "(I)", priority);
+}
+
+int overlaySame(Overlay *o1, Overlay *o2)
+{
+	PyObject *ret = PyObject_RichCompare(o1->object, o2->object, Py_EQ);
+	if (!ret)
+		return 0;
+
+	return PyObject_IsTrue(ret);
+}
+
 void overlayFree(Overlay *o)
 {
 	if (o && o->object)
