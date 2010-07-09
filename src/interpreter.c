@@ -82,36 +82,41 @@ void freeList(PyObjectList *list, int deref)
  * A Python interpreter object keeps the context like the loaded modules.
  */
 
-typedef struct Interpreter
+struct Interpreter
 {
 	PyObjectList *modules;
-} Interpreter;
+} *in = 0;
 
-Interpreter *createInterpreter()
-{
-	Interpreter *ret = malloc(sizeof(Interpreter));
-	ret->modules = createObjectList();
-	return ret;
-}
+//Interpreter *in = 0;
 
-void freeInterpreter(Interpreter *inter)
+void interpreterInit()
 {
-	if (!inter)
+	if (in)
 		return;
-	freeList(inter->modules, 1);
-	free(inter);
 
-	Py_Finalize();
+	if (!Py_IsInitialized())
+		Py_Initialize();
+
+	in = malloc(sizeof(struct Interpreter));
+	in->modules = createObjectList();
 }
 
-Interpreter *in = 0;
+void interpreterFinalize()
+{
+	if (!in)
+		return;
+	freeList(in->modules, 1);
+	free(in);
+
+	if (Py_IsInitialized())
+		Py_Finalize();
+}
 
 /*
  * printf() like function that executes a python function
- * @param interpreter Python interpreter object on which the function should be ran
  * @param module name of the python module in which the function is
  * @param funcName the function name to call
- * @param arg_types printf() like list of arguments. See Python documentation
+ * @param format printf() like list of arguments. See Python documentation
  * @param ... arguments for the function
  */
 
@@ -171,115 +176,4 @@ PyObject *executeFunction(const char *module, const char *funcName, const char* 
 		Py_DECREF(args);
 
 	return val;
-}
-
-typedef struct Overlay Overlay;
-
-struct Overlay
-{
-	PyObject *object;
-};
-
-/*
- * FIXME: should the xml argument be an expat element ?
- */
-Overlay *createOverlay(const char *xml, const char *config, int ignore, int quiet)
-{
-	//First argument must be a xml.etree.Element
-	//PyObject *elem = executeFunction("layman.overlays.overlay", "testfunc", NULL);
-	PyObject *elem = executeFunction("xml.etree.ElementTree", "fromstring", "(s)", xml);
-	if (!elem)
-		return NULL;
-
-	config = config;
-	PyObject *cfg = PyDict_New();
-	if (!cfg)
-		return NULL;
-
-	PyObject *overlay = executeFunction("layman.overlays.overlay", "Overlay", "(OOIb)", elem, cfg, ignore, quiet);
-	if (!overlay)
-		return NULL;
-	Overlay *ret = malloc(sizeof(Overlay));
-	ret->object = overlay;
-
-	return ret;
-}
-
-const char *overlayName(Overlay *o)
-{
-	if (!o || !o->object)
-		return NULL;
-
-	PyObject *name = PyObject_GetAttrString(o->object, "name");
-
-	//TODO:Py_DECREF me !
-
-	return PyBytes_AsString(name);
-}
-
-const char *overlayOwnerEmail(Overlay *o)
-{
-	if (!o || !o->object)
-		return NULL;
-
-	PyObject *ret = PyObject_GetAttrString(o->object, "owner_email");
-
-	//TODO:Py_DECREF me !
-
-	return PyBytes_AsString(ret);
-}
-
-int overlayPriority(Overlay *o)
-{
-	if (!o || !o->object)
-		return -1;
-
-	PyObject *prio = PyObject_GetAttrString(o->object, "priority");
-
-	//TODO:Py_DECREF me !
-
-	return (int) PyLong_AsLong(prio);
-}
-
-const char *overlayDescription(Overlay *o)
-{
-	if (!o || !o->object)
-		return NULL;
-
-	PyObject *desc = PyObject_GetAttrString(o->object, "description");
-
-	//TODO:Py_DECREF me !
-
-	return PyBytes_AsString(desc);
-}
-
-int overlayIsOfficial(Overlay *o)
-{
-	if (!o || !o->object)
-		return -1;
-
-	PyObject *iso = PyObject_CallMethod(o->object, "is_official", NULL);
-
-	//TODO:Py_DECREF me !
-
-	return (int) PyLong_AsLong(iso);
-}
-
-int main(int argc, char *argv[])
-{
-	in = createInterpreter();
-	
-	Overlay *o = createOverlay("<overlay type='svn' src='https://overlays.gentoo.org/svn/dev/wrobel' contact='nobody@gentoo.org' name='wrobel' status='official' priorit='10'><description>Test</description></overlay>", "", 1, 0);
-
-	if (!o)
-	{
-		printf("Error creating overlay.\n");
-		return 0;
-	}
-	
-	printf("Overlay name = %s, owner email : %s, description : %s, priority : %d, it is %sofficial.\n", overlayName(o), overlayOwnerEmail(o), overlayDescription(o), overlayPriority(o), overlayIsOfficial(o) ? "" : "not ");
-
-	freeInterpreter(in);
-
-	return 0;
 }
