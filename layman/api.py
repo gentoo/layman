@@ -58,6 +58,8 @@ class LaymanAPI(object):
         self._installed_ids = None
         self._available_db = None
         self._available_ids = None
+        self._error_messages = []
+        self.sync_results = []
         # call reload() for now to initialize the 2 db's
         self.reload()
         # change it to delayed loading (similar to delayed imports)
@@ -84,6 +86,16 @@ class LaymanAPI(object):
         return id in self._installed_ids
 
 
+    @staticmethod
+    def _check_repo_type( repos, caller):
+        if isinstance(repos, str):
+            repos = [repos]
+        elif not isinstance(repos, list):
+            self._error(2, "%s(), Unsupported input type: %s" %(caller, str(type(repos))))
+            return []
+        return repos
+
+
     def delete_repo(self, repos):
         """delete the selected repo from the system
         
@@ -92,24 +104,27 @@ class LaymanAPI(object):
         @param output: method to handle output if desired
         @rtype dict
         """
-        results = {}
+        repos = self._check_repo_type(repos, "delete_repo")
+        results = []
         for id in repos:
             if not self.is_installed(id):
-                results[id] = True
+                results.append(True)
                 break
             if not self.is_repo(id):
-                self.error(1, UNKNOWN_REPO_ID %id)
-                results[id] = False
+                self._error(1, UNKNOWN_REPO_ID %id)
+                results.append(False)
                 break
             try:
                 self._installed_db.delete(self._installed_db.select(id))
-                results[id] = True
+                results.append(True)
             except Exception, e:
-                self.error(ERROR_INTERNAL_ERROR,
+                self._error(ERROR_INTERNAL_ERROR,
                         "Failed to disable repository '"+id+"':\n"+str(e))
-                results[id] = False
+                results.append(False)
             self.get_installed(reload=True)
-        return results
+        if False in results:
+            return False
+        return True
 
 
     def add_repo(self, repos):
@@ -120,24 +135,27 @@ class LaymanAPI(object):
         @param output: method to handle output if desired
         @rtype dict
         """
-        results = {}
+        repos = self._check_repo_type(repos, "add_repo")
+        results = []
         for id in repos:
             if self.is_installed(id):
-                results[id] = True
+                results.append(True)
                 break
             if not self.is_repo(id):
-                self.error(1, UNKNOWN_REPO_ID %id)
-                results[id] = False
+                self._error(1, UNKNOWN_REPO_ID %id)
+                results.append(False)
                 break
             try:
                 self._installed_db.add(self._available_db.select(id), quiet=True)
-                results[id] = True
+                results.append(True)
             except Exception, e:
-                self.error(ERROR_INTERNAL_ERROR,
+                self._error(ERROR_INTERNAL_ERROR,
                         "Failed to enable repository '"+id+"' : "+str(e))
-                results[id] = False
+                results.append(False)
             self.get_installed(reload=True)
-        return results
+        if False in results:
+            return False
+        return True
 
 
     def get_info(self, repos):
@@ -146,53 +164,55 @@ class LaymanAPI(object):
         @type repos: list
         @param repos: ['repo-id1', ...]
         @rtype list of tuples [(str, bool, bool),...]
-        @return: (info, official, supported)
+        @return: dictionary  {'id': (info, official, supported)}
         """
-        result = []
+        repos = self._check_repo_type(repos, "get_info")
+        result = {}
 
         for id in repos:
             if not self.is_repo(id):
-                self.error(1, UNKNOWN_REPO_ID %id)
-                result.append(('', False, False))
+                self._error(1, UNKNOWN_REPO_ID %id)
+                result[id] = ('', False, False))
             try:
                 overlay = self._available_db.select(id)
             except UnknownOverlayException, error:
-                self.error(2, "Error: %s" %str(error))
-                result.append(('', False, False))
+                self._error(2, "Error: %s" %str(error))
+                 result[id] = ('', False, False))
             else:
                 # Is the overlay supported?
                 info = overlay.__str__()
                 official = overlay.is_official()
                 supported = overlay.is_supported()
-                result.append((info, official, supported))
+                 result[id] = (info, official, supported)
 
         return result
 
 
-    def sync(self, repos):
+    def sync(self, repos, output_results=True):
         """syncs the specified repo(s) specified by repos
         
-        @type repos: list
-        @param repos: ['repo-id1', ...]
-        @rtype bool
+        @type repos: list or string
+        @param repos: ['repo-id1', ...] or 'repo-id'
+        @rtype bool or {'repo-id': bool,...}
         """
-        
-        fatals = []
+        fatal = []
         warnings = []
         success  = []
+        repos = self._check_repo_type(repos, "sync")
+
         for id in repos:
             try:
                 odb = self._installed_db.select(id)
             except UnknownOverlayException, error:
-                fatals.append((id, str(error)))
+                self._error(1,"Sync(), failed to select %s overlay.  Original error was: %s" %(id, str(error)))
                 continue
 
             try:
                 ordb = self._available_db.select(id)
             except UnknownOverlayException:
-                warnings.append((id,
-                    'Overlay "%s" could not be found in the remote lists.\n'
-                    'Please check if it has been renamed and re-add if necessary.', {'repo_name':id}))
+                message = 'Overlay "%s" could not be found in the remote lists.\n'
+                        'Please check if it has been renamed and re-add if necessary.' %id
+                warnings.append((id, message))
             else:
                 current_src = odb.sources[0].src
                 available_srcs = set(e.src for e in ordb.sources)
@@ -230,7 +250,26 @@ class LaymanAPI(object):
                     'Failed to sync overlay "' + id + '".\nError was: '
                     + str(error)))
 
-        return (warnings, success, fatals)
+        if output_results:
+            if success:
+                self.output.info('\nSuccess:\n------\n', 3)
+                for result in success:
+                    self.output.info(result, 3)
+                    
+            if warnings:
+                self.output.warn('\nWarnings:\n------\n', 2)
+                for result in warnings:
+                    self.output.warn(result + '\n', 2)
+
+            if fatals:
+                self.output.error('\nErrors:\n------\n')
+                for result in fatals:
+                    self.output.error(result + '\n')
+                return False
+        else:
+            self.sync_results = (success, warnings, fatals)
+
+        return True
 
 
     def fetch_remote_list(self):
@@ -238,7 +277,7 @@ class LaymanAPI(object):
         try:
             self._available_db.cache()
         except Exception, error:
-            self.error(-1,'Failed to fetch overlay list!\n Original Error was: '
+            self._error(-1,'Failed to fetch overlay list!\n Original Error was: '
                     + str(error))
             return False
         return True
@@ -266,13 +305,24 @@ class LaymanAPI(object):
         result = self.get_installed(reload=True)
 
 
-    def error(self, num, message):
+    def _error(self, num, message):
         """outputs the error to the pre-determined output
         defaults to stderr.  This method may be removed, is here for now
         due to code taken from the packagekit backend.
         """
+        m = "Error: %d," %num, message
+        self._error_messages.append(m)
         if self.report_errors:
-            print >>stderr, "Error: %d," %num, message
+            print >>stderr, m
+
+
+    def get_errors(self):
+        """returns any warning or fatal messages that occurred during
+        an operation and resets it back to None
+        """
+        if self._error_messages:
+            return self._error_messages[:]
+            self._error_messages = []
 
 
 class Output(Message):
