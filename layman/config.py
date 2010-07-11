@@ -108,6 +108,11 @@ class BareConfig(object):
         return self._defaults
 
 
+    def get_option(self, key):
+        """returns the current option's value"""
+        return self.__getitem__(key)
+
+
     def set_option(self, option, value):
         """Sets an option to the value """
         self._options[option] = value
