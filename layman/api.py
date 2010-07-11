@@ -325,69 +325,6 @@ class LaymanAPI(object):
             self._error_messages = []
 
 
-class Output(Message):
-    """a subclass of debug.py's Message to overide several output functions
-    for data capture.  May not be in final api"""
-    
-    def __init__(self, error=stderr):
-        self.stderr = error
-        self.captured = []
-        Message.__init__(self, err=error)
-
-    def notice (self, note):
-        self.captured.append(note)
-
-    def info (self, info, level = 4):
-
-        if type(info) not in types.StringTypes:
-            info = str(info)
-
-        if level > self.info_lev:
-            return
-
-        for i in info.split('\n'):
-            self.captured.append(self.maybe_color('green', '* ') + i)
-
-    def status (self, message, status, info = 'ignored'):
-
-        if type(message) not in types.StringTypes:
-            message = str(message)
-
-        lines = message.split('\n')
-
-        if not lines:
-            return
-
-        for i in lines[0:-1]:
-            self.captured.append(self.maybe_color('green', '* ') + i)
-
-        i = lines[-1]
-
-        if len(i) > 58:
-            i = i[0:57]
-
-        if status == 1:
-            result = '[' + self.maybe_color('green', 'ok') + ']'
-        elif status == 0:
-            result = '[' + self.maybe_color('red', 'failed') + ']'
-        else:
-            result = '[' + self.maybe_color('yellow', info) + ']'
-
-        self.captured.append( self.maybe_color('green', '* ') + i + ' ' + '.' * (58 - len(i))  \
-              + ' ' + result)
-
-    def warn (self, warn, level = 4):
-
-        if type(warn) not in types.StringTypes:
-            warn = str(warn)
-
-        if level > self.warn_lev:
-            return
-
-        for i in warn.split('\n'):
-            self.captured.append(self.maybe_color('yellow', '* ') + i)
-
-
 def create_fd():
     """creates file descriptor pairs an opens them ready for
     use in place of stdin, stdout, stderr.
