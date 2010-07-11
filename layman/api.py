@@ -172,18 +172,18 @@ class LaymanAPI(object):
         for id in repos:
             if not self.is_repo(id):
                 self._error(1, UNKNOWN_REPO_ID %id)
-                result[id] = ('', False, False))
+                result[id] = ('', False, False)
             try:
                 overlay = self._available_db.select(id)
             except UnknownOverlayException, error:
                 self._error(2, "Error: %s" %str(error))
-                 result[id] = ('', False, False))
+                result[id] = ('', False, False)
             else:
                 # Is the overlay supported?
                 info = overlay.__str__()
                 official = overlay.is_official()
                 supported = overlay.is_supported()
-                 result[id] = (info, official, supported)
+                result[id] = (info, official, supported)
 
         return result
 
@@ -195,7 +195,7 @@ class LaymanAPI(object):
         @param repos: ['repo-id1', ...] or 'repo-id'
         @rtype bool or {'repo-id': bool,...}
         """
-        fatal = []
+        fatals = []
         warnings = []
         success  = []
         repos = self._check_repo_type(repos, "sync")
@@ -210,7 +210,7 @@ class LaymanAPI(object):
             try:
                 ordb = self._available_db.select(id)
             except UnknownOverlayException:
-                message = 'Overlay "%s" could not be found in the remote lists.\n'
+                message = 'Overlay "%s" could not be found in the remote lists.\n' \
                         'Please check if it has been renamed and re-add if necessary.' %id
                 warnings.append((id, message))
             else:
@@ -253,17 +253,17 @@ class LaymanAPI(object):
         if output_results:
             if success:
                 self.output.info('\nSuccess:\n------\n', 3)
-                for result in success:
+                for id, result in success:
                     self.output.info(result, 3)
                     
             if warnings:
                 self.output.warn('\nWarnings:\n------\n', 2)
-                for result in warnings:
+                for id, result in warnings:
                     self.output.warn(result + '\n', 2)
 
             if fatals:
                 self.output.error('\nErrors:\n------\n')
-                for result in fatals:
+                for id, result in fatals:
                     self.output.error(result + '\n')
                 return False
         else:
