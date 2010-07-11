@@ -24,7 +24,7 @@ typedef struct OverlayInfo
 } OverlayInfo;
 
 
-LaymanAPI*	laymanAPICreate(Config*, int, int);
+LaymanAPI*	laymanAPICreate(BareConfig*, int, int);
 StringList*	laymanAPIGetAvailable(LaymanAPI*);
 StringList*	laymanAPIGetInstalled(LaymanAPI*);
 
@@ -43,5 +43,7 @@ StringList*	laymanAPIGetInstalled(LaymanAPI*);
 int 		laymanAPISync(LaymanAPI*, const char*);
 int 		laymanAPIFetchRemoteList(LaymanAPI*);
 const char*	laymanAPIGetInfo(LaymanAPI*, const char*);
+
+void laymanAPIFree(LaymanAPI*);
 
 #endif

@@ -7,6 +7,11 @@ struct Message
 	PyObject *object;
 };
 
+/*
+ * TODO: This constructor is too big.
+ * 	 Create a little constructor that uses default values
+ * 	 and add helper functions to set the values
+ */
 Message *messageCreate(const char* module,
 			FILE* out,
 			FILE* err,
@@ -22,13 +27,12 @@ Message *messageCreate(const char* module,
 {
 	PyObject *pyout, *pyerr, *pydbg, *pymth, *pyobj, *pyvar;
 
-	pyout = PyFile_FromFile((fileno(out) <= 0 ? stdout : out),
-				NULL, "w", 0);
-	pyerr = PyFile_FromFile((fileno(err) <= 0 ? stderr : err),
-				NULL, "w", 0);
-	pydbg = PyFile_FromFile((fileno(dbg) <= 0 ? stderr : dbg),
-				NULL, "w", 0);
-	
+	pyout = PyFile_FromFile(((!out || fileno(out) <= 0) ? stdout : out),
+				"", "w", 0);
+	pyerr = PyFile_FromFile(((!err || fileno(err) <= 0) <= 0 ? stderr : err),
+				"", "w", 0);
+	pydbg = PyFile_FromFile(((!dbg || fileno(dbg) <= 0) ? stderr : dbg),
+				"", "w", 0);
 
 	pymth = cListToPyList(mth);
 	pyobj = cListToPyList(obj);
@@ -67,5 +71,8 @@ Message *messageCreate(const char* module,
 
 PyObject *_messageObject(Message* m)
 {
-	return m ? m->object : NULL;
+	if (m && m->object)
+		return m->object;
+	else
+		Py_RETURN_NONE;
 }

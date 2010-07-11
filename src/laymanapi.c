@@ -2,6 +2,10 @@
 #include "interpreter.h"
 #include "laymanapi.h"
 
+/*
+ * FIXME: free memory !!!
+ */
+
 struct LaymanAPI
 {
 	PyObject *object;
@@ -13,9 +17,9 @@ OverlayInfo strToInfo(const char* str)
 	return ret;
 }
 
-LaymanAPI* laymanAPICreate(Config* config, int report_error, int output)
+LaymanAPI* laymanAPICreate(BareConfig* config, int report_error, int output)
 {
-	PyObject *obj = executeFunction("layman.api", "LaymanAPI", "OII", _configObject(config), report_error, output);
+	PyObject *obj = executeFunction("layman.api", "LaymanAPI", "OII", _bareConfigObject(config), report_error, output);
 	if (!obj)
 		return NULL;
 
@@ -113,3 +117,13 @@ const char* laymanAPIGetInfo(LaymanAPI* l, const char* overlay)
 	//TODO:also return 'official' an 'supported' (see laymanapi.h)
 }
 
+void laymanAPIFree(LaymanAPI* l)
+{
+	if (l && l->object)
+	{
+		Py_DECREF(l->object);
+	}
+
+	if (l)
+		free(l);
+}

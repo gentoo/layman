@@ -34,7 +34,7 @@ StringList* listToCList(PyObject* list)
 PyObject* cListToPyList(StringList* list)
 {
 	if (!list)
-		return NULL;
+		Py_RETURN_NONE;
 
 	PyObject *ret = PyList_New(list->count);
 	for(int i = 0; i < list->count; i++)
@@ -43,6 +43,21 @@ PyObject* cListToPyList(StringList* list)
 	}
 
 	return ret;
+}
+
+void stringListPrint(StringList* list)
+{
+	if (!list)
+		return;
+
+	for(int i = 0; i < list->count; i++)
+	{
+		printf("\"%s\"", list->list[i]);
+		if (i < list->count - 1)
+			printf(", ");
+	}
+
+	free(list);
 }
 
 void stringListFree(StringList* list)
@@ -57,3 +72,4 @@ void stringListFree(StringList* list)
 
 	free(list);
 }
+

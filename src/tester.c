@@ -1,25 +1,41 @@
-#include "overlay.h"
+//#include "overlay.h"
 #include "interpreter.h"
+#include "config.h"
+#include "laymanapi.h"
+#include "message.h"
 
 int main(int argc, char *argv[])
 {
 	argc = argc;
 	argv = argv;
+	int ret = 0;
 	interpreterInit();
 	
-	Overlay *o = createOverlay("<overlay type='svn' src='https://overlays.gentoo.org/svn/dev/wrobel' contact='nobody@gentoo.org' name='wrobel' status='official' priorit='10'><description>Test</description></overlay>", "", 1, 0);
-
-	if (!o)
-	{
-		printf("Error creating overlay.\n");
-		return 0;
-	}
+	Message *msg = messageCreate("layman", 0, 0, 0, 4, 2, 4, 4, 1, NULL, NULL, NULL);
+	BareConfig *cfg = bareConfigCreate(msg, 0, 0, 0);
+	if (!bareConfigSetOptionValue(cfg, "local_list", "/home/detlev/srg/gsoc2010/layman/layman/tests/testfiles/global-overlays.xml"))
+		printf("Error setting config option.\n");
+	//printf("config: %s\n", bareConfigGetDefaultValue(cfg, "config"));
+	//printf("storage: %s\n", bareConfigGetDefaultValue(cfg, "storage"));
+	//printf("local_list: %s\n", bareConfigGetDefaultValue(cfg, "local_list"));
 	
-	printf("Overlay name = %s, owner email : %s, description : %s, priority : %d, it is %sofficial.\n", overlayName(o), overlayOwnerEmail(o), overlayDescription(o), overlayPriority(o), overlayIsOfficial(o) ? "" : "not ");
+	LaymanAPI *l = laymanAPICreate(cfg, 0, 0);
+	if (!laymanAPIFetchRemoteList(l))
+	{
+		printf("Unable to fetch the remote list.\n");
+		ret = -1;
+		goto finish;
+	}
 
-	printf("xml is %s\n", overlayToXml(o));
+	StringList *strs = laymanAPIGetAvailable(l);
+
+	stringListPrint(strs);
+
+finish:
+	bareConfigFree(cfg);
+	laymanAPIFree(l);
 
 	interpreterFinalize();
 
-	return 0;
+	return ret;
 }

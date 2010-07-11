@@ -3,10 +3,22 @@
 
 #include <Python.h>
 
-typedef struct Config Config;
+#include "stringlist.h"
+#include "message.h"
 
-Config *createConfig(const char *argv[], int argc);
+typedef struct BareConfig BareConfig;
 
-PyObject *_object(Config*);
+BareConfig*	bareConfigCreate(Message* m, FILE* outFd, FILE* inFd, FILE* errFd);
+
+/*
+ * FIXME : could the Python lib work the same way ?
+ */
+
+const char*	bareConfigGetDefaultValue(BareConfig* cfg, const char*);
+int 		bareConfigSetOptionValue(BareConfig* cfg, const char*, const char*);
+
+PyObject* 	_bareConfigObject(BareConfig*);
+
+void 		bareConfigFree(BareConfig*);
 
 #endif
