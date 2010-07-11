@@ -266,8 +266,8 @@ class LaymanAPI(object):
                 for id, result in fatals:
                     self.output.error(result + '\n')
                 return False
-        else:
-            self.sync_results = (success, warnings, fatals)
+
+        self.sync_results = (success, warnings, fatals)
 
         return True
 
