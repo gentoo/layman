@@ -144,10 +144,6 @@ OverlayInfo *laymanAPIGetInfo(LaymanAPI* l, const char* overlay)
 	oi->supported = PyObject_IsTrue(supported);
 
 	Py_DECREF(obj);
-	Py_DECREF(tuple);
-	Py_DECREF(text);
-	Py_DECREF(official);
-	Py_DECREF(supported);
 
 	return oi;
 }
