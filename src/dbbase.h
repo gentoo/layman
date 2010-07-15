@@ -7,5 +7,6 @@
 typedef struct DbBase DbBase;
 
 DbBase* createDbBase(const char *paths[], unsigned int path_count, Dict *c, int ignore, int quiet, int ignore_init_read_errors);
+void dbBaseFree(DbBase*);
 
 #endif

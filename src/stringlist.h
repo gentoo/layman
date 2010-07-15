@@ -5,10 +5,13 @@
 
 typedef struct StringList StringList;
 
-StringList* stringListCreate(size_t);
-StringList* listToCList(PyObject* list);
-PyObject* cListToPyList(StringList*);
-void stringListPrint(StringList*);
-void stringListFree(StringList*);
+StringList*	stringListCreate(size_t);
+unsigned int	stringListCount(StringList*);
+int		stringListInsertAt(StringList*, unsigned int, char*);
+char*		stringListGetAt(StringList*, unsigned int);
+StringList*	listToCList(PyObject* list);
+PyObject*	cListToPyList(StringList*);
+void		stringListPrint(StringList*);
+void		stringListFree(StringList*);
 
 #endif

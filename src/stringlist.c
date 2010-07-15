@@ -3,12 +3,41 @@
 struct StringList
 {
 	char **list;
-	int count;
+	unsigned int count;
 };
 
-StringList* stringListCreate(size_t count)
+StringList* stringListCreate(size_t len)
 {
-	return NULL;
+	StringList *ret = malloc(sizeof(StringList));
+	ret->count = len;
+	ret->list = malloc(sizeof(char*) * len);
+
+	return ret;
+}
+
+int stringListInsertAt(StringList *l, unsigned int pos, char *str)
+{
+	if(!l || !l->list || l->count < pos)
+		return 0;
+	
+	l->list[pos] = str;
+
+	return 1;
+}
+
+unsigned int stringListCount(StringList *l)
+{
+	if (!l)
+		return 0;
+	return l->count;
+}
+
+char* stringListGetAt(StringList *l, unsigned int pos)
+{
+	if (!l || !l->list || pos >= l->count)
+		return NULL;
+	
+	return l->list[pos];
 }
 
 StringList* listToCList(PyObject* list)
@@ -16,12 +45,12 @@ StringList* listToCList(PyObject* list)
 	if (!list || !PyList_Check(list))
 		return NULL;
 
-	int len = PyList_Size(list);
+	unsigned int len = PyList_Size(list);
 	StringList *ret = malloc(sizeof(StringList));
 	ret->count = len;
 	ret->list = malloc(sizeof(char*) * len);
 
-	for (int i = 0; i < len; i++)
+	for (unsigned int i = 0; i < len; i++)
 	{
 		PyObject *elem = PyList_GetItem(list, i);
 		ret->list[i] = malloc(sizeof(char) * (PyBytes_Size(elem) + 1));
@@ -37,7 +66,7 @@ PyObject* cListToPyList(StringList* list)
 		Py_RETURN_NONE;
 
 	PyObject *ret = PyList_New(list->count);
-	for(int i = 0; i < list->count; i++)
+	for(unsigned int i = 0; i < list->count; i++)
 	{
 		PyList_Append(ret, PyBytes_FromString(list->list[i]));
 	}
@@ -50,14 +79,12 @@ void stringListPrint(StringList* list)
 	if (!list)
 		return;
 
-	for(int i = 0; i < list->count; i++)
+	for(unsigned int i = 0; i < list->count; i++)
 	{
 		printf("\"%s\"", list->list[i]);
 		if (i < list->count - 1)
 			printf(", ");
 	}
-
-	free(list);
 }
 
 void stringListFree(StringList* list)
@@ -65,11 +92,17 @@ void stringListFree(StringList* list)
 	if (!list)
 		return;
 
-	for(int i = 0; i < list->count; i++)
+	if (list && list->list)
 	{
-		free(list->list[i]);
+		for(unsigned int i = 0; i < list->count; i++)
+		{
+			free(list->list[i]);
+		}
+
+		free(list->list);
 	}
 
-	free(list);
+	if (list)
+		free(list);
 }
 

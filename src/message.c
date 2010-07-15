@@ -69,6 +69,16 @@ Message *messageCreate(const char* module,
 	return ret;
 }
 
+void messageFree(Message *m)
+{
+	if (m && m->object)
+	{
+		Py_DECREF(m->object);
+	}
+	if (m)
+		free(m);
+}
+
 PyObject *_messageObject(Message* m)
 {
 	if (m && m->object)

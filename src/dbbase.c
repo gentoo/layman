@@ -29,3 +29,13 @@ DbBase* createDbBase(const char *paths[], unsigned int pathCount, Dict *dict, in
 
 	return ret;
 }
+
+void dbBaseFree(DbBase* db)
+{
+	if (db && db->object)
+	{
+		Py_DECREF(db->object);
+	}
+	if (db)
+		free(db);
+}

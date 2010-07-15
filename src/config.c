@@ -57,16 +57,44 @@ const char* bareConfigGetDefaultValue(BareConfig* cfg, const char* opt)
 		return NULL;
 
 	if (PyDict_Contains(obj, PyBytes_FromString(opt)))
-		return PyBytes_AsString(PyDict_GetItem(obj, PyBytes_FromString(opt)));
+	{
+		PyObject *pyopt = PyBytes_FromString(opt);
+		char *tmp = PyBytes_AsString(PyDict_GetItem(obj, pyopt));
+		Py_DECREF(pyopt);
+
+		char *ret = malloc(sizeof(char) * strlen(tmp));
+		strcpy(ret, tmp);
+		Py_DECREF(obj);
+
+		return ret;
+	}
 	else
 		return "";
+}
+
+const char* bareConfigGetOptionValue(BareConfig* cfg, const char* opt)
+{
+	PyObject *obj = PyObject_CallMethod(cfg->object, "get_option", "(z)", opt);
+	char *tmp = PyBytes_AsString(obj);
+	char *ret = malloc(sizeof(char) * (strlen(tmp) + 1));
+
+	strcpy(ret, tmp);
+
+	Py_DECREF(obj);
+
+	return ret;
 }
 
 int bareConfigSetOptionValue(BareConfig* cfg, const char* opt, const char* val)
 {
 	PyObject *obj = PyObject_CallMethod(cfg->object, "set_option", "(zz)", opt, val);
+	int ret;
 	if (obj)
-		return 1;
+		ret = 1;
 	else
-		return 0;
+		ret = 0;
+	
+	Py_DECREF(obj);
+
+	return ret;
 }
