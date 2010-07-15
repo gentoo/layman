@@ -68,7 +68,7 @@ PyObject* cListToPyList(StringList* list)
 	PyObject *ret = PyList_New(list->count);
 	for(unsigned int i = 0; i < list->count; i++)
 	{
-		PyList_Append(ret, PyBytes_FromString(list->list[i]));
+		PyList_SetItem(ret, i, PyBytes_FromString(list->list[i]));
 	}
 
 	return ret;

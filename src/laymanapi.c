@@ -11,12 +11,6 @@ struct LaymanAPI
 	PyObject *object;
 };
 
-OverlayInfo strToInfo(const char* str)
-{
-	OverlayInfo ret;
-	return ret;
-}
-
 LaymanAPI* laymanAPICreate(BareConfig* config, int report_error, int output)
 {
 	PyObject *obj = executeFunction("layman.api", "LaymanAPI", "Oii", _bareConfigObject(config), report_error, output);
@@ -40,11 +34,6 @@ StringList* laymanAPIGetAvailable(LaymanAPI* l, int reload)
 
 	return ret;
 }
-
-/*StringList* laymanAPIGetInstalled(LaymanAPI* l)
-{
-	return laymanAPIGetInstalled(l, 0);
-}*/
 
 StringList* laymanAPIGetInstalled(LaymanAPI* l, int reload)
 {
@@ -97,13 +86,69 @@ int laymanAPIFetchRemoteList(LaymanAPI* l)
 	return ret;
 }
 
+int laymanAPIGetInfoList(LaymanAPI* l, StringList* overlays, OverlayInfo* results)
+{
+	if (!l || !l->object || !overlays || !results)
+		return 0;
+
+	PyObject *list = cListToPyList(overlays);
+	
+	PyObject *obj = PyObject_CallMethod(l->object, "get_info", "(O)", list);
+	Py_DECREF(list);
+
+	if (!obj || !PyDict_Check(obj))
+	{
+		if (obj)
+		{
+			Py_DECREF(obj);
+		}
+		return 0;
+	}
+
+	PyObject *name, *tuple;
+	Py_ssize_t i = 0;
+
+	int k = 0;
+
+	while (PyDict_Next(obj, &i, &name, &tuple))
+	{
+		if (!tuple || !PyTuple_Check(tuple))
+		{
+			Py_DECREF(obj);
+			continue;
+		}
+
+		PyObject *text = PyTuple_GetItem(tuple, 0);
+		PyObject *official = PyTuple_GetItem(tuple, 1);
+		PyObject *supported = PyTuple_GetItem(tuple, 2);
+
+		if (!PyString_Check(text) || !PyString_Check(name))
+			continue;
+
+		char* tmp = PyString_AsString(name);
+		results[k].name = malloc((strlen(tmp) + 1) * sizeof(char));
+		strcpy(results[k].name, tmp);
+
+		tmp = PyString_AsString(text);
+		results[k].text = malloc((strlen(tmp) + 1) * sizeof(char));
+		strcpy(results[k].text, tmp);
+
+		results[k].official = PyObject_IsTrue(official);
+		results[k].supported = PyObject_IsTrue(supported);
+		k++;
+	}
+
+	Py_DECREF(obj);
+	return k;
+}
+
 OverlayInfo *laymanAPIGetInfo(LaymanAPI* l, const char* overlay)
 {
 	if (!l || !l->object || !overlay)
 		return NULL;
 
 	PyObject *list = PyList_New(1);
-	PyList_SetItem(list, 0, PyBytes_FromString(overlay));
+	PyList_SetItem(list, 0, PyString_FromString(overlay));
 
 	PyObject *obj = PyObject_CallMethod(l->object, "get_info", "(O)", list);
 	Py_DECREF(list);
@@ -136,7 +181,7 @@ OverlayInfo *laymanAPIGetInfo(LaymanAPI* l, const char* overlay)
 
 	OverlayInfo *oi = malloc(sizeof(OverlayInfo));
 
-	char* tmp = PyBytes_AsString(text);
+	char* tmp = PyString_AsString(text);
 	oi->text = malloc((strlen(tmp) + 1) * sizeof(char));
 	strcpy(oi->text, tmp);
 

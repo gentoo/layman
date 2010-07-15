@@ -46,7 +46,7 @@ unsigned int dictCount(Dict *list)
 	return (list ? list->count : 0);
 }
 
-void dictFree(Dict *list, int deref)
+void dictFree(Dict *list)
 {
 	if (!list)
 		return;
@@ -56,10 +56,6 @@ void dictFree(Dict *list, int deref)
 	{
 		DictElem *tmp = node;
 		node = node->next;
-		/*if (deref)
-		{
-			Py_DECREF(tmp->object);
-		}*/
 		free(tmp);
 	}
 

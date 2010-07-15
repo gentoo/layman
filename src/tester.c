@@ -36,19 +36,20 @@ int main(int argc, char *argv[])
 	printf("\n");
 
 	unsigned int len = stringListCount(strs);
-	for (unsigned int i = 0; i < len; i++)
+	OverlayInfo *infos = malloc(sizeof(OverlayInfo) * len);
+	int count = laymanAPIGetInfoList(l, strs, infos);
+	
+	for (unsigned int i = 0; i < count; i++)
 	{
-		OverlayInfo *info = laymanAPIGetInfo(l, stringListGetAt(strs, i));
-		if (!info)
-			continue;
-		printf("%s\n", info->text);
-		free(info->text);
-		free(info);
+		printf("%s\n", infos[i].text);
+		free(infos[i].text);
+		free(infos[i].name);
 	}
 
 	printf("\n");
 
-finish:
+	free(infos);
+
 	bareConfigFree(cfg);
 	laymanAPIFree(l);
 	stringListFree(strs);
