@@ -8,63 +8,205 @@ struct Message
 };
 
 /*
- * TODO: This constructor is too big.
- * 	 Create a little constructor that uses default values
- * 	 and add helper functions to set the values
+ * Creates a Message instance with default values.
+ * To modify those values, use the corresponding functions.
  */
 Message *messageCreate(const char* module,
 			FILE* out,
 			FILE* err,
-			FILE* dbg,
-			int debug_level,
-			int debug_verbosity,
-			int info_level,
-			int warn_level,
-			int col,
-			StringList* mth,
-			StringList* obj,
-			StringList* var)
+			FILE* dbg)
 {
-	PyObject *pyout, *pyerr, *pydbg, *pymth, *pyobj, *pyvar;
+	PyObject *pyout, *pyerr, *pydbg;
 
-	pyout = PyFile_FromFile(((!out || fileno(out) <= 0) ? stdout : out),
-				"", "w", 0);
-	pyerr = PyFile_FromFile(((!err || fileno(err) <= 0) <= 0 ? stderr : err),
-				"", "w", 0);
-	pydbg = PyFile_FromFile(((!dbg || fileno(dbg) <= 0) ? stderr : dbg),
-				"", "w", 0);
+	if (!out || fileno(out) <= 0)
+		out = stdout;
+	if (!err || fileno(err) <= 0)
+		err = stderr;
+	if (!dbg || fileno(dbg) <= 0)
+		dbg = stderr;
 
-	pymth = cListToPyList(mth);
-	pyobj = cListToPyList(obj);
-	pyvar = cListToPyList(var);
+	pyout = PyFile_FromFile(out, "", "w", 0);
+	pyerr = PyFile_FromFile(err, "", "w", 0);
+	pydbg = PyFile_FromFile(dbg, "", "w", 0);
 
 	PyObject *object = executeFunction("layman.debug", "Message",
-					"(sOOOIIIIIOOO)",
+					"(sOOO)",
 					module,
 					pyout,
 					pyerr,
-					pydbg,
-					debug_level,
-					debug_verbosity,
-					info_level,
-					warn_level,
-					col,
-					pymth,
-					pyobj,
-					pyvar);
+					pydbg);
 
 	Py_DECREF(pyout);
 	Py_DECREF(pyerr);
 	Py_DECREF(pydbg);
-	Py_DECREF(pymth);
-	Py_DECREF(pyobj);
-	Py_DECREF(pyvar);
 
 	if (!object)
 		return NULL;
 
 	Message *ret = malloc(sizeof(Message));
 	ret->object = object;
+
+	return ret;
+}
+
+int messageSetDebugLevel(Message *m, int debug_level)
+{
+	if (!m || !m->object)
+		return 0;
+
+	PyObject *obj = PyObject_CallMethod(m->object, "set_debug_level", "(I)", debug_level);
+	int ret;
+
+	if (obj)
+		ret = 1;
+	else
+		ret = 0;
+
+	Py_DECREF(obj);
+
+	return ret;
+}
+
+int messageSetDebugVerbosity(Message *m, int debug_verbosity)
+{
+	if (!m || !m->object)
+		return 0;
+
+	PyObject *obj = PyObject_CallMethod(m->object, "set_debug_verbosity", "(I)", debug_verbosity);
+	int ret;
+
+	if (obj)
+		ret = 1;
+	else
+		ret = 0;
+
+	Py_DECREF(obj);
+
+	return ret;
+}
+
+int messageSetInfoLevel(Message *m, int info_level)
+{
+	if (!m || !m->object)
+		return 0;
+
+	PyObject *obj = PyObject_CallMethod(m->object, "set_info_level", "(I)", info_level);
+	int ret;
+
+	if (obj)
+		ret = 1;
+	else
+		ret = 0;
+
+	Py_DECREF(obj);
+
+	return ret;
+}
+
+int messageSetWarnLevel(Message *m, int warn_level)
+{
+	if (!m || !m->object)
+		return 0;
+
+	PyObject *obj = PyObject_CallMethod(m->object, "set_warn_level", "(I)", warn_level);
+	int ret;
+
+	if (obj)
+		ret = 1;
+	else
+		ret = 0;
+
+	Py_DECREF(obj);
+
+	return ret;
+}
+
+int messageSetColorsOn(Message *m)
+{
+	if (!m || !m->object)
+		return 0;
+
+	PyObject *obj = PyObject_CallMethod(m->object, "color_on", NULL);
+	int ret;
+
+	if (obj)
+		ret = 1;
+	else
+		ret = 0;
+
+	Py_DECREF(obj);
+
+	return ret;
+}
+
+int messageSetColorsOff(Message *m)
+{
+	if (!m || !m->object)
+		return 0;
+
+	PyObject *obj = PyObject_CallMethod(m->object, "color_off", NULL);
+	int ret;
+
+	if (obj)
+		ret = 1;
+	else
+		ret = 0;
+
+	Py_DECREF(obj);
+
+	return ret;
+}
+
+int messageSetDebugMethods(Message *m, const char* mth)
+{
+	if (!m || !m->object)
+		return 0;
+
+	PyObject *obj = PyObject_CallMethod(m->object, "set_debug_methods", "(s)", mth);
+	int ret;
+
+	if (obj)
+		ret = 1;
+	else
+		ret = 0;
+
+	Py_DECREF(obj);
+
+	return ret;
+}
+
+int messageSetDebugClasses(Message *m, const char* cla)
+{
+	if (!m || !m->object)
+		return 0;
+
+	PyObject *obj = PyObject_CallMethod(m->object, "set_debug_classes", "(s)", cla);
+	int ret;
+
+	if (obj)
+		ret = 1;
+	else
+		ret = 0;
+
+	Py_DECREF(obj);
+
+	return ret;
+}
+
+int messageSetDebugVariables(Message *m, const char* var)
+{
+	if (!m || !m->object)
+		return 0;
+
+	PyObject *obj = PyObject_CallMethod(m->object, "set_debug_variables", "(s)", var);
+	int ret;
+
+	if (obj)
+		ret = 1;
+	else
+		ret = 0;
+
+	Py_DECREF(obj);
 
 	return ret;
 }

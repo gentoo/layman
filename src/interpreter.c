@@ -89,8 +89,6 @@ struct Interpreter
 	PyObjectList *modules;
 } *in = 0;
 
-//Interpreter *in = 0;
-
 void interpreterInit()
 {
 	if (in)
@@ -145,6 +143,7 @@ PyObject *executeFunction(const char *module, const char *funcName, const char* 
 	{
 		mod = moduleNamed(module, in->modules);
 	}
+	// If module is not loaded yet, do it.
 	if (!mod)
 	{
 		mod = PyImport_ImportModule(module);
@@ -153,25 +152,12 @@ PyObject *executeFunction(const char *module, const char *funcName, const char* 
 		insert(in->modules, mod);
 	}
 
-	//printf("Using module named %s\n", PyModule_GetName(mod));
-
-	/*printf("mod: %p ", mod);
-	PyObject_Print(mod, stdout, 0);
-	printf("\n");*/
-
 	// Look for the function
 	PyObject *func = PyObject_GetAttrString(mod, funcName);
 	if (!PyCallable_Check(func))
 		return NULL;
 
-	// Call the function
-	/*printf("func: %p\n", func);
-	PyObject_Print(func, stdout, 0);
-	printf("\n");*/
-
-	//PyObject_Print(args, stdout, 0);
-	//printf("\n");
-
+	// Execute it
 	PyObject *val = PyObject_CallObject(func, args);
 
 	if (args != NULL)

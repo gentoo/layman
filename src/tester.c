@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 	int ret = 0;
 	interpreterInit();
 	
-	Message *msg = messageCreate("layman", 0, 0, 0, 4, 2, 4, 4, 1, NULL, NULL, NULL);
+	Message *msg = messageCreate("layman", 0, 0, 0);
 	BareConfig *cfg = bareConfigCreate(msg, 0, 0, 0);
 	/*if (!bareConfigSetOptionValue(cfg, "local_list", "/home/detlev/src/gsoc2010/layman/layman/tests/testfiles/global-overlays.xml"))
 		printf("Error setting config option.\n");
