@@ -96,7 +96,7 @@ class LaymanAPI(object):
         return repos
 
 
-    def delete_repo(self, repos):
+    def delete_repos(self, repos):
         """delete the selected repo from the system
         
         @type repos: list of strings or string
@@ -127,7 +127,7 @@ class LaymanAPI(object):
         return True
 
 
-    def add_repo(self, repos):
+    def add_repos(self, repos):
         """installs the seleted repo id
         
         @type repos: list of strings or string
@@ -158,13 +158,72 @@ class LaymanAPI(object):
         return True
 
 
-    def get_info(self, repos):
-        """retirves the recorded information about the repo specified by id
+    def get_all_info(self, repos):
+        """retrieves the recorded information about the repo(s)
+        specified by id
         
         @type repos: list of strings or string
         @param repos: ['repo-id1', ...] or 'repo-id'
         @rtype list of tuples [(str, bool, bool),...]
-        @return: dictionary  {'id': (info, official, supported)}
+        @return: dictionary of dictionaries  
+        {'id1':
+            {'name': str,
+            'owner_name': str,
+            'owner_email': str,
+            ' homepage': str,
+            'description': str,
+            'src_uris': list of str ['uri1',...]
+            'src_type': str,
+            'priority': int,
+            'quality': str 
+            'status':,
+            'official': bool,
+            'supported': bool,
+            },
+        'id2': {...}
+        }
+        """
+        
+        # In progress, has, been coded to the above dict. yet.
+        repos = self._check_repo_type(repos, "get_info")
+        result = {}
+
+        for id in repos:
+            if not self.is_repo(id):
+                self._error(1, UNKNOWN_REPO_ID %id)
+                result[id] = ('', False, False)
+            try:
+                overlay = self._available_db.select(id)
+            except UnknownOverlayException, error:
+                self._error(2, "Error: %s" %str(error))
+                result[id] = ('', False, False)
+            else:
+                result[id] = {
+                    'name': overlay.name,
+                    'owner_name': overlay.owner_name,
+                    'owner_email': overlay.owner_email,
+                    'homepage': overlay.homepage,
+                    'description': overlay.description,
+                    'src_uris': overlay.source_uris(),
+                    'src_type': overlay.sources[0].type,
+                    'priority': overlay.priority,
+                    'quality': overlay.quality, 
+                    'status': overlay.status,
+                    'official': overlay.is_official(),
+                    'supported': overlay.is_supported(),
+                    },
+
+        return result
+
+
+    def get_info_str(self, repos):
+        """retirves the string representation of the recorded information
+        about the repo(s) specified by id
+        
+        @type repos: list of strings or string
+        @param repos: ['repo-id1', ...] or 'repo-id'
+        @rtype list of tuples [(str, bool, bool),...]
+        @return: dictionary  {'id': (info string, official, supported)}
         """
         repos = self._check_repo_type(repos, "get_info")
         result = {}
@@ -319,10 +378,14 @@ class LaymanAPI(object):
     def get_errors(self):
         """returns any warning or fatal messages that occurred during
         an operation and resets it back to None
+        
+        @rtype: list
+        @return: list of error strings
         """
         if self._error_messages:
-            return self._error_messages[:]
+            messages =  self._error_messages[:]
             self._error_messages = []
+            return messages
 
 
 def create_fd():
