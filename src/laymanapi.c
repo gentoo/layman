@@ -332,7 +332,6 @@ int _laymanAPIGetAllInfos(LaymanAPI* l, StringList* overlays, OverlayInfo *resul
 	{
 		// If it's not a dict, it's ignored
 		// FIXME:should an assert be used ?
-		dict = PySequence_GetItem(dict, 0);
 		if (!dict || !PyDict_Check(dict))
 			continue;
 
