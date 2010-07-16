@@ -389,13 +389,19 @@ int _laymanAPIGetAllInfos(LaymanAPI* l, StringList* overlays, OverlayInfo *resul
 
 		k++;
 	}
-
+	
+	//The returned value is not necessary anymore.
 	Py_DECREF(obj);
 
 	//Return the number of structures that have been filled.
 	return k;
 }
 
+/*
+ * Adds an overlay to layman
+ *
+ * Return True if it succeeded, False if not
+ */
 int laymanAPIAddRepo(LaymanAPI* l, const char *repo)
 {
 	if (!l || !l->object || !repo)
@@ -416,6 +422,11 @@ int laymanAPIAddRepo(LaymanAPI* l, const char *repo)
 	return ret;
 }
 
+/*
+ * Adds a list of overlays to layman
+ *
+ * Return True if it succeeded, False if not
+ */
 int laymanAPIAddRepos(LaymanAPI* l, StringList *repos)
 {
 	if (!l || !l->object || !repos)
@@ -440,6 +451,11 @@ int laymanAPIAddRepos(LaymanAPI* l, StringList *repos)
 	return ret;
 }
 
+/*
+ * Deletes an overlay from layman
+ *
+ * Return True if it succeeded, False if not
+ */
 int laymanAPIDeleteRepo(LaymanAPI* l, const char *repo)
 {
 	if (!l || !l->object || !repo)
@@ -460,6 +476,11 @@ int laymanAPIDeleteRepo(LaymanAPI* l, const char *repo)
 	return ret;
 }
 
+/*
+ * Deletes a list of overlays from layman
+ *
+ * Return True if it succeeded, False if not
+ */
 int laymanAPIDeleteRepos(LaymanAPI* l, StringList *repos)
 {
 	if (!l || !l->object || !repos)
