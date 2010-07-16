@@ -1,4 +1,3 @@
-//#include "overlay.h"
 #include "interpreter.h"
 #include "config.h"
 #include "laymanapi.h"
@@ -36,14 +35,14 @@ int main(int argc, char *argv[])
 	printf("\n");
 
 	unsigned int len = stringListCount(strs);
-	OverlayInfo *infos = malloc(sizeof(OverlayInfo) * len);
-	int count = laymanAPIGetInfoList(l, strs, infos);
+	OverlayInfo *infos = calloc(len, sizeof(OverlayInfo));
+	int count = laymanAPIGetAllInfos(l, strs, infos);
 	
 	for (unsigned int i = 0; i < count; i++)
 	{
-		printf("%s\n", infos[i].text);
-		free(infos[i].text);
-		free(infos[i].name);
+		printf("%s\n~~~~~~~~~~~~~~~~~~~~\n", infos[i].name);
+		printf("%s\n\n", infos[i].description);
+		overlayInfoFree(infos[i]);
 	}
 
 	printf("\n");

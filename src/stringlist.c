@@ -15,7 +15,7 @@ StringList* stringListCreate(size_t len)
 	return ret;
 }
 
-int stringListInsertAt(StringList *l, unsigned int pos, char *str)
+int stringListInsertAt(StringList *l, unsigned int pos, const char *str)
 {
 	if(!l || !l->list || l->count < pos)
 		return 0;

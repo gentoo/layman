@@ -26,6 +26,42 @@ LaymanAPI* laymanAPICreate(BareConfig* config, int report_error, int output)
 	return ret;
 }
 
+int laymanAPIIsRepo(LaymanAPI *l, const char* repo)
+{
+	if (!l || !l->object)
+		return 0;
+
+	PyObject *obj = PyObject_CallMethod(l->object, "is_repo", "(s)", repo);
+	if (!obj)
+		return 0;
+
+	int ret = PyObject_IsTrue(obj);
+	// ret must be 1 or 0
+	assert(-1 != ret);
+
+	Py_DECREF(obj);
+
+	return ret;
+}
+
+int laymanAPIIsInstalled(LaymanAPI *l, const char* repo)
+{
+	if (!l || !l->object)
+		return 0;
+
+	PyObject *obj = PyObject_CallMethod(l->object, "is_installed", "(s)", repo);
+	if (!obj)
+		return 0;
+
+	int ret = PyObject_IsTrue(obj);
+	// ret must be 1 or 0
+	assert(-1 != ret);
+
+	Py_DECREF(obj);
+
+	return ret;
+}
+
 /*
  * Returns a list of the available overlays.
  */
@@ -38,6 +74,7 @@ StringList* laymanAPIGetAvailable(LaymanAPI* l, int reload)
 	if (!obj)
 		return NULL;
 
+	//listToCList() will return Type_NONE if the python list is not valid.
 	StringList *ret = listToCList(obj);
 	Py_DECREF(obj);
 
@@ -66,7 +103,6 @@ StringList* laymanAPIGetInstalled(LaymanAPI* l, int reload)
  * Syncs an overlay.
  * It returns true if it succeeded, false if not.
  */
-
 int laymanAPISync(LaymanAPI* l, const char* overlay, int verbose)
 {
 	if (!l || !l->object)
@@ -77,7 +113,9 @@ int laymanAPISync(LaymanAPI* l, const char* overlay, int verbose)
 		return 0;
 
 	int ret = PyObject_IsTrue(obj);
-	assert(-1 == ret);
+	
+	// ret must be 1 or 0
+	assert(-1 != ret);
 	
 	Py_DECREF(obj);
 	
@@ -98,7 +136,7 @@ int laymanAPIFetchRemoteList(LaymanAPI* l)
 		return 0;
 
 	int ret = PyObject_IsTrue(obj);
-	assert(-1 == ret);
+	assert(-1 != ret);
 	
 	Py_DECREF(obj);
 
@@ -112,7 +150,7 @@ int laymanAPIFetchRemoteList(LaymanAPI* l)
  * 
  * It returns the number of results structures that have been filled.
  */
-int laymanAPIGetInfoList(LaymanAPI* l, StringList* overlays, OverlayInfo* results)
+int laymanAPIGetInfosStr(LaymanAPI* l, StringList* overlays, OverlayInfo* results)
 {
 	// Check input data.
 	if (!l || !l->object || !overlays || !results)
@@ -122,7 +160,7 @@ int laymanAPIGetInfoList(LaymanAPI* l, StringList* overlays, OverlayInfo* result
 	PyObject *list = cListToPyList(overlays);
 
 	// Call the method
-	PyObject *obj = PyObject_CallMethod(l->object, "get_info", "(O)", list);
+	PyObject *obj = PyObject_CallMethod(l->object, "get_info_str", "(O)", list);
 	Py_DECREF(list);
 
 	// Check if the returned value is a dict as expected.
@@ -186,19 +224,45 @@ int laymanAPIGetInfoList(LaymanAPI* l, StringList* overlays, OverlayInfo* result
  * Provided for convenience, this function get the information for only 1 overlay.
  * Returns NULL if it fails, an OverlayInfo struct if not.
  */
-OverlayInfo *laymanAPIGetInfo(LaymanAPI* l, const char* overlay)
+OverlayInfo *laymanAPIGetInfoStr(LaymanAPI* l, const char* overlay)
 {
 	// Check input data.
 	if (!l || !l->object || !overlay)
 		return NULL;
 	
 	// Create a list containing the overlay string
-	PyObject *list = PyList_New(1);
-	PyList_SetItem(list, 0, PyString_FromString(overlay));
-	//FIXME:directly call laymanAPIGetInfoList()
+	StringList *olist = stringListCreate(1);
+	stringListInsertAt(olist, 0, overlay);
+
+	OverlayInfo *oi = malloc(sizeof(OverlayInfo));
+	int count = laymanAPIGetInfosStr(l, olist, oi);
+	assert(1 != count);
+
+	stringListFree(olist);
+
+	return oi;
+}
+
+/*
+ * Gives a list of OverlayInfo's from the overaly names found in the overlays StringList.
+ * results must be allocated and initialized with zeroes.
+ * 
+ * If an information is unavailable (no owner email for example),
+ * the correpsonding field will stay to NULL
+ * 
+ * Returns the number of OverlayInfo structures filled.
+ */
+int laymanAPIGetAllInfos(LaymanAPI* l, StringList* overlays, OverlayInfo *results)
+{
+	// Check input data.
+	if (!l || !l->object || !overlays || !results)
+		return 0;
+
+	// Convert the StringList to a Python list object.
+	PyObject *list = cListToPyList(overlays);
 
 	// Call the method
-	PyObject *obj = PyObject_CallMethod(l->object, "get_info", "(O)", list);
+	PyObject *obj = PyObject_CallMethod(l->object, "get_all_info", "(O)", list);
 	Py_DECREF(list);
 
 	// Check if the returned value is a dict as expected.
@@ -208,68 +272,121 @@ OverlayInfo *laymanAPIGetInfo(LaymanAPI* l, const char* overlay)
 		{
 			Py_DECREF(obj);
 		}
-		return NULL;
+		return 0;
 	}
 
-	// Get the tuple corresponding to the overlay and check if it is a tuple.
-	PyObject *tuple = PyDict_GetItemString(obj, overlay);
+	PyObject *name, *dict;
+	Py_ssize_t i = 0;
 
-	if (!tuple || !PyTuple_Check(tuple))
+	int k = 0;
+
+	// Loop in the dict to get all dicts.
+	while (PyDict_Next(obj, &i, &name, &dict))
 	{
-		if (tuple)
-		{
-			Py_DECREF(tuple);
-		}
-		Py_DECREF(obj);
+		// If it's not a dict, it's ignored
+		// FIXME:should an assert be used ?
+		dict = PySequence_GetItem(dict, 0);
+		if (!dict || !PyDict_Check(dict))
+			continue;
 
-		return NULL;
+		PyObject *official = PyDict_GetItemString(dict, "official");
+		PyObject *supported = PyDict_GetItemString(dict, "supported");
+		PyObject *ownerName = PyDict_GetItemString(dict, "owner_name");
+		PyObject *ownerEmail = PyDict_GetItemString(dict, "owner_email");
+		PyObject *homepage = PyDict_GetItemString(dict, "homepage");
+		PyObject *description = PyDict_GetItemString(dict, "description");
+		PyObject *srcUris = PyDict_GetItemString(dict, "src_uris");
+		PyObject *srcType = PyDict_GetItemString(dict, "src_type");
+		PyObject *priority = PyDict_GetItemString(dict, "priority");
+		PyObject *quality = PyDict_GetItemString(dict, "quality");
+//'status':?? TODO
+
+		// Copy values in the kth structure of the results.
+		char* tmp = PyString_AsString(name);
+		assert(NULL != tmp); //name must not be NULL
+		results[k].name = strdup(tmp);
+
+		tmp = PyString_AsString(ownerName);
+		if (tmp != NULL)
+			results[k].ownerName = strdup(tmp);
+
+		tmp = PyString_AsString(ownerEmail);
+		if (tmp != NULL)
+			results[k].ownerEmail = strdup(tmp);
+
+		tmp = PyString_AsString(homepage);
+		if (tmp != NULL)
+			results[k].homepage = strdup(tmp);
+
+		tmp = PyString_AsString(description);
+		if (tmp != NULL)
+			results[k].description = strdup(tmp);
+
+		tmp = PyString_AsString(srcType);
+		if (tmp != NULL)
+			results[k].srcType = strdup(tmp);
+
+		tmp = PyString_AsString(quality);
+		if (tmp != NULL)
+			results[k].quality = strdup(tmp);
+
+		results[k].priority = PyLong_AsLong(priority);
+
+		results[k].srcUris = listToCList(srcUris);
+
+		// If official or supported is neither True or False, abort.
+		results[k].official = PyObject_IsTrue(official);
+		assert(-1 != results[k].official);
+		results[k].supported = PyObject_IsTrue(supported);
+		assert(-1 != results[k].supported);
+
+		k++;
 	}
-
-	// Create the structure to return and fill it.
-	PyObject *text = PyTuple_GetItem(tuple, 0);
-	PyObject *official = PyTuple_GetItem(tuple, 1);
-	PyObject *supported = PyTuple_GetItem(tuple, 2);
-
-	OverlayInfo *oi = malloc(sizeof(OverlayInfo));
-
-	char* tmp = PyString_AsString(text);
-	assert(NULL != tmp);
-	oi->text = strdup(tmp);
-
-	oi->name = strdup(overlay);
-
-	oi->official = PyObject_IsTrue(official);
-	assert(-1 == oi->official);
-	oi->supported = PyObject_IsTrue(supported);
-	assert(-1 == oi->supported);
 
 	Py_DECREF(obj);
 
-	return oi;
+	//Return the number of structures that have been filled.
+	return k;
 }
 
-int laymanAPIAddRepo(LaymanAPI* l, StringList *repos)
+/*
+ * TODO:implement the same for only 1 repo
+ */
+int laymanAPIAddRepos(LaymanAPI* l, StringList *repos)
 {
 	if (!l || !l->object || !repos)
 		return 0;
 
+	// Converting the C list to a python list
 	PyObject *pyrepos = cListToPyList(repos);
-	PyObject *obj = PyObject_CallMethod(l->object, "add_repo", "(O)", pyrepos);
+
+	// Call the method
+	PyObject *obj = PyObject_CallMethod(l->object, "add_repos", "(O)", pyrepos);
 	Py_DECREF(pyrepos);
+	
+	// If the call returned NULL, it failed.
 	if (!obj)
 		return 0;
 
 	return 1;
 }
 
-int laymanAPIDeleteRepo(LaymanAPI* l, StringList *repos)
+/*
+ * TODO:implement the same for only 1 repo
+ */
+int laymanAPIDeleteRepos(LaymanAPI* l, StringList *repos)
 {
 	if (!l || !l->object || !repos)
 		return 0;
 
+	// Converting the C list to a python list
 	PyObject *pyrepos = cListToPyList(repos);
-	PyObject *obj = PyObject_CallMethod(l->object, "delete_repo", "(O)", pyrepos);
+	
+	// Call the method
+	PyObject *obj = PyObject_CallMethod(l->object, "delete_repos", "(O)", pyrepos);
 	Py_DECREF(pyrepos);
+	
+	// If the call returned NULL, it failed.
 	if (!obj)
 		return 0;
 
@@ -288,4 +405,30 @@ void laymanAPIFree(LaymanAPI* l)
 
 	if (l)
 		free(l);
+}
+
+
+/*
+ * Function that properly frees an OverlayInfo structure's data
+ */
+void overlayInfoFree(OverlayInfo oi)
+{
+	if (oi.name)
+		free(oi.name);
+	if (oi.text)
+		free(oi.text);
+	if (oi.ownerEmail)
+		free(oi.ownerEmail);
+	if (oi.ownerName)
+		free(oi.ownerName);
+	if (oi.homepage)
+		free(oi.homepage);
+	if (oi.description)
+		free(oi.description);
+	if (oi.srcType)
+		free(oi.srcType);
+	if (oi.quality)
+		free(oi.quality);
+	if (oi.srcUris)
+		stringListFree(oi.srcUris);
 }
