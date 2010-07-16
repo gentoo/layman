@@ -211,7 +211,7 @@ class LaymanAPI(object):
                     'status': overlay.status,
                     'official': overlay.is_official(),
                     'supported': overlay.is_supported(),
-                    },
+                    }
 
         return result
 
