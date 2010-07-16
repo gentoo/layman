@@ -99,8 +99,8 @@ class LaymanAPI(object):
     def delete_repo(self, repos):
         """delete the selected repo from the system
         
-       @type repos: list
-        @param repos: ['repo-id1', ...]
+        @type repos: list of strings or string
+        @param repos: ['repo-id1', ...] or 'repo-id'
         @param output: method to handle output if desired
         @rtype dict
         """
@@ -130,8 +130,8 @@ class LaymanAPI(object):
     def add_repo(self, repos):
         """installs the seleted repo id
         
-        @type repos: list
-        @param repos: ['repo-id1', ...]
+        @type repos: list of strings or string
+        @param repos: ['repo-id1', ...] or 'repo-id'
         @param output: method to handle output if desired
         @rtype dict
         """
@@ -161,8 +161,8 @@ class LaymanAPI(object):
     def get_info(self, repos):
         """retirves the recorded information about the repo specified by id
         
-        @type repos: list
-        @param repos: ['repo-id1', ...]
+        @type repos: list of strings or string
+        @param repos: ['repo-id1', ...] or 'repo-id'
         @rtype list of tuples [(str, bool, bool),...]
         @return: dictionary  {'id': (info, official, supported)}
         """
@@ -191,7 +191,7 @@ class LaymanAPI(object):
     def sync(self, repos, output_results=True):
         """syncs the specified repo(s) specified by repos
         
-        @type repos: list or string
+        @type repos: list of strings or string
         @param repos: ['repo-id1', ...] or 'repo-id'
         @rtype bool or {'repo-id': bool,...}
         """
