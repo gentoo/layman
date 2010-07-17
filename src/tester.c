@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
 	//OverlayInfo *infos = calloc(len, sizeof(OverlayInfo));
 	//int count = laymanAPIGetAllInfos(l, strs, infos);
 	
-	OverlayInfo *oi = laymanAPIGetAllInfo(l, "enlightenment");
+	OverlayInfo *oi = laymanAPIGetAllInfo(l, "enlfdsightenment");
 	if (oi)
 	{
 		printf("%s\n~~~~~~~~~~~~~~~~~~~~\n", oi->name);

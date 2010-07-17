@@ -151,7 +151,7 @@ int laymanAPIFetchRemoteList(LaymanAPI* l)
  * 
  * It returns the number of results structures that have been filled.
  */
-int laymanAPIGetInfosStr(LaymanAPI* l, StringList* overlays, OverlayInfo* results)
+int laymanAPIGetInfoStrList(LaymanAPI* l, StringList* overlays, OverlayInfo* results)
 {
 	// Check input data.
 	if (!l || !l->object || !overlays || !results)
@@ -236,7 +236,7 @@ OverlayInfo *laymanAPIGetInfoStr(LaymanAPI* l, const char* overlay)
 	stringListInsertAt(olist, 0, overlay);
 
 	OverlayInfo *oi = malloc(sizeof(OverlayInfo));
-	int count = laymanAPIGetInfosStr(l, olist, oi);
+	int count = laymanAPIGetInfoStrList(l, olist, oi);
 	assert(1 != count);
 
 	stringListFree(olist);
@@ -273,7 +273,7 @@ OverlayInfo *laymanAPIGetAllInfo(LaymanAPI* l, const char* overlay)
  * 
  * Returns the number of OverlayInfo structures filled.
  */
-int laymanAPIGetAllInfos(LaymanAPI* l, StringList* overlays, OverlayInfo *results)
+int laymanAPIGetAllInfoList(LaymanAPI* l, StringList* overlays, OverlayInfo *results)
 {
 	return _laymanAPIGetAllInfos(l, overlays, results, NULL);
 }
@@ -426,7 +426,7 @@ int laymanAPIAddRepo(LaymanAPI* l, const char *repo)
  *
  * Return True if it succeeded, False if not
  */
-int laymanAPIAddRepos(LaymanAPI* l, StringList *repos)
+int laymanAPIAddRepoList(LaymanAPI* l, StringList *repos)
 {
 	if (!l || !l->object || !repos)
 		return 0;
@@ -480,7 +480,7 @@ int laymanAPIDeleteRepo(LaymanAPI* l, const char *repo)
  *
  * Return True if it succeeded, False if not
  */
-int laymanAPIDeleteRepos(LaymanAPI* l, StringList *repos)
+int laymanAPIDeleteRepoList(LaymanAPI* l, StringList *repos)
 {
 	if (!l || !l->object || !repos)
 		return 0;
