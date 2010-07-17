@@ -44,7 +44,14 @@ class LaymanAPI(object):
     ## It is a near duplicate of the actions classes.
 
     def __init__(self, config=None, report_errors=False, output=None):
-        """@param configfile, optional config file to use instead of the default
+        """
+        @param configfile: optional config file to use instead of the default.
+                                        can be a BareConfig or ArgsParser config class.
+                                        default is BareConfig(output=output)
+        @param report_errors: optional bool to silence some error reporting to stdout
+                                                default is False
+        @param output: optional Message class instance created with your settings.
+                                    default is Message(module='layman') other params are defaults.
         """
         
         self.output = output if output  else OUT
@@ -88,6 +95,10 @@ class LaymanAPI(object):
 
     @staticmethod
     def _check_repo_type( repos, caller):
+        """internal function that validates the repos parameter,
+        converting a string to a list[string] if it is not already a list.
+        produces and error message if it is any other type
+        returns repos as list always"""
         if isinstance(repos, str):
             repos = [repos]
         elif not isinstance(repos, list):
@@ -184,7 +195,6 @@ class LaymanAPI(object):
         }
         """
         
-        # In progress, has, been coded to the above dict. yet.
         repos = self._check_repo_type(repos, "get_info")
         result = {}
 
