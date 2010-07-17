@@ -1,6 +1,6 @@
 #include <Python.h>
 #include "message.h"
-#include "interpreter.h"
+#include "internal.h"
 
 struct Message
 {

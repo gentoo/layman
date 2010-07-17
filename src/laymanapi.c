@@ -1,5 +1,5 @@
 #include <Python.h>
-#include "interpreter.h"
+#include "internal.h"
 #include "laymanapi.h"
 
 int _laymanAPIGetAllInfos(LaymanAPI* l, StringList* overlays, OverlayInfo *results, const char *overlay);

@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "interpreter.h"
 #include "config.h"
 #include "laymanapi.h"

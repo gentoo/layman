@@ -1,7 +1,7 @@
 #include <Python.h>
 
 #include "config.h"
-#include "interpreter.h"
+#include "internal.h"
 
 struct BareConfig
 {

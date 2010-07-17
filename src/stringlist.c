@@ -1,3 +1,5 @@
+#include <Python.h>
+#include <stdlib.h>
 #include "stringlist.h"
 
 struct StringList
@@ -15,7 +17,7 @@ StringList* stringListCreate(size_t len)
 	return ret;
 }
 
-int stringListInsertAt(StringList *l, unsigned int pos, const char *str)
+int stringListInsertAt(StringList *l, unsigned int pos, char *str)
 {
 	if(!l || !l->list || l->count < pos)
 		return 0;

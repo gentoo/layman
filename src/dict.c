@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "internal.h"
 #include "dict.h"
 
 /*
