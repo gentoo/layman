@@ -7,9 +7,16 @@ struct Message
 	PyObject *object;
 };
 
-/*
+/**
  * Creates a Message instance with default values.
  * To modify those values, use the corresponding functions.
+ *
+ * \param module the module to debug. If you don't know, set "layman"
+ * \param out where to write info
+ * \param err where to write errors
+ * \param dbg where to write debug information
+ *
+ * \return a new instance of a Message object. It must be freed with messageFree()
  */
 Message *messageCreate(const char* module,
 			FILE* out,
@@ -49,6 +56,13 @@ Message *messageCreate(const char* module,
 	return ret;
 }
 
+/**
+ * Set the debug level.
+ *
+ * \param debug_level the debug level
+ *
+ * \return True on success, False on failure.
+ */
 int messageSetDebugLevel(Message *m, int debug_level)
 {
 	if (!m || !m->object)
@@ -67,6 +81,13 @@ int messageSetDebugLevel(Message *m, int debug_level)
 	return ret;
 }
 
+/**
+ * Set the debug verbosity.
+ *
+ * \param debug_verbosity the debug verbosity
+ *
+ * \return True on success, False on failure.
+ */
 int messageSetDebugVerbosity(Message *m, int debug_verbosity)
 {
 	if (!m || !m->object)
@@ -85,6 +106,13 @@ int messageSetDebugVerbosity(Message *m, int debug_verbosity)
 	return ret;
 }
 
+/**
+ * Set the info level.
+ *
+ * \param info_level the info level
+ *
+ * \return True on success, False on failure.
+ */
 int messageSetInfoLevel(Message *m, int info_level)
 {
 	if (!m || !m->object)
@@ -103,6 +131,13 @@ int messageSetInfoLevel(Message *m, int info_level)
 	return ret;
 }
 
+/**
+ * Set the warning level.
+ *
+ * \param warn_level the warning level
+ *
+ * \return True on success, False on failure.
+ */
 int messageSetWarnLevel(Message *m, int warn_level)
 {
 	if (!m || !m->object)
@@ -121,6 +156,11 @@ int messageSetWarnLevel(Message *m, int warn_level)
 	return ret;
 }
 
+/**
+ * Activates colors in the output
+ *
+ * \return 1 on success, 0 on failure
+ */
 int messageSetColorsOn(Message *m)
 {
 	if (!m || !m->object)
@@ -139,6 +179,11 @@ int messageSetColorsOn(Message *m)
 	return ret;
 }
 
+/**
+ * Deactivates colors in the output
+ *
+ * \return 1 on success, 0 on failure
+ */
 int messageSetColorsOff(Message *m)
 {
 	if (!m || !m->object)
@@ -157,6 +202,13 @@ int messageSetColorsOff(Message *m)
 	return ret;
 }
 
+/**
+ * Sets the methods to be debugged.
+ *
+ * \param mth the list of methods to be debugged, separated by comas
+ *
+ * \return 1 on success, 0 on failure
+ */
 int messageSetDebugMethods(Message *m, const char* mth)
 {
 	if (!m || !m->object)
@@ -175,6 +227,13 @@ int messageSetDebugMethods(Message *m, const char* mth)
 	return ret;
 }
 
+/**
+ * Sets the classes to be debugged.
+ *
+ * \param mth the list of classes to be debugged, separated by comas
+ *
+ * \return 1 on success, 0 on failure
+ */
 int messageSetDebugClasses(Message *m, const char* cla)
 {
 	if (!m || !m->object)
@@ -193,6 +252,13 @@ int messageSetDebugClasses(Message *m, const char* cla)
 	return ret;
 }
 
+/**
+ * Sets the variables to be debugged.
+ *
+ * \param mth the list of variables to be debugged, separated by comas
+ *
+ * \return 1 on success, 0 on failure
+ */
 int messageSetDebugVariables(Message *m, const char* var)
 {
 	if (!m || !m->object)
