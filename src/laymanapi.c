@@ -9,10 +9,13 @@ struct LaymanAPI
 	PyObject *object;
 };
 
-/*
+/**
  * Creates a LaymanAPI object that must be used in all function in this file.
  *
- * The BareConfig argument must not be NULL.
+ * \param config a BareConfig object that contains all configuration options. If NULL, the default configuration will be used.
+ * \param report_error if True, errors reporting on stdout will be activated.
+ * \param output ?
+ * \return a new instance of the LaymanAPI class, to be freed with laymanAPIFree()
  */
 LaymanAPI* laymanAPICreate(BareConfig* config, int report_error, int output)
 {
@@ -32,6 +35,14 @@ LaymanAPI* laymanAPICreate(BareConfig* config, int report_error, int output)
 	return ret;
 }
 
+/**
+ * Check if the given string is a valid repository
+ *
+ * \param l the LaymanAPI object.
+ * \param repo the repository to be checked.
+ *
+ * \return True if the repository is valid, False if not
+ */
 int laymanAPIIsRepo(LaymanAPI *l, const char* repo)
 {
 	if (!l || !l->object)
@@ -50,6 +61,14 @@ int laymanAPIIsRepo(LaymanAPI *l, const char* repo)
 	return ret;
 }
 
+/**
+ * Check if the given string is a valid and installed repository
+ *
+ * \param l the LaymanAPI object.
+ * \param repo the repository to be checked.
+ *
+ * \return True if the repository is valid and installed, False if not
+ */
 int laymanAPIIsInstalled(LaymanAPI *l, const char* repo)
 {
 	if (!l || !l->object)
@@ -68,8 +87,13 @@ int laymanAPIIsInstalled(LaymanAPI *l, const char* repo)
 	return ret;
 }
 
-/*
+/**
  * Returns a list of the available overlays.
+ *
+ * \param l the LaymanAPI object.
+ * \param reload if True, reloads the list
+ *
+ * \return the list of available overlays
  */
 StringList* laymanAPIGetAvailable(LaymanAPI* l, int reload)
 {
@@ -87,8 +111,13 @@ StringList* laymanAPIGetAvailable(LaymanAPI* l, int reload)
 	return ret;
 }
 
-/*
+/**
  * Returns a list of the installed overlays.
+ *
+ * \param l the LaymanAPI object.
+ * \param reload if True, reloads the list
+ *
+ * \return the list of installed overlays
  */
 StringList* laymanAPIGetInstalled(LaymanAPI* l, int reload)
 {
@@ -105,9 +134,13 @@ StringList* laymanAPIGetInstalled(LaymanAPI* l, int reload)
 	return ret;
 }
 
-/*
+/**
  * Syncs an overlay.
- * It returns true if it succeeded, false if not.
+ * 
+ * \param overlay The name of the overlay to sync
+ * \param verbose if True, the output will be more verbose.
+ *
+ * \return True if it succeeded, False if not.
  */
 int laymanAPISync(LaymanAPI* l, const char* overlay, int verbose)
 {
@@ -128,9 +161,10 @@ int laymanAPISync(LaymanAPI* l, const char* overlay, int verbose)
 	return ret;
 }
 
-/*
+/**
  * Updates the local overlay list.
- * It returns true if it succeeded, false if not.
+ *
+ * \return True if it succeeded, False if not.
  */
 int laymanAPIFetchRemoteList(LaymanAPI* l)
 {
@@ -149,12 +183,16 @@ int laymanAPIFetchRemoteList(LaymanAPI* l)
 	return ret;
 }
 
-/*
+/**
  * Gets the information from the overlays given in the StringList overlays.
  * The results are stored in the results table which must be initialized with N structures,
  * N being the number of overlays in the overlays StringList.
+ * This function fills the name, text, supported and official fields of the OverlayInfo structure.
  * 
- * It returns the number of results structures that have been filled.
+ * \param overlays the list of overlays to get information from
+ * \param results a pointer to a table of OverlayInfo structures
+ *
+ * \return the number of results structures that have been filled
  */
 int laymanAPIGetInfoStrList(LaymanAPI* l, StringList* overlays, OverlayInfo* results)
 {
@@ -226,9 +264,12 @@ int laymanAPIGetInfoStrList(LaymanAPI* l, StringList* overlays, OverlayInfo* res
 	return k;
 }
 
-/*
+/**
  * Provided for convenience, this function get the information for only 1 overlay.
- * Returns NULL if it fails, an OverlayInfo struct if not.
+ *
+ * \param overlay the overlay name to get info from
+ *
+ * \return NULL if it fails, an OverlayInfo struct if not.
  */
 OverlayInfo *laymanAPIGetInfoStr(LaymanAPI* l, const char* overlay)
 {
@@ -249,6 +290,14 @@ OverlayInfo *laymanAPIGetInfoStr(LaymanAPI* l, const char* overlay)
 	return oi;
 }
 
+/**
+ * Get all information from an overlay.
+ * This function fills every fields but the text field of the OverlayInfo structure.
+ *
+ * \param overlay the overlay name to get info from
+ *
+ * \return NULL if it fails, an OverlayInfo struct if not.
+ */
 OverlayInfo *laymanAPIGetAllInfo(LaymanAPI* l, const char* overlay)
 {
 	// Check input data.
@@ -269,21 +318,26 @@ OverlayInfo *laymanAPIGetAllInfo(LaymanAPI* l, const char* overlay)
 	return ret;
 }
 
-/*
+/**
  * Gives a list of OverlayInfo's from the overaly names found in the overlays StringList.
  * results must be allocated and initialized with zeroes.
  * 
  * If an information is unavailable (no owner email for example),
  * the correpsonding field will stay to NULL
  * 
- * Returns the number of OverlayInfo structures filled.
+ * This function fills every fields but the text field of the OverlayInfo structure.
+ * 
+ * \param overlays the list of overlays to get information from
+ * \param results a pointer to a table of OverlayInfo structures
+ *
+ * \return the number of OverlayInfo structures filled.
  */
 int laymanAPIGetAllInfoList(LaymanAPI* l, StringList* overlays, OverlayInfo *results)
 {
 	return _laymanAPIGetAllInfos(l, overlays, results, NULL);
 }
 
-/*
+/**
  * Gives a list of OverlayInfo's from the overaly names found in the overlays StringList if it's not NULL
  * If it's NULL, and overlay is not NULL, the information for Overlay will be fetched.
  * results must be allocated and initialized with zeroes.
@@ -291,7 +345,7 @@ int laymanAPIGetAllInfoList(LaymanAPI* l, StringList* overlays, OverlayInfo *res
  * If an information is unavailable (no owner email for example),
  * the correpsonding field will stay to NULL
  * 
- * Returns the number of OverlayInfo structures filled.
+ * \return the number of OverlayInfo structures filled.
  */
 int _laymanAPIGetAllInfos(LaymanAPI* l, StringList* overlays, OverlayInfo *results, const char *overlay)
 {
@@ -401,10 +455,12 @@ int _laymanAPIGetAllInfos(LaymanAPI* l, StringList* overlays, OverlayInfo *resul
 	return k;
 }
 
-/*
+/**
  * Adds an overlay to layman
  *
- * Return True if it succeeded, False if not
+ * \param repo the name of the repository to add
+ *
+ * \return True if it succeeded, False if not
  */
 int laymanAPIAddRepo(LaymanAPI* l, const char *repo)
 {
@@ -426,8 +482,10 @@ int laymanAPIAddRepo(LaymanAPI* l, const char *repo)
 	return ret;
 }
 
-/*
+/**
  * Adds a list of overlays to layman
+ *
+ * \param repo the list of the repositories to add
  *
  * Return True if it succeeded, False if not
  */
@@ -455,10 +513,12 @@ int laymanAPIAddRepoList(LaymanAPI* l, StringList *repos)
 	return ret;
 }
 
-/*
+/**
  * Deletes an overlay from layman
  *
- * Return True if it succeeded, False if not
+ * \param repo the name of the repository to delete
+ *
+ * \return True if it succeeded, False if not
  */
 int laymanAPIDeleteRepo(LaymanAPI* l, const char *repo)
 {
@@ -480,10 +540,12 @@ int laymanAPIDeleteRepo(LaymanAPI* l, const char *repo)
 	return ret;
 }
 
-/*
+/**
  * Deletes a list of overlays from layman
  *
- * Return True if it succeeded, False if not
+ * \param repo the list of the repositories to delete
+ *
+ * \return True if it succeeded, False if not
  */
 int laymanAPIDeleteRepoList(LaymanAPI* l, StringList *repos)
 {
@@ -509,7 +571,7 @@ int laymanAPIDeleteRepoList(LaymanAPI* l, StringList *repos)
 	return ret;
 }
 
-/*
+/**
  * Frees a LaymanAPI object from memory
  */
 void laymanAPIFree(LaymanAPI* l)

@@ -18,8 +18,14 @@ PyObject *_bareConfigObject(BareConfig *c)
 		Py_RETURN_NONE;
 }
 
-/*
+/**
  * Creates a bare config object with default values.
+ *
+ * \param outFd where information must be written to
+ * \param inFd where information must be read from
+ * \param errFd where errors must be written to
+ *
+ * \return a new instance of a BareConfig object. It must be freed with bareConfigFree()
  */
 BareConfig *bareConfigCreate(Message *m, FILE* outFd, FILE* inFd, FILE* errFd)
 {
@@ -51,6 +57,9 @@ BareConfig *bareConfigCreate(Message *m, FILE* outFd, FILE* inFd, FILE* errFd)
 	return ret;
 }
 
+/**
+ * Frees a BareConfig object.
+ */
 void bareConfigFree(BareConfig* cfg)
 {
 	if (cfg && cfg->object)
@@ -63,7 +72,11 @@ void bareConfigFree(BareConfig* cfg)
 }
 
 /*
- * Returns an option's default value
+ * Get an option's default value.
+ *
+ * \param opt the name of the option
+ * 
+ * \return the value or NULL on failure.
  */
 const char* bareConfigGetDefaultValue(BareConfig* cfg, const char* opt)
 {
@@ -89,6 +102,10 @@ const char* bareConfigGetDefaultValue(BareConfig* cfg, const char* opt)
 
 /*
  * Get an option's current value.
+ *
+ * \param opt the name of the option
+ *
+ * \return the value or NULL on failure
  */
 const char* bareConfigGetOptionValue(BareConfig* cfg, const char* opt)
 {
@@ -105,6 +122,11 @@ const char* bareConfigGetOptionValue(BareConfig* cfg, const char* opt)
 
 /*
  * Modifies an option's value
+ *
+ * \param opt the name of the option
+ * \param val the new value for this option
+ *
+ * \return True on success, 0 on failure
  */
 int bareConfigSetOptionValue(BareConfig* cfg, const char* opt, const char* val)
 {
