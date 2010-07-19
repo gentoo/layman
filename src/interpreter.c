@@ -7,8 +7,9 @@
 #include <string.h>
 #include "interpreter.h"
 
-/*
+/**
  * PyObjectList
+ * Stores modules in a linked list so that they don't have to be reloaded every time.
  */
 typedef struct PyObjectListElem
 {
@@ -90,7 +91,10 @@ struct Interpreter
 	PyObjectList *modules;
 } *in = 0;
 
-void interpreterInit()
+/**
+ * This is the first function that must be called before using the library.
+ */
+void laymanInit()
 {
 	if (in)
 		return;
@@ -102,7 +106,11 @@ void interpreterInit()
 	in->modules = createObjectList();
 }
 
-void interpreterFinalize()
+/**
+ * Call this function when you're done using the library.
+ * It will free memory.
+ */
+void laymanFinalize()
 {
 	if (!in)
 		return;
@@ -113,14 +121,16 @@ void interpreterFinalize()
 		Py_Finalize();
 }
 
-/*
+/**
  * printf() like function that executes a python function
- * @param module name of the python module in which the function is
- * @param funcName the function name to call
- * @param format printf() like list of arguments. See Python documentation
- * @param ... arguments for the function
+ *
+ * \param module name of the python module in which the function is
+ * \param funcName the function name to call
+ * \param format printf() like list of arguments. See Python documentation
+ * \param ... arguments for the function
+ *
+ * \return the result of the execution. Can be NULL if the call failed.
  */
-
 PyObject *executeFunction(const char *module, const char *funcName, const char* format, ...)
 {
 	if (!Py_IsInitialized())

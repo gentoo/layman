@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 	argc = argc;
 	argv = argv;
 	int ret = 0;
-	interpreterInit();
+	laymanInit();
 	
 	Message *msg = messageCreate("layman", 0, 0, 0);
 	BareConfig *cfg = bareConfigCreate(msg, 0, 0, 0);
@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 	bareConfigFree(cfg);
 	laymanAPIFree(l);
 
-	interpreterFinalize();
+	laymanFinalize();
 
 	return ret;
 }

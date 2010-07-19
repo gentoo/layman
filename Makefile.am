@@ -9,7 +9,7 @@ liblayman_la_SOURCES = src/config.c src/dict.c src/interpreter.c src/laymanapi.c
 liblayman_la_LIBADD = $(PYTHON_LIBS)
 
 layman_includedir = $(includedir)/layman
-layman_include_HEADERS = src/config.h src/dict.h src/interpreter.h src/laymanapi.h src/message.h src/stringlist.h
+layman_include_HEADERS = src/layman.h src/config.h src/dict.h src/interpreter.h src/laymanapi.h src/message.h src/stringlist.h
 
 #bin_PROGRAMS = tester
 
