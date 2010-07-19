@@ -2,7 +2,7 @@
 #include "internal.h"
 #include "laymanapi.h"
 
-int _laymanAPIGetAllInfos(LaymanAPI* l, StringList* overlays, OverlayInfo *results, const char *overlay);
+static int _laymanAPIGetAllInfos(LaymanAPI* l, StringList* overlays, OverlayInfo *results, const char *overlay);
 
 struct LaymanAPI
 {
@@ -16,8 +16,13 @@ struct LaymanAPI
  */
 LaymanAPI* laymanAPICreate(BareConfig* config, int report_error, int output)
 {
-	assert(NULL != config);
-	PyObject *obj = executeFunction("layman.api", "LaymanAPI", "Oii", _bareConfigObject(config), report_error, output);
+	PyObject *cfg;
+	if (!config)
+		cfg = Py_None;
+	else
+		cfg = _bareConfigObject(config);
+
+	PyObject *obj = executeFunction("layman.api", "LaymanAPI", "Oii", cfg, report_error, output);
 	if (!obj)
 		return NULL;
 
@@ -42,7 +47,7 @@ int laymanAPIIsRepo(LaymanAPI *l, const char* repo)
 
 	Py_DECREF(obj);
 
-	return !ret;
+	return ret;
 }
 
 int laymanAPIIsInstalled(LaymanAPI *l, const char* repo)
@@ -60,7 +65,7 @@ int laymanAPIIsInstalled(LaymanAPI *l, const char* repo)
 
 	Py_DECREF(obj);
 
-	return !ret;
+	return ret;
 }
 
 /*
@@ -114,13 +119,13 @@ int laymanAPISync(LaymanAPI* l, const char* overlay, int verbose)
 		return 0;
 
 	int ret = PyObject_IsTrue(obj);
-	
+
 	// ret must be 1 or 0
 	assert(-1 != ret);
-	
+
 	Py_DECREF(obj);
-	
-	return !ret;
+
+	return ret;
 }
 
 /*
@@ -141,7 +146,7 @@ int laymanAPIFetchRemoteList(LaymanAPI* l)
 	
 	Py_DECREF(obj);
 
-	return !ret;
+	return ret;
 }
 
 /*
@@ -207,9 +212,9 @@ int laymanAPIGetInfoStrList(LaymanAPI* l, StringList* overlays, OverlayInfo* res
 		assert(NULL != tmp);
 		results[k].text = strdup(tmp);
 
-		results[k].official = !PyObject_IsTrue(official);
+		results[k].official = PyObject_IsTrue(official);
 		assert(-1 != results[k].official);
-		results[k].supported = !PyObject_IsTrue(supported);
+		results[k].supported = PyObject_IsTrue(supported);
 		assert(-1 != results[k].supported);
 
 		k++;
@@ -381,9 +386,9 @@ int _laymanAPIGetAllInfos(LaymanAPI* l, StringList* overlays, OverlayInfo *resul
 		results[k].srcUris = listToCList(srcUris);
 
 		// If official or supported is neither True or False, abort.
-		results[k].official = !PyObject_IsTrue(official);
+		results[k].official = PyObject_IsTrue(official);
 		assert(-1 != results[k].official);
-		results[k].supported = !PyObject_IsTrue(supported);
+		results[k].supported = PyObject_IsTrue(supported);
 		assert(-1 != results[k].supported);
 
 		k++;
@@ -408,14 +413,14 @@ int laymanAPIAddRepo(LaymanAPI* l, const char *repo)
 
 	// Call the method
 	PyObject *obj = PyObject_CallMethod(l->object, "delete_repos", "(s)", repo);
-	
+
 	// If the call returned NULL, it failed.
 	int ret;
 	if (!obj)
 		ret = 0;
 	else
 		ret = 1;
-	
+
 	Py_DECREF(obj);
 
 	return ret;
@@ -437,14 +442,14 @@ int laymanAPIAddRepoList(LaymanAPI* l, StringList *repos)
 	// Call the method
 	PyObject *obj = PyObject_CallMethod(l->object, "add_repos", "(O)", pyrepos);
 	Py_DECREF(pyrepos);
-	
+
 	// If the call returned NULL, it failed.
 	int ret;
 	if (!obj)
 		ret = 0;
 	else
 		ret = 1;
-	
+
 	Py_DECREF(obj);
 
 	return ret;
@@ -462,14 +467,14 @@ int laymanAPIDeleteRepo(LaymanAPI* l, const char *repo)
 
 	// Call the method
 	PyObject *obj = PyObject_CallMethod(l->object, "delete_repos", "(s)", repo);
-	
+
 	// If the call returned NULL, it failed.
 	int ret;
 	if (!obj)
 		ret = 0;
 	else
 		ret = 1;
-	
+
 	Py_DECREF(obj);
 
 	return ret;
@@ -487,18 +492,18 @@ int laymanAPIDeleteRepoList(LaymanAPI* l, StringList *repos)
 
 	// Converting the C list to a python list
 	PyObject *pyrepos = cListToPyList(repos);
-	
+
 	// Call the method
 	PyObject *obj = PyObject_CallMethod(l->object, "delete_repos", "(O)", pyrepos);
 	Py_DECREF(pyrepos);
-	
+
 	// If the call returned NULL, it failed.
 	int ret;
 	if (!obj)
 		ret = 0;
 	else
 		ret = 1;
-	
+
 	Py_DECREF(obj);
 
 	return ret;

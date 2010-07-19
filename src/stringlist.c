@@ -8,6 +8,8 @@ struct StringList
 	unsigned int count;
 };
 
+// Creates a String list to use with the library.
+// len is the number of strings in the list.
 StringList* stringListCreate(size_t len)
 {
 	StringList *ret = malloc(sizeof(StringList));
@@ -17,6 +19,10 @@ StringList* stringListCreate(size_t len)
 	return ret;
 }
 
+/*
+ * Inserts the string str in the list l at position pos.
+ * Return True if it succeeded, False if not.
+ */
 int stringListInsertAt(StringList *l, unsigned int pos, char *str)
 {
 	if(!l || !l->list || l->count < pos)
@@ -27,6 +33,9 @@ int stringListInsertAt(StringList *l, unsigned int pos, char *str)
 	return 1;
 }
 
+/*
+ * Returns the number of strings in the list
+ */
 unsigned int stringListCount(StringList *l)
 {
 	if (!l)
@@ -34,6 +43,9 @@ unsigned int stringListCount(StringList *l)
 	return l->count;
 }
 
+/*
+ * Returns the String at position pos
+ */
 char* stringListGetAt(StringList *l, unsigned int pos)
 {
 	if (!l || !l->list || pos >= l->count)
@@ -42,6 +54,9 @@ char* stringListGetAt(StringList *l, unsigned int pos)
 	return l->list[pos];
 }
 
+/*
+ * Converts a Python list object to a C String list
+ */
 StringList* listToCList(PyObject* list)
 {
 	if (!list || !PyList_Check(list))
@@ -54,6 +69,8 @@ StringList* listToCList(PyObject* list)
 
 	for (unsigned int i = 0; i < len; i++)
 	{
+		//Item are copied so that the PyObject can be deleted after the call without
+		//destroying the data in the returned list.
 		PyObject *elem = PyList_GetItem(list, i);
 		ret->list[i] = malloc(sizeof(char) * (PyBytes_Size(elem) + 1));
 		strcpy(ret->list[i], PyBytes_AsString(elem));
@@ -62,6 +79,9 @@ StringList* listToCList(PyObject* list)
 	return ret;
 }
 
+/*
+ * Converts a C String list to a Python List object
+ */
 PyObject* cListToPyList(StringList* list)
 {
 	if (!list)
@@ -76,6 +96,9 @@ PyObject* cListToPyList(StringList* list)
 	return ret;
 }
 
+/*
+ * Prints a C String list.
+ */
 void stringListPrint(StringList* list)
 {
 	if (!list)
@@ -84,16 +107,17 @@ void stringListPrint(StringList* list)
 	for(unsigned int i = 0; i < list->count; i++)
 	{
 		printf("\"%s\"", list->list[i]);
+		// No coma after the last item.
 		if (i < list->count - 1)
 			printf(", ");
 	}
 }
 
+/*
+ * Frees a string list and it's data
+ */
 void stringListFree(StringList* list)
 {
-	if (!list)
-		return;
-
 	if (list && list->list)
 	{
 		for(unsigned int i = 0; i < list->count; i++)

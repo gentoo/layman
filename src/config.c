@@ -3,6 +3,8 @@
 #include "config.h"
 #include "internal.h"
 
+#define debug(x)	printf(x)
+
 struct BareConfig
 {
 	PyObject *object;
@@ -38,7 +40,10 @@ BareConfig *bareConfigCreate(Message *m, FILE* outFd, FILE* inFd, FILE* errFd)
 	Py_DECREF(pyerr);
 
 	if (!obj)
+	{
+		debug("The execution failed, Are you sure app-portage/layman-8888 is properly installed ?\n");
 		return NULL;
+	}
 
 	BareConfig *ret = malloc(sizeof(BareConfig));
 	ret->object = obj;

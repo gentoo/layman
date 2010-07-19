@@ -22,24 +22,23 @@ int main(int argc, char *argv[])
 	printf("local_list: %s\n", bareConfigGetOptionValue(cfg, "local_list"));*/
 
 	LaymanAPI *l = laymanAPICreate(cfg, 0, 0);
-	/*if (0 == laymanAPIFetchRemoteList(l))
+	if (0 == laymanAPIFetchRemoteList(l))
 	{
 		printf("Unable to fetch the remote list.\n");
 		ret = -1;
-		goto finish;
-	}*/
+	}
 
 	StringList *strs = laymanAPIGetAvailable(l, 0);
 	printf("list:\n");
 	stringListPrint(strs);
-	
+
 	printf("\n");
 
 	unsigned int len = stringListCount(strs);
 	//OverlayInfo *infos = calloc(len, sizeof(OverlayInfo));
 	//int count = laymanAPIGetAllInfos(l, strs, infos);
 	
-	OverlayInfo *oi = laymanAPIGetAllInfo(l, "enlfdsightenment");
+	OverlayInfo *oi = laymanAPIGetAllInfo(l, "kuroo");
 	if (oi)
 	{
 		printf("%s\n~~~~~~~~~~~~~~~~~~~~\n", oi->name);
@@ -47,8 +46,8 @@ int main(int argc, char *argv[])
 		overlayInfoFree(*oi);
 		free(oi);
 	}
-
-	for (unsigned int i = 0; i < len; i++)
+	
+	/*for (unsigned int i = 0; i < len; i++)
 	{
 		OverlayInfo *oi = laymanAPIGetAllInfo(l, stringListGetAt(strs, i));
 		if (!oi)
@@ -57,15 +56,15 @@ int main(int argc, char *argv[])
 		printf("%s\n\n", oi->description);
 		overlayInfoFree(*oi);
 		free(oi);
-	}
+	}*/
 
 	printf("\n");
 
 	//free(infos);
+	stringListFree(strs);
 
 	bareConfigFree(cfg);
 	laymanAPIFree(l);
-	stringListFree(strs);
 
 	interpreterFinalize();
 
