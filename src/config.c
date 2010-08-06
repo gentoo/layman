@@ -3,13 +3,32 @@
 #include "config.h"
 #include "internal.h"
 
+/**
+ * \internal
+ */
 #define debug(x)	printf(x)
 
+/** \defgroup config Config
+ * \brief Layman library configuration module
+ */
+
+/** \addtogroup config
+ * @{
+ */
+
+
+/**
+ * \internal
+ */
 struct BareConfig
 {
 	PyObject *object;
 };
 
+/**
+ * \internal
+ * Returns the internal Python object.
+ */
 PyObject *_bareConfigObject(BareConfig *c)
 {
 	if (c && c->object)
@@ -71,7 +90,7 @@ void bareConfigFree(BareConfig* cfg)
 		free(cfg);
 }
 
-/*
+/**
  * Get an option's default value.
  *
  * \param opt the name of the option
@@ -141,3 +160,5 @@ int bareConfigSetOptionValue(BareConfig* cfg, const char* opt, const char* val)
 
 	return ret;
 }
+
+/** @} */

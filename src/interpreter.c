@@ -1,14 +1,10 @@
-/*
- * Compile command :
- * gcc -o interpreter -W -Wall -g --std=c99 -I/usr/include/python3.1/ -lpython3.1 interpreter.c
- */
 #include <Python.h>
 #include <stdio.h>
 #include <string.h>
 #include "interpreter.h"
 
 /**
- * PyObjectList
+ * \internal
  * Stores modules in a linked list so that they don't have to be reloaded every time.
  */
 typedef struct PyObjectListElem
@@ -80,19 +76,30 @@ void freeList(PyObjectList *list, int deref)
 	free(list);
 }
 
-/*
- * Interpreter
- *
+/**
+ * \internal
  * A Python interpreter object keeps the context like the loaded modules.
  */
-
 struct Interpreter
 {
 	PyObjectList *modules;
 } *in = 0;
 
+
+/** \defgroup layman_base Layman base
+ * 
+ * \brief Layman Base functions
+ *
+ * These functions are used when you want to begin or end using the library.
+ */
+
+/** \addtogroup layman_base
+ * @{
+ */
+
 /**
  * This is the first function that must be called before using the library.
+ * It initializes the Python interpreter.
  */
 void laymanInit()
 {
@@ -121,7 +128,10 @@ void laymanFinalize()
 		Py_Finalize();
 }
 
+/** @} */
+
 /**
+ * \internal
  * printf() like function that executes a python function
  *
  * \param module name of the python module in which the function is
@@ -133,8 +143,7 @@ void laymanFinalize()
  */
 PyObject *executeFunction(const char *module, const char *funcName, const char* format, ...)
 {
-	if (!Py_IsInitialized())
-		Py_Initialize();
+	assert(in);
 
 	// Make argument list
 	PyObject *args;

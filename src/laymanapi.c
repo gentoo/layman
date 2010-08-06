@@ -2,12 +2,28 @@
 #include "internal.h"
 #include "laymanapi.h"
 
+/** \defgroup layman_api Layman API
+ * \brief Main API functions
+ */
+
+/** \addtogroup layman_api
+ * @{
+ */
+
 static int _laymanAPIGetAllInfos(LaymanAPI* l, StringList* overlays, OverlayInfo *results, const char *overlay);
 
+/**
+ * Layman structure that is used in all functions
+ */
 struct LaymanAPI
 {
+	/**
+	 * \internal
+	 * PyObject that is used to call methods
+	 */
 	PyObject *object;
 };
+
 
 /**
  * Creates a LaymanAPI object that must be used in all function in this file.
@@ -327,10 +343,10 @@ OverlayInfo *laymanAPIGetAllInfo(LaymanAPI* l, const char* overlay)
  * 
  * This function fills every fields but the text field of the OverlayInfo structure.
  * 
- * \param overlays the list of overlays to get information from
- * \param results a pointer to a table of OverlayInfo structures
+ * @param overlays the list of overlays to get information from
+ * @param results a pointer to a table of OverlayInfo structures
  *
- * \return the number of OverlayInfo structures filled.
+ * @return the number of OverlayInfo structures filled.
  */
 int laymanAPIGetAllInfoList(LaymanAPI* l, StringList* overlays, OverlayInfo *results)
 {
@@ -338,12 +354,18 @@ int laymanAPIGetAllInfoList(LaymanAPI* l, StringList* overlays, OverlayInfo *res
 }
 
 /**
- * Gives a list of OverlayInfo's from the overaly names found in the overlays StringList if it's not NULL
+ * \internal
+ * \brief Gives a list of OverlayInfo's from the overaly names found in the overlays StringList if it's not NULL
  * If it's NULL, and overlay is not NULL, the information for Overlay will be fetched.
  * results must be allocated and initialized with zeroes.
  * 
  * If an information is unavailable (no owner email for example),
  * the correpsonding field will stay to NULL
+ *
+ * \param l Layman object
+ * \param overlays List of overlays
+ * \param results results of the call
+ * \param overlay overlay to provide
  * 
  * \return the number of OverlayInfo structures filled.
  */
@@ -610,3 +632,7 @@ void overlayInfoFree(OverlayInfo oi)
 	if (oi.srcUris)
 		stringListFree(oi.srcUris);
 }
+
+/**
+ * @}
+ */

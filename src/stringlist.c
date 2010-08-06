@@ -2,14 +2,23 @@
 #include <stdlib.h>
 #include "stringlist.h"
 
+/** \defgroup string_list StringList
+ * \brief String list management class
+ */
+
+/** \addtogroup string_list
+ * @{
+ */
 struct StringList
 {
 	char **list;
 	unsigned int count;
 };
 
-// Creates a String list to use with the library.
-// len is the number of strings in the list.
+/**
+ * Creates a String list to use with the library.
+ * \param len the number of strings in the list.
+ */
 StringList* stringListCreate(size_t len)
 {
 	StringList *ret = malloc(sizeof(StringList));
@@ -19,9 +28,9 @@ StringList* stringListCreate(size_t len)
 	return ret;
 }
 
-/*
+/**
  * Inserts the string str in the list l at position pos.
- * Return True if it succeeded, False if not.
+ * \return True if it succeeded, False if not.
  */
 int stringListInsertAt(StringList *l, unsigned int pos, char *str)
 {
@@ -33,8 +42,10 @@ int stringListInsertAt(StringList *l, unsigned int pos, char *str)
 	return 1;
 }
 
-/*
- * Returns the number of strings in the list
+/**
+ * Get the number of strings in the list.
+ *
+ * \return the number of strings in the list
  */
 unsigned int stringListCount(StringList *l)
 {
@@ -43,8 +54,9 @@ unsigned int stringListCount(StringList *l)
 	return l->count;
 }
 
-/*
- * Returns the String at position pos
+/**
+ * Get the String at position pos
+ * \return the String at position pos
  */
 char* stringListGetAt(StringList *l, unsigned int pos)
 {
@@ -54,7 +66,13 @@ char* stringListGetAt(StringList *l, unsigned int pos)
 	return l->list[pos];
 }
 
-/*
+/**
+ * \section internal
+ * @{
+ * \internal
+ */
+
+/**
  * Converts a Python list object to a C String list
  */
 StringList* listToCList(PyObject* list)
@@ -79,7 +97,7 @@ StringList* listToCList(PyObject* list)
 	return ret;
 }
 
-/*
+/**
  * Converts a C String list to a Python List object
  */
 PyObject* cListToPyList(StringList* list)
@@ -96,7 +114,9 @@ PyObject* cListToPyList(StringList* list)
 	return ret;
 }
 
-/*
+/** @} */
+
+/**
  * Prints a C String list.
  */
 void stringListPrint(StringList* list)
@@ -113,7 +133,7 @@ void stringListPrint(StringList* list)
 	}
 }
 
-/*
+/**
  * Frees a string list and it's data
  */
 void stringListFree(StringList* list)
@@ -132,3 +152,4 @@ void stringListFree(StringList* list)
 		free(list);
 }
 
+/** @} */

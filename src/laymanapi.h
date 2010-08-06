@@ -6,6 +6,9 @@
 
 typedef struct LaymanAPI LaymanAPI;
 
+/**
+ * Contains all information for an overlay
+ */
 typedef struct OverlayInfo
 {
 	char*		name;
@@ -22,7 +25,16 @@ typedef struct OverlayInfo
 	int		supported;
 } OverlayInfo;
 
-LaymanAPI*	laymanAPICreate(BareConfig*, int, int);
+/**
+ * Creates a LaymanAPI object that must be used in all function in this file.
+ *
+ * \param config a BareConfig object that contains all configuration options. If NULL, the default configuration will be used.
+ * \param report_error if True, errors reporting on stdout will be activated.
+ * \param output ?
+ * \return a new instance of the LaymanAPI class, to be freed with laymanAPIFree()
+ */
+LaymanAPI*	laymanAPICreate(BareConfig* config, int report_error, int output);
+
 int		laymanAPIIsRepo(LaymanAPI *l, const char* repo);
 int		laymanAPIIsInstalled(LaymanAPI *l, const char* repo);
 StringList*	laymanAPIGetAvailable(LaymanAPI*, int reload);

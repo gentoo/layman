@@ -2,8 +2,25 @@
 #include "message.h"
 #include "internal.h"
 
+/** \defgroup message Message
+ * \brief Debug message management
+ *
+ * This class relays all debug messages to the given files and set different
+ * debug levels.
+ */
+
+/** \addtogroup message
+ * @{
+ */
+
+/**
+ * Message structure that is used in all functions
+ */
 struct Message
 {
+	/**
+	 * \internal
+	 */
 	PyObject *object;
 };
 
@@ -277,6 +294,9 @@ int messageSetDebugVariables(Message *m, const char* var)
 	return ret;
 }
 
+/**
+ * Frees a message structure.
+ */
 void messageFree(Message *m)
 {
 	if (m && m->object)
@@ -287,6 +307,10 @@ void messageFree(Message *m)
 		free(m);
 }
 
+/**
+ * \internal
+ * Returns the internal Python object
+ */
 PyObject *_messageObject(Message* m)
 {
 	if (m && m->object)
@@ -294,3 +318,4 @@ PyObject *_messageObject(Message* m)
 	else
 		Py_RETURN_NONE;
 }
+/** @} */
