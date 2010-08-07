@@ -74,6 +74,7 @@ class BareConfig(object):
                     'cvs_command': '/usr/bin/cvs',
                     'darcs_command': '/usr/bin/darcs',
                     'git_command': '/usr/bin/git',
+                    'g-common_command': '/usr/bin/g-common',
                     'mercurial_command': '/usr/bin/hg',
                     'rsync_command': '/usr/bin/rsync',
                     'svn_command': '/usr/bin/svn',
