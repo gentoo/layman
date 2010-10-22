@@ -244,7 +244,7 @@ class DbBase:
                 result.append((overlay.short_list(width), overlay.is_supported(),
                                overlay.is_official()))
 
-        result = sorted(result)
+        result = sorted(result, key=lambda (summary, supported, official): summary.lower())
 
         return result
 

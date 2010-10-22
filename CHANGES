@@ -1,6 +1,12 @@
 CHANGES
 -------
 
+Version TODO
+===================================
+
+ - Fixed: Ignore case when sorting data for layman -l|-L
+
+
 Version 1.4.1 - Released 2010-07-09
 ===================================
 
