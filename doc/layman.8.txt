@@ -315,6 +315,9 @@ You can search through the ebuilds available in the overlays on
 'http://overlays.gentoo.org/' by using *eix*. Emerge the package and
 run `update-eix-remote update`.
 
+Alternatively, you can browse overlays that you have not installed
+on 'http://gpo.zugaina.org/'.
+
 
 OVERLAY TYPES
 ~~~~~~~~~~~~~
