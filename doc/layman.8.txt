@@ -1,0 +1,424 @@
+LAYMAN(8)
+=========
+:man source:   layman {laymanversion}
+:man manual:   layman {laymanversion}
+Gunnar Wrobel <wrobel@gentoo.org>
+
+
+NAME
+----
+layman - manage your local repository of Gentoo overlays
+
+
+SYNOPSIS
+--------
+*layman* [-a] | [*--add*] [*ALL*] | [overlay]
+
+*layman* [-d] | [*--delete*] [*ALL*] | [overlay]
+
+*layman* [-s] | [*--sync*] [*ALL*] | [overlay]
+
+*layman* [-i] | [*--info*] [*ALL*] | [overlay]
+
+*layman* [-S] | [*--sync-all*]
+
+*layman* [-L] | [*--list*]
+
+*layman* [-l] | [*--list-local*]
+
+*layman* [-f] | [*--fetch*]
+
+
+DESCRIPTION
+-----------
+*layman* is a script that allows you to add, remove and update
+Gentoo overlays from a variety of sources.
+
+WARNING
+~~~~~~~
+*layman* makes it easy to retrieve and update overlays for Gentoo.
+In addition it makes it TRIVIAL to break your system.
+
+The main portage tree provides you with high quality ebuilds that
+are all maintained by Gentoo developers. This will not be the case
+for most of the overlays you can get by using *layman*. Thus you
+are removing the security shield that the standard tree provides
+for you. You should keep that in mind when installing ebuilds from
+an overlay.
+
+To ensure the security of your system you MUST read the source of
+the ebuild you are about to install.
+
+
+OPTIONS
+-------
+
+ACTIONS
+~~~~~~~
+List of possible *layman* actions.
+
+*-f*, *--fetch*::
+    Fetches the remote list of overlays. You will usually NOT need
+to explicitly specify this option. The fetch operation will be
+performed automatically once you run the sync, sync-all, or list action.
+You can prevent this automatic fetching using the *--nofetch* option.
+
+*-a* 'overlay', *--add* 'overlay'::
+    Add the given overlay from the cached remote list to your
+    locally installed overlays. Specify "ALL" to add all overlays
+    from the remote list.
+
+*-d* 'overlay', *--delete* 'overlay'::
+    Remove the given overlay from your locally installed overlays.
+    Specify "ALL" to remove all overlays
+
+*-s* 'overlay', *--sync* 'overlay'::
+    Update the specified overlay. Use "ALL" as parameter to
+    synchronize all overlays
+
+*-i* 'overlay', *--info* 'overlay'::
+    Display all available information about the specified overlay.
+
+*-S*, *--sync-all*::
+    Update all overlays. Shortcut for *-s ALL*.
+
+*-L*, *--list*::
+    List the contents of the remote list.
+
+*-l*, *--list-local*::
+    List the locally installed overlays.
+
+
+OTHER OPTIONS
+~~~~~~~~~~~~~
+List of other available *layman* options.
+
+*-c* 'path', *--config* 'path'::
+    Path to an alternative configuration file.
+
+*-o* 'url', *--overlays* 'url'::
+    Specifies the location of additional overlay lists. You can use
+    this flag several times and the specified URLs will get temporarily
+    appended to the list of URLs you specified in your config file.
+    You may also specify local file URLs by prepending the path with
+    'file://'. This option will only append the URL for this specific
+    *layman* run - edit your config file to add a URL permanently.
+    So this is useful for testing purposes.
+
+*-n*, *--nofetch*::
+    Prevents *layman* from automatically fetching the remote lists
+    of overlays. The default behavior for *layman* is to update all
+    remote lists if you run the sync, list or fetch operation.
+
+*-k*, *--nocheck*::
+    Prevents *layman* from checking the remote lists of overlays for
+    complete overlay definitions. The default behavior for *layman* is
+    to reject overlays that do not provide a description or a contact
+    attribute.
+
+*-q*, *--quiet*::
+    Makes *layman* completely quiet. In quiet mode child processes
+    will be run with stdin closed to avoid running into infinite and
+    blindly interactive sessions. Thus a child process may abort once
+    it runs into an situation with need for human interaction.
+    For example this might happen if your overlay resides in Subversion
+    and the SSL certificate of the server needs manual acceptance.
+
+*-v*, *--verbose*::
+    Makes *layman* more verbose and you will receive a description of
+    the overlays you can download.
+
+*-N*, *--nocolor*::
+    Remove color codes from the *layman* output.
+
+*-Q*'LEVEL', *--quietness* 'LEVEL'::
+    Makes *layman* less verbose. Choose a value between 0 and 4
+    with 0 being completely quiet. Once you set this below 3,
+    the same warning as given for *--quiet* applies.
+
+*-p*'LEVEL', *--priority* 'LEVEL'::
+    Use this option in combination with the *--add*. It will modify
+    the priority of the added overlay and thus influence the order
+    of entries in the make.conf file. The lower the priority,
+    the earlier in the list the entry will be mentioned. Use a value
+    between 0 and 100. The default value is 50.
+
+
+CONFIGURATION
+-------------
+*layman* reads configuration parameters from the file
+'/etc/layman/layman.cfg' by default. This file provides seven possible
+settings.
+
+storage::
+    Directory that will be used to store the overlays and all
+    additional data *layman* needs. The default is '/var/lib/layman'.
+    *layman* uses a location within the '/usr/portage' hierarchy
+    instead of '/var' in order to store its data. This decision has
+    been made to support network file systems. If you have your
+    portage tree on nfs or a similar file system and several
+    machines access the same ebuild repository over the net it
+    will be necessary to also provide all necessary *layman* data
+    within the hierarchy of the tree. This way the overlays will
+    also have to be synced at one location only.
+
+cache::
+    *layman* will store the downloaded global list of overlays here.
+    The default is '%(storage)s/cache.xml'.
+
+overlays::
+    *layman* will store the list of installed overlays here.
+    The default is '%(storage)s/overlays.xml'.
+
+make.conf::
+    This is the *portage* configuration file that *layman* will
+    modify in order to make the new overlays available within
+    *portage*. The default is '%(storage)s/make.conf'. You could
+    also specify '/etc/make.conf' directly. But that would mean
+    that you have an external program trying to automatically
+    set variables within this very central configuration file.
+    Since I consider that dangerous I prefer having a very small
+    external file that only contains the setting for
+    *PORTAGE_OVERLAYS*. This file is then sourced at the end of
+    '/etc/make.conf'. This is the reason why *layman* suggests running
+    `echo 'source /var/lib/layman/make.conf' >> /etc/make.conf`
+    after it has been installed.
+
+overlays::
+    Specifies the URL for the remote list of all available overlays.
+    The default is 'http://www.gentoo.org/proj/en/overlays/repositories.xml'.
+    You can specify several URLs here (one per line). The contents will
+    get merged to a single list of overlays. This allows to add a personal
+    collection of overlays that are not present in the global list.
+
+proxy::
+    Specify your proxy in case you have to use one.
+
+nocheck::
+    Set to "yes" if *layman* should stop worrying about overlays
+    with missing a contact address or the description.
+
+
+HANDLING OVERLAYS
+-----------------
+*layman* intends to provide easy maintenance of Gentoo overlays
+while not requiring any configuration.
+
+
+OVERLAY LISTS
+~~~~~~~~~~~~~
+*layman* allows you to fetch an overlay without the need to modify
+any configuration files. In order for this to be possible the script
+needs an external list of possible overlay sources. There is a
+centralized list available at
+'http://www.gentoo.org/proj/en/overlays/repositories.xml'
+but nothing will prevent you from using or publishing your own
+list of overlays. The location of the remote lists can also be
+modified using the *--overlays* option when running *layman*.
+
+To get a new overlay added to the central list provided for *layman*,
+send a mail to <overlays@gentoo.org>. Gentoo developers may add their
+overlay entries directly into the list which can be accessed over the
+CVS repository for the Gentoo website.
+
+You can also use several lists at the same time. Just add one URL per
+line to the overlays variable in your configuration file. *layman*
+will merge the contents of all lists.
+
+*layman* also allows you to define local files in this list.
+Just make sure you prepend these path names in standard URL notation with 'file://'.
+
+If you need to use a proxy for access to the Internet, you can use
+the corresponding variable in the *layman* configuration file.
+*layman* will also respect the *http_proxy* environment variable in case you set it.
+
+
+LOCAL CACHE
+~~~~~~~~~~~
+*layman* stores a local copy of the fetched remote list.
+It will be stored in '/var/lib/layman/cache.xml' by default.
+There exists only one such cache file and it will be overwritten
+every time you run *layman*.
+
+
+HANDLING /ETC/MAKE.CONF
+~~~~~~~~~~~~~~~~~~~~~~~
+Since *layman* is designed to automatically handle the inclusion of
+overlays into your system it needs to be able to modify the
+*PORTDIR_OVERLAY* variable in your '/etc/make.conf' file.
+But '/etc/make.conf' is a very central and essential configuration
+file for a Gentoo system. Automatically modifying this file would
+be somewhat dangerous. You can allow *layman* to do this by
+setting the make_conf variable in the configuration file to
+'/etc/make.conf'.
+
+A much safer and in fact recommended solution to the problem is
+to let *layman* handle an external file that only contains the
+*PORTDIR_OVERLAY* variable and is sourced within the standard
+'/etc/make.conf' file. Just add the following line to the end of
+your '/etc/make.conf' file:
+
+-------------------------------------------
+source /var/lib/layman/make.conf
+-------------------------------------------
+
+'/var/lib/layman/make.conf' is the default provided in the *layman*
+configuration. Change this file name in case you decide to store
+it somewhere else.
+
+The file does not necessarily need to exist at the beginning.
+If it is missing, *layman* will create it for you.
+
+There is also no need to remove the original *PORTDIR_OVERLAY*
+variable from the make.conf file. Layman will simply add new overlays
+to this variable and all your old entries will remain in there.
+
+
+ADDING, REMOVING AND UPDATING OVERLAYS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Once a remote list of overlays has been fetched, *layman* allows
+to add overlays from the remote list to your system. The script
+will try to fetch the overlay. If this is successful the overlay
+information will be copied from the cache to the list of locally
+installed overlays. In addition *layman* will modify the
+*PORTDIR_OVERLAY* variable to include the new overlay path.
+
+Removing the overlay with *layman* will delete the overlay without
+leaving any traces behind.
+
+In order to update all overlays managed by *layman* you can run
+the script with the *--sync ALL* option or the *--sync-all* flag.
+
+
+LIST OVERLAYS
+~~~~~~~~~~~~~
+*layman* provides the *--list* and *--list-local* options to print
+a list of available respectively installed overlays.
+
+Listing will prepend all fully supported overlays with a green
+asterisk, all non-official overlays with a yellow asterisk and
+all overlays that you will not be able to use since you do not
+have the necessary tools installed with a red asterisk.
+
+In the default mode *layman* will be strict about listing overlays
+and only present you with overlays that are fully supported.
+In addition it will complain about overlays that are missing
+a description field or a contact attribute. This type of behavior
+has been added with *layman* 1.0.7 and if you'd like to return to
+the old behavior you may use the k option flag or set the nocheck
+option in the configuration file.
+
+
+SEARCHING EBUILDS IN OVERLAYS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+You can search through the ebuilds available in the overlays on
+'http://overlays.gentoo.org/' by using *eix*. Emerge the package and
+run `update-eix-remote update`.
+
+
+OVERLAY TYPES
+~~~~~~~~~~~~~
+Currently *layman* supports overlays that are exported via *rsync*,
+*subversion*, *bzr*, *darcs*, *git*, *mercurial* or provided as tar
+packages.
+
+
+OVERLAY LISTS
+-------------
+
+OVERLAY LIST FORMAT
+~~~~~~~~~~~~~~~~~~~
+Layman uses a central list of overlays in XML format. The file looks
+like this:
+
+Example 1. An example overlays.xml file
+
+-------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE repositories SYSTEM "/dtd/repositories.dtd">
+<repositories xmlns="" version="1.0">
+<repo quality="experimental" status="official">
+	<name>gnome</name>
+	<description>experimental gnome ebuilds</description>
+	<homepage>http://git.overlays.gentoo.org/gitweb/?p=proj/gnome.git;a=summary</homepage>
+	<owner type="project">
+		<email>gnome@gentoo.org</email>
+		<name>GNOME herd</name>
+	</owner>
+	<source type="git">git://git.overlays.gentoo.org/proj/gnome.git</source>
+	<source type="git">http://git.overlays.gentoo.org/gitroot/proj/gnome.git</source>
+	<source type="git">git+ssh://git@git.overlays.gentoo.org/proj/gnome.git</source>
+	<feed>http://git.overlays.gentoo.org/gitweb/?p=proj/gnome.git;a=atom</feed>
+	<feed>http://git.overlays.gentoo.org/gitweb/?p=proj/gnome.git;a=rss</feed>
+</repo>
+</repositories>
+-------------------------------------------
+
+
+ADDING AN OVERLAY LOCALLY
+~~~~~~~~~~~~~~~~~~~~~~~~~
+Simply create an overlay list in the format described above and run
+*layman* with the -o switch. You need to prepend local file URLs
+with 'file://'.
+
+
+ADDING AN OVERLAY GLOBALLY
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+The global list of overlays used by *layman* lies at
+'http://www.gentoo.org/proj/en/overlays/repositories.xml'.
+
+All Gentoo developers have access to this location via CVS and
+can modify the list of overlays.
+
+If you are not a Gentoo developer but wish to get your overlay
+listed you should contact the Gentoo Overlays team at
+<overlays@gentoo.org>. You can also join *#gentoo-overlays* on
+irc.freenode.net.
+
+
+EXAMPLES
+--------
+
+INSTALLING AN OVERLAY
+~~~~~~~~~~~~~~~~~~~~~
+-------------------------------------------
+layman -f -a wrobel
+-------------------------------------------
+
+This would add the overlay with the id wrobel to your list of
+installed overlays.
+
+
+SYNCING YOUR OVERLAYS
+~~~~~~~~~~~~~~~~~~~~~
+-------------------------------------------
+layman -s ALL
+-------------------------------------------
+
+This updates all overlays
+
+
+PERFORMING SEVERAL ACTIONS AT THE SAME TIME
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------------------------
+layman -f -a wrobel -a webapps-experimental
+-------------------------------------------
+
+This fetches the remote list and immediately adds two overlays
+
+
+FILES
+-----
+'/etc/layman/layman.cfg'::
+    Configuration file, holding the defaults for *layman*
+
+
+AUTHORS
+-------
+- Gunnar Wrobel <wrobel@gentoo.org>
+- Sebastian Pipping <sping@gentoo.org>
+
+
+REPORTING BUGS
+--------------
+Please report bugs you might find at 'http://bugs.gentoo.org/'

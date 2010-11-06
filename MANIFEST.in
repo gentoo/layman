@@ -5,7 +5,8 @@ include INSTALL
 include README
 include RELEASE_NOTES
 include etc/layman.cfg
+include doc/asciidoc.conf
 include doc/layman.8
 include doc/layman.8.html
-include doc/layman.8.xml
+include doc/layman.8.txt
 recursive-include layman/tests *

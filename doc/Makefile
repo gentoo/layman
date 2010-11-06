@@ -27,15 +27,10 @@ clean:
 	rm -f $(MAN_PAGES)
 	rm -f $(HTML_PAGES)
 
-%.html: %.xml
+%.html: %.txt
 	@echo HTML $@
-	@xmlto html-nochunks $<
+	a2x --conf-file=asciidoc.conf  --attribute="laymanversion=1.4.1" --format=xhtml "$<"
 
-%: %.xml
+%: %.txt
 	@echo MAN $@
-	@xmlto man $<
-#
-# fix up the blank lines that docbook leaves behind
-#
-	@cat $@ | sed -e 's/$$/.fred/g;' | tr -d '\n' | sed -e 's/.fred.fred\./.fred./g;' | sed -e 's/.fred/\n/g;' > $(TMPFILE)
-	@mv $(TMPFILE) $@
+	a2x --conf-file=asciidoc.conf  --attribute="laymanversion=1.4.1" --format=manpage "$<"
