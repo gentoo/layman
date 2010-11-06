@@ -425,3 +425,8 @@ AUTHORS
 REPORTING BUGS
 --------------
 Please report bugs you might find at 'http://bugs.gentoo.org/'
+
+
+SEE ALSO
+--------
+make.conf(5), eix(1)
