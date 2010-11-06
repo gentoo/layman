@@ -63,20 +63,20 @@ to explicitly specify this option. The fetch operation will be
 performed automatically once you run the sync, sync-all, or list action.
 You can prevent this automatic fetching using the *--nofetch* option.
 
-*-a* 'OVERLAY', *--add* 'OVERLAY'::
+*-a* 'OVERLAY', *--add*='OVERLAY'::
     Add the given overlay from the cached remote list to your
     locally installed overlays. Specify "ALL" to add all overlays
     from the remote list.
 
-*-d* 'OVERLAY', *--delete* 'OVERLAY'::
+*-d* 'OVERLAY', *--delete*='OVERLAY'::
     Remove the given overlay from your locally installed overlays.
     Specify "ALL" to remove all overlays
 
-*-s* 'OVERLAY', *--sync* 'OVERLAY'::
+*-s* 'OVERLAY', *--sync*='OVERLAY'::
     Update the specified overlay. Use "ALL" as parameter to
     synchronize all overlays
 
-*-i* 'OVERLAY', *--info* 'OVERLAY'::
+*-i* 'OVERLAY', *--info*='OVERLAY'::
     Display all available information about the specified overlay.
 
 *-S*, *--sync-all*::
@@ -93,10 +93,10 @@ OTHER OPTIONS
 ~~~~~~~~~~~~~
 List of other available *layman* options.
 
-*-c* 'PATH', *--config* 'PATH'::
+*-c* 'PATH', *--config*='PATH'::
     Path to an alternative configuration file.
 
-*-o* 'URL', *--overlays* 'URL'::
+*-o* 'URL', *--overlays*='URL'::
     Specifies the location of additional overlay lists. You can use
     this flag several times and the specified URLs will get temporarily
     appended to the list of URLs you specified in your config file.
@@ -131,12 +131,12 @@ List of other available *layman* options.
 *-N*, *--nocolor*::
     Remove color codes from the *layman* output.
 
-*-Q*'LEVEL', *--quietness* 'LEVEL'::
+*-Q*'LEVEL', *--quietness*='LEVEL'::
     Makes *layman* less verbose. Choose a value between 0 and 4
     with 0 being completely quiet. Once you set this below 3,
     the same warning as given for *--quiet* applies.
 
-*-p*'LEVEL', *--priority* 'LEVEL'::
+*-p*'LEVEL', *--priority*='LEVEL'::
     Use this option in combination with the *--add*. It will modify
     the priority of the added overlay and thus influence the order
     of entries in the make.conf file. The lower the priority,
