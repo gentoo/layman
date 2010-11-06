@@ -424,7 +424,7 @@ AUTHORS
 
 REPORTING BUGS
 --------------
-Please report bugs you might find at 'http://bugs.gentoo.org/'
+Please report bugs you might find at 'http://bugs.gentoo.org/'.  Thank you!
 
 
 SEE ALSO
