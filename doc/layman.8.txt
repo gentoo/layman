@@ -12,13 +12,13 @@ layman - manage your local repository of Gentoo overlays
 
 SYNOPSIS
 --------
-*layman* [-a] | [*--add*] [*ALL*] | [overlay]
+*layman* [-a] | [*--add*] [*ALL*] | ['OVERLAY']
 
-*layman* [-d] | [*--delete*] [*ALL*] | [overlay]
+*layman* [-d] | [*--delete*] [*ALL*] | ['OVERLAY']
 
-*layman* [-s] | [*--sync*] [*ALL*] | [overlay]
+*layman* [-s] | [*--sync*] [*ALL*] | ['OVERLAY']
 
-*layman* [-i] | [*--info*] [*ALL*] | [overlay]
+*layman* [-i] | [*--info*] [*ALL*] | ['OVERLAY']
 
 *layman* [-S] | [*--sync-all*]
 
@@ -63,20 +63,20 @@ to explicitly specify this option. The fetch operation will be
 performed automatically once you run the sync, sync-all, or list action.
 You can prevent this automatic fetching using the *--nofetch* option.
 
-*-a* 'overlay', *--add* 'overlay'::
+*-a* 'OVERLAY', *--add* 'OVERLAY'::
     Add the given overlay from the cached remote list to your
     locally installed overlays. Specify "ALL" to add all overlays
     from the remote list.
 
-*-d* 'overlay', *--delete* 'overlay'::
+*-d* 'OVERLAY', *--delete* 'OVERLAY'::
     Remove the given overlay from your locally installed overlays.
     Specify "ALL" to remove all overlays
 
-*-s* 'overlay', *--sync* 'overlay'::
+*-s* 'OVERLAY', *--sync* 'OVERLAY'::
     Update the specified overlay. Use "ALL" as parameter to
     synchronize all overlays
 
-*-i* 'overlay', *--info* 'overlay'::
+*-i* 'OVERLAY', *--info* 'OVERLAY'::
     Display all available information about the specified overlay.
 
 *-S*, *--sync-all*::
@@ -93,10 +93,10 @@ OTHER OPTIONS
 ~~~~~~~~~~~~~
 List of other available *layman* options.
 
-*-c* 'path', *--config* 'path'::
+*-c* 'PATH', *--config* 'PATH'::
     Path to an alternative configuration file.
 
-*-o* 'url', *--overlays* 'url'::
+*-o* 'URL', *--overlays* 'URL'::
     Specifies the location of additional overlay lists. You can use
     this flag several times and the specified URLs will get temporarily
     appended to the list of URLs you specified in your config file.
