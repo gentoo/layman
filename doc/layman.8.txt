@@ -12,21 +12,21 @@ layman - manage your local repository of Gentoo overlays
 
 SYNOPSIS
 --------
-*layman* [-a] | [*--add*] [*ALL*] | ['OVERLAY']
+*layman* (*-a*|*--add*) (*ALL*|'OVERLAY')
 
-*layman* [-d] | [*--delete*] [*ALL*] | ['OVERLAY']
+*layman* (*-d*|*--delete*) (*ALL*|'OVERLAY')
 
-*layman* [-s] | [*--sync*] [*ALL*] | ['OVERLAY']
+*layman* (*-s*|*--sync*) (*ALL*|'OVERLAY')
 
-*layman* [-i] | [*--info*] [*ALL*] | ['OVERLAY']
+*layman* (*-i*|*--info*) (*ALL*|'OVERLAY')
 
-*layman* [-S] | [*--sync-all*]
+*layman* (*-S*|*--sync-all*)
 
-*layman* [-L] | [*--list*]
+*layman* (*-L*|*--list*)
 
-*layman* [-l] | [*--list-local*]
+*layman* (*-l*|*--list-local*)
 
-*layman* [-f] | [*--fetch*]
+*layman* (*-f*|*--fetch*)
 
 
 DESCRIPTION
