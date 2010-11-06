@@ -39,7 +39,7 @@ WARNING
 *layman* makes it easy to retrieve and update overlays for Gentoo.
 In addition it makes it TRIVIAL to break your system.
 
-The main portage tree provides you with high quality ebuilds that
+The Gentoo main tree provides you with high quality ebuilds that
 are all maintained by Gentoo developers. This will not be the case
 for most of the overlays you can get by using *layman*. Thus you
 are removing the security shield that the standard tree provides
@@ -156,7 +156,7 @@ storage::
     *layman* uses a location within the '/usr/portage' hierarchy
     instead of '/var' in order to store its data. This decision has
     been made to support network file systems. If you have your
-    portage tree on nfs or a similar file system and several
+    Gentoo tree on NFS or a similar file system and several
     machines access the same ebuild repository over the net it
     will be necessary to also provide all necessary *layman* data
     within the hierarchy of the tree. This way the overlays will
