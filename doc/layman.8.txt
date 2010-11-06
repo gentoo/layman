@@ -179,7 +179,7 @@ make.conf::
     set variables within this very central configuration file.
     Since I consider that dangerous I prefer having a very small
     external file that only contains the setting for
-    *PORTAGE_OVERLAYS*. This file is then sourced at the end of
+    *PORTDIR_OVERLAY*. This file is then sourced at the end of
     '/etc/make.conf'. This is the reason why *layman* suggests running
     `echo 'source /var/lib/layman/make.conf' >> /etc/make.conf`
     after it has been installed.
