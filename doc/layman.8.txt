@@ -111,10 +111,16 @@ List of other available *layman* options.
     remote lists if you run the sync, list or fetch operation.
 
 *-k*, *--nocheck*::
-    Prevents *layman* from checking the remote lists of overlays for
+-   When listing remote overlays (using *-L* or *--list*) *layman*
+    no longer hides overlays, for which you lack the tools to use.
+    By default, *layman* hides Git repositories if you do not have Git
+    installed.  Same applies to Subversion, CVS and so forth.
+
+-   Prevents *layman* from checking the remote lists of overlays for
     complete overlay definitions. The default behavior for *layman* is
     to reject overlays that do not provide a description or a contact
     attribute.
+
 
 *-q*, *--quiet*::
     Makes *layman* completely quiet. In quiet mode child processes
