@@ -99,11 +99,12 @@ class LaymanAPI(object):
         converting a string to a list[string] if it is not already a list.
         produces and error message if it is any other type
         returns repos as list always"""
-        if isinstance(repos, str):
+        if isinstance(repos, basestring):
             repos = [repos]
-        elif not isinstance(repos, list):
-            self._error(2, "%s(), Unsupported input type: %s" %(caller, str(type(repos))))
-            return []
+        # else assume it is an iterable, if not it will error
+        #~ elif not isinstance(repos, list):
+            #~ self._error(2, "%s(), Unsupported input type: %s" %(caller, str(type(repos))))
+            #~ return []
         return repos
 
 
