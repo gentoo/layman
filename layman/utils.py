@@ -47,6 +47,8 @@ def decode_selection(selection):
     '''utility function to decode a list of strings
     accoring to the filesystem encoding
     '''
+    # fix None passed in, return an empty list
+    selection = selection or []
     enc = sys.getfilesystemencoding()
     if enc:
         return [i.decode(enc) for i in selection]

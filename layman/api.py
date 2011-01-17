@@ -30,7 +30,7 @@ ERROR_REPO_NOT_FOUND = -1
 ERROR_INTERNAL_ERROR = -2
 UNKNOWN_REPO_ID = "Repo ID '%s' " + \
         "is not listed in the current available overlays list"
- 
+
 # In order to redirect output you need to get a Message class instance with the
 # stderr, stdout, stddebug directed to where you want.
 # eg:  output = Message('layman', err=mystderr, dbg=mydebug, out=myoutput)
@@ -53,13 +53,13 @@ class LaymanAPI(object):
         @param output: optional Message class instance created with your settings.
                                     default is Message(module='layman') other params are defaults.
         """
-        
+
         self.output = output if output  else OUT
-       
+
         self.config = config if config else BareConfig(output=output)
-        
+
         self.report_errors = report_errors
-        
+
         # get installed and available dbs
         self._installed_db = None
         self._installed_ids = None
@@ -67,30 +67,26 @@ class LaymanAPI(object):
         self._available_ids = None
         self._error_messages = []
         self.sync_results = []
-        # call reload() for now to initialize the 2 db's
-        self.reload()
-        # change it to delayed loading (similar to delayed imports)
-        # to simplify some of the code and make it automagic.
 
 
-    def is_repo(self, id):
-        """validates that the id given is a known repo id
-        
-        @param id: repo id
-        @type id: str
+    def is_repo(self, ovl):
+        """validates that the ovl given is a known repo id
+
+        @param ovl: repo id
+        @type ovl: str
         @rtype boolean
         """
-        return id in self._available_ids
+        return ovl in self.get_available()
 
 
-    def is_installed(self, id):
-        """checks the repo id is a known installed repo id
-        
-        @param id: repo id
-        @type id: str
+    def is_installed(self, ovl):
+        """checks that ovl is a known installed repo id
+
+        @param ovl: repo id
+        @type ovl: str
         @rtype boolean
         """
-        return id in self._installed_ids
+        return ovl in self.get_installed()
 
 
     @staticmethod
@@ -102,15 +98,12 @@ class LaymanAPI(object):
         if isinstance(repos, basestring):
             repos = [repos]
         # else assume it is an iterable, if not it will error
-        #~ elif not isinstance(repos, list):
-            #~ self._error(2, "%s(), Unsupported input type: %s" %(caller, str(type(repos))))
-            #~ return []
         return repos
 
 
     def delete_repos(self, repos):
         """delete the selected repo from the system
-        
+
         @type repos: list of strings or string
         @param repos: ['repo-id1', ...] or 'repo-id'
         @param output: method to handle output if desired
@@ -118,20 +111,20 @@ class LaymanAPI(object):
         """
         repos = self._check_repo_type(repos, "delete_repo")
         results = []
-        for id in repos:
-            if not self.is_installed(id):
+        for ovl in repos:
+            if not self.is_installed(ovl):
                 results.append(True)
                 break
-            if not self.is_repo(id):
-                self._error(1, UNKNOWN_REPO_ID %id)
+            if not self.is_repo(ovl):
+                self._error(1, UNKNOWN_REPO_ID %ovl)
                 results.append(False)
                 break
             try:
-                self._installed_db.delete(self._installed_db.select(id))
+                self._get_installed_db().delete(self._get_installed_db().select(ovl))
                 results.append(True)
             except Exception, e:
                 self._error(ERROR_INTERNAL_ERROR,
-                        "Failed to disable repository '"+id+"':\n"+str(e))
+                        "Failed to disable repository '"+ovl+"':\n"+str(e))
                 results.append(False)
             self.get_installed(reload=True)
         if False in results:
@@ -141,28 +134,28 @@ class LaymanAPI(object):
 
     def add_repos(self, repos):
         """installs the seleted repo id
-        
+
         @type repos: list of strings or string
-        @param repos: ['repo-id1', ...] or 'repo-id'
+        @param repos: ['repo-id', ...] or 'repo-id'
         @param output: method to handle output if desired
         @rtype dict
         """
         repos = self._check_repo_type(repos, "add_repo")
         results = []
-        for id in repos:
-            if self.is_installed(id):
+        for ovl in repos:
+            if self.is_installed(ovl):
                 results.append(True)
                 break
-            if not self.is_repo(id):
-                self._error(1, UNKNOWN_REPO_ID %id)
+            if not self.is_repo(ovl):
+                self._error(1, UNKNOWN_REPO_ID %ovl)
                 results.append(False)
                 break
             try:
-                self._installed_db.add(self._available_db.select(id), quiet=True)
+                self._get_installed_db().add(self._get_remote_db().select(ovl), quiet=True)
                 results.append(True)
             except Exception, e:
                 self._error(ERROR_INTERNAL_ERROR,
-                        "Failed to enable repository '"+id+"' : "+str(e))
+                        "Failed to enable repository '"+ovl+"' : "+str(e))
                 results.append(False)
             self.get_installed(reload=True)
         if False in results:
@@ -170,15 +163,15 @@ class LaymanAPI(object):
         return True
 
 
-    def get_all_info(self, repos):
+    def get_all_info(self, repos, local=False):
         """retrieves the recorded information about the repo(s)
-        specified by id
-        
+        specified by repo-id
+
         @type repos: list of strings or string
         @param repos: ['repo-id1', ...] or 'repo-id'
         @rtype list of tuples [(str, bool, bool),...]
-        @return: dictionary of dictionaries  
-        {'id1':
+        @return: dictionary of dictionaries
+        {'ovl1':
             {'name': str,
             'owner_name': str,
             'owner_email': str,
@@ -187,38 +180,44 @@ class LaymanAPI(object):
             'src_uris': list of str ['uri1',...]
             'src_type': str,
             'priority': int,
-            'quality': str 
+            'quality': str
             'status':,
             'official': bool,
             'supported': bool,
             },
-        'id2': {...}
+        'ovl2': {...}
         }
         """
-        
+
         repos = self._check_repo_type(repos, "get_info")
         result = {}
 
-        for id in repos:
-            if not self.is_repo(id):
-                self._error(1, UNKNOWN_REPO_ID %id)
-                result[id] = ('', False, False)
+        if local:
+            db = self._get_installed_db()
+        else:
+            db = self._get_remote_db()
+
+        for ovl in repos:
+            if not self.is_repo(ovl):
+                self._error(1, UNKNOWN_REPO_ID %ovl)
+                result[ovl] = ('', False, False)
             try:
-                overlay = self._available_db.select(id)
+                overlay = db.select(ovl)
             except UnknownOverlayException, error:
                 self._error(2, "Error: %s" %str(error))
-                result[id] = ('', False, False)
+                result[ovl] = ('', False, False)
             else:
-                result[id] = {
+                result[ovl] = {
                     'name': overlay.name,
                     'owner_name': overlay.owner_name,
                     'owner_email': overlay.owner_email,
                     'homepage': overlay.homepage,
                     'description': overlay.description,
+                    #'src_uris': [e.src for e in overlay.sources],
                     'src_uris': overlay.source_uris(),
-                    'src_type': overlay.sources[0].type,
+                    'src_types': [e.type for e in overlay.sources],
                     'priority': overlay.priority,
-                    'quality': overlay.quality, 
+                    'quality': overlay.quality,
                     'status': overlay.status,
                     'official': overlay.is_official(),
                     'supported': overlay.is_supported(),
@@ -227,40 +226,67 @@ class LaymanAPI(object):
         return result
 
 
-    def get_info_str(self, repos):
-        """retirves the string representation of the recorded information
-        about the repo(s) specified by id
-        
+    def get_info_str(self, repos, local=True, verbose=False, width=0):
+        """retrieves the string representation of the recorded information
+        about the repo(s) specified by ovl
+
         @type repos: list of strings or string
         @param repos: ['repo-id1', ...] or 'repo-id'
         @rtype list of tuples [(str, bool, bool),...]
-        @return: dictionary  {'id': (info string, official, supported)}
+        @return: dictionary  {'repo-id': (info string, official, supported)}
         """
         repos = self._check_repo_type(repos, "get_info")
         result = {}
 
-        for id in repos:
-            if not self.is_repo(id):
-                self._error(1, UNKNOWN_REPO_ID %id)
-                result[id] = ('', False, False)
+        if local:
+            db = self._get_installed_db()
+        else:
+            db = self._get_remote_db()
+
+        for ovl in repos:
+            if not self.is_repo(ovl):
+                self._error(1, UNKNOWN_REPO_ID % ovl)
+                result[ovl] = ('', False, False)
             try:
-                overlay = self._available_db.select(id)
+                overlay = db.select(ovl)
+                #print "overlay = ", ovl
+                #print overlay
             except UnknownOverlayException, error:
+                #print "ERRORS", str(error)
                 self._error(2, "Error: %s" %str(error))
-                result[id] = ('', False, False)
+                result[ovl] = ('', False, False)
             else:
                 # Is the overlay supported?
-                info = overlay.__str__()
+                if verbose:
+                    info = overlay.__str__()
+                else:
+                    info = overlay.short_list(width)
                 official = overlay.is_official()
                 supported = overlay.is_supported()
-                result[id] = (info, official, supported)
+                result[ovl] = (info, official, supported)
 
         return result
+
+    def get_info_list(self, local=True, verbose=False, width=0):
+        """retrieves the string representation of the recorded information
+        about the repo(s) specified by ovl
+
+        @param local: bool (defaults to True)
+        @param verbose: bool(defaults to False)
+        @param width: int (defaults to 0)
+        @rtype list of tuples [(str, bool, bool),...]
+        @return: list  [(info string, official, supported),...]
+        """
+
+        if local:
+            return self._get_installed_db().list(verbose=verbose, width=width)
+        else:
+            return self._get_remote_db().list(verbose=verbose, width=width)
 
 
     def sync(self, repos, output_results=True):
         """syncs the specified repo(s) specified by repos
-        
+
         @type repos: list of strings or string
         @param repos: ['repo-id1', ...] or 'repo-id'
         @rtype bool or {'repo-id': bool,...}
@@ -269,20 +295,21 @@ class LaymanAPI(object):
         warnings = []
         success  = []
         repos = self._check_repo_type(repos, "sync")
+        db = self._get_installed_db()
 
-        for id in repos:
+        for ovl in repos:
             try:
-                odb = self._installed_db.select(id)
+                odb = db.select(ovl)
             except UnknownOverlayException, error:
-                self._error(1,"Sync(), failed to select %s overlay.  Original error was: %s" %(id, str(error)))
+                self._error(1,"Sync(), failed to select %s overlay.  Original error was: %s" %(ovl, str(error)))
                 continue
 
             try:
-                ordb = self._available_db.select(id)
+                ordb = self._get_remote_db().select(ovl)
             except UnknownOverlayException:
                 message = 'Overlay "%s" could not be found in the remote lists.\n' \
-                        'Please check if it has been renamed and re-add if necessary.' %id
-                warnings.append((id, message))
+                        'Please check if it has been renamed and re-add if necessary.' %ovl
+                warnings.append((ovl, message))
             else:
                 current_src = odb.sources[0].src
                 available_srcs = set(e.src for e in ordb.sources)
@@ -292,9 +319,9 @@ class LaymanAPI(object):
                         candidates = '  %s' % tuple(available_srcs)[0]
                     else:
                         plural = 's'
-                        candidates = '\n'.join(('  %d. %s' % (id + 1, v)) for id, v in enumerate(available_srcs))
+                        candidates = '\n'.join(('  %d. %s' % (ovl + 1, v)) for ovl, v in enumerate(available_srcs))
 
-                    warnings.append((id,
+                    warnings.append((ovl,
                         'The source of the overlay "%(repo_name)s" seems to have changed.\n'
                         'You currently sync from\n'
                         '\n'
@@ -306,34 +333,34 @@ class LaymanAPI(object):
                         '\n'
                         'as correct location%(plural)s.\n'
                         'Please consider removing and re-adding the overlay.' , {
-                            'repo_name':id,
+                            'repo_name':ovl,
                             'current_src':current_src,
                             'candidates':candidates,
                             'plural':plural,
                             }))
 
             try:
-                self._installed_db.sync(id, self.config['quiet'])
-                success.append((id,'Successfully synchronized overlay "' + id + '".'))
+                db.sync(ovl, self.config['quiet'])
+                success.append((ovl,'Successfully synchronized overlay "' + ovl + '".'))
             except Exception, error:
-                fatals.append((id,
-                    'Failed to sync overlay "' + id + '".\nError was: '
+                fatals.append((ovl,
+                    'Failed to sync overlay "' + ovl + '".\nError was: '
                     + str(error)))
 
         if output_results:
             if success:
                 self.output.info('\nSuccess:\n------\n', 3)
-                for id, result in success:
+                for ovl, result in success:
                     self.output.info(result, 3)
-                    
+
             if warnings:
                 self.output.warn('\nWarnings:\n------\n', 2)
-                for id, result in warnings:
+                for ovl, result in warnings:
                     self.output.warn(result + '\n', 2)
 
             if fatals:
                 self.output.error('\nErrors:\n------\n')
-                for id, result in fatals:
+                for ovl, result in fatals:
                     self.output.error(result + '\n')
                 return False
 
@@ -345,28 +372,41 @@ class LaymanAPI(object):
     def fetch_remote_list(self):
         """Fetches the latest remote overlay list"""
         try:
-            self._available_db.cache()
+            self._get_remote_db().cache()
         except Exception, error:
             self._error(-1,'Failed to fetch overlay list!\n Original Error was: '
                     + str(error))
             return False
+        self.get_available(reload=True)
         return True
 
 
     def get_available(self, reload=False):
         """returns the list of available overlays"""
-        if not self._available_db or reload:
-            self._available_db = RemoteDB(self.config)
-            self._available_ids = sorted(self._available_db.overlays)
-        return self._available_ids[:]
+        if self._available_ids is None or reload:
+            self._available_ids = sorted(self._get_remote_db(reload).overlays)
+        return self._available_ids[:] or ['None']
 
 
     def get_installed(self, reload=False):
         """returns the list of installed overlays"""
+        if self._installed_ids is None or reload:
+            self._installed_ids = sorted(self._get_installed_db(reload).overlays)
+        return self._installed_ids[:]
+
+
+    def _get_installed_db(self, reload=False):
+        """returns the list of installed overlays"""
         if not self._installed_db or reload:
             self._installed_db = DB(self.config)
-            self._installed_ids = sorted(self._installed_db.overlays)
-        return self._installed_ids[:]
+        return self._installed_db
+
+
+    def _get_remote_db(self, reload=False):
+        """returns the list of installed overlays"""
+        if self._available_db is None or reload:
+            self._available_db = RemoteDB(self.config)
+        return self._available_db
 
 
     def reload(self):
@@ -389,7 +429,7 @@ class LaymanAPI(object):
     def get_errors(self):
         """returns any warning or fatal messages that occurred during
         an operation and resets it back to None
-        
+
         @rtype: list
         @return: list of error strings
         """
@@ -397,6 +437,7 @@ class LaymanAPI(object):
             messages =  self._error_messages[:]
             self._error_messages = []
             return messages
+        return []
 
 
 def create_fd():
@@ -407,5 +448,5 @@ def create_fd():
     w = os.fdopen(fd_w, 'w')
     r = os.fdopen(fd_r, 'r')
     return (r, w, fd_r, fd_w)
-    
-    
+
+
