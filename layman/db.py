@@ -58,7 +58,7 @@ class DB(DbBase):
         DbBase.__init__(self,
                           [config['local_list'], ],
                           config,
-                          ignore, 
+                          ignore,
                           quiet)
 
         self.output.debug('DB handler initiated', 6)
@@ -282,7 +282,7 @@ class RemoteDB(DbBase):
                 self.output.warn('You do not have permission to update the cache (%s).' % mpath)
                 import getpass
                 if getpass.getuser() != 'root':
-                    self.output.warn('Hint: You are not root.')
+                    self.output.warn('Hint: You are not root.\n')
                 continue
 
             try:
