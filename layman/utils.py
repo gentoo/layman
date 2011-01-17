@@ -30,13 +30,68 @@ __version__ = '$Id: utils.py 236 2006-09-05 20:39:37Z wrobel $'
 #-------------------------------------------------------------------------------
 
 import types, re, os
+import sys
+import locale
+import codecs
+
 from layman.debug import OUT
+
 
 #===============================================================================
 #
 # Helper functions
 #
 #-------------------------------------------------------------------------------
+
+def decode_selection(selection):
+    '''utility function to decode a list of strings
+    accoring to the filesystem encoding
+    '''
+    enc = sys.getfilesystemencoding()
+    if enc:
+        return [i.decode(enc) for i in selection]
+    return selection
+
+
+def encoder(unicode_text, _encoding_):
+    return codecs.encode(unicode_text, _encoding_, 'replace')
+
+
+def get_encoding(output):
+    if hasattr(output, 'encoding') \
+            and output.encoding != None:
+        return output.encoding
+    else:
+        return locale.getpreferredencoding()
+
+
+def pad(string, length):
+    '''Pad a string with spaces.'''
+    if len(string) <= length:
+        return string + ' ' * (length - len(string))
+    else:
+        return string[:length - 3] + '...'
+
+
+def terminal_width():
+    '''Determine width of terminal window.'''
+    try:
+        width = int(os.environ['COLUMNS'])
+        if width > 0:
+            return width
+    except:
+        pass
+    try:
+        import struct, fcntl, termios
+        query = struct.pack('HHHH', 0, 0, 0, 0)
+        response = fcntl.ioctl(1, termios.TIOCGWINSZ, query)
+        width = struct.unpack('HHHH', response)[1]
+        if width > 0:
+            return width
+    except:
+        pass
+    return 80
+
 
 def ensure_unicode(obj, encoding='utf-8'):
     if isinstance(obj, basestring):

@@ -33,8 +33,8 @@ import codecs
 import locale
 import xml.etree.ElementTree as ET # Python 2.5
 
-from   layman.utils             import ensure_unicode
-
+from layman.utils import (pad, terminal_width, get_encoding, encoder,
+    ensure_unicode)
 #from   layman.debug             import OUT
 
 from   layman.overlays.bzr       import BzrOverlay
@@ -103,7 +103,8 @@ class Overlay(object):
         '''
 
         self.output = config['output']
-        
+        self._encoding_ = get_encoding(self.output)
+
         def strip_text(node):
             res = node.text
             if res is None:
@@ -294,16 +295,6 @@ class Overlay(object):
         assert len(self.sources) == 1
         return self.sources[0].delete(base)
 
-    def _get_encoding(self):
-        if hasattr(sys.stdout, 'encoding') \
-                and sys.stdout.encoding != None:
-            return sys.stdout.encoding
-        else:
-            return locale.getpreferredencoding()
-
-    def _encode(self, unicode_text):
-        return codecs.encode(unicode_text, self._get_encoding(), 'replace')
-
     def __str__(self):
         '''
         >>> here = os.path.dirname(os.path.realpath(__file__))
@@ -369,7 +360,7 @@ class Overlay(object):
                 result += u'\n  %s' % i
             result += u'\n'
 
-        return self._encode(result)
+        return encoder(result, self._encoding_)
 
     def short_list(self, width = 0):
         '''
@@ -381,32 +372,6 @@ class Overlay(object):
         >>> print a.short_list(80)
         wrobel                    [Subversion] (https://o.g.o/svn/dev/wrobel         )
         '''
-
-        def pad(string, length):
-            '''Pad a string with spaces.'''
-            if len(string) <= length:
-                return string + ' ' * (length - len(string))
-            else:
-                return string[:length - 3] + '...'
-
-        def terminal_width():
-            '''Determine width of terminal window.'''
-            try:
-                width = int(os.environ['COLUMNS'])
-                if width > 0:
-                    return width
-            except:
-                pass
-            try:
-                import struct, fcntl, termios
-                query = struct.pack('HHHH', 0, 0, 0, 0)
-                response = fcntl.ioctl(1, termios.TIOCGWINSZ, query)
-                width = struct.unpack('HHHH', response)[1]
-                if width > 0:
-                    return width
-            except:
-                pass
-            return 80
 
         name   = pad(self.name, 25)
 
@@ -424,7 +389,7 @@ class Overlay(object):
             source = source.replace("overlays.gentoo.org", "o.g.o")
         source = ' (' + pad(source, srclen) + ')'
 
-        return self._encode(name + mtype + source)
+        return encoder(name + mtype + source, self._encoding_)
 
     def is_official(self):
         '''Is the overlay official?'''
