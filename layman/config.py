@@ -127,7 +127,7 @@ class BareConfig(object):
         self._options['output'].debug('Retrieving BareConfig default', 8)
         if key in self._defaults:
             if '%(storage)s' in self._defaults[key]:
-                return self._defaults[key]  %{'storage': self._defaults['storage']}
+                return self._defaults[key] %{'storage': self._defaults['storage']}
             return self._defaults[key]
         return None
 
@@ -137,7 +137,8 @@ class BareConfig(object):
 class ArgsParser(object):
     '''Handles the configuration and option parser.'''
 
-    def __init__(self, args=None, output=None, stdout=None, stdin=None, stderr=None):
+    def __init__(self, args=None, output=None,
+        stdout=None, stdin=None, stderr=None):
         '''
         Creates and describes all possible polymeraZe options and creates
         a debugging object.
@@ -150,7 +151,10 @@ class ArgsParser(object):
         >>> a['overlays']
         '\\nhttp://www.gentoo.org/proj/en/overlays/repositories.xml'
         >>> sorted(a.keys())
-        ['bzr_command', 'cache', 'config', 'cvs_command', 'darcs_command', 'git_command', 'local_list', 'make_conf', 'mercurial_command', 'nocheck', 'overlays', 'proxy', 'quietness', 'rsync_command', 'storage', 'svn_command', 'tar_command', 'umask', 'width']
+        ['bzr_command', 'cache', 'config', 'cvs_command', 'darcs_command',
+        'git_command', 'local_list', 'make_conf', 'mercurial_command',
+        'nocheck', 'overlays', 'proxy', 'quietness', 'rsync_command', 'storage',
+        'svn_command', 'tar_command', 'umask', 'width']
         '''
         if args == None:
             args = sys.argv
@@ -160,7 +164,10 @@ class ArgsParser(object):
         self.stdin = stdin if stdin else sys.stdin
         self.output = output if output else OUT
 
-        self.defaults = BareConfig().get_defaults()
+        self.bare_config = BareConfig(self.output, self.stdout,
+            self.stdin, self.stderr)
+        self.defaults = self.bare_config.get_defaults()
+        #print self.defaults
 
         self.parser = OptionParser(
             usage   = _USAGE,
@@ -243,13 +250,13 @@ class ArgsParser(object):
         group.add_option('-c',
                          '--config',
                          action = 'store',
-                         help = 'Path to the config file [default: '            \
+                         help = 'Path to the config file [default: ' \
                          + self.defaults['config'] + '].')
 
         group.add_option('-o',
                          '--overlays',
                          action = 'append',
-                         help = 'The list of overlays [default: '               \
+                         help = 'The list of overlays [default: ' \
                          + self.defaults['overlays'] + '].')
 
         self.parser.add_option_group(group)
@@ -296,7 +303,7 @@ class ArgsParser(object):
                          type = 'int',
                          default = '0',
                          help = 'Sets the screen width. This setting is usually '
-                         'not required as layman is capable of detecting the ava'
+                         'not required as layman is capable of detecting the '
                          'available number of columns automatically.')
 
         group.add_option('-k',
@@ -320,8 +327,10 @@ class ArgsParser(object):
             sys.exit(0)
 
         (self.options, remain_args) = self.parser.parse_args(args)
-        if len(remain_args) > 1:  # remain_args starts with something like "bin/layman" ...
-            self.parser.error("Unhandled parameters: %s" % ', '.join(('"%s"' % e) for e in remain_args[1:]))
+        # remain_args starts with something like "bin/layman" ...
+        if len(remain_args) > 1:
+            self.parser.error("Unhandled parameters: %s"
+                % ', '.join(('"%s"' % e) for e in remain_args[1:]))
 
         # handle debugging
         self.output.cli_handle(self.options)
@@ -333,7 +342,7 @@ class ArgsParser(object):
         self.options.__dict__['stdout'] = self.stdout
         self.options.__dict__['stdin'] = self.stdin
         self.options.__dict__['stderr'] = self.stderr
-        
+
 
         if self.options.__dict__['nocolor']:
             self.output.color_off()
