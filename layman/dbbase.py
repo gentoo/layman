@@ -199,7 +199,7 @@ class DbBase:
             raise UnknownOverlayException(overlay)
         return self.overlays[overlay]
 
-    def list(self, verbose = False, width = 0):
+    def list(self, repos=None, verbose = False, width = 0):
         '''
         List all overlays.
 
@@ -236,8 +236,11 @@ class DbBase:
         '''
         result = []
 
-        for _, overlay in self.overlays.items():
+        selection = [overlay for (a, overlay) in self.overlays.items()]
+        if repos:
+            selection = [overlay for overlay in selection if overlay.name in repos]
 
+        for overlay in selection:
             if verbose:
                 result.append((str(overlay), overlay.is_supported(),
                                overlay.is_official()))
