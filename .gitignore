@@ -5,3 +5,5 @@
 /doc/docbook-xsl.css
 /dist
 /MANIFEST
+*.patch
+testpath
