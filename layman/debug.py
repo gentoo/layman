@@ -18,20 +18,8 @@ import sys, inspect, types
 
 from   optparse      import OptionGroup
 
-#################################################################################
-##
-## Color codes (taken from portage)
-##
-#################################################################################
+from   layman.constants  import codes
 
-esc_seq = '\x1b['
-
-codes = {}
-codes['reset']     = esc_seq + '39;49;00m'
-codes['red']       = esc_seq + '31;01m'
-codes['green']     = esc_seq + '32;01m'
-codes['yellow']    = esc_seq + '33;01m'
-codes['turquoise'] = esc_seq + '36;01m'
 
 #################################################################################
 ##
@@ -111,6 +99,8 @@ class Message:
     # Add command line options
 
     def cli_opts(self, parser):
+
+        #print "Parsing debug opts"
 
         group = OptionGroup(parser,
                             '<Debugging options>',
@@ -307,6 +297,8 @@ class Message:
 
     def info (self, info, level = 4):
 
+        #print "info =", info
+
         if type(info) not in types.StringTypes:
             info = str(info)
 
@@ -345,6 +337,8 @@ class Message:
               + ' ' + result
 
     def warn (self, warn, level = 4):
+
+        #print "DEBUG.warn()"
 
         if type(warn) not in types.StringTypes:
             warn = str(warn)
@@ -453,7 +447,7 @@ class Message:
                     ## Remove printed characters from output
                     x = x[60:]
             ## Print final line
-            print >> self.debug_out, ls + '// ' + x 
+            print >> self.debug_out, ls + '// ' + x
 
         if self.debug_vrb == 1:
             # Top line indicates class and method
