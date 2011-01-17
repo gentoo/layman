@@ -166,7 +166,7 @@ class Sync:
             OUT.info('\nSuccess:\n------\n', 3)
             for i in success:
                 OUT.info(i, 3)
-                
+
         if warnings:
             OUT.warn('\nWarnings:\n------\n', 2)
             for i in warnings:
@@ -316,10 +316,10 @@ class Info:
     * Contact : nobody@gentoo.org
     * Type    : Subversion; Priority: 10
     * Quality : experimental
-    * 
+    *
     * Description:
     *   Test
-    * 
+    *
     0
     '''
 
@@ -374,7 +374,7 @@ class List(object):
 
     def _run(self, complain):
         for summary, supported, official \
-                in self.db.list(self.config['verbose'], self.config['width']):
+                in self.db.list(None, self.config['verbose'], self.config['width']):
             # Is the overlay supported?
             if supported:
                 # Is this an official overlay?
@@ -435,22 +435,22 @@ class ListRemote(List):
     * Contact : nobody@gentoo.org
     * Type    : Subversion; Priority: 10
     * Quality : experimental
-    * 
+    *
     * Description:
     *   Test
-    * 
+    *
     * *** This is no official gentoo overlay ***
-    * 
+    *
     * wrobel-stable
     * ~~~~~~~~~~~~~
     * Source  : rsync://gunnarwrobel.de/wrobel-stable
     * Contact : nobody@gentoo.org
     * Type    : Rsync; Priority: 50
     * Quality : experimental
-    * 
+    *
     * Description:
     *   A collection of ebuilds from Gunnar Wrobel [wrobel@gentoo.org].
-    * 
+    *
     0
     '''
 
@@ -529,7 +529,7 @@ def main(config):
             new_umask = int(umask, 8)
             old_umask = os.umask(new_umask)
         except Exception, error:
-            OUT.die('Failed setting to umask "' + umask + '"!\nError was: ' 
+            OUT.die('Failed setting to umask "' + umask + '"!\nError was: '
                     + str(error))
 
         for i in actions:
