@@ -350,7 +350,7 @@ class LaymanAPI(object):
 
         if output_results:
             if success:
-                self.output.info('\nSuccess:\n------\n', 3)
+                self.output.info('\nSucceeded:\n------\n', 3)
                 for ovl, result in success:
                     self.output.info(result, 3)
 
