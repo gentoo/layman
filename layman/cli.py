@@ -79,7 +79,7 @@ class ListPrinter(object):
         if supported:
             # Is this an official overlay?
             if official:
-                 self.output.info(summary, 1)
+                self.output.info(summary, 1)
             # Unofficial overlays will only be listed if we are not
             # checking or listing verbose
             elif complain:
@@ -197,7 +197,16 @@ class Main(object):
         if 'ALL' in selection:
             selection = self.api.get_available()
         self.output.debug('Adding selected overlays', 6)
-        return self.api.add_repos(selection)
+        result = self.api.add_repos(selection)
+        if result:
+            self.output.info('Successfully added overlay(s) '+\
+                ', '.join(selection) +'.', 2)
+        else:
+            errors = self.api.get_errors()
+            self.output.warn('Failed to add overlay(s).\nError was: '
+                             + str('\n'.join(errors)), 2)
+        return result
+
 
 
     def Sync(self):
@@ -217,7 +226,15 @@ class Main(object):
         if 'ALL' in selection:
             selection = self.api.get_installed()
         self.output.debug('Deleting selected overlays', 6)
-        return self.api.delete_repos(selection)
+        result = self.api.delete_repos(selection)
+        if result:
+            self.output.info('Successfully deleted overlay(s) ' +\
+                ', '.join(selection) + '.', 2)
+        else:
+            errors = self.api.get_errors()
+            self.output.warn('Failed to delete overlay(s).\nError was: '
+                             + str('\n'.join(errors)), 2)
+        return result
 
 
     def Info(self):
