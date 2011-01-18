@@ -47,11 +47,11 @@ class ListPrinter(object):
             self.my_lister = self.short_list
 
     def print_shortdict(self, info, complain):
-        #print "ListPrinter.print_tuple()",info
-        ids = sorted(info)
-        #print "ids =======>", ids, "\n"
-        for _id in ids:
-            overlay = info[_id]
+        #print "ListPrinter.print_shortdict()",info, "\n\n"
+        overlays = sorted(info)
+        #print "ids =======>", overlays, "\n"
+        for ovl in overlays:
+            overlay = info[ovl]
             #print "overlay =", overlay
             summary, supported, official = overlay
             self.print_overlay(summary, supported, official, complain)
@@ -187,7 +187,15 @@ class Main(object):
     def Fetch(self):
         ''' Fetches the overlay listing.
         '''
-        return self.api.fetch_remote_list()
+        self.output.info("Fetching remote list,...", 2)
+        result = self.api.fetch_remote_list()
+        if result:
+            self.output.info('Ok', 2)
+        else:
+            errors = self.api.get_errors()
+            self.output.warn('Download failed.\nError was: '
+                             + str('\n'.join(errors)), 2)
+        return result
 
 
     def Add(self):
@@ -212,6 +220,7 @@ class Main(object):
     def Sync(self):
         ''' Syncs the selected overlays.
         '''
+        # Note api.sync() defaults to printing results
         selection = decode_selection(self.config['sync'])
         if self.config['sync_all'] or 'ALL' in selection:
             selection = self.api.get_installed()
@@ -243,15 +252,15 @@ class Main(object):
         selection = decode_selection(self.config['info'])
         if 'ALL' in selection:
             selection = self.api.get_available()
-        info = self.api.get_info_str(selection)
 
-        for overlay in info:
-            # Is the overlay supported?
-            self.output.info(overlay[0], 1)
-            if not overlay[1]:
-                self.output.warn(NOT_OFFICIAL_MSG, 1)
-            if not overlay[2]:
-                self.output.error(NOT_SUPPORTED_MSG)
+        list_printer = ListPrinter(self.config)
+        _complain = self.config['nocheck'] or self.config['verbose']
+
+        info = self.api.get_info_str(selection, local=False,
+            verbose=True, width=list_printer.width)
+        #print "info =", info
+        list_printer.print_shortdict(info, complain=_complain)
+
         return info != {}
 
 
@@ -261,10 +270,10 @@ class Main(object):
 
         self.output.debug('Printing remote overlays.', 6)
         list_printer = ListPrinter(self.config)
-        width = list_printer.width
 
         _complain = self.config['nocheck'] or self.config['verbose']
-        info = self.api.get_info_list(local=False, verbose=self.config['verbose'], width=width)
+        info = self.api.get_info_list(local=False,
+            verbose=self.config['verbose'], width=list_printer.width)
         list_printer.print_shortlist(info, complain=_complain)
 
         return info != {}
