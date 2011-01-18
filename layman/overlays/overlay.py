@@ -403,6 +403,11 @@ class Overlay(object):
         for i in self.sources:
             yield i.src
 
+    def source_types(self):
+        for i in self.sources:
+            yield i.type
+
+
 #================================================================================
 #
 # Testing

@@ -13,8 +13,8 @@
 #              Brian Dolbec <dol-sen@sourceforge.net>
 #
 
-from sys import stderr, stdin, stdout
-import os, types
+from sys import stderr
+import os
 
 from layman.config import BareConfig
 #from layman.action import Sync
@@ -22,7 +22,7 @@ from layman.config import BareConfig
 from layman.dbbase import UnknownOverlayException
 from layman.db import DB, RemoteDB
 #from layman.utils import path, delete_empty_directory
-from layman.debug import Message, OUT
+from layman.debug import OUT
 
 # give them some values for now, these are from the packagekit backend
 # TODO  establish some proper errors for the api.
@@ -215,7 +215,8 @@ class LaymanAPI(object):
                     'description': overlay.description,
                     #'src_uris': [e.src for e in overlay.sources],
                     'src_uris': overlay.source_uris(),
-                    'src_types': [e.type for e in overlay.sources],
+                    'src_types': overlay.source_types(),
+                    #'src_types': [e.type for e in overlay.sources],
                     'priority': overlay.priority,
                     'quality': overlay.quality,
                     'status': overlay.status,
@@ -308,7 +309,7 @@ class LaymanAPI(object):
                 ordb = self._get_remote_db().select(ovl)
             except UnknownOverlayException:
                 message = 'Overlay "%s" could not be found in the remote lists.\n' \
-                        'Please check if it has been renamed and re-add if necessary.' %ovl
+                        'Please check if it has been renamed and re-add if necessary.' % ovl
                 warnings.append((ovl, message))
             else:
                 current_src = odb.sources[0].src
@@ -420,10 +421,10 @@ class LaymanAPI(object):
         defaults to stderr.  This method may be removed, is here for now
         due to code taken from the packagekit backend.
         """
-        m = "Error: %d," %num, message
-        self._error_messages.append(m)
+        msg = "Error: %d," % num, message
+        self._error_messages.append(msg)
         if self.report_errors:
-            print >>stderr, m
+            print >>stderr, msg
 
 
     def get_errors(self):
@@ -445,8 +446,8 @@ def create_fd():
     use in place of stdin, stdout, stderr.
     """
     fd_r, fd_w = os.pipe()
-    w = os.fdopen(fd_w, 'w')
-    r = os.fdopen(fd_r, 'r')
-    return (r, w, fd_r, fd_w)
+    write = os.fdopen(fd_w, 'w')
+    rread = os.fdopen(fd_r, 'r')
+    return (read, write, fd_r, fd_w)
 
 
