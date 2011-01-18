@@ -252,6 +252,12 @@ class DbBase:
 
         return result
 
+    def list_ids(self):
+        """returns a list of the overlay names
+        """
+        return sorted(self.overlays)
+
+
 #===============================================================================
 #
 # Testing

@@ -385,14 +385,14 @@ class LaymanAPI(object):
     def get_available(self, reload=False):
         """returns the list of available overlays"""
         if self._available_ids is None or reload:
-            self._available_ids = sorted(self._get_remote_db(reload).overlays)
+            self._available_ids = self._get_remote_db(reload).list_ids()
         return self._available_ids[:] or ['None']
 
 
     def get_installed(self, reload=False):
         """returns the list of installed overlays"""
         if self._installed_ids is None or reload:
-            self._installed_ids = sorted(self._get_installed_db(reload).overlays)
+            self._installed_ids = self._get_installed_db(reload).list_ids()
         return self._installed_ids[:]
 
 
