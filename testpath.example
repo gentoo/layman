@@ -1,0 +1,17 @@
+# Sample file demonstrating an easy method for running the
+# git sources without the need for installing.
+
+
+# Edit the paths below and save the file as "testpath"
+# the file will be ignored by git.
+
+# Example usage:
+
+# $ cd Dev/git/layman
+# $ source ./testpath
+# $ layman -l
+
+
+export PATH="/home/brian/Dev/git/layman/bin:${PATH}"
+
+export PYTHONPATH="/home/brian/Dev/git/layman/:${PYTHONPATH}"
