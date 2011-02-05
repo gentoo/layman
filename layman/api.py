@@ -212,6 +212,7 @@ class LaymanAPI(object):
                     'owner_name': overlay.owner_name,
                     'owner_email': overlay.owner_email,
                     'homepage': overlay.homepage,
+                    'irc': overlay.irc,
                     'description': overlay.description,
                     #'src_uris': [e.src for e in overlay.sources],
                     'src_uris': overlay.source_uris(),

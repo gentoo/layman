@@ -210,6 +210,12 @@ class Overlay(object):
 
         self.feeds = [ensure_unicode(strip_text(e)) for e in xml.findall('feed')]
 
+        _irc = xml.find('irc')
+        if _irc != None:
+            self.irc = ensure_unicode(strip_text(_irc))
+        else:
+            self.irc = None
+
 
     def __eq__(self, other):
         for i in ('description', 'homepage', 'name', 'owner_email',
@@ -249,6 +255,10 @@ class Overlay(object):
             homepage = ET.Element('homepage')
             homepage.text = self.homepage
             repo.append(homepage)
+        if self.irc != None:
+            irc = ET.Element('irc')
+            irc.text = self.irc
+            repo.append(irc)
         owner = ET.Element('owner')
         repo.append(owner)
         owner_email = ET.Element('email')
@@ -353,6 +363,9 @@ class Overlay(object):
             result += u'\nLink:'
             result += u'\n  '.join((u'\n' + link).split(u'\n'))
             result += u'\n'
+
+        if self.irc != None:
+            result += u'\nIRC : ' + self.irc + u'\n'
 
         if self.feeds:
             result += u'\n%s:' % ((len(self.feeds) == 1) and "Feed" or "Feeds")
