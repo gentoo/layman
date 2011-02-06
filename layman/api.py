@@ -19,10 +19,11 @@ import os
 from layman.config import BareConfig
 #from layman.action import Sync
 
-from layman.dbbase import UnknownOverlayException
+from layman.dbbase import UnknownOverlayException, UnknownOverlayMessage
 from layman.db import DB, RemoteDB
 #from layman.utils import path, delete_empty_directory
-from layman.debug import OUT
+#from layman.debug import OUT
+from layman.output import OUT
 
 # give them some values for now, these are from the packagekit backend
 # TODO  establish some proper errors for the api.
@@ -114,11 +115,7 @@ class LaymanAPI(object):
         for ovl in repos:
             if not self.is_installed(ovl):
                 results.append(True)
-                break
-            if not self.is_repo(ovl):
-                self._error(1, UNKNOWN_REPO_ID %ovl)
-                results.append(False)
-                break
+                continue
             try:
                 self._get_installed_db().delete(self._get_installed_db().select(ovl))
                 results.append(True)
@@ -145,11 +142,11 @@ class LaymanAPI(object):
         for ovl in repos:
             if self.is_installed(ovl):
                 results.append(True)
-                break
+                continue
             if not self.is_repo(ovl):
-                self._error(1, UNKNOWN_REPO_ID %ovl)
+                self._error(UnknownOverlayMessage(ovl))
                 results.append(False)
-                break
+                continue
             try:
                 self._get_installed_db().add(self._get_remote_db().select(ovl), quiet=True)
                 results.append(True)
@@ -199,12 +196,13 @@ class LaymanAPI(object):
 
         for ovl in repos:
             if not self.is_repo(ovl):
-                self._error(1, UNKNOWN_REPO_ID %ovl)
+                self._error(UnknownOverlayMessage(ovl))
                 result[ovl] = ('', False, False)
+                continue
             try:
                 overlay = db.select(ovl)
             except UnknownOverlayException, error:
-                self._error(2, "Error: %s" %str(error))
+                self._error(error)
                 result[ovl] = ('', False, False)
             else:
                 result[ovl] = {
@@ -247,20 +245,21 @@ class LaymanAPI(object):
 
         for ovl in repos:
             if not self.is_repo(ovl):
-                self._error(1, UNKNOWN_REPO_ID % ovl)
+                self._error(UnknownOverlayMessage(ovl))
                 result[ovl] = ('', False, False)
+                continue
             try:
                 overlay = db.select(ovl)
                 #print "overlay = ", ovl
-                #print overlay
+                #print "!!!", overlay
             except UnknownOverlayException, error:
                 #print "ERRORS", str(error)
-                self._error(2, "Error: %s" %str(error))
+                self._error(error)
                 result[ovl] = ('', False, False)
             else:
                 # Is the overlay supported?
                 if verbose:
-                    info = overlay.__str__()
+                    info = overlay.get_infostr()
                 else:
                     info = overlay.short_list(width)
                 official = overlay.is_official()
@@ -271,7 +270,7 @@ class LaymanAPI(object):
 
     def get_info_list(self, local=True, verbose=False, width=0):
         """retrieves the string representation of the recorded information
-        about the repo(s) specified by ovl
+        about the repo(s)
 
         @param local: bool (defaults to True)
         @param verbose: bool(defaults to False)
@@ -303,7 +302,7 @@ class LaymanAPI(object):
             try:
                 odb = db.select(ovl)
             except UnknownOverlayException, error:
-                self._error(1,"Sync(), failed to select %s overlay.  Original error was: %s" %(ovl, str(error)))
+                self._error(UnknownOverlayException(error))
                 continue
 
             try:
@@ -376,7 +375,7 @@ class LaymanAPI(object):
         try:
             self._get_remote_db().cache()
         except Exception, error:
-            self._error(-1,'Failed to fetch overlay list!\n Original Error was: '
+            self._error('Failed to fetch overlay list!\n Original Error was: '
                     + str(error))
             return False
         self.get_available(reload=True)
@@ -417,13 +416,13 @@ class LaymanAPI(object):
         result = self.get_installed(reload=True)
 
 
-    def _error(self, num, message):
+    def _error(self, message):
         """outputs the error to the pre-determined output
         defaults to stderr.  This method may be removed, is here for now
         due to code taken from the packagekit backend.
         """
-        msg = "Error: %d," % num, message
-        self._error_messages.append(msg)
+        #msg = "Error: %d," % num, message
+        self._error_messages.append(message)
         if self.report_errors:
             print >>stderr, msg
 

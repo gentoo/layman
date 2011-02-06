@@ -31,7 +31,10 @@ import sys, ConfigParser
 import os
 
 from   optparse                 import OptionParser, OptionGroup
-from   layman.debug             import OUT
+
+#from   layman.debug             import OUT
+from   layman.output            import OUT
+
 from   layman.version           import VERSION
 
 #===============================================================================

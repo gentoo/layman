@@ -171,7 +171,8 @@ class Main(object):
                 try:
                     result += getattr(self, action[1])()
                 except Exception, error:
-                    self.output.error(self.api.get_errors())
+                    for _error in self.api.get_errors():
+                        self.output.error(_error)
                     result = -1  # So it cannot remain 0, i.e. success
                     break
 
