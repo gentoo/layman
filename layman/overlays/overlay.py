@@ -305,7 +305,7 @@ class Overlay(object):
         assert len(self.sources) == 1
         return self.sources[0].delete(base)
 
-    def __str__(self):
+    def get_infostr(self):
         '''
         >>> here = os.path.dirname(os.path.realpath(__file__))
         >>> import xml.etree.ElementTree as ET # Python 2.5

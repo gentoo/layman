@@ -41,10 +41,12 @@ from   layman.overlays.overlay   import Overlay
 # Class UnknownOverlayException
 #
 #-------------------------------------------------------------------------------
+def UnknownOverlayMessage(ovl):
+    return 'Overlay "%s" does not exist.' % ovl
 
 class UnknownOverlayException(Exception):
     def __init__(self, repo_name):
-        message = 'Overlay "%s" does not exist.' % repo_name
+        UnknownOverlayMessage(repo_name)
         super(UnknownOverlayException, self).__init__(message)
 
 #===============================================================================
@@ -242,8 +244,8 @@ class DbBase:
 
         for overlay in selection:
             if verbose:
-                result.append((str(overlay), overlay.is_supported(),
-                               overlay.is_official()))
+                result.append(overlay.get_infostr(), overlay.is_supported(),
+                               overlay.is_official())
             else:
                 result.append((overlay.short_list(width), overlay.is_supported(),
                                overlay.is_official()))
