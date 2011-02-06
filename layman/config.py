@@ -28,6 +28,7 @@ __version__ = "$Id: config.py 286 2007-01-09 17:48:23Z wrobel $"
 #-------------------------------------------------------------------------------
 
 import sys, ConfigParser
+import os
 
 from   optparse                 import OptionParser, OptionGroup
 from   layman.debug             import OUT
@@ -43,6 +44,31 @@ _USAGE = """
   layman (-a|-d|-s|-i) (OVERLAY|ALL)
   layman -f [-o URL]
   layman (-l|-L|-S)"""
+
+
+def read_config(config=None, defaults=None):
+    """reads the config file defined in defaults['config']
+    and updates the config
+
+    @param config: ConfigParser.ConfigParser(self.defaults) instance
+    @param defaults: dict
+    @modifies config['MAIN']['overlays']
+    """
+    config.read(defaults['config'])
+    if config.get('MAIN', 'overlay_defs'):
+        try:
+            filelist = os.listdir(config.get('MAIN', 'overlay_defs'))
+        except OSError:
+            return
+        filelist = [f for f in filelist if f.endswith('.xml')]
+        overlays = set(config.get('MAIN', 'overlays').split('\n'))
+        for _file in filelist:
+            path = os.path.join(config.get('MAIN', 'overlay_defs'), _file)
+            if os.path.isfile(path):
+                overlays.update(["file://" + path])
+        config.set('MAIN', 'overlays', '\n'.join(overlays))
+
+
 
 class BareConfig(object):
     '''Handles the configuration only.'''
@@ -70,6 +96,7 @@ class BareConfig(object):
                     'umask'     : '0022',
                     'overlays'  :
                     'http://www.gentoo.org/proj/en/overlays/repositories.xml',
+                    'overlay_defs': '/etc/layman/overlays',
                     'bzr_command': '/usr/bin/bzr',
                     'cvs_command': '/usr/bin/cvs',
                     'darcs_command': '/usr/bin/darcs',
@@ -318,7 +345,7 @@ class ArgsParser(object):
         #-----------------------------------------------------------------
         # Debug Options
 
-        self.output.cli_opts(self.parser)
+        #self.output.cli_opts(self.parser)
 
         # Parse the command line first since we need to get the config
         # file option.
@@ -333,7 +360,7 @@ class ArgsParser(object):
                 % ', '.join(('"%s"' % e) for e in remain_args[1:]))
 
         # handle debugging
-        self.output.cli_handle(self.options)
+        #self.output.cli_handle(self.options)
 
         # add output to the options
         self.options.__dict__['output'] = self.output
@@ -351,7 +378,7 @@ class ArgsParser(object):
         if not self.options.__dict__['config'] is None:
             self.defaults['config'] = self.options.__dict__['config']
 
-            self.output.debug('Got config file at ' + self.defaults['config'], 8)
+            #self.output.debug('Got config file at ' + self.defaults['config'], 8)
 
         # Now parse the config file
         self.config = ConfigParser.ConfigParser(self.defaults)
@@ -366,9 +393,9 @@ class ArgsParser(object):
             self.output.set_info_level(int(self['quietness']))
             self.output.set_warn_level(int(self['quietness']))
 
-        self.output.debug('Reading config file at ' + self.defaults['config'], 8)
+        #self.output.debug('Reading config file at ' + self.defaults['config'], 8)
 
-        self.config.read(self.defaults['config'])
+        read_config(self.config, self.defaults)
 
     def __getitem__(self, key):
 
@@ -406,6 +433,7 @@ class ArgsParser(object):
         self.output.debug('Retrieving option', 8)
 
         return None
+
 
     def keys(self):
         '''Special handler for the configuration keys.'''
