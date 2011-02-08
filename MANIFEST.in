@@ -6,6 +6,7 @@ include README
 include RELEASE_NOTES
 include etc/layman.cfg
 include doc/asciidoc.conf
+include doc/docbook-xsl.css
 include doc/layman.8
 include doc/layman.8.html
 include doc/layman.8.txt
