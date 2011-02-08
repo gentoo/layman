@@ -1,20 +1,21 @@
-Version 1.4.1 - Released 2010-07-09
+Version 1.4.2 - Released 2011-02-08
 ===================================
 
 FULL CHANGES
 ------------
 
- - Fixed: Catch keyboard interrupts (Ctrl+C) while
-     running child processes properly
+ - Fixed: Ignore case when sorting data for layman -l|-L
 
- - Fixed: doctest error in tar overlay code (bug #327491)
-     Thanks to David Abbott for reporting!
+ - Fixed: Improve documentation on option nocheck (bug #267686)
 
 
 SHORT CHANGES
 -------------
 
- layman-1.4.1 is a bugfix release.  Updating is recommended.
+ layman-1.4.2 is a bugfix release.  Updating is recommended.
+
+ Internally, the man page has been migrated to AsciiDoc,
+ which makes it easier for you to contribute patches to it.
 
 
 FRESHMEAT

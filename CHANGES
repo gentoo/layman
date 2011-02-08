@@ -1,10 +1,12 @@
 CHANGES
 -------
 
-Version TODO
+Version 1.4.2 - Released 2011-02-08
 ===================================
 
  - Fixed: Ignore case when sorting data for layman -l|-L
+
+ - Fixed: Improve documentation on option nocheck (bug #267686)
 
 
 Version 1.4.1 - Released 2010-07-09
