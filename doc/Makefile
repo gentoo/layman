@@ -17,6 +17,8 @@ HTML_PAGES = layman.8.html
 
 TMPFILE=./layman.man
 
+PACKAGE_VERSION = `fgrep "VERSION = " ../layman/version.py | sed 's|^VERSION = '"'"'\(.\+\)'"'"'$$|\1|'`
+
 all: man html
 
 html: $(HTML_PAGES)
@@ -27,10 +29,10 @@ clean:
 	rm -f $(MAN_PAGES)
 	rm -f $(HTML_PAGES)
 
-%.html: %.txt
+%.html: %.txt ../layman/version.py
 	@echo HTML $@
-	a2x --conf-file=asciidoc.conf  --attribute="laymanversion=1.4.1" --format=xhtml "$<"
+	a2x --conf-file=asciidoc.conf  --attribute="laymanversion=$(PACKAGE_VERSION)" --format=xhtml "$<"
 
-%: %.txt
+%: %.txt ../layman/version.py
 	@echo MAN $@
-	a2x --conf-file=asciidoc.conf  --attribute="laymanversion=1.4.1" --format=manpage "$<"
+	a2x --conf-file=asciidoc.conf  --attribute="laymanversion=$(PACKAGE_VERSION)" --format=manpage "$<"
