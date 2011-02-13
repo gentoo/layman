@@ -18,8 +18,10 @@ import sys, inspect, types
 
 from   optparse      import OptionGroup
 
-from   layman.constants  import codes
+from   layman.constants  import (codes, DEBUG_LEVEL, DEBUG_VERBOSITY,
+    INFO_LEVEL, WARN_LEVEL, OFF)
 
+from output import Message
 
 #################################################################################
 ##
@@ -27,7 +29,7 @@ from   layman.constants  import codes
 ##
 #################################################################################
 
-class Message:
+class DebugMessage(Message):
     #FIXME: Think about some simple doctests before you modify this class the
     #       next time.
 
@@ -35,10 +37,10 @@ class Message:
                  out = sys.stdout,
                  err = sys.stderr,
                  dbg = sys.stderr,
-                 debugging_level = 4,
-                 debugging_verbosity = 2,
-                 info_level = 4,
-                 warn_level = 4,
+                 debugging_level = DEBUG_LEVEL,
+                 debugging_verbosity = DEBUG_VERBOSITY,
+                 info_level = INFO_LEVEL,
+                 warn_level = WARN_LEVEL,
                  col = True,
                  mth = None,
                  obj = None,
@@ -93,6 +95,14 @@ class Message:
         self.use_color = col
 
         self.has_error = False
+
+        Message.__init__(self,
+                out = self.std_out,
+                err = self.error_out,
+                info_level = self.info_level,
+                warn_level = self.warn_level,
+                col = self.col
+                )
 
 
     ############################################################################
@@ -170,9 +180,9 @@ class Message:
 
         if (options.__dict__.has_key('debug')
             and options.__dict__['debug']):
-            self.debug_on()
+            self.set_debug_level(DEBUG_LEVEL)
         else:
-            self.debug_off()
+            self.set_debug_level(OFF)
             return
 
         if (options.__dict__.has_key('debug_class_vars')
@@ -183,9 +193,9 @@ class Message:
 
         if (options.__dict__.has_key('debug_nocolor')
             and options.__dict__['debug_nocolor']):
-            self.color_off()
+            self.set_colorize(False)
         else:
-            self.color_on()
+            self.set_colorize(True)
 
         if (options.__dict__.has_key('debug_level') and
             options.__dict__['debug_level']):
@@ -242,46 +252,12 @@ class Message:
         if variables:
             self.debug_var = variables
 
-    def maybe_color (self, col, text):
-        if self.use_color:
-            return codes[col] + text + codes['reset']
-        return text
-
-    def set_info_level(self, info_level = 4):
-        self.info_lev = info_level
-
-    def info_off(self):
-        self.set_info_level(0)
-
-    def info_on(self, info_level = 4):
-        self.set_info_level(info_level)
-
-    def set_warn_level(self, warn_level = 4):
-        self.warn_lev = warn_level
-
-    def warn_off(self):
-        self.set_warn_level(0)
-
-    def warn_on(self, warn_level = 4):
-        self.set_warn_level(warn_level)
-
-    def set_debug_level(self, debugging_level = 4):
+    def set_debug_level(self, debugging_level = DEBUG_LEVEL):
         self.debug_lev = debugging_level
 
-    def set_debug_verbosity(self, debugging_verbosity = 2):
+    def set_debug_verbosity(self, debugging_verbosity = DEBUG_VERBOSITY):
         self.debug_vrb = debugging_verbosity
 
-    def debug_off(self):
-        self.set_debug_level(0)
-
-    def debug_on(self):
-        self.set_debug_level()
-
-    def color_off(self):
-        self.use_color = False
-
-    def color_on(self):
-        self.use_color = True
 
     def class_variables_off(self):
         self.show_class_variables = False
@@ -292,88 +268,7 @@ class Message:
     #############################################################################
     ## Output Functions
 
-    def notice (self, note):
-        print >> self.std_out, note
-
-    def info (self, info, level = 4):
-
-        #print "info =", info
-
-        if type(info) not in types.StringTypes:
-            info = str(info)
-
-        if level > self.info_lev:
-            return
-
-        for i in info.split('\n'):
-            print  >> self.std_out, self.maybe_color('green', '* ') + i
-
-    def status (self, message, status, info = 'ignored'):
-
-        if type(message) not in types.StringTypes:
-            message = str(message)
-
-        lines = message.split('\n')
-
-        if not lines:
-            return
-
-        for i in lines[0:-1]:
-            print  >> self.std_out, self.maybe_color('green', '* ') + i
-
-        i = lines[-1]
-
-        if len(i) > 58:
-            i = i[0:57]
-
-        if status == 1:
-            result = '[' + self.maybe_color('green', 'ok') + ']'
-        elif status == 0:
-            result = '[' + self.maybe_color('red', 'failed') + ']'
-        else:
-            result = '[' + self.maybe_color('yellow', info) + ']'
-
-        print  >> self.std_out, self.maybe_color('green', '* ') + i + ' ' + '.' * (58 - len(i))  \
-              + ' ' + result
-
-    def warn (self, warn, level = 4):
-
-        #print "DEBUG.warn()"
-
-        if type(warn) not in types.StringTypes:
-            warn = str(warn)
-
-        if level > self.warn_lev:
-            return
-
-        for i in warn.split('\n'):
-            print  >> self.std_out, self.maybe_color('yellow', '* ') + i
-
-    def error (self, error):
-
-        if type(error) not in types.StringTypes:
-            error = str(error)
-
-        for i in error.split('\n'):
-            # NOTE: Forced flushing ensures that stdout and stderr
-            # stay in nice order.  This is a workaround for calls like
-            # "layman -L |& less".
-            sys.stdout.flush()
-            print >> self.error_out, self.maybe_color('red', '* ') + i
-            self.error_out.flush()
-        self.has_error = True
-
-    def die (self, error):
-
-        if type(error) not in types.StringTypes:
-            error = str(error)
-
-        for i in error.split('\n'):
-            self.error(self.maybe_color('red', 'Fatal error: ') + i)
-        self.error(self.maybe_color('red', 'Fatal error(s) - aborting'))
-        sys.exit(1)
-
-    def debug (self, message, level = 4):
+    def debug (self, message, level = DEBUG_LEVEL):
         '''
         This is a generic debugging method.
         '''
