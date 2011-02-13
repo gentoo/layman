@@ -286,7 +286,10 @@ class Overlay(object):
 
     def add(self, base, quiet = False):
         res = 1
+        first_s = True
         for s in self.sources:
+            if not first_s:
+                self.output.info("\nTrying next source of listed sources...", 4)
             try:
                 res = s.add(base, quiet)
                 if res == 0:
@@ -295,6 +298,7 @@ class Overlay(object):
                     break
             except Exception, error:
                 self.output.warn(str(error), 4)
+            first_s = False
         return res
 
     def sync(self, base, quiet = False):
