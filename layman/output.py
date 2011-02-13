@@ -14,7 +14,7 @@ import sys, inspect, types
 
 from   optparse      import OptionGroup
 
-from   overlord.constants  import codes
+from   layman.constants  import codes, INFO_LEVEL, WARN_LEVEL, OFF
 
 
 
@@ -25,8 +25,8 @@ class Message:
     def __init__(self,
                  out = sys.stdout,
                  err = sys.stderr,
-                 info_level = 4,
-                 warn_level = 4,
+                 info_level = INFO_LEVEL,
+                 warn_level = WARN_LEVEL,
                  col = True
                  ):
 
@@ -63,43 +63,26 @@ class Message:
             self.color_func = self.no_color
 
 
-    def set_info_level(self, info_level = 4):
+    def set_info_level(self, info_level = INFO_LEVEL):
         self.info_lev = info_level
 
 
-    def info_off(self):
-        self.set_info_level(0)
-
-
-    def info_on(self, info_level = 4):
-        self.set_info_level(info_level)
-
-
-    def set_warn_level(self, warn_level = 4):
+    def set_warn_level(self, warn_level = WARN_LEVEL):
         self.warn_lev = warn_level
-
-
-    def warn_off(self):
-        self.set_warn_level(0)
-
-
-    def warn_on(self, warn_level = 4):
-        self.set_warn_level(warn_level)
-
-
 
 
     ## Output Functions
 
-    def debug(self, info, level=0):
+    def debug(self, info, level = OFF):
         """empty debug function"""
         pass
+
 
     def notice (self, note):
         print >> self.std_out, note
 
 
-    def info (self, info, level = 4):
+    def info (self, info, level = INFO_LEVEL):
 
         #print "info =", info
 
@@ -142,9 +125,7 @@ class Message:
             '.' * (58 - len(i)) + ' ' + result
 
 
-    def warn (self, warn, level = 4):
-
-        #print "DEBUG.warn()"
+    def warn (self, warn, level = WARN_LEVEL):
 
         if type(warn) not in types.StringTypes:
             warn = str(warn)

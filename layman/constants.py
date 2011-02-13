@@ -43,3 +43,10 @@ codes['turquoise'] = esc_seq + '36;01m'
 NOT_OFFICIAL_MSG = '*** This is not an official gentoo overlay ***\n'
 NOT_SUPPORTED_MSG = '*** You are lacking the necessary tools' +\
     ' to install this overlay ***\n'
+
+
+OFF = 0
+WARN_LEVEL = 4
+INFO_LEVEL = 4
+DEBUG_LEVEL = 4
+DEBUG_VERBOSITY = 2
