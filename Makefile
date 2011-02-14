@@ -1,6 +1,6 @@
 .PHONY: doc
 doc:
-	$(MAKE) -C doc
+	$(MAKE) -j1 -C doc
 
 .PHONY: dist
 dist: doc
