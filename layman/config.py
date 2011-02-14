@@ -10,6 +10,7 @@
 # Copyright:
 #             (c) 2005 - 2009 Gunnar Wrobel
 #             (c) 2009        Sebastian Pipping
+#             (c) 2010 - 2011 Brian Dolbec
 #             Distributed under the terms of the GNU General Public License v2
 #
 # Author(s):
@@ -30,18 +31,14 @@ __version__ = "$Id: config.py 286 2007-01-09 17:48:23Z wrobel $"
 import sys, ConfigParser
 import os
 
-from   optparse                 import OptionParser, OptionGroup
+from optparse import OptionParser, OptionGroup
 
-#from   layman.debug             import OUT
-from   layman.output            import OUT
+#from layman.debug import OUT
+from layman.output import OUT
 
-from   layman.version           import VERSION
+from layman.constants import OFF
+from layman.version import VERSION
 
-#===============================================================================
-#
-# Class Config
-#
-#-------------------------------------------------------------------------------
 
 _USAGE = """
   layman (-a|-d|-s|-i) (OVERLAY|ALL)
@@ -375,7 +372,7 @@ class ArgsParser(object):
 
 
         if self.options.__dict__['nocolor']:
-            self.output.color_off()
+            self.output.set_colorize(OFF)
 
         # Fetch only an alternate config setting from the options
         if not self.options.__dict__['config'] is None:
