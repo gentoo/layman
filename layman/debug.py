@@ -23,13 +23,10 @@ from   layman.constants  import (codes, DEBUG_LEVEL, DEBUG_VERBOSITY,
 
 from output import Message
 
-#################################################################################
-##
-## Message Class
-##
-#################################################################################
 
 class DebugMessage(Message):
+    """fully Debug enabled subclass of output.py's Message
+    """
     #FIXME: Think about some simple doctests before you modify this class the
     #       next time.
 
@@ -37,8 +34,8 @@ class DebugMessage(Message):
                  out = sys.stdout,
                  err = sys.stderr,
                  dbg = sys.stderr,
-                 debugging_level = DEBUG_LEVEL,
-                 debugging_verbosity = DEBUG_VERBOSITY,
+                 debug_level = DEBUG_LEVEL,
+                 debug_verbosity = DEBUG_VERBOSITY,
                  info_level = INFO_LEVEL,
                  warn_level = WARN_LEVEL,
                  col = True,
@@ -50,6 +47,8 @@ class DebugMessage(Message):
         if obj == None: obj = ['*']
         if var == None: var = ['*']
 
+        Message.__init__(self)
+
         # A description of the module that is being debugged
         self.debug_env = module
 
@@ -57,24 +56,24 @@ class DebugMessage(Message):
         self.debug_out = dbg
 
         # Where should the error output go? This can also be a file
-        self.error_out = err
+        #self.error_out = err
 
         # Where should the normal output go? This can also be a file
-        self.std_out = out
+        #self.std_out = out
 
         # The higher the level the more information you will get
-        self.warn_lev = warn_level
+        #self.warn_lev = warn_level
 
         # The higher the level the more information you will get
-        self.info_lev = info_level
+        #self.info_lev = info_level
 
         # The highest level of debugging messages acceptable for output
         # The higher the level the more output you will get
-        self.debug_lev = debugging_level
+        #self.debug_lev = debugging_level
 
         # The debugging output can range from very verbose (3) to
         # very compressed (1)
-        self.debug_vrb = debugging_verbosity
+        self.debug_vrb = debug_verbosity
 
         # Which methods should actually be debugged?
         # Use '*' to indicate 'All methods'
@@ -92,17 +91,9 @@ class DebugMessage(Message):
         self.show_class_variables = False
 
         # Should the output be colored?
-        self.use_color = col
+        #self.use_color = col
 
-        self.has_error = False
-
-        Message.__init__(self,
-                out = self.std_out,
-                err = self.error_out,
-                info_level = self.info_level,
-                warn_level = self.warn_level,
-                col = self.col
-                )
+        #self.has_error = False
 
 
     ############################################################################
@@ -252,8 +243,6 @@ class DebugMessage(Message):
         if variables:
             self.debug_var = variables
 
-    def set_debug_level(self, debugging_level = DEBUG_LEVEL):
-        self.debug_lev = debugging_level
 
     def set_debug_verbosity(self, debugging_verbosity = DEBUG_VERBOSITY):
         self.debug_vrb = debugging_verbosity
