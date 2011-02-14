@@ -17,7 +17,6 @@ from sys import stderr
 import os
 
 from layman.config import BareConfig
-#from layman.action import Sync
 
 from layman.dbbase import UnknownOverlayException, UnknownOverlayMessage
 from layman.db import DB, RemoteDB
@@ -320,7 +319,8 @@ class LaymanAPI(object):
                         candidates = '  %s' % tuple(available_srcs)[0]
                     else:
                         plural = 's'
-                        candidates = '\n'.join(('  %d. %s' % (ovl + 1, v)) for ovl, v in enumerate(available_srcs))
+                        candidates = '\n'.join(('  %d. %s' % (ovl + 1, v)) \
+                         for ovl, v in enumerate(available_srcs))
 
                     warnings.append((ovl,
                         'The source of the overlay "%(repo_name)s" seems to have changed.\n'
@@ -363,11 +363,10 @@ class LaymanAPI(object):
                 self.output.error('\nErrors:\n------\n')
                 for ovl, result in fatals:
                     self.output.error(result + '\n')
-                return False
 
         self.sync_results = (success, warnings, fatals)
 
-        return True
+        return fatals != []
 
 
     def fetch_remote_list(self):
