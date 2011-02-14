@@ -27,7 +27,8 @@ import os, sys
 from layman.api import LaymanAPI
 from layman.utils import (decode_selection, encoder, get_encoding,
     pad, terminal_width)
-from layman.constants import NOT_OFFICIAL_MSG, NOT_SUPPORTED_MSG
+from layman.constants import (NOT_OFFICIAL_MSG, NOT_SUPPORTED_MSG,
+    FAILURE, SUCCEED)
 
 
 
@@ -180,9 +181,9 @@ class Main(object):
         os.umask(old_umask)
 
         if not result:
-            sys.exit(0)
+            sys.exit(FAILURE)
         else:
-            sys.exit(1)
+            sys.exit(SUCCEED)
 
 
     def Fetch(self):
