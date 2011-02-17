@@ -68,12 +68,18 @@ def read_config(config=None, defaults=None):
                 overlays.update(["file://" + path])
         config.set('MAIN', 'overlays', '\n'.join(overlays))
 
+def t_f_check(option):
+    """evaluates the option and returns
+    True or False
+    """
+    return option.lower() in ['yes', 'true', 'y', 't']
 
 
 class BareConfig(object):
     '''Handles the configuration only.'''
 
-    def __init__(self, output=None, stdout=None, stdin=None, stderr=None):
+    def __init__(self, output=None, stdout=None, stdin=None, stderr=None,
+        read_configfile=False):
         '''
         Creates a bare config with defaults and a few output options.
 
@@ -105,7 +111,8 @@ class BareConfig(object):
                     'mercurial_command': '/usr/bin/hg',
                     'rsync_command': '/usr/bin/rsync',
                     'svn_command': '/usr/bin/svn',
-                    'tar_command': '/bin/tar'
+                    'tar_command': '/bin/tar',
+                    'T/F_options': ['nocheck']
                     }
         self._options = {
                     'stdout': stdout if stdout else sys.stdout,
@@ -117,6 +124,11 @@ class BareConfig(object):
                     'verbose': False,
                     'quiet': False,
                     }
+        self.config = None
+        if read_configfile:
+            self.config = ConfigParser.ConfigParser(self.defaults)
+            self.config.add_section('MAIN')
+            read_config(self.config, self.defaults)
 
 
     def keys(self):
@@ -144,21 +156,36 @@ class BareConfig(object):
     def set_option(self, option, value):
         """Sets an option to the value """
         self._options[option] = value
+        # handle quietness
+        if option == 'quietness':
+            self._option['output'].set_info_level(int(self['quietness']))
+            self._option['output'].set_warn_level(int(self['quietness']))
 
 
     def __getitem__(self, key):
         self._options['output'].debug('Retrieving BareConfig option', 8)
+        if key == 'overlays':
+            overlays = ''
+            if (key in self._options
+                and not self._options[key] is None):
+                overlays = '\n'.join(self._options[key])
+            if self.config and self.config.has_option('MAIN', 'overlays'):
+                overlays += '\n' + self.config.get('MAIN', 'overlays')
+            if overlays:
+                return  overlays
         if (key in self._options
             and not self._options[key] is None):
             return self._options[key]
+        if self.config and self.config.has_option('MAIN', key):
+            if key in self._defaults['T/F_options']:
+                return t_f_check(self.config.get('MAIN', key))
+            return self.config.get('MAIN', key)
         self._options['output'].debug('Retrieving BareConfig default', 8)
         if key in self._defaults:
             if '%(storage)s' in self._defaults[key]:
                 return self._defaults[key] %{'storage': self._defaults['storage']}
             return self._defaults[key]
         return None
-
-
 
 
 class ArgsParser(object):
@@ -191,9 +218,9 @@ class ArgsParser(object):
         self.stdin = stdin if stdin else sys.stdin
         self.output = output if output else OUT
 
-        self.bare_config = BareConfig(self.output, self.stdout,
+        bare_config = BareConfig(self.output, self.stdout,
             self.stdin, self.stderr)
-        self.defaults = self.bare_config.get_defaults()
+        self.defaults = bare_config.get_defaults()
         #print self.defaults
 
         self.parser = OptionParser(
@@ -418,11 +445,8 @@ class ArgsParser(object):
         self.output.debug('Retrieving option', 8)
 
         if self.config.has_option('MAIN', key):
-            if key == 'nocheck':
-                if self.config.get('MAIN', key).lower() == 'yes':
-                    return True
-                else:
-                    return False
+            if key in self.defaults['T/F_options']:
+                return t_f_check(self.config.get('MAIN', key))
             return self.config.get('MAIN', key)
 
         self.output.debug('Retrieving option', 8)
