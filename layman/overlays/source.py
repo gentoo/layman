@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-#################################################################################
+###############################################################################
 # LAYMAN OVERLAY SOURCE BASE CLASS
-#################################################################################
+###############################################################################
 # File:       source.py
 #
 #             Base class for the different overlay types.
@@ -34,7 +34,8 @@ def _resolve_command(command):
             f = os.path.join(d, command)
             if os.path.exists(f):
                 return ('Command', f)
-        raise Exception('Cound not resolve command "%s" based on PATH "%s"' % (command, env_path))
+        raise Exception('Cound not resolve command ' +\
+            '"%s" based on PATH "%s"' % (command, env_path))
 
 
 def require_supported(binaries):
@@ -52,7 +53,8 @@ class OverlaySource(object):
 
     type_key = None
 
-    def __init__(self, parent, xml, config, _location, ignore = 0, quiet = False):
+    def __init__(self, parent, xml, config, _location,
+            ignore = 0, quiet = False):
         self.parent = parent
         self.src = _location
         self.config = config
@@ -72,8 +74,8 @@ class OverlaySource(object):
         mdir = path([base, self.parent.name])
 
         if os.path.exists(mdir):
-            raise Exception('Directory ' + mdir + ' already exists. Will not ov'
-                            'erwrite its contents!')
+            raise Exception('Directory ' + mdir +
+                ' already exists. Will not overwrite its contents!')
 
         os.makedirs(mdir)
 
@@ -86,7 +88,8 @@ class OverlaySource(object):
         mdir = path([base, self.parent.name])
 
         if not os.path.exists(mdir):
-            self.output.warn('Directory ' + mdir + ' did not exist, no files deleted.')
+            self.output.warn('Directory ' + mdir + \
+                ' did not exist, no files deleted.')
             return
 
         self.output.info('Deleting directory "%s"' % mdir, 2)
@@ -124,7 +127,8 @@ class OverlaySource(object):
 
         command_repr = ' '.join(args)
         if env_updates:
-            command_repr = '%s %s' % (' '.join('%s=%s' % (k, v) for (k, v) in sorted(env_updates.items())), command_repr)
+            command_repr = '%s %s' % (' '.join('%s=%s' % (k, v) for (k, v)
+                in sorted(env_updates.items())), command_repr)
         if cwd:
             command_repr = '( cd %s  && %s )' % (cwd, command_repr)
 
