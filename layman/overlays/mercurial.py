@@ -49,8 +49,15 @@ class MercurialOverlay(OverlaySource):
 
         self.supported()
 
+        cfg_opts = self.config["mercurial_addopts"]
+
         # hg clone SOURCE TARGET
-        args = ['clone', self.src + '/', path([base, self.parent.name])]
+        if cfg_opts:
+            args = ['clone', cfg_opts,
+                self.src + '/', path([base, self.parent.name])]
+        else:
+            args = ['clone', self.src + '/', path([base, self.parent.name])]
+
         return self.run_command(*args)
 
     def sync(self, base, quiet = False):
@@ -58,8 +65,14 @@ class MercurialOverlay(OverlaySource):
 
         self.supported()
 
+        cfg_opts = self.config["mercurial_syncopts"]
+
         # hg pull -u SOURCE
-        args = ['pull', '-u', self.src]
+        if cfg_opts:
+            args = ['pull', '-u', cfg_opts, self.src]
+        else:
+            args = ['pull', '-u', self.src]
+
         return self.run_command(*args, cwd=path([base, self.parent.name]))
 
     def supported(self):

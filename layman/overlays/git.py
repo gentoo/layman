@@ -54,10 +54,14 @@ class GitOverlay(OverlaySource):
                 return source + '/'
             return source
 
+        cfg_opts = self.config["git_addopts"]
+
         # git clone [-q] SOURCE TARGET
         args = ['clone']
         if quiet:
             args.append('-q')
+        if cfg_opts:
+            args.append(cfg_opts)
         args.append(fix_git_source(self.src))
         args.append(path([base, self.parent.name]))
         return self.run_command(*args)
@@ -67,9 +71,13 @@ class GitOverlay(OverlaySource):
 
         self.supported()
 
+        cfg_opts = self.config["git_syncopts"]
+
         args = ['pull']
         if quiet:
             args.append('-q')
+        if cfg_opts:
+            args.append(cfg_opts)
         return self.run_command(*args, cwd=path([base, self.parent.name]))
 
     def supported(self):

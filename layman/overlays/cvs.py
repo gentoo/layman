@@ -74,12 +74,16 @@ class CvsOverlay(OverlaySource):
 
         self.supported()
 
+        cfg_opts = self.config["cvs_addopts"]
+
         # cvs [-q] co -d SOURCE SCOPE
         args = []
         if quiet:
             args.append('-q')
         args.append('co')
         args.append('-d')
+        if cfg_opts:
+            args.append(cfg_opts)
         args.append(self.parent.name)
         args.append(self.subpath)
 
@@ -90,12 +94,16 @@ class CvsOverlay(OverlaySource):
 
         self.supported()
 
+        cfg_opts = self.config["cvs_syncopts"]
+
         # cvs [-q] update -d
         args = []
         if quiet:
             args.append('-q')
         args.append('update')
         args.append('-d')
+        if cfg_opts:
+            args.append(cfg_opts)
         return self.run_command(*args, cwd=path([base, self.parent.name]))
 
     def supported(self):

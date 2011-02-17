@@ -49,8 +49,16 @@ class DarcsOverlay(OverlaySource):
 
         self.supported()
 
+        cfg_opts = self.config["darcs_addopts"]
+
         # darcs get --partial SOURCE TARGET
-        args = ['get', '--partial', self.src + '/', path([base, self.parent.name])]
+        if cfg_opts:
+            args = ['get', '--partial', cfg_opts,
+                self.src + '/', path([base, self.parent.name])]
+        else:
+            args = ['get', '--partial',
+                self.src + '/', path([base, self.parent.name])]
+
         return self.run_command(*args)
 
     def sync(self, base, quiet = False):
@@ -58,8 +66,13 @@ class DarcsOverlay(OverlaySource):
 
         self.supported()
 
+        cfg_opts = self.config["darcs_addopts"]
+
         # darcs pull --all SOURCE
-        args = ['pull', '--all', self.src]
+        if cfg_opts:
+            args = ['pull', '--all', cfg_opts, self.src]
+        else:
+            args = ['pull', '--all', self.src]
         return self.run_command(*args, cwd=path([base, self.parent.name]))
 
     def supported(self):

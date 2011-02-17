@@ -61,8 +61,13 @@ class RsyncOverlay(OverlaySource):
         # rsync OPTIONS [-q] SOURCE TARGET
         args = ['-rlptDvz', '--progress', '--delete', '--delete-after', '--timeout=180',
             '--exclude=distfiles/*', '--exclude=local/*', '--exclude=packages/*']
+
+        cfg_opts = self.config["rsync_syncopts"]
+
         if quiet:
             args.append('-q')
+        if cfg_opts:
+            args.append(cfg_opts)
         args.append(self.src + '/')
         args.append(path([base, self.parent.name]))
 
