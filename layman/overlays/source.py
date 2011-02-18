@@ -111,8 +111,8 @@ class OverlaySource(object):
     def command(self):
         return self.config['%s_command' % self.__class__.type_key]
 
-    def run_command(self, *args, **kwargs):
-        file_to_run = _resolve_command(self.command())[1]
+    def run_command(self, command, *args, **kwargs):
+        file_to_run = _resolve_command(command)[1]
         args = (file_to_run, ) + args
         assert('pwd' not in kwargs)  # Bug detector
 
@@ -132,7 +132,8 @@ class OverlaySource(object):
         if cwd:
             command_repr = '( cd %s  && %s )' % (cwd, command_repr)
 
-        self.output.info('Running... # %s' % command_repr, 2)
+        cmd = kwargs.get('cmd', '')
+        self.output.info('Running %s... # %s' % (cmd, command_repr), 2)
 
         if self.quiet:
             input_source = subprocess.PIPE
@@ -162,7 +163,28 @@ class OverlaySource(object):
         if self.quiet:
             output_target.close()
 
+        if result:
+            self.output.info('Failure result returned from %s' % cmd , 2)
+
         return result
+
+    def postsync(self, failed_sync, **kwargs):
+        """Runs any repo specific postsync operations
+        """
+        # check if the add/sync operation succeeded
+        if failed_sync:
+            return failed_sync
+        # good to continue
+        postsync_opt = self.config['%s_postsync' % self.__class__.type_key]
+        if postsync_opt:
+            # repalce "%cwd=" while it's still a string'
+            _opt = postsync_opt.replace('%cwd=',
+                kwargs.get('cwd', '')).split()
+            command = _opt[0]
+            args = _opt[1:]
+            return self.run_command(command, *args,
+                cmd='%s_postsync' % self.__class__.type_key)
+        return failed_sync
 
     def to_xml_hook(self, repo_elem):
         pass

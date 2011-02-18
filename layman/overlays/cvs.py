@@ -75,6 +75,7 @@ class CvsOverlay(OverlaySource):
         self.supported()
 
         cfg_opts = self.config["cvs_addopts"]
+        target = path([base, self.parent.name])
 
         # cvs [-q] co -d SOURCE SCOPE
         args = []
@@ -87,7 +88,10 @@ class CvsOverlay(OverlaySource):
         args.append(self.parent.name)
         args.append(self.subpath)
 
-        return self.run_command(*args, cwd=base, env=dict(CVSROOT=self.src))
+        return self.postsync(
+            self.run_command(self.command(), *args, cwd=base,
+                env=dict(CVSROOT=self.src), cmd=self.type),
+            cwd=target)
 
     def sync(self, base, quiet = False):
         '''Sync overlay.'''
@@ -95,6 +99,7 @@ class CvsOverlay(OverlaySource):
         self.supported()
 
         cfg_opts = self.config["cvs_syncopts"]
+        target = path([base, self.parent.name])
 
         # cvs [-q] update -d
         args = []
@@ -104,7 +109,9 @@ class CvsOverlay(OverlaySource):
         args.append('-d')
         if cfg_opts:
             args.append(cfg_opts)
-        return self.run_command(*args, cwd=path([base, self.parent.name]))
+        return self.postsync(
+            self.run_command(self.command(), *args, cwd=target, cmd=self.type),
+            cwd=target)
 
     def supported(self):
         '''Overlay type supported?'''

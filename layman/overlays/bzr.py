@@ -51,14 +51,17 @@ class BzrOverlay(OverlaySource):
         self.supported()
 
         cfg_opts = self.config["bzr_addopts"]
+        target = path([base, self.parent.name])
 
         # bzr get SOURCE TARGET
         if cfg_opts:
             args = ['get', cfg_opts,
-                self.src + '/', path([base, self.parent.name])]
+                self.src + '/', target]
         else:
-            args = ['get', self.src + '/', path([base, self.parent.name])]
-        return self.run_command(*args)
+            args = ['get', self.src + '/', target]
+        return self.postsync(
+            self.run_command(self.command(), *args, cmd=self.type),
+            cwd=target)
 
     def sync(self, base, quiet = False):
         '''Sync overlay.'''
@@ -66,13 +69,16 @@ class BzrOverlay(OverlaySource):
         self.supported()
 
         cfg_opts = self.config["bzr_syncopts"]
+        target = path([base, self.parent.name])
 
         # bzr pull --overwrite SOURCE
         if cfg_opts:
             args = ['pull', cfg_opts, '--overwrite', self.src]
         else:
             args = ['pull', '--overwrite', self.src]
-        return self.run_command(*args, cwd=path([base, self.parent.name]))
+        return self.postsync(
+            self.run_command(self.command(), *args, cwd=target, cmd=self.type),
+            cwd=target)
 
     def supported(self):
         '''Overlay type supported?'''

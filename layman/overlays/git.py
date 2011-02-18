@@ -55,6 +55,7 @@ class GitOverlay(OverlaySource):
             return source
 
         cfg_opts = self.config["git_addopts"]
+        target = path([base, self.parent.name])
 
         # git clone [-q] SOURCE TARGET
         args = ['clone']
@@ -63,8 +64,10 @@ class GitOverlay(OverlaySource):
         if cfg_opts:
             args.append(cfg_opts)
         args.append(fix_git_source(self.src))
-        args.append(path([base, self.parent.name]))
-        return self.run_command(*args)
+        args.append(target)
+        return self.postsync(
+            self.run_command(self.command(), *args, cmd=self.type),
+            cwd=target)
 
     def sync(self, base, quiet = False):
         '''Sync overlay.'''
@@ -72,13 +75,16 @@ class GitOverlay(OverlaySource):
         self.supported()
 
         cfg_opts = self.config["git_syncopts"]
+        target = path([base, self.parent.name])
 
         args = ['pull']
         if quiet:
             args.append('-q')
         if cfg_opts:
             args.append(cfg_opts)
-        return self.run_command(*args, cwd=path([base, self.parent.name]))
+        return self.postsync(
+            self.run_command(self.command(), *args, cwd=target, cmd=self.type),
+            cwd=target)
 
     def supported(self):
         '''Overlay type supported?'''

@@ -63,15 +63,18 @@ class RsyncOverlay(OverlaySource):
             '--exclude=distfiles/*', '--exclude=local/*', '--exclude=packages/*']
 
         cfg_opts = self.config["rsync_syncopts"]
+        target = path([base, self.parent.name])
 
         if quiet:
             args.append('-q')
         if cfg_opts:
             args.append(cfg_opts)
         args.append(self.src + '/')
-        args.append(path([base, self.parent.name]))
+        args.append(target)
 
-        return self.run_command(*args)
+        return self.postsync(
+            self.run_command(self.command(), *args, cmd=self.type),
+            cwd=target)
 
     def supported(self):
         '''Overlay type supported?'''

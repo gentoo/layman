@@ -40,7 +40,7 @@ class GCommonOverlay(OverlaySource):
 
     def __init__(self, parent, xml, config, _location, ignore = 0, quiet = False):
         super(GCommonOverlay, self).__init__(parent, xml, config, _location, ignore, quiet)
-        #split source into driver and remote uri. 
+        #split source into driver and remote uri.
         self.driver=self.src[:self.src.find(' ')]
         self.remote_uri=self.src[self.src.find(' ')+1:]
 
@@ -48,20 +48,26 @@ class GCommonOverlay(OverlaySource):
         '''Add overlay.'''
 
         self.supported()
+        target = path([base, self.parent.name])
 
-        os.makedirs(os.path.join(base,self.parent.name))
+        os.makedirs(target)
+
         return self.sync(base, quiet)
 
     def sync(self, base, quiet = False):
         '''Sync overlay.'''
 
         self.supported()
+        target = path([base, self.parent.name])
 
-        args = [os.path.join(base,self.parent.name), 'sync', self.driver, self.remote_uri]
-        returncode=self.run_command(*args,cwd=path([base,self.parent.name]))
-        if returncode: return returncode
-        args = [os.path.join(base,self.parent.name), 'generate-tree']
-        return self.run_command(*args,cwd=path([base,self.parent.name]))
+        args = [target, 'sync', self.driver, self.remote_uri]
+        returncode = self.run_command(self.command(), *args, cwd=target)
+        if returncode:
+            return returncode
+        args = [target, 'generate-tree']
+        return self.postsync(
+            self.run_command(self.command(), *args, cwd=target, cmd=self.type),
+            cwd=target)
 
     def supported(self):
         '''Overlay type supported?'''

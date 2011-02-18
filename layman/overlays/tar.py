@@ -130,7 +130,7 @@ class TarOverlay(OverlaySource):
 
         # tar -v -x -f SOURCE -C TARGET
         args = ['-v', '-x', '-f', pkg, '-C', dest_dir]
-        result = self.run_command(*args)
+        result = self.run_command(self.command(), *args, cmd=self.type)
 
         os.unlink(pkg)
         return result
@@ -150,7 +150,8 @@ class TarOverlay(OverlaySource):
         final_path = path([base, self.parent.name])
         temp_path = tempfile.mkdtemp(dir=base)
         try:
-            result = self._extract(base=base, tar_url=self.src, dest_dir=temp_path)
+            result = self._extract(base=base, tar_url=self.src,
+                dest_dir=temp_path)
         except Exception, error:
             try_to_wipe(temp_path)
             raise error
@@ -169,8 +170,8 @@ class TarOverlay(OverlaySource):
                     os.rename(source, final_path)
                 except Exception, error:
                     raise Exception('Failed to rename tar subdirectory ' +
-                                    source + ' to ' + final_path + '\nError was:'
-                                    + str(error))
+                                    source + ' to ' + final_path +
+                                    '\nError was:' + str(error))
                 os.chmod(final_path, 0755)
             else:
                 raise Exception('Given subpath "' + source + '" does not exist '
@@ -184,18 +185,24 @@ class TarOverlay(OverlaySource):
 
         self.supported()
 
-        final_path = path([base, self.parent.name])
+        target = path([base, self.parent.name])
 
-        if os.path.exists(final_path):
-            raise Exception('Directory ' + final_path + ' already exists. Will not ov'
-                            'erwrite its contents!')
+        if os.path.exists(target):
+            raise Exception('Directory ' + target + ' already exists.' +\
+                ' Will not overwrite its contents!')
 
-        return self._add_unchecked(base, quiet)
+        return self.postsync(
+            self._add_unchecked(base, quiet),
+            cwd=target)
 
     def sync(self, base, quiet = False):
         '''Sync overlay.'''
         self.supported()
-        self._add_unchecked(base, quiet)
+        target = path([base, self.parent.name])
+
+        return self.postsync(
+            self._add_unchecked(base, quiet),
+            cwd=target)
 
     def supported(self):
         '''Overlay type supported?'''
