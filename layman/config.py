@@ -119,7 +119,8 @@ class BareConfig(object):
                     'stdin': stdin if stdin else sys.stdin,
                     'stderr': stderr if stderr else sys.stderr,
                     'output': output if output else OUT,
-                    'quietness': '4',
+                    'quietness': 4,
+                    'nocolor': False,
                     'width': 0,
                     'verbose': False,
                     'quiet': False,
@@ -157,7 +158,15 @@ class BareConfig(object):
         """Sets an option to the value """
         self._options[option] = value
         # handle quietness
+        if option == 'quiet':
+            if self._option['quiet']:
+                self._set_quietness(1)
+            else:
+                self._set_quietness(4)
         if option == 'quietness':
+            self._set_quietness()
+
+    def _set_quietness(self, value)
             self._option['output'].set_info_level(int(self['quietness']))
             self._option['output'].set_warn_level(int(self['quietness']))
 
