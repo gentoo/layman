@@ -21,8 +21,6 @@ from layman.config import BareConfig
 from layman.dbbase import UnknownOverlayException, UnknownOverlayMessage
 from layman.db import DB, RemoteDB
 #from layman.utils import path, delete_empty_directory
-#from layman.debug import OUT
-from layman.output import OUT
 
 # give them some values for now, these are from the packagekit backend
 # TODO  establish some proper errors for the api.
@@ -30,11 +28,6 @@ ERROR_REPO_NOT_FOUND = -1
 ERROR_INTERNAL_ERROR = -2
 UNKNOWN_REPO_ID = "Repo ID '%s' " + \
         "is not listed in the current available overlays list"
-
-# In order to redirect output you need to get a Message class instance with the
-# stderr, stdout, stddebug directed to where you want.
-# eg:  output = Message('layman', err=mystderr, dbg=mydebug, out=myoutput)
-# there are many more options available, refer to debug.py Message class
 
 
 class LaymanAPI(object):
@@ -54,9 +47,9 @@ class LaymanAPI(object):
                                     default is Message(module='layman') other params are defaults.
         """
 
-        self.output = output if output  else OUT
-
         self.config = config if config else BareConfig(output=output)
+
+        self.output = self.config['output']
 
         self.report_errors = report_errors
 
