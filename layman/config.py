@@ -34,7 +34,7 @@ import os
 from optparse import OptionParser, OptionGroup
 
 #from layman.debug import OUT
-from layman.output import OUT
+from layman.output import Message
 
 from layman.constants import OFF
 from layman.version import VERSION
@@ -79,7 +79,9 @@ class BareConfig(object):
     '''Handles the configuration only.'''
 
     def __init__(self, output=None, stdout=None, stdin=None, stderr=None,
-        read_configfile=False):
+        config=None, read_configfile=False, quiet=False, quietness=4,
+        verbose=False, nocolor=False, width=0
+        ):
         '''
         Creates a bare config with defaults and a few output options.
 
@@ -115,10 +117,11 @@ class BareConfig(object):
                     'T/F_options': ['nocheck']
                     }
         self._options = {
+                    'config': config if config else self._defaults['config'],
                     'stdout': stdout if stdout else sys.stdout,
                     'stdin': stdin if stdin else sys.stdin,
                     'stderr': stderr if stderr else sys.stderr,
-                    'output': output if output else OUT,
+                    'output': output if output else Message(),
                     'quietness': 4,
                     'nocolor': False,
                     'width': 0,
@@ -127,9 +130,9 @@ class BareConfig(object):
                     }
         self.config = None
         if read_configfile:
-            self.config = ConfigParser.ConfigParser(self.defaults)
+            self.config = ConfigParser.ConfigParser(self._defaults)
             self.config.add_section('MAIN')
-            read_config(self.config, self.defaults)
+            read_config(self.config, self._defaults)
 
 
     def keys(self):
@@ -225,7 +228,7 @@ class ArgsParser(object):
         self.stdout = stdout if stdout else sys.stdout
         self.stderr = stderr if stderr else sys.stderr
         self.stdin = stdin if stdin else sys.stdin
-        self.output = output if output else OUT
+        self.output = output if output else Message()
 
         bare_config = BareConfig(self.output, self.stdout,
             self.stdin, self.stderr)
