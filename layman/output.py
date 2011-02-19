@@ -10,9 +10,7 @@
 __version__ = "0.1"
 
 
-import sys, inspect, types
-
-from optparse import OptionGroup
+import sys, types
 
 from layman.constants import codes, INFO_LEVEL, WARN_LEVEL, DEBUG_LEVEL, OFF
 
@@ -184,8 +182,3 @@ class Message(MessageBase):
             self.error(self.color_func('red', 'Fatal error: ') + i)
         self.error(self.color_func('red', 'Fatal error(s) - aborting'))
         sys.exit(1)
-
-
-
-## gloabal message handler
-OUT = Message()
