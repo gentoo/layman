@@ -159,7 +159,7 @@ class BareConfig(object):
         self._options[option] = value
         # handle quietness
         if option == 'quiet':
-            if self._option['quiet']:
+            if self._options['quiet']:
                 self._set_quietness(1)
             else:
                 self._set_quietness(4)
