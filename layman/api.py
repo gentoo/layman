@@ -53,6 +53,9 @@ class LaymanAPI(object):
 
         self.report_errors = report_errors
 
+        # add our error recording function to output
+        self.output.error_callback = self._error
+
         # get installed and available dbs
         self._installed_db = None
         self._installed_ids = None
@@ -204,6 +207,9 @@ class LaymanAPI(object):
                     'homepage': overlay.homepage,
                     'irc': overlay.irc,
                     'description': overlay.description,
+                    'feeds': overlay.feeds,
+                    'sources': [(e.src, e.type, e.subpath) \
+                        for e in overlay.sources],
                     #'src_uris': [e.src for e in overlay.sources],
                     'src_uris': overlay.source_uris(),
                     'src_types': overlay.source_types(),
