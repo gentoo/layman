@@ -24,7 +24,8 @@ class MessageBase(object):
                  err = sys.stderr,
                  info_level = INFO_LEVEL,
                  warn_level = WARN_LEVEL,
-                 col = True
+                 col = True,
+                 error_callback=None
                  ):
         # Where should the error output go? This can also be a file
         self.error_out = err
@@ -44,7 +45,9 @@ class MessageBase(object):
 
         self.debug_lev = OFF
 
-        self.has_error = False
+        # callback function that gets passed any error messages
+        # that have shown up.
+        self.error_callback = error_callback
 
 
     def _color (self, col, text):
@@ -73,6 +76,12 @@ class MessageBase(object):
     def set_debug_level(self, debugging_level = DEBUG_LEVEL):
         self.debug_lev = debugging_level
 
+    def do_error_callback(self, error):
+        """runs the error_callback function with the error
+        that occurred
+        """
+        if self.error_callback:
+            self.error_callback(error)
 
 
 class Message(MessageBase):
@@ -86,8 +95,9 @@ class Message(MessageBase):
                  err = sys.stderr,
                  info_level = INFO_LEVEL,
                  warn_level = WARN_LEVEL,
-                 col = True
-                 ):
+                 col = True,
+                 error_callback = None
+                ):
 
         MessageBase.__init__(self)
 
@@ -170,7 +180,7 @@ class Message(MessageBase):
             sys.stdout.flush()
             print >> self.error_out, self.color_func('red', '* ') + i
             self.error_out.flush()
-        self.has_error = True
+        self.do_error_callback(error)
 
 
     def die (self, error):
