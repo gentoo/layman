@@ -69,14 +69,16 @@ class MakeConf:
 
     def __init__(self, config, overlays):
 
+        self.config = config
         self.path = config['make_conf']
         self.storage = config['storage']
         self.data = ''
         self.db = overlays
         self.overlays = []
         self.extra = []
+        self.output = config['output']
 
-        self.read()
+        self.read(True)
 
     def add(self, overlay):
         '''
@@ -104,7 +106,7 @@ class MakeConf:
         >>> os.unlink(write)
         '''
         self.overlays.append(overlay)
-        self.write()
+        return self.write()
 
     def delete(self, overlay):
         '''
@@ -134,9 +136,9 @@ class MakeConf:
         self.overlays = [i
                          for i in self.overlays
                          if i.name != overlay.name]
-        self.write()
+        return self.write()
 
-    def read(self):
+    def read(self, raise_error=False):
         '''
         Read the list of registered overlays from /etc/make.conf.
 
@@ -160,8 +162,13 @@ class MakeConf:
             overlays = self.my_re.search(self.data)
 
             if not overlays:
-                raise Exception('Did not find a PORTDIR_OVERLAY entry in file ' +
-                                self.path +'! Did you specify the correct file?')
+                msg = 'MakeConf: read(); Did not find a ' + \
+                    'PORTDIR_OVERLAY entry in file ' + \
+                    self.path +'! Did you specify the correct file?'
+                if raise_error:
+                    raise Exception(msg)
+                self.output.error(msg)
+                return False
 
             overlays = [i.strip()
                         for i in overlays.group(1).split('\n')
@@ -181,7 +188,6 @@ class MakeConf:
                     # about. The user probably added them manually
                     self.extra.append(i)
 
-
         else:
             self.overlays = []
             self.data     = 'PORTDIR_OVERLAY="\n"\n'
@@ -189,6 +195,7 @@ class MakeConf:
         self.extra = [i for i in self.extra
                          if (i != '$PORTDIR_OVERLAY'
                              and i != '${PORTDIR_OVERLAY}')]
+        return True
 
     def write(self):
         '''
@@ -238,9 +245,10 @@ class MakeConf:
         content = self.my_re.sub(overlays, self.data)
 
         if not self.my_re.search(content):
-            raise Exception('Ups, failed to set a proper PORTDIR_OVERLAY entry '
-                            'in file ' + self.path +'! Did not overwrite the fi'
-                            'le.')
+            self.output.error('MakeConf: write(); Oops, failed to set a '
+                'proper PORTDIR_OVERLAY entry in file '
+                 + self.path +'! Did not overwrite the file.')
+            return False
 
         try:
             make_conf = codecs.open(self.path, 'w', 'utf-8')
@@ -250,8 +258,10 @@ class MakeConf:
             make_conf.close()
 
         except Exception, error:
-            raise Exception('Failed to read "' + self.path + '".\nError was:\n'
-                            + str(error))
+            self.output.error('MakeConf: write(); Failed to write "'
+                + self.path + '".\nError was:\n' + str(error))
+            return False
+        return True
 
     def content(self):
         '''
@@ -265,5 +275,6 @@ class MakeConf:
             make_conf.close()
 
         except Exception, error:
-            raise Exception('Failed to read "' + self.path + '".\nError was:\n'
-                            + str(error))
+            self.output.error('MakeConf: content(); Failed to read "' +
+                self.path + '".\nError was:\n' + str(error))
+            raise error
