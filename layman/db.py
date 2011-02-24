@@ -56,10 +56,10 @@ class DB(DbBase):
         quiet = int(config['quietness']) < 3
 
         DbBase.__init__(self,
-                          [config['local_list'], ],
                           config,
-                          ignore,
-                          quiet)
+                          paths=[config['local_list'], ],
+                          ignore=ignore,
+                          quiet=quiet)
 
         self.output.debug('DB handler initiated', 6)
 
@@ -119,22 +119,30 @@ class DB(DbBase):
                     overlay.set_priority(self.config['priority'])
                 self.overlays[overlay.name] = overlay
                 self.write(self.path)
-                make_conf = MakeConf(self.config, self.overlays)
-                make_conf.add(overlay)
+                if self.config['make_config']:
+                    make_conf = MakeConf(self.config, self.overlays)
+                    make_ok = make_conf.add(overlay)
+                    return make_ok
+                return True
             else:
                 mdir = path([self.config['storage'], overlay.name])
                 delete_empty_directory(mdir, self.output)
                 if os.path.exists(mdir):
-                    raise Exception('Adding overlay "%s" failed!'
+                    self.output.error('Adding repository "%s" failed!'
                                 ' Possible remains of the operation have NOT'
                                 ' been removed and may be left at "%s".'
                                 ' Please remove them manually if required.' \
                                 % (overlay.name, mdir))
+                    return False
                 else:
-                    raise Exception('Adding overlay "%s" failed!' % overlay.name)
+                    self.output.error(
+                        'Adding repository "%s" failed!' % overlay.name)
+                    return False
         else:
-            raise Exception('Overlay "' + overlay.name + '" already in the loca'
-                            'l list!')
+            self.output.error('Repository "' + overlay.name +
+                '" already in the local (installed) list!')
+            return False
+
 
     def delete(self, overlay):
         '''
@@ -243,7 +251,8 @@ class RemoteDB(DbBase):
 
         quiet = int(config['quietness']) < 3
 
-        DbBase.__init__(self, paths, config, ignore, quiet, ignore_init_read_errors)
+        DbBase.__init__(self, config, paths=paths, ignore=ignore,
+            quiet=quiet, ignore_init_read_errors=ignore_init_read_errors)
 
     # overrider
     def _broken_catalog_hint(self):
