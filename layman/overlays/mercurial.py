@@ -40,9 +40,11 @@ class MercurialOverlay(OverlaySource):
     type = 'Mercurial'
     type_key = 'mercurial'
 
-    def __init__(self, parent, xml, config, _location, ignore = 0, quiet = False):
+    def __init__(self, parent, config,
+        _location, ignore = 0, quiet = False):
 
-        super(MercurialOverlay, self).__init__(parent, xml, config, _location, ignore, quiet)
+        super(MercurialOverlay, self).__init__(parent,
+            config, _location, ignore, quiet)
 
     def add(self, base, quiet = False):
         '''Add overlay.'''

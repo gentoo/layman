@@ -73,17 +73,9 @@ class TarOverlay(OverlaySource):
     type = 'Tar'
     type_key = 'tar'
 
-    def __init__(self, parent, xml, config, _location, ignore = 0, quiet = False):
+    def __init__(self, parent, config, _location, ignore = 0, quiet = False):
 
-        super(TarOverlay, self).__init__(parent, xml, config, _location, ignore, quiet)
-
-        _subpath = xml.find('subpath')
-        if _subpath != None:
-            self.subpath = ensure_unicode(_subpath.text.strip())
-        elif 'subpath' in xml.attrib:
-            self.subpath = ensure_unicode(xml.attrib['subpath'])
-        else:
-            self.subpath = ''
+        super(TarOverlay, self).__init__(parent, config, _location, ignore, quiet)
 
         self.output = config['output']
 

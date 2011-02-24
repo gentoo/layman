@@ -38,8 +38,8 @@ class GCommonOverlay(OverlaySource):
     type = 'g-common'
     type_key = 'g-common'
 
-    def __init__(self, parent, xml, config, _location, ignore = 0, quiet = False):
-        super(GCommonOverlay, self).__init__(parent, xml, config, _location, ignore, quiet)
+    def __init__(self, parent, config, _location, ignore = 0, quiet = False):
+        super(GCommonOverlay, self).__init__(parent, config, _location, ignore, quiet)
         #split source into driver and remote uri.
         self.driver=self.src[:self.src.find(' ')]
         self.remote_uri=self.src[self.src.find(' ')+1:]

@@ -40,9 +40,9 @@ class DarcsOverlay(OverlaySource):
     type = 'Darcs'
     type_key = 'darcs'
 
-    def __init__(self, parent, xml, config, _location, ignore = 0, quiet = False):
+    def __init__(self, parent, config, _location, ignore = 0, quiet = False):
 
-        super(DarcsOverlay, self).__init__(parent, xml, config, _location, ignore, quiet)
+        super(DarcsOverlay, self).__init__(parent, config, _location, ignore, quiet)
 
     def add(self, base, quiet = False):
         '''Add overlay.'''

@@ -39,9 +39,9 @@ class GitOverlay(OverlaySource):
     type = 'Git'
     type_key = 'git'
 
-    def __init__(self, parent, xml, config, _location, ignore = 0, quiet = False):
-
-        super(GitOverlay, self).__init__(parent, xml, config, _location, ignore, quiet)
+    def __init__(self, parent, config, _location, ignore = 0, quiet = False):
+        super(GitOverlay, self).__init__(parent, config,
+            _location, ignore, quiet)
 
     def add(self, base, quiet = False):
         '''Add overlay.'''

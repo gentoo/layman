@@ -39,11 +39,11 @@ class SvnOverlay(OverlaySource):
     type = 'Subversion'
     type_key = 'svn'
 
-    def __init__(self, parent, xml, config, _location,
+    def __init__(self, parent, config, _location,
             ignore = 0, quiet = False):
 
         super(SvnOverlay, self).__init__(
-            parent, xml,config, _location, ignore, quiet)
+            parent, config, _location, ignore, quiet)
 
     def add(self, base, quiet = False):
         '''Add overlay.'''

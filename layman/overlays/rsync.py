@@ -40,9 +40,9 @@ class RsyncOverlay(OverlaySource):
     type_key = 'rsync'
 
 
-    def __init__(self, parent, xml, config, _location, ignore = 0, quiet = False):
+    def __init__(self, parent, config, _location, ignore = 0, quiet = False):
 
-        super(RsyncOverlay, self).__init__(parent, xml, config, _location, ignore, quiet)
+        super(RsyncOverlay, self).__init__(parent, config, _location, ignore, quiet)
 
     def add(self, base, quiet = False):
         '''Add overlay.'''

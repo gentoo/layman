@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-#################################################################################
+################################################################################
 # LAYMAN OVERLAY BASE CLASS
-#################################################################################
+################################################################################
 # File:       overlay.py
 #
 #             Base class for the different overlay types.
@@ -20,7 +20,7 @@
 #
 ''' Basic overlay class.'''
 
-__version__ = "$Id: overlay.py 273 2006-12-30 15:54:50Z wrobel $"
+__version__ = "0.2"
 
 #===============================================================================
 #
@@ -35,7 +35,6 @@ import xml.etree.ElementTree as ET # Python 2.5
 
 from layman.utils import (pad, terminal_width, get_encoding, encoder,
     ensure_unicode)
-#from   layman.debug             import OUT
 
 from   layman.overlays.bzr       import BzrOverlay
 from   layman.overlays.darcs     import DarcsOverlay
@@ -69,20 +68,17 @@ QUALITY_LEVELS = 'core|stable|testing|experimental|graveyard'.split('|')
 
 WHITESPACE_REGEX = re.compile('\s+')
 
-#===============================================================================
-#
-# Class Overlay
-#
-#-------------------------------------------------------------------------------
 
 class Overlay(object):
     ''' Derive the real implementations from this.'''
 
-    def __init__(self, xml, config, ignore = 0, quiet = False):
+    def __init__(self, config, xml=None, ovl_dict=None,
+        ignore = 0, quiet = False
+        ):
         '''
         >>> here = os.path.dirname(os.path.realpath(__file__))
         >>> import xml.etree.ElementTree as ET # Python 2.5
-        >>> document = ET.parse(here + '/../tests/testfiles/global-overlays.xml')
+        >>> document =ET.parse(here + '/../tests/testfiles/global-overlays.xml')
         >>> overlays = document.findall('overlay') + document.findall('repo')
         >>> a = Overlay(overlays[0], dict())
         >>> a.name
@@ -101,10 +97,19 @@ class Overlay(object):
         >>> b.is_official()
         False
         '''
-
+        self.config = config
         self.output = config['output']
         self._encoding_ = get_encoding(self.output)
 
+        if xml:
+            self.from_xml(xml, ignore, quiet)
+        elif ovl_dict:
+            self.from_dict(ovl_dict, ignore, quiet)
+
+
+    def from_xml(self, xml, ignore, quiet):
+        """Process an xml overlay definition
+        """
         def strip_text(node):
             res = node.text
             if res is None:
@@ -128,10 +133,6 @@ class Overlay(object):
             _sources = [s]
             del s
 
-        if not _sources:
-            raise Exception('Overlay "' + self.name + '" is missing a "source" entry!')
-
-
         def create_overlay_source(source_elem):
             _type = source_elem.attrib['type']
             try:
@@ -139,10 +140,22 @@ class Overlay(object):
             except KeyError:
                 raise Exception('Unknown overlay type "%s"!' % _type)
             _location = ensure_unicode(strip_text(source_elem))
-            return _class(self, xml, config, _location, ignore, quiet)
+            return _class(parent=self, config=self.config,
+                _location=_location, ignore=ignore, quiet=quiet)
+
+        if not _sources:
+            raise Exception('Overlay "' + self.name + \
+                '" is missing a "source" entry!')
 
         self.sources = [create_overlay_source(e) for e in _sources]
 
+        _subpath = xml.find('subpath')
+        if _subpath != None:
+            self.subpath = ensure_unicode(_subpath.text.strip())
+        elif 'subpath' in xml.attrib:
+            self.subpath = ensure_unicode(xml.attrib['subpath'])
+        else:
+            self.subpath = ''
 
         _owner = xml.find('owner')
         if _owner == None:
@@ -168,7 +181,6 @@ class Overlay(object):
             elif ignore == 1:
                 self.output.warn('Overlay "' + self.name + '" is missing a '
                          '"owner.email" entry!', 4)
-
 
         _desc = xml.find('description')
         if _desc != None:
@@ -208,13 +220,108 @@ class Overlay(object):
         else:
             self.homepage = None
 
-        self.feeds = [ensure_unicode(strip_text(e)) for e in xml.findall('feed')]
+        self.feeds = [ensure_unicode(strip_text(e)) \
+            for e in xml.findall('feed')]
 
         _irc = xml.find('irc')
         if _irc != None:
             self.irc = ensure_unicode(strip_text(_irc))
         else:
             self.irc = None
+
+
+    def from_dict(self, overlay, ignore, quiet):
+        """Process an xml overlay definition
+        """
+        print "overlay", overlay
+        _name = overlay['name']
+        if _name != None:
+            self.name = ensure_unicode(_name)
+        else:
+            raise Exception('Overlay is missing a "name" entry!')
+
+        _sources = overlay['sources']
+
+        if not _sources:
+            raise Exception('Overlay "' + self.name +
+                '" is missing a "source" entry!')
+
+        def create_dict_overlay_source(source_):
+            _src, _type, _sub = source_
+            try:
+                _class = OVERLAY_TYPES[_type]
+            except KeyError:
+                raise Exception('Unknown overlay type "%s"!' % _type)
+            _location = ensure_unicode(_src)
+            return _class(parent=self, config=self.config,
+                _location=_location, ignore=ignore, quiet=quiet)
+
+        self.sources = [create_dict_overlay_source(e) for e in _sources]
+
+        _owner = overlay['owner_name']
+        if _owner == None:
+            self.owner_name = None
+            _email = None
+        else:
+            self.owner_name = ensure_unicode(_owner)
+            _email = overlay['owner_email']
+        if _email != None:
+            self.owner_email = ensure_unicode(_email)
+        else:
+            self.owner_email = None
+            if not ignore:
+                raise Exception('Overlay "' + self.name + '" is missing a '
+                                '"owner.email" entry!')
+            elif ignore == 1:
+                self.output.warn('Overlay "' + self.name + '" is missing a '
+                         '"owner.email" entry!', 4)
+
+        _desc = overlay['description']
+        if _desc != None:
+            d = WHITESPACE_REGEX.sub(' ', _desc)
+            self.description = ensure_unicode(d)
+            del d
+        else:
+            self.description = ''
+            if not ignore:
+                raise Exception('Overlay "' + self.name + '" is missing a '
+                        '"description" entry!')
+            elif ignore == 1:
+                self.output.warn('Overlay "' + self.name + '" is missing a '
+                         '"description" entry!', 4)
+
+        if overlay['status']:
+            self.status = ensure_unicode(overlay['status'])
+        else:
+            self.status = None
+
+        self.quality = u'experimental'
+        if overlay['quality']:
+            if overlay['quality'] in set(QUALITY_LEVELS):
+                self.quality = ensure_unicode(overlay['quality'])
+
+        if overlay['priority']:
+            self.priority = int(overlay['priority'])
+        else:
+            self.priority = 50
+
+        h = overlay['homepage']
+        if h != None:
+            self.homepage = ensure_unicode(h)
+        else:
+            self.homepage = None
+
+        self.feeds = [ensure_unicode(e) \
+            for e in overlay['feeds']]
+
+        _irc = overlay['irc']
+        if _irc != None:
+            self.irc = ensure_unicode(_irc)
+        else:
+            self.irc = None
+
+        #xml = self.to_xml()
+        # end of from_dict
 
 
     def __eq__(self, other):
@@ -229,17 +336,18 @@ class Overlay(object):
                 return False
         return True
 
+
     def __ne__(self, other):
         return not self.__eq__(other)
 
+
     def set_priority(self, priority):
         '''Set the priority of this overlay.'''
-
         self.priority = int(priority)
+
 
     def to_xml(self):
         '''Convert to xml.'''
-
         repo = ET.Element('repo')
         if self.status != None:
             repo.attrib['status'] = self.status
@@ -284,6 +392,7 @@ class Overlay(object):
             del feed
         return repo
 
+
     def add(self, base, quiet = False):
         res = 1
         first_s = True
@@ -301,19 +410,22 @@ class Overlay(object):
             first_s = False
         return res
 
+
     def sync(self, base, quiet = False):
         assert len(self.sources) == 1
         return self.sources[0].sync(base, quiet)
+
 
     def delete(self, base):
         assert len(self.sources) == 1
         return self.sources[0].delete(base)
 
+
     def get_infostr(self):
         '''
         >>> here = os.path.dirname(os.path.realpath(__file__))
         >>> import xml.etree.ElementTree as ET # Python 2.5
-        >>> document = ET.parse(here + '/../tests/testfiles/global-overlays.xml')
+        >>> document =ET.parse(here + '/../tests/testfiles/global-overlays.xml')
         >>> overlays = document.findall('overlay') + document.findall('repo')
         >>> a = Overlay(overlays[0], dict())
         >>> print str(a)
@@ -342,13 +454,15 @@ class Overlay(object):
             result += '\n'
 
         if self.owner_name != None:
-            result += u'\nContact : %s <%s>' % (self.owner_name, self.owner_email)
+            result += u'\nContact : %s <%s>' \
+                % (self.owner_name, self.owner_email)
         else:
             result += u'\nContact : ' + self.owner_email
         if len(self.sources) == 1:
             result += u'\nType    : ' + self.sources[0].type
         else:
-            result += u'\nType    : ' + '/'.join(sorted(set(e.type for e in self.sources)))
+            result += u'\nType    : ' + '/'.join(
+                sorted(set(e.type for e in self.sources)))
         result += u'; Priority: ' + str(self.priority) + u'\n'
         result += u'Quality : ' + self.quality + u'\n'
 
@@ -379,17 +493,17 @@ class Overlay(object):
 
         return encoder(result, self._encoding_)
 
+
     def short_list(self, width = 0):
         '''
         >>> here = os.path.dirname(os.path.realpath(__file__))
         >>> import xml.etree.ElementTree as ET # Python 2.5
-        >>> document = ET.parse(here + '/../tests/testfiles/global-overlays.xml')
+        >>> document =ET.parse(here + '/../tests/testfiles/global-overlays.xml')
         >>> overlays = document.findall('repo') + document.findall('overlay')
         >>> a = Overlay(overlays[0], dict())
         >>> print a.short_list(80)
-        wrobel                    [Subversion] (https://o.g.o/svn/dev/wrobel         )
+        wrobel             [Subversion] (https://o.g.o/svn/dev/wrobel         )
         '''
-
         name   = pad(self.name, 25)
 
         if len(set(e.type for e in self.sources)) == 1:
@@ -408,28 +522,31 @@ class Overlay(object):
 
         return encoder(name + mtype + source, self._encoding_)
 
+
     def is_official(self):
         '''Is the overlay official?'''
-
         return self.status == 'official'
+
 
     def is_supported(self):
         return any(e.is_supported() for e in self.sources)
 
+
     def source_uris(self):
         for i in self.sources:
             yield i.src
+
 
     def source_types(self):
         for i in self.sources:
             yield i.type
 
 
-#================================================================================
+#==============================================================================
 #
 # Testing
 #
-#--------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 
 if __name__ == '__main__':
     import doctest

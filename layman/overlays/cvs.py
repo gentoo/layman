@@ -41,17 +41,10 @@ class CvsOverlay(OverlaySource):
     type = 'cvs'
     type_key = 'cvs'
 
-    def __init__(self, parent, xml, config, _location, ignore = 0, quiet = False):
+    def __init__(self, parent, config, _location, ignore = 0, quiet = False):
 
-        super(CvsOverlay, self).__init__(parent, xml, config, _location, ignore, quiet)
+        super(CvsOverlay, self).__init__(parent, config, _location, ignore, quiet)
 
-        _subpath = xml.find('subpath')
-        if _subpath != None:
-            self.subpath = ensure_unicode(_subpath.text.strip())
-        elif 'subpath' in xml.attrib:
-            self.subpath = ensure_unicode(xml.attrib['subpath'])
-        else:
-            self.subpath = ''
 
     def __eq__(self, other):
         res = super(CvsOverlay, self).__eq__(other) \

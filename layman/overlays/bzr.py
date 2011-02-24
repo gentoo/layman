@@ -41,9 +41,10 @@ class BzrOverlay(OverlaySource):
     type = 'Bzr'
     type_key = 'bzr'
 
-    def __init__(self, parent, xml, config, _location, ignore = 0, quiet = False):
+    def __init__(self, parent, config, _location, ignore = 0, quiet = False):
 
-        super(BzrOverlay, self).__init__(parent, xml, config, _location, ignore, quiet)
+        super(BzrOverlay, self).__init__(parent,
+            config, _location, ignore, quiet)
 
     def add(self, base, quiet = False):
         '''Add overlay.'''

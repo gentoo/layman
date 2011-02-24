@@ -53,13 +53,14 @@ class OverlaySource(object):
 
     type_key = None
 
-    def __init__(self, parent, xml, config, _location,
+    def __init__(self, parent, config, _location,
             ignore = 0, quiet = False):
         self.parent = parent
         self.src = _location
         self.config = config
         self.ignore = ignore
         self.quiet = quiet
+
         self.output = config['output']
 
     def __eq__(self, other):
