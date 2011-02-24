@@ -168,12 +168,12 @@ class DbBase:
             self.output.info("DbBase: add_new() from_dict")
             if isinstance(from_dict, dict):
                 from_dict = [from_dict]
-            self.add_from_dict(from_dict)
+            self._add_from_dict(from_dict)
 
         return
 
 
-    def add_from_dict(self, overlays=None):
+    def _add_from_dict(self, overlays=None):
         """Add a new overlay from a list of dictionary values
         """
         self.output.info("DbBase: add_from_dict()")
