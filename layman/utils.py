@@ -175,6 +175,31 @@ def delete_empty_directory(mdir, output=OUT):
             if getpass.getuser() != 'root':
                 output.warn('Hint: You are not root.')
 
+
+def create_overlay_dict(**kwargs):
+    """Creates a complete empty reository definition.
+    Then fills it with values passed in
+    """
+    result = {
+        'name': '',
+        'owner_name': '',
+        'owner_email': '',
+        'homepage': '',
+        'irc': '',
+        'description': '',
+        'feeds': [],
+        'sources': [('','','')],
+        'priority': 50,
+        'quality': u'experimental',
+        'status': '',
+        'official': False,
+        'supported': False,
+        }
+    for key in kwargs:
+        result[key] = kwargs[key]
+    return result
+
+
 #===============================================================================
 #
 # Testing
