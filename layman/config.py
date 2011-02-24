@@ -203,19 +203,22 @@ class BareConfig(object):
 
 class OptionConfig(BareConfig):
     """This subclasses BareCongig adding functions to make overriding
-    defaults and/or setting up options much easier via a dictionary
+    or resetting defaults and/or setting options much easier
+    by using dictionaries.
     """
 
-    def __init__(self, options=None):
+    def __init__(self, options=None, defaults=None):
         """
         @param options: dictionary of {'option': value, ...}
         @rtype OptionConfig class instance.
         """
         BareConfig.__init__(self)
 
+        self.update_defaults(defaults)
+
         self.update(options)
 
-        return self
+        return
 
     def update(self, options):
         """update the options with new values passed in via options
@@ -231,4 +234,13 @@ class OptionConfig(BareConfig):
                 self._set_quietness(options['quietness'])
                 options.pop('quietness')
             self._options.update(options)
+        return
+
+    def update_defaults(self, new_defaults):
+        """update the options with new values passed in via options
+
+        @param options
+        """
+        if new_defaults is not None:
+            self._defaults.update(new_defaults)
         return
