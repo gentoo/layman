@@ -94,10 +94,7 @@ class DbBase:
             if not os.path.exists(path):
                 continue
 
-            try:
-                self.read_file(path)
-            except Exception, error:
-                if not ignore_init_read_errors: raise error
+            self.read_file(path)
 
 
     def __eq__(self, other):
@@ -118,8 +115,10 @@ class DbBase:
             document = open(path, 'r').read()
 
         except Exception, error:
-            raise IOError('Failed to read the overlay list at ("'
-                          + path + '")!\nError was:\n' + str(error))
+            if not ignore_init_read_errors:
+                self.output.error('Failed to read the overlay list at ("'
+                    + path + '")')
+                raise error
 
         self.read(document, origin=path)
 
@@ -153,15 +152,9 @@ class DbBase:
 
         for overlay in overlays:
             self.output.debug('Parsing overlay entry', 8)
-            try:
-                ovl = Overlay(config=self.config, xml=overlay,
+            ovl = Overlay(config=self.config, xml=overlay,
                     ignore=self.ignore, quiet=self.quiet)
-            except Exception, error:
-                raise error
-                self.output.warn("DbBase(); Error creating overlay instance", 3)
-                self.output.warn("Original error was: " + str(error), 3)
-            else:
-                self.overlays[ovl.name] = ovl
+            self.overlays[ovl.name] = ovl
         return
 
 
@@ -186,13 +179,9 @@ class DbBase:
         self.output.info("DbBase: add_from_dict()")
         for overlay in overlays:
             self.output.debug('Parsing overlay entry', 8)
-            try:
-                ovl = Overlay(self.config, ovl_dict=overlay,
+            ovl = Overlay(self.config, ovl_dict=overlay,
                     ignore=self.ignore, quiet=self.quiet)
-            except Exception, error:
-                self.output.warn(str(error), 3)
-            else:
-                self.overlays[ovl.name] = ovl
+            self.overlays[ovl.name] = ovl
         return
 
 
