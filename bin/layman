@@ -16,7 +16,7 @@
 #             Brian Dolbec <brian.dolbec@gmail.com>
 #
 
-__version__ = "$Id$"
+__version__ = "0.2"
 
 #===============================================================================
 #
@@ -24,7 +24,7 @@ __version__ = "$Id$"
 #
 #-------------------------------------------------------------------------------
 
-from   layman.argsparser            import ArgsParser
+from   layman.argsparser     import ArgsParser
 from   layman.cli            import Main
 
 #===============================================================================
