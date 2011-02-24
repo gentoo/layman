@@ -123,12 +123,15 @@ class BareConfig(object):
     def keys(self):
         '''Special handler for the configuration keys.
         '''
-        self._options['output'].debug('Retrieving BareConfig options', 8)
+        self._options['output'].debug(
+            'Retrieving %s options' % self.__class__.__name__, 8)
         keys = [i for i in self._options]
-        self._options['output'].debug('Retrieving BareConfig defaults', 8)
+        self._options['output'].debug(
+            'Retrieving %s defaults' % self.__class__.__name__, 8)
         keys += [i for i in self._defaults
                  if not i in keys]
-        self._options['output'].debug('Retrieving BareConfig done...', 8)
+        self._options['output'].debug(
+            'Retrieving %s done...' % self.__class__.__name__, 8)
         return keys
 
 
@@ -166,7 +169,7 @@ class BareConfig(object):
 
     def _get_(self, key):
         self._options['output'].debug(
-            'Retrieving BareConfig option: %s' % key, 8)
+            'Retrieving %s option: %s' % (self.__class__.__name__, key), 8)
         if key == 'overlays':
             overlays = ''
             if (key in self._options
@@ -197,3 +200,35 @@ class BareConfig(object):
         """
         return option.lower() in ['yes', 'true', 'y', 't']
 
+
+class OptionConfig(BareConfig):
+    """This subclasses BareCongig adding functions to make overriding
+    defaults and/or setting up options much easier via a dictionary
+    """
+
+    def __init__(self, options=None):
+        """
+        @param options: dictionary of {'option': value, ...}
+        @rtype OptionConfig class instance.
+        """
+        BareConfig.__init__(self)
+
+        self.update(options)
+
+        return self
+
+    def update(self, options):
+        """update the options with new values passed in via options
+
+        @param options
+        """
+        if options is not None:
+            keys = sorted(options)
+            if 'quiet' in keys:
+                self.set_option('quiet', options['quiet'])
+                options.pop('quiet')
+            if 'quietness' in keys and not options['quiet']:
+                self._set_quietness(options['quietness'])
+                options.pop('quietness')
+            self._options.update(options)
+        return
