@@ -76,7 +76,9 @@ class BrokenOverlayCatalog(ValueError):
 class DbBase:
     ''' Handle a list of overlays.'''
 
-    def __init__(self, paths, config, ignore = 0, quiet = False, ignore_init_read_errors=False):
+    def __init__(self, config, paths=None, ignore = 0,
+        quiet = False, ignore_init_read_errors=False
+        ):
 
         self.config = config
         self.quiet = quiet
@@ -97,14 +99,17 @@ class DbBase:
             except Exception, error:
                 if not ignore_init_read_errors: raise error
 
+
     def __eq__(self, other):
         for key in set(self.overlays.keys() + other.overlays.keys()):
             if self.overlays[key] != other.overlays[key]:
                 return False
         return True
 
+
     def __ne__(self, other):
         return not self.__eq__(other)
+
 
     def read_file(self, path):
         '''Read the overlay definition file.'''
@@ -118,10 +123,12 @@ class DbBase:
 
         self.read(document, origin=path)
 
+
     def _broken_catalog_hint(self):
         this_function_name = sys._getframe().f_code.co_name
         raise NotImplementedError('Method "%s.%s" not implemented' % \
                 (self.__class__.__name__, this_function_name))
+
 
     def read(self, text, origin):
         '''
@@ -147,11 +154,46 @@ class DbBase:
         for overlay in overlays:
             self.output.debug('Parsing overlay entry', 8)
             try:
-                ovl = Overlay(overlay, self.config, self.ignore, self.quiet)
+                ovl = Overlay(config=self.config, xml=overlay,
+                    ignore=self.ignore, quiet=self.quiet)
+            except Exception, error:
+                raise error
+                self.output.warn("DbBase(); Error creating overlay instance", 3)
+                self.output.warn("Original error was: " + str(error), 3)
+            else:
+                self.overlays[ovl.name] = ovl
+        return
+
+
+    def add_new(self, xml=None, origin=None, from_dict=None):
+        '''Reads xml text and dictionary definitions and adds
+        them to the db.
+        '''
+        if xml:
+            self.read(xml, origin)
+        if from_dict:
+            self.output.info("DbBase: add_new() from_dict")
+            if isinstance(from_dict, dict):
+                from_dict = [from_dict]
+            self.add_from_dict(from_dict)
+
+        return
+
+
+    def add_from_dict(self, overlays=None):
+        """Add a new overlay from a list of dictionary values
+        """
+        self.output.info("DbBase: add_from_dict()")
+        for overlay in overlays:
+            self.output.debug('Parsing overlay entry', 8)
+            try:
+                ovl = Overlay(self.config, ovl_dict=overlay,
+                    ignore=self.ignore, quiet=self.quiet)
             except Exception, error:
                 self.output.warn(str(error), 3)
             else:
                 self.overlays[ovl.name] = ovl
+        return
 
 
     def write(self, path):
