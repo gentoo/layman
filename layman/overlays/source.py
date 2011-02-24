@@ -18,7 +18,6 @@ import copy
 import sys
 import shutil
 import subprocess
-#from layman.debug import OUT
 from layman.utils import path
 
 
@@ -75,10 +74,12 @@ class OverlaySource(object):
         mdir = path([base, self.parent.name])
 
         if os.path.exists(mdir):
-            raise Exception('Directory ' + mdir +
+            self.output.error('Directory ' + mdir +
                 ' already exists. Will not overwrite its contents!')
+            return False
 
         os.makedirs(mdir)
+        return True
 
     def sync(self, base, quiet = False):
         '''Sync the overlay.'''
@@ -91,10 +92,11 @@ class OverlaySource(object):
         if not os.path.exists(mdir):
             self.output.warn('Directory ' + mdir + \
                 ' did not exist, no files deleted.')
-            return
+            return false
 
         self.output.info('Deleting directory "%s"' % mdir, 2)
         shutil.rmtree(mdir)
+        return True
 
     def supported(self):
         '''Is the overlay type supported?'''
