@@ -75,7 +75,8 @@ class TarOverlay(OverlaySource):
 
     def __init__(self, parent, config, _location, ignore = 0, quiet = False):
 
-        super(TarOverlay, self).__init__(parent, config, _location, ignore, quiet)
+        super(TarOverlay, self).__init__(parent,
+            config, _location, ignore, quiet)
 
         self.output = config['output']
 
@@ -199,7 +200,9 @@ class TarOverlay(OverlaySource):
     def supported(self):
         '''Overlay type supported?'''
 
-        return require_supported([(self.command(),  'tar', 'app-arch/tar'), ])
+        return require_supported(
+            [(self.command(),  'tar', 'app-arch/tar'), ],
+            self.output.error)
 
 if __name__ == '__main__':
     import doctest

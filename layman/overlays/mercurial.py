@@ -85,5 +85,6 @@ class MercurialOverlay(OverlaySource):
     def supported(self):
         '''Overlay type supported?'''
 
-        return require_supported([(self.command(),  'mercurial',
-                                         'dev-vcs/mercurial'),])
+        return require_supported(
+            [(self.command(),  'mercurial', 'dev-vcs/mercurial'),],
+            self.output.error)

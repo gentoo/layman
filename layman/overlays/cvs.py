@@ -109,5 +109,6 @@ class CvsOverlay(OverlaySource):
     def supported(self):
         '''Overlay type supported?'''
 
-        return require_supported([(self.command(),  'cvs',
-                                         'dev-vcs/cvs'),])
+        return require_supported(
+            [(self.command(),  'cvs', 'dev-vcs/cvs'),],
+            self.output.error)

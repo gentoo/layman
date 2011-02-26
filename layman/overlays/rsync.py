@@ -42,7 +42,8 @@ class RsyncOverlay(OverlaySource):
 
     def __init__(self, parent, config, _location, ignore = 0, quiet = False):
 
-        super(RsyncOverlay, self).__init__(parent, config, _location, ignore, quiet)
+        super(RsyncOverlay, self).__init__(parent, config,
+            _location, ignore, quiet)
 
     def add(self, base, quiet = False):
         '''Add overlay.'''
@@ -59,8 +60,9 @@ class RsyncOverlay(OverlaySource):
         self.supported()
 
         # rsync OPTIONS [-q] SOURCE TARGET
-        args = ['-rlptDvz', '--progress', '--delete', '--delete-after', '--timeout=180',
-            '--exclude=distfiles/*', '--exclude=local/*', '--exclude=packages/*']
+        args = ['-rlptDvz', '--progress', '--delete', '--delete-after',
+            '--timeout=180', '--exclude=distfiles/*', '--exclude=local/*',
+            '--exclude=packages/*']
 
         cfg_opts = self.config["rsync_syncopts"]
         target = path([base, self.parent.name])
@@ -79,5 +81,6 @@ class RsyncOverlay(OverlaySource):
     def supported(self):
         '''Overlay type supported?'''
 
-        return require_supported([(self.command(),  'rsync',
-                                         'net-misc/rsync'),])
+        return require_supported(
+            [(self.command(),  'rsync', 'net-misc/rsync'),],
+            self.output.error)

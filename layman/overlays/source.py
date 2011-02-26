@@ -21,10 +21,11 @@ import subprocess
 from layman.utils import path
 
 
-def _resolve_command(command):
+def _resolve_command(command, error_output):
     if os.path.isabs(command):
         if not os.path.exists(command):
-            raise Exception('Program "%s" not found' % command)
+            error_output('Program "%s" not found' % command)
+            return ('File', None)
         return ('File', command)
     else:
         kind = 'Command'
@@ -33,18 +34,19 @@ def _resolve_command(command):
             f = os.path.join(d, command)
             if os.path.exists(f):
                 return ('Command', f)
-        raise Exception('Cound not resolve command ' +\
+        error_output('Cound not resolve command ' +\
             '"%s" based on PATH "%s"' % (command, env_path))
+        return ('Command', None)
 
 
-def require_supported(binaries):
+def require_supported(binaries, error_output):
     for command, mtype, package in binaries:
-        found = False
-        kind, path = _resolve_command(command)
+        kind, path = _resolve_command(command, error_output)
         if not path:
-            raise Exception(kind + ' ' + command + ' seems to be missing!'
+            error_output(kind + ' ' + command + ' seems to be missing!'
                             ' Overlay type "' + mtype + '" not support'
                             'ed. Did you emerge ' + package + '?')
+            return False
     return True
 
 
@@ -104,12 +106,7 @@ class OverlaySource(object):
 
     def is_supported(self):
         '''Is the overlay type supported?'''
-
-        try:
-            self.supported()
-            return True
-        except:
-            return False
+        return self.supported()
 
     def command(self):
         return self.config['%s_command' % self.__class__.type_key]

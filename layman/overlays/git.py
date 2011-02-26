@@ -46,7 +46,8 @@ class GitOverlay(OverlaySource):
     def add(self, base, quiet = False):
         '''Add overlay.'''
 
-        self.supported()
+        if not self.supported():
+            return False
 
         def fix_git_source(source):
             # http:// should get trailing slash, other protocols shouldn't
@@ -89,5 +90,6 @@ class GitOverlay(OverlaySource):
     def supported(self):
         '''Overlay type supported?'''
 
-        return require_supported([(self.command(),  'git',
-                                         'dev-vcs/git'),])
+        return require_supported(
+            [(self.command(),  'git', 'dev-vcs/git'),],
+            self.output.error)

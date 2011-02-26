@@ -84,5 +84,6 @@ class BzrOverlay(OverlaySource):
     def supported(self):
         '''Overlay type supported?'''
 
-        return require_supported([(self.command(),  'bzr',
-                                         'dev-vcs/bzr'),])
+        return require_supported(
+            [(self.command(),  'bzr', 'dev-vcs/bzr'),],
+            self.output.error)

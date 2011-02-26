@@ -39,7 +39,8 @@ class GCommonOverlay(OverlaySource):
     type_key = 'g-common'
 
     def __init__(self, parent, config, _location, ignore = 0, quiet = False):
-        super(GCommonOverlay, self).__init__(parent, config, _location, ignore, quiet)
+        super(GCommonOverlay, self).__init__(parent, config,
+            _location, ignore, quiet)
         #split source into driver and remote uri.
         self.driver=self.src[:self.src.find(' ')]
         self.remote_uri=self.src[self.src.find(' ')+1:]
@@ -73,9 +74,9 @@ class GCommonOverlay(OverlaySource):
         '''Overlay type supported?'''
 
         return require_supported(
-                                [(self.command(),
-                                'g-common',
-                                'app-portage/g-common'),
-                                ('/usr/share/g-common/drivers/'+self.driver+'.cfg',
-                                'g-common for '+self.driver,
-                                'app-portage/g-'+self.driver),])
+            [(self.command(),
+            'g-common',
+            'app-portage/g-common'),
+            ('/usr/share/g-common/drivers/'+self.driver+'.cfg',
+            'g-common for '+self.driver,
+            'app-portage/g-'+self.driver),], self.output.error)
