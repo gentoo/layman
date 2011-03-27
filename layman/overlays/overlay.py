@@ -101,9 +101,9 @@ class Overlay(object):
         self.output = config['output']
         self._encoding_ = get_encoding(self.output)
 
-        if xml:
+        if xml is not None:
             self.from_xml(xml, ignore, quiet)
-        elif ovl_dict:
+        elif ovl_dict is not None:
             self.from_dict(ovl_dict, ignore, quiet)
 
 
@@ -125,7 +125,7 @@ class Overlay(object):
             raise Exception('Overlay is missing a "name" entry!')
 
         _sources = xml.findall('source')
-        if _sources:
+        if _sources != None:
             _sources = [e for e in _sources if 'type' in e.attrib]
         elif ('src' in xml.attrib) and ('type' in xml.attrib):
             s = ET.Element('source', type=xml.attrib['type'])
@@ -242,7 +242,7 @@ class Overlay(object):
 
         _sources = overlay['sources']
 
-        if not _sources:
+        if _sources == None:
             raise Exception('Overlay "' + self.name +
                 '" is missing a "source" entry!')
 
@@ -296,7 +296,7 @@ class Overlay(object):
             self.status = None
 
         self.quality = u'experimental'
-        if overlay['quality']:
+        if len(overlay['quality']):
             if overlay['quality'] in set(QUALITY_LEVELS):
                 self.quality = ensure_unicode(overlay['quality'])
 
@@ -485,7 +485,7 @@ class Overlay(object):
         if self.irc != None:
             result += u'\nIRC : ' + self.irc + u'\n'
 
-        if self.feeds:
+        if len(self.feeds):
             result += u'\n%s:' % ((len(self.feeds) == 1) and "Feed" or "Feeds")
             for i in self.feeds:
                 result += u'\n  %s' % i
