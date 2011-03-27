@@ -20,6 +20,8 @@
 #
 '''Defines the configuration options and provides parsing functionality.'''
 
+from __future__ import print_function
+
 __version__ = "$Id: config.py 286 2007-01-09 17:48:23Z wrobel $"
 
 #===============================================================================
@@ -227,7 +229,7 @@ class ArgsParser(BareConfig):
         # Parse the command line first since we need to get the config
         # file option.
         if len(args) == 1:
-            print 'Usage:%s' % _USAGE
+            print('Usage:%s' % _USAGE)
             sys.exit(0)
 
         (self.options, remain_args) = self.parser.parse_args(args)
