@@ -162,7 +162,7 @@ class Main(object):
         try:
             new_umask = int(umask, 8)
             old_umask = os.umask(new_umask)
-        except Exception, error:
+        except Exception as error:
             self.output.die('Failed setting to umask "' + umask +
                 '"!\nError was: ' + str(error))
 
@@ -173,7 +173,7 @@ class Main(object):
             if action[0] in self.config.keys():
                 try:
                     result += getattr(self, action[1])()
-                except Exception, error:
+                except Exception as error:
                     for _error in self.api.get_errors():
                         self.output.error(_error)
                     result = -1  # So it cannot remain 0, i.e. success

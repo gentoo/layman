@@ -303,7 +303,7 @@ class RemoteDB(DbBase):
                 if not os.path.exists(os.path.dirname(mpath)):
                     try:
                         os.makedirs(os.path.dirname(mpath))
-                    except OSError, error:
+                    except OSError as error:
                         raise OSError('Failed to create layman storage direct'
                                       + 'ory ' + os.path.dirname(mpath) + '\n'
                                       + 'Error was:' + str(error))
@@ -312,7 +312,7 @@ class RemoteDB(DbBase):
                 # file is intact and can be parsed
                 try:
                     self.read(olist, origin=url)
-                except Exception, error:
+                except Exception as error:
                     raise IOError('Failed to parse the overlays list fetched fr'
                                   'om ' + url + '\nThis means that the download'
                                   'ed file is somehow corrupt or there was a pr'
@@ -325,12 +325,12 @@ class RemoteDB(DbBase):
                     out_file.write(olist)
                     out_file.close()
 
-                except Exception, error:
+                except Exception as error:
                     raise IOError('Failed to temporarily cache overlays list in'
                                   ' ' + mpath + '\nError was:\n' + str(error))
 
 
-            except IOError, error:
+            except IOError as error:
                 self.output.warn('Failed to update the overlay list from: '
                          + url + '\nError was:\n' + str(error))
 
