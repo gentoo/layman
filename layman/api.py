@@ -421,10 +421,9 @@ class LaymanAPI(object):
         defaults to stderr.  This method may be removed, is here for now
         due to code taken from the packagekit backend.
         """
-        #msg = "Error: %d," % num, message
         self._error_messages.append(message)
         if self.report_errors:
-            print(msg, file=stderr)
+            print(message, file=stderr)
 
 
     def get_errors(self):
