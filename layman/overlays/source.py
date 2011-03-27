@@ -112,7 +112,7 @@ class OverlaySource(object):
         return self.config['%s_command' % self.__class__.type_key]
 
     def run_command(self, command, *args, **kwargs):
-        file_to_run = _resolve_command(command)[1]
+        file_to_run = _resolve_command(command, self.output.error)[1]
         args = (file_to_run, ) + args
         assert('pwd' not in kwargs)  # Bug detector
 
