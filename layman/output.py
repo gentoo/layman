@@ -49,6 +49,7 @@ class MessageBase(object):
         # callback function that gets passed any error messages
         # that have shown up.
         self.error_callback = error_callback
+        self.block_callback = False
 
 
     def _color (self, col, text):
@@ -81,7 +82,7 @@ class MessageBase(object):
         """runs the error_callback function with the error
         that occurred
         """
-        if self.error_callback:
+        if self.error_callback is not None and not self.block_callback:
             self.error_callback(error)
 
 
@@ -135,7 +136,7 @@ class Message(MessageBase):
 
         lines = message.split('\n')
 
-        if not lines:
+        if not len(lines):
             return
 
         for i in lines[0:-1]:
@@ -179,7 +180,7 @@ class Message(MessageBase):
             # stay in nice order.  This is a workaround for calls like
             # "layman -L |& less".
             sys.stdout.flush()
-            print(self.color_func('red', '* ') + i, file=self.error_out)
+            print(self.color_func('red', '* ') + i, file=self.std_out)
             self.error_out.flush()
         self.do_error_callback(error)
 

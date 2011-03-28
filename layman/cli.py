@@ -96,9 +96,12 @@ class ListPrinter(object):
         elif complain:
             # Give a reason why this is marked red if it is a verbose
             # listing
+            prev_state = self.output.block_callback
+            self.output.block_callback = True
             if self.config['verbose']:
                 self.output.error(NOT_SUPPORTED_MSG)
             self.output.error(summary)
+            self.output.block_callback = prev_state
 
 
     def short_list(self, overlay):
@@ -262,9 +265,7 @@ class Main(object):
 
         info = self.api.get_info_str(selection, local=False,
             verbose=True, width=list_printer.width)
-        #print("info =", info)
         list_printer.print_shortdict(info, complain=_complain)
-
         return info != {}
 
 
