@@ -50,7 +50,7 @@ def decode_selection(selection):
     # fix None passed in, return an empty list
     selection = selection or []
     enc = sys.getfilesystemencoding()
-    if enc:
+    if enc is not None:
         return [i.decode(enc) for i in selection]
     return selection
 

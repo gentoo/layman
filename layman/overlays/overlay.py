@@ -143,7 +143,7 @@ class Overlay(object):
             return _class(parent=self, config=self.config,
                 _location=_location, ignore=ignore, quiet=quiet)
 
-        if not _sources:
+        if not len(_sources):
             raise Exception('Overlay "' + self.name + \
                 '" is missing a "source" entry!')
 

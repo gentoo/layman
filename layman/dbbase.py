@@ -164,9 +164,9 @@ class DbBase:
         '''Reads xml text and dictionary definitions and adds
         them to the db.
         '''
-        if xml:
+        if xml is not None:
             self.read(xml, origin)
-        if from_dict:
+        if from_dict is not None:
             self.output.info("DbBase: add_new() from_dict")
             if isinstance(from_dict, dict):
                 from_dict = [from_dict]
@@ -272,7 +272,7 @@ class DbBase:
         result = []
 
         selection = [overlay for (a, overlay) in self.overlays.items()]
-        if repos:
+        if repos is not None:
             selection = [overlay for overlay in selection if overlay.name in repos]
 
         for overlay in selection:

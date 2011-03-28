@@ -240,7 +240,7 @@ class RemoteDB(DbBase):
             opener = urllib2.build_opener(proxy_handler)
             urllib2.install_opener(opener)
 
-        self.urls  = [i.strip() for i in config['overlays'].split('\n') if i]
+        self.urls  = [i.strip() for i in config['overlays'].split('\n') if len(i)]
 
         paths = [self.path(i) for i in self.urls]
 

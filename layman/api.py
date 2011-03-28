@@ -49,7 +49,7 @@ class LaymanAPI(object):
                                     default is Message(module='layman') other params are defaults.
         """
 
-        self.config = config if config else BareConfig(output=output)
+        self.config = config if config is not None else BareConfig(output=output)
 
         self.output = self.config['output']
 
@@ -433,7 +433,7 @@ class LaymanAPI(object):
         @rtype: list
         @return: list of error strings
         """
-        if self._error_messages:
+        if len(self._error_messages):
             messages =  self._error_messages[:]
             self._error_messages = []
             return messages

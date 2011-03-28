@@ -126,10 +126,10 @@ class OverlaySource(object):
             env.update(env_updates)
 
         command_repr = ' '.join(args)
-        if env_updates:
+        if env_updates is not None:
             command_repr = '%s %s' % (' '.join('%s=%s' % (k, v) for (k, v)
                 in sorted(env_updates.items())), command_repr)
-        if cwd:
+        if cwd is not None:
             command_repr = '( cd %s  && %s )' % (cwd, command_repr)
 
         cmd = kwargs.get('cmd', '')
@@ -176,7 +176,7 @@ class OverlaySource(object):
             return failed_sync
         # good to continue
         postsync_opt = self.config['%s_postsync' % self.__class__.type_key]
-        if postsync_opt:
+        if len(postsync_opt):
             # repalce "%cwd=" while it's still a string'
             _opt = postsync_opt.replace('%cwd=',
                 kwargs.get('cwd', '')).split()

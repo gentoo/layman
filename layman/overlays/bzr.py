@@ -55,7 +55,7 @@ class BzrOverlay(OverlaySource):
         target = path([base, self.parent.name])
 
         # bzr get SOURCE TARGET
-        if cfg_opts:
+        if len(cfg_opts):
             args = ['get', cfg_opts,
                 self.src + '/', target]
         else:
@@ -73,7 +73,7 @@ class BzrOverlay(OverlaySource):
         target = path([base, self.parent.name])
 
         # bzr pull --overwrite SOURCE
-        if cfg_opts:
+        if len(cfg_opts):
             args = ['pull', cfg_opts, '--overwrite', self.src]
         else:
             args = ['pull', '--overwrite', self.src]

@@ -272,7 +272,7 @@ class ArgsParser(BareConfig):
                 overlays = '\n'.join(self.options.__dict__[key])
             if self.config.has_option('MAIN', 'overlays'):
                 overlays += '\n' + self.config.get('MAIN', 'overlays')
-            if overlays:
+            if len(overlays):
                 return  overlays
 
         self.output.debug('Retrieving option', 8)

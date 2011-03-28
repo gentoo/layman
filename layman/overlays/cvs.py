@@ -76,7 +76,7 @@ class CvsOverlay(OverlaySource):
             args.append('-q')
         args.append('co')
         args.append('-d')
-        if cfg_opts:
+        if len(cfg_opts):
             args.append(cfg_opts)
         args.append(self.parent.name)
         args.append(self.subpath)
@@ -100,7 +100,7 @@ class CvsOverlay(OverlaySource):
             args.append('-q')
         args.append('update')
         args.append('-d')
-        if cfg_opts:
+        if len(cfg_opts):
             args.append(cfg_opts)
         return self.postsync(
             self.run_command(self.command(), *args, cwd=target, cmd=self.type),

@@ -58,7 +58,7 @@ class SvnOverlay(OverlaySource):
         args = ['co']
         if quiet:
             args.append('-q')
-        if cfg_opts:
+        if len(cfg_opts):
             args.append(cfg_opts)
         args.append(self.src + '/@')
         args.append(target)
@@ -87,7 +87,7 @@ class SvnOverlay(OverlaySource):
         args = ['up']
         if quiet:
             args.append('-q')
-        if cfg_opts:
+        if len(cfg_opts):
             args.append(cfg_opts)
         args.append(target)
 
