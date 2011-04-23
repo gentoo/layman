@@ -70,7 +70,7 @@ class GitOverlay(OverlaySource):
         args = ['pull']
         if quiet:
             args.append('-q')
-        return self.run_command(*args, cwd=path([base, self.parent.name]))
+        return self.run_command(args, cwd=path([base, self.parent.name]))
 
     def supported(self):
         '''Overlay type supported?'''

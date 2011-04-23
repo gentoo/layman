@@ -83,7 +83,7 @@ class CvsOverlay(OverlaySource):
         args.append(self.parent.name)
         args.append(self.subpath)
 
-        return self.run_command(*args, cwd=base, env=dict(CVSROOT=self.src))
+        return self.run_command(args, cwd=base, env=dict(CVSROOT=self.src))
 
     def sync(self, base, quiet = False):
         '''Sync overlay.'''
@@ -96,7 +96,7 @@ class CvsOverlay(OverlaySource):
             args.append('-q')
         args.append('update')
         args.append('-d')
-        return self.run_command(*args, cwd=path([base, self.parent.name]))
+        return self.run_command(args, cwd=path([base, self.parent.name]))
 
     def supported(self):
         '''Overlay type supported?'''

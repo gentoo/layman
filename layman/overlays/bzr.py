@@ -61,7 +61,7 @@ class BzrOverlay(OverlaySource):
 
         # bzr pull --overwrite SOURCE
         args = ['pull', '--overwrite', self.src]
-        return self.run_command(*args, cwd=path([base, self.parent.name]))
+        return self.run_command(args, cwd=path([base, self.parent.name]))
 
     def supported(self):
         '''Overlay type supported?'''

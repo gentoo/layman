@@ -60,7 +60,7 @@ class MercurialOverlay(OverlaySource):
 
         # hg pull -u SOURCE
         args = ['pull', '-u', self.src]
-        return self.run_command(*args, cwd=path([base, self.parent.name]))
+        return self.run_command(args, cwd=path([base, self.parent.name]))
 
     def supported(self):
         '''Overlay type supported?'''
