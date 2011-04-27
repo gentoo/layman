@@ -52,7 +52,7 @@ class BzrOverlay(OverlaySource):
 
         # bzr get SOURCE TARGET
         args = ['get', self.src + '/', path([base, self.parent.name])]
-        return self.run_command(*args)
+        return self.run_command(args)
 
     def sync(self, base, quiet = False):
         '''Sync overlay.'''

@@ -60,7 +60,7 @@ class GitOverlay(OverlaySource):
             args.append('-q')
         args.append(fix_git_source(self.src))
         args.append(path([base, self.parent.name]))
-        return self.run_command(*args)
+        return self.run_command(args)
 
     def sync(self, base, quiet = False):
         '''Sync overlay.'''

@@ -56,7 +56,7 @@ class SvnOverlay(OverlaySource):
         args.append(self.src + '/@')
         args.append(path([base, self.parent.name]))
 
-        return self.run_command(*args)
+        return self.run_command(args)
 
     def sync(self, base, quiet = False):
         '''Sync overlay.'''
@@ -77,7 +77,7 @@ class SvnOverlay(OverlaySource):
             args.append('-q')
         args.append(checkout_location())
 
-        return self.run_command(*args)
+        return self.run_command(args)
 
     def supported(self):
         '''Overlay type supported?'''
