@@ -233,7 +233,7 @@ class Overlay(object):
     def from_dict(self, overlay, ignore, quiet):
         """Process an xml overlay definition
         """
-        print "overlay", overlay
+        self.output.debug("Overlay.from_dict; overlay" + str(overlay))
         _name = overlay['name']
         if _name != None:
             self.name = ensure_unicode(_name)
