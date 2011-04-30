@@ -212,7 +212,8 @@ class DB(DbBase):
         result = overlay.sync(self.config['storage'], quiet)
         if result:
             raise Exception('Syncing overlay "' + overlay_name +
-                            '" returned status ' + str(result) + '!')
+                            '" returned status ' + str(result) + '!' +
+                            '\ndb.sync()')
 
 #===============================================================================
 #
