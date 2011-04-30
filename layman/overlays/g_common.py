@@ -48,7 +48,9 @@ class GCommonOverlay(OverlaySource):
     def add(self, base, quiet = False):
         '''Add overlay.'''
 
-        self.supported()
+        if not self.supported():
+            return 1
+
         target = path([base, self.parent.name])
 
         os.makedirs(target)
@@ -58,7 +60,9 @@ class GCommonOverlay(OverlaySource):
     def sync(self, base, quiet = False):
         '''Sync overlay.'''
 
-        self.supported()
+        if not self.supported():
+            return 1
+
         target = path([base, self.parent.name])
 
         args = [target, 'sync', self.driver, self.remote_uri]

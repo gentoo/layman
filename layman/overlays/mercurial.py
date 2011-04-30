@@ -49,7 +49,8 @@ class MercurialOverlay(OverlaySource):
     def add(self, base, quiet = False):
         '''Add overlay.'''
 
-        self.supported()
+        if not self.supported():
+            return 1
 
         cfg_opts = self.config["mercurial_addopts"]
         target = path([base, self.parent.name])
@@ -67,7 +68,8 @@ class MercurialOverlay(OverlaySource):
     def sync(self, base, quiet = False):
         '''Sync overlay.'''
 
-        self.supported()
+        if not self.supported():
+            return 1
 
         cfg_opts = self.config["mercurial_syncopts"]
         target = path([base, self.parent.name])

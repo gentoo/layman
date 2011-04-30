@@ -48,7 +48,8 @@ class RsyncOverlay(OverlaySource):
     def add(self, base, quiet = False):
         '''Add overlay.'''
 
-        self.supported()
+        if not self.supported():
+            return 1
 
         super(RsyncOverlay, self).add(base)
 
@@ -57,7 +58,8 @@ class RsyncOverlay(OverlaySource):
     def sync(self, base, quiet = False):
         '''Sync overlay.'''
 
-        self.supported()
+        if not self.supported():
+            return 1
 
         # rsync OPTIONS [-q] SOURCE TARGET
         args = ['-rlptDvz', '--progress', '--delete', '--delete-after',

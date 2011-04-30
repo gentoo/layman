@@ -47,7 +47,7 @@ class GitOverlay(OverlaySource):
         '''Add overlay.'''
 
         if not self.supported():
-            return False
+            return 1
 
         def fix_git_source(source):
             # http:// should get trailing slash, other protocols shouldn't
@@ -73,7 +73,8 @@ class GitOverlay(OverlaySource):
     def sync(self, base, quiet = False):
         '''Sync overlay.'''
 
-        self.supported()
+        if not self.supported():
+            return 1
 
         cfg_opts = self.config["git_syncopts"]
         target = path([base, self.parent.name])
@@ -83,6 +84,7 @@ class GitOverlay(OverlaySource):
             args.append('-q')
         if len(cfg_opts):
             args.append(cfg_opts)
+
         return self.postsync(
             self.run_command(self.command(), *args, cwd=target, cmd=self.type),
             cwd=target)

@@ -48,7 +48,8 @@ class SvnOverlay(OverlaySource):
     def add(self, base, quiet = False):
         '''Add overlay.'''
 
-        self.supported()
+        if not self.supported():
+            return 1
 
         super(SvnOverlay, self).add(base)
 
@@ -70,7 +71,8 @@ class SvnOverlay(OverlaySource):
     def sync(self, base, quiet = False):
         '''Sync overlay.'''
 
-        self.supported()
+        if not self.supported():
+            return 1
 
         def checkout_location():
             # Append '@' iff needed
