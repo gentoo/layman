@@ -120,7 +120,7 @@ class LaymanAPI(object):
                 self._error(ERROR_INTERNAL_ERROR,
                         "Failed to disable repository '"+ovl+"':\n"+str(e))
                 results.append(False)
-            self.get_installed(reload=True)
+            self.get_installed(dbreload=True)
         if False in results:
             return False
         return True
@@ -151,7 +151,7 @@ class LaymanAPI(object):
                 self._error(ERROR_INTERNAL_ERROR,
                         "Failed to enable repository '"+ovl+"' : "+str(e))
                 results.append(False)
-            self.get_installed(reload=True)
+            self.get_installed(dbreload=True)
         if False in results:
             return False
         return True
@@ -373,47 +373,52 @@ class LaymanAPI(object):
     def fetch_remote_list(self):
         """Fetches the latest remote overlay list"""
         try:
-            self._get_remote_db().cache()
+            dbreload = self._get_remote_db().cache()
+            self.output.debug(
+                'LaymanAPI.fetch_remote_list(); cache updated = %s'
+                % str(dbreload),8)
         except Exception as error:
             self._error('Failed to fetch overlay list!\n Original Error was: '
                     + str(error))
             return False
-        self.get_available(reload=True)
+        self.get_available(dbreload)
         return True
 
 
-    def get_available(self, reload=False):
+    def get_available(self, dbreload=False):
         """returns the list of available overlays"""
-        if self._available_ids is None or reload:
-            self._available_ids = self._get_remote_db(reload).list_ids()
+        self.output.info('LaymanAPI.get_available() dbreload = %s'
+            % str(dbreload))
+        if self._available_ids is None or dbreload:
+            self._available_ids = self._get_remote_db(dbreload).list_ids()
         return self._available_ids[:] or ['None']
 
 
-    def get_installed(self, reload=False):
+    def get_installed(self, dbreload=False):
         """returns the list of installed overlays"""
-        if self._installed_ids is None or reload:
-            self._installed_ids = self._get_installed_db(reload).list_ids()
+        if self._installed_ids is None or dbreload:
+            self._installed_ids = self._get_installed_db(dbreload).list_ids()
         return self._installed_ids[:]
 
 
-    def _get_installed_db(self, reload=False):
+    def _get_installed_db(self, dbreload=False):
         """returns the list of installed overlays"""
-        if not self._installed_db or reload:
+        if not self._installed_db or dbreload:
             self._installed_db = DB(self.config)
         return self._installed_db
 
 
-    def _get_remote_db(self, reload=False):
+    def _get_remote_db(self, dbreload=False):
         """returns the list of installed overlays"""
-        if self._available_db is None or reload:
+        if self._available_db is None or dbreload:
             self._available_db = RemoteDB(self.config)
         return self._available_db
 
 
     def reload(self):
         """reloads the installed and remote db's to the data on disk"""
-        result = self.get_available(reload=True)
-        result = self.get_installed(reload=True)
+        result = self.get_available(dbreload=True)
+        result = self.get_installed(dbreload=True)
 
 
     def _error(self, message):
@@ -423,7 +428,7 @@ class LaymanAPI(object):
         """
         self._error_messages.append(message)
         if self.report_errors:
-            print(message, file=stderr)
+            print(message, file=self.config['stderr'])
 
 
     def get_errors(self):

@@ -24,7 +24,9 @@ __version__ = "$Id: db.py 309 2007-04-09 16:23:38Z wrobel $"
 #
 #-------------------------------------------------------------------------------
 
-import os, os.path, urllib2, hashlib
+import os, os.path
+import urllib2
+import hashlib
 
 from   layman.utils             import path, delete_empty_directory
 from   layman.dbbase            import DbBase
@@ -243,7 +245,7 @@ class RemoteDB(DbBase):
 
         self.urls  = [i.strip() for i in config['overlays'].split('\n') if len(i)]
 
-        paths = [self.path(i) for i in self.urls]
+        paths = [self.filepath(i) + '.xml' for i in self.urls]
 
         if config['nocheck']:
             ignore = 2
@@ -283,22 +285,45 @@ class RemoteDB(DbBase):
         >>> a.overlays.keys()
         [u'wrobel', u'wrobel-stable']
         '''
+        has_updates = False
         for url in self.urls:
 
-            mpath = self.path(url)
+            filepath = self.filepath(url)
+            mpath = filepath + '.xml'
+            tpath = filepath + '.timestamp'
 
-            # Check for sufficient privileges
-            if os.path.exists(mpath) and not os.access(mpath, os.W_OK):
-                self.output.warn('You do not have permission to update the cache (%s).' % mpath)
-                import getpass
-                if getpass.getuser() != 'root':
-                    self.output.warn('Hint: You are not root.\n')
+            # check when the cache was last updated
+            # and don't re-fetch it unless it has changed
+            request = urllib2.Request(url)
+            opener = urllib2.build_opener()
+            opener.addheaders = [('User-Agent', 'Layman-2.0-git')]
+
+            if os.path.exists(tpath):
+                with open(tpath,'r') as previous:
+                    last_time = previous.read()
+                request.add_header('If-Modified-Since', last_time)
+
+            if not self.check_path([mpath]):
                 continue
 
             try:
-
+                connection = opener.open(request)
+                timestamp = connection.headers['last-modified']
+            except urllib2.HTTPError as e:
+                if e.getcode() == 304:
+                    self.output.info('Remote list already up to date: %s'
+                        % url)
+                else:
+                    self.output.info('RemoteDB.cache(); HTTPError was:\n %s'
+                        % str(e))
+                continue
+            except IOError as error:
+                self.output.warn('Failed to update the overlay list from: '
+                         + url + '\nError was:\n' + str(error))
+            else:
+                self.output.info('Fetching new list...')
                 # Fetch the remote list
-                olist = urllib2.urlopen(url).read()
+                olist = connection.read()
 
                 # Create our storage directory if it is missing
                 if not os.path.exists(os.path.dirname(mpath)):
@@ -326,24 +351,43 @@ class RemoteDB(DbBase):
                     out_file.write(olist)
                     out_file.close()
 
+                    out_file = open(tpath, 'w')
+                    out_file.write(timestamp)
+                    out_file.close()
+
+                    has_updates = True
+
                 except Exception as error:
                     raise IOError('Failed to temporarily cache overlays list in'
                                   ' ' + mpath + '\nError was:\n' + str(error))
+        return has_updates
 
 
-            except IOError as error:
-                self.output.warn('Failed to update the overlay list from: '
-                         + url + '\nError was:\n' + str(error))
-
-    def path(self, url):
+    def filepath(self, url):
         '''Return a unique file name for the url.'''
 
         base = self.config['cache']
 
         self.output.debug('Generating cache path.', 6)
 
-        return base + '_' + hashlib.md5(url).hexdigest() + '.xml'
+        return base + '_' + hashlib.md5(url).hexdigest()
 
+
+    def check_path(self, paths, hint=True):
+        '''Check for sufficient privileges'''
+        self.output.debug('RemoteDB.check_path; paths = ' + str(paths), 8)
+        is_ok = True
+        for path in paths:
+            if os.path.exists(path) and not os.access(path, os.W_OK):
+                if hint:
+                    self.output.warn(
+                        'You do not have permission to update the cache (%s).'
+                        % mpath)
+                    import getpass
+                    if getpass.getuser() != 'root':
+                        self.output.warn('Hint: You are not root.\n')
+                is_ok = False
+        return is_ok
 
 #===============================================================================
 #
