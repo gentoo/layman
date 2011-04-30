@@ -73,7 +73,7 @@ class BareConfig(object):
         ['bzr_command', 'cache', 'config', 'cvs_command', 'darcs_command',
         'git_command', 'local_list', 'make_conf', 'mercurial_command',
         'nocheck', 'overlays', 'proxy', 'quietness', 'rsync_command', 'storage',
-        'svn_command', 'tar_command', 'umask', 'width']
+        'svn_command', 'tar_command', 'umask', 'width', ...]
         '''
         self._defaults = {'config'    : '/etc/layman/layman.cfg',
                     'storage'   : '/var/lib/layman',
@@ -95,7 +95,31 @@ class BareConfig(object):
                     'rsync_command': '/usr/bin/rsync',
                     'svn_command': '/usr/bin/svn',
                     'tar_command': '/bin/tar',
-                    'T/F_options': ['nocheck']
+                    'T/F_options': ['nocheck'],
+                    'bzr_addopts' : '',
+                    'bzr_syncopts' : '',
+                    'cvs_addopts' : '',
+                    'cvs_syncopts' : '',
+                    'darcs_addopts' : '',
+                    'darcs_syncopts' : '',
+                    'git_addopts' : '',
+                    'git_syncopts' : '',
+                    'mercurial_addopts' : '',
+                    'mercurial_syncopts' : '',
+                    'rsync_syncopts' : '',
+                    'svn_addopts' : '',
+                    'svn_syncopts' : '',
+                    'g-common_generateopts' : '',
+                    'g-common_syncopts' : '',
+                    'bzr_postsync' : '',
+                    'cvs_postsync' : '',
+                    'darcs_postsync' : '',
+                    'git_postsync' : '',
+                    'mercurial_postsync' : '',
+                    'rsync_postsync' : '',
+                    'svn_postsync' : '',
+                    'tar_postsync' : '',
+                    'g-common_postsync' : '',
                     }
         self._options = {
                     'config': config if config else self._defaults['config'],
