@@ -197,7 +197,7 @@ class Main(object):
         self.output.info("Fetching remote list,...", 2)
         result = self.api.fetch_remote_list()
         if result:
-            self.output.info('Ok', 2)
+            self.output.info('Fetch Ok', 2)
         else:
             errors = self.api.get_errors()
             self.output.warn('Download failed.\nError was: '
