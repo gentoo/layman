@@ -367,7 +367,7 @@ class LaymanAPI(object):
 
         self.sync_results = (success, warnings, fatals)
 
-        return fatals != []
+        return fatals == []
 
 
     def fetch_remote_list(self):
@@ -387,8 +387,8 @@ class LaymanAPI(object):
 
     def get_available(self, dbreload=False):
         """returns the list of available overlays"""
-        self.output.info('LaymanAPI.get_available() dbreload = %s'
-            % str(dbreload))
+        self.output.debug('LaymanAPI.get_available() dbreload = %s'
+            % str(dbreload), 8)
         if self._available_ids is None or dbreload:
             self._available_ids = self._get_remote_db(dbreload).list_ids()
         return self._available_ids[:] or ['None']
