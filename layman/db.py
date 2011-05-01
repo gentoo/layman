@@ -300,8 +300,8 @@ class RemoteDB(DbBase):
 
             if os.path.exists(tpath):
                 with open(tpath,'r') as previous:
-                    last_time = previous.read()
-                request.add_header('If-Modified-Since', last_time)
+                    timestamp = previous.read()
+                request.add_header('If-Modified-Since', timestamp)
 
             if not self.check_path([mpath]):
                 continue
@@ -313,6 +313,7 @@ class RemoteDB(DbBase):
                 if e.getcode() == 304:
                     self.output.info('Remote list already up to date: %s'
                         % url)
+                    self.output.info('Last-modified: %s' % timestamp)
                 else:
                     self.output.info('RemoteDB.cache(); HTTPError was:\n %s'
                         % str(e))
