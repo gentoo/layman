@@ -254,7 +254,7 @@ class ArgsParser(BareConfig):
         self.read_config(self._defaults)
 
         # handle quietness
-        if self['quiet']:
+        if self.options.__dict__['quiet']:
             self.set_option('quiet', True)
         elif self.options.__dict__['quietness']:
             self.set_option('quietness', self.options.__dict__['quietness'])

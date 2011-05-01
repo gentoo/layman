@@ -312,8 +312,8 @@ class RemoteDB(DbBase):
             except urllib2.HTTPError as e:
                 if e.getcode() == 304:
                     self.output.info('Remote list already up to date: %s'
-                        % url)
-                    self.output.info('Last-modified: %s' % timestamp)
+                        % url, 4)
+                    self.output.info('Last-modified: %s' % timestamp, 4)
                 else:
                     self.output.info('RemoteDB.cache(); HTTPError was:\n %s'
                         % str(e))
@@ -322,7 +322,8 @@ class RemoteDB(DbBase):
                 self.output.warn('Failed to update the overlay list from: '
                          + url + '\nError was:\n' + str(error))
             else:
-                self.output.info('Fetching new list...')
+                self.output.info('Fetching new list... %s' % url, 4)
+                self.output.info('Last-modified: %s' % timestamp, 4)
                 # Fetch the remote list
                 olist = connection.read()
 

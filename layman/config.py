@@ -178,15 +178,15 @@ class BareConfig(object):
         if option == 'quiet':
             if self._options['quiet']:
                 self._set_quietness(1)
-                self._options['quietness'] = 0
+                self._options['quietness'] = 1
             else:
                 self._set_quietness(4)
         if option == 'quietness':
             self._set_quietness(value)
 
     def _set_quietness(self, value):
-            self._options['output'].set_info_level(int(self['quietness']))
-            self._options['output'].set_warn_level(int(self['quietness']))
+            self._options['output'].set_info_level(value)
+            self._options['output'].set_warn_level(value)
 
     def __getitem__(self, key):
         return self._get_(key)
