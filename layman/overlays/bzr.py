@@ -62,7 +62,7 @@ class BzrOverlay(OverlaySource):
         else:
             args = ['get', self.src + '/', target]
         return self.postsync(
-            self.run_command(self.command(), *args, cmd=self.type),
+            self.run_command(self.command(), args, cmd=self.type),
             cwd=target)
 
     def sync(self, base, quiet = False):
@@ -80,7 +80,7 @@ class BzrOverlay(OverlaySource):
         else:
             args = ['pull', '--overwrite', self.src]
         return self.postsync(
-            self.run_command(self.command(), *args, cwd=target, cmd=self.type),
+            self.run_command(self.command(), args, cwd=target, cmd=self.type),
             cwd=target)
 
     def supported(self):

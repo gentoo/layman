@@ -67,7 +67,7 @@ class GitOverlay(OverlaySource):
         args.append(fix_git_source(self.src))
         args.append(target)
         return self.postsync(
-            self.run_command(self.command(), *args, cmd=self.type),
+            self.run_command(self.command(), args, cmd=self.type),
             cwd=target)
 
     def sync(self, base, quiet = False):
@@ -86,7 +86,7 @@ class GitOverlay(OverlaySource):
             args.append(cfg_opts)
 
         return self.postsync(
-            self.run_command(self.command(), *args, cwd=target, cmd=self.type),
+            self.run_command(self.command(), args, cwd=target, cmd=self.type),
             cwd=target)
 
     def supported(self):

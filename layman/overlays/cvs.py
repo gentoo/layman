@@ -83,7 +83,7 @@ class CvsOverlay(OverlaySource):
         args.append(self.subpath)
 
         return self.postsync(
-            self.run_command(self.command(), *args, cwd=base,
+            self.run_command(self.command(), args, cwd=base,
                 env=dict(CVSROOT=self.src), cmd=self.type),
             cwd=target)
 
@@ -105,7 +105,7 @@ class CvsOverlay(OverlaySource):
         if len(cfg_opts):
             args.append(cfg_opts)
         return self.postsync(
-            self.run_command(self.command(), *args, cwd=target, cmd=self.type),
+            self.run_command(self.command(), args, cwd=target, cmd=self.type),
             cwd=target)
 
     def supported(self):

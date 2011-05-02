@@ -123,7 +123,7 @@ class TarOverlay(OverlaySource):
 
         # tar -v -x -f SOURCE -C TARGET
         args = ['-v', '-x', '-f', pkg, '-C', dest_dir]
-        result = self.run_command(self.command(), *args, cmd=self.type)
+        result = self.run_command(self.command(), args, cmd=self.type)
 
         os.unlink(pkg)
         return result

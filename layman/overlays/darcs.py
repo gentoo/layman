@@ -63,7 +63,7 @@ class DarcsOverlay(OverlaySource):
                 self.src + '/', target]
 
         return self.postsync(
-            self.run_command(self.command(), *args, cmd=self.type),
+            self.run_command(self.command(), args, cmd=self.type),
             cwd=target)
 
     def sync(self, base, quiet = False):
@@ -81,7 +81,7 @@ class DarcsOverlay(OverlaySource):
         else:
             args = ['pull', '--all', self.src]
         return self.postsync(
-            self.run_command(self.command(), *args, cwd=target, cmd=self.type),
+            self.run_command(self.command(), args, cwd=target, cmd=self.type),
             cwd=target)
 
     def supported(self):

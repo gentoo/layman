@@ -77,7 +77,7 @@ class RsyncOverlay(OverlaySource):
         args.append(target)
 
         return self.postsync(
-            self.run_command(self.command(), *args, cmd=self.type),
+            self.run_command(self.command(), args, cmd=self.type),
             cwd=target)
 
     def supported(self):
