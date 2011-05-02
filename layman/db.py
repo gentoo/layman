@@ -31,6 +31,7 @@ import hashlib
 from   layman.utils             import path, delete_empty_directory
 from   layman.dbbase            import DbBase
 from   layman.makeconf          import MakeConf
+from   layman.version           import VERSION
 
 #from   layman.debug             import OUT
 
@@ -296,7 +297,7 @@ class RemoteDB(DbBase):
             # and don't re-fetch it unless it has changed
             request = urllib2.Request(url)
             opener = urllib2.build_opener()
-            opener.addheaders = [('User-Agent', 'Layman-2.0-git')]
+            opener.addheaders = [('User-Agent', 'Layman-' + VERSION)]
 
             if os.path.exists(tpath):
                 with open(tpath,'r') as previous:
