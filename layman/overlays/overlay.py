@@ -122,11 +122,14 @@ class Overlay(object):
         elif 'name' in xml.attrib:
             self.name = ensure_unicode(xml.attrib['name'])
         else:
-            raise Exception('Overlay is missing a "name" entry!')
+            raise Exception('Overlay from_xml(), "' + self.name + \
+                'is missing a "name" entry!')
 
         _sources = xml.findall('source')
-        if _sources != None:
+        # new xml format
+        if _sources != []:
             _sources = [e for e in _sources if 'type' in e.attrib]
+        #old xml format
         elif ('src' in xml.attrib) and ('type' in xml.attrib):
             s = ET.Element('source', type=xml.attrib['type'])
             s.text = xml.attrib['src']
@@ -138,13 +141,14 @@ class Overlay(object):
             try:
                 _class = OVERLAY_TYPES[_type]
             except KeyError:
-                raise Exception('Unknown overlay type "%s"!' % _type)
+                raise Exception('Overlay from_xml(), "' + self.name + \
+                    'Unknown overlay type "%s"!' % _type)
             _location = ensure_unicode(strip_text(source_elem))
             return _class(parent=self, config=self.config,
                 _location=_location, ignore=ignore, quiet=quiet)
 
         if not len(_sources):
-            raise Exception('Overlay "' + self.name + \
+            raise Exception('Overlay from_xml(), "' + self.name + \
                 '" is missing a "source" entry!')
 
         self.sources = [create_overlay_source(e) for e in _sources]
@@ -176,8 +180,8 @@ class Overlay(object):
             self.owner_email = ''
             self.owner_name = None
             if not ignore:
-                raise Exception('Overlay "' + self.name + '" is missing a '
-                                '"owner.email" entry!')
+                raise Exception('Overlay  from_xml(), "' + self.name + \
+                    '" is missing an "owner.email" entry!')
             elif ignore == 1:
                 self.output.warn('Overlay "' + self.name + '" is missing a '
                          '"owner.email" entry!', 4)
@@ -190,8 +194,8 @@ class Overlay(object):
         else:
             self.description = ''
             if not ignore:
-                raise Exception('Overlay "' + self.name + '" is missing a '
-                        '"description" entry!')
+                raise Exception('Overlay  from_xml(), "' + self.name + \
+                    '" is missing a description" entry!')
             elif ignore == 1:
                 self.output.warn('Overlay "' + self.name + '" is missing a '
                          '"description" entry!', 4)
@@ -233,17 +237,18 @@ class Overlay(object):
     def from_dict(self, overlay, ignore, quiet):
         """Process an xml overlay definition
         """
-        self.output.debug("Overlay.from_dict; overlay" + str(overlay))
+        self.output.debug("Overlay from_dict(); overlay" + str(overlay))
         _name = overlay['name']
         if _name != None:
             self.name = ensure_unicode(_name)
         else:
-            raise Exception('Overlay is missing a "name" entry!')
+            raise Exception('Overlay from_dict(), "' + self.name +
+                'is missing a "name" entry!')
 
         _sources = overlay['sources']
 
         if _sources == None:
-            raise Exception('Overlay "' + self.name +
+            raise Exception('Overlay from_dict(), "' + self.name +
                 '" is missing a "source" entry!')
 
         def create_dict_overlay_source(source_):
@@ -251,7 +256,8 @@ class Overlay(object):
             try:
                 _class = OVERLAY_TYPES[_type]
             except KeyError:
-                raise Exception('Unknown overlay type "%s"!' % _type)
+                raise Exception('Overlay from_dict(), "' + self.name +
+                    'Unknown overlay type "%s"!' % _type)
             _location = ensure_unicode(_src)
             return _class(parent=self, config=self.config,
                 _location=_location, ignore=ignore, quiet=quiet)
@@ -270,11 +276,11 @@ class Overlay(object):
         else:
             self.owner_email = None
             if not ignore:
-                raise Exception('Overlay "' + self.name + '" is missing a '
-                                '"owner.email" entry!')
+                raise Exception('Overlay from_dict(), "' + self.name +
+                    '" is missing an "owner.email" entry!')
             elif ignore == 1:
-                self.output.warn('Overlay "' + self.name + '" is missing a '
-                         '"owner.email" entry!', 4)
+                self.output.warn('Overlay from_dict(), "' + self.name +
+                    '" is missing an "owner.email" entry!', 4)
 
         _desc = overlay['description']
         if _desc != None:
@@ -284,11 +290,11 @@ class Overlay(object):
         else:
             self.description = ''
             if not ignore:
-                raise Exception('Overlay "' + self.name + '" is missing a '
-                        '"description" entry!')
+                raise Exception('Overlay from_dict(), "' + self.name +
+                    '" is missing a "description" entry!')
             elif ignore == 1:
-                self.output.warn('Overlay "' + self.name + '" is missing a '
-                         '"description" entry!', 4)
+                self.output.warn('Overlay from_dict(), "' + self.name +
+                    '" is missing a "description" entry!', 4)
 
         if overlay['status']:
             self.status = ensure_unicode(overlay['status'])
