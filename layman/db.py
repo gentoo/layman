@@ -323,8 +323,12 @@ class RemoteDB(DbBase):
                 self.output.warn('Failed to update the overlay list from: '
                          + url + '\nError was:\n' + str(error))
             else:
-                self.output.info('Fetching new list... %s' % url, 4)
-                self.output.info('Last-modified: %s' % timestamp, 4)
+                if url.startswith('file://'):
+                    quieter = 1
+                else:
+                    quieter = 0
+                self.output.info('Fetching new list... %s' % url, 4 + quieter)
+                self.output.info('Last-modified: %s' % timestamp, 4 + quieter)
                 # Fetch the remote list
                 olist = connection.read()
 
