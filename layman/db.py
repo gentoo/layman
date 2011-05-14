@@ -122,7 +122,7 @@ class DB(DbBase):
                     overlay.set_priority(self.config['priority'])
                 self.overlays[overlay.name] = overlay
                 self.write(self.path)
-                if self.config['make_config']:
+                if self.config['make_conf']:
                     make_conf = MakeConf(self.config, self.overlays)
                     make_ok = make_conf.add(overlay)
                     return make_ok
