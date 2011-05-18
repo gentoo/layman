@@ -111,13 +111,15 @@ class LaymanAPI(object):
         results = []
         for ovl in repos:
             if not self.is_installed(ovl):
-                results.append(True)
+                self._error("Repository '"+ovl+"': was not installed")
+                results.append(False)
                 continue
             try:
-                self._get_installed_db().delete(self._get_installed_db().select(ovl))
+                self._get_installed_db().delete(
+                    self._get_installed_db().select(ovl))
                 results.append(True)
             except Exception as e:
-                self._error(ERROR_INTERNAL_ERROR,
+                self._error(
                         "Failed to disable repository '"+ovl+"':\n"+str(e))
                 results.append(False)
             self.get_installed(dbreload=True)
@@ -148,8 +150,7 @@ class LaymanAPI(object):
                 self._get_installed_db().add(self._get_remote_db().select(ovl), quiet=True)
                 results.append(True)
             except Exception as e:
-                self._error(ERROR_INTERNAL_ERROR,
-                        "Failed to enable repository '"+ovl+"' : "+str(e))
+                self._error("Failed to enable repository '"+ovl+"' : "+str(e))
                 results.append(False)
             self.get_installed(dbreload=True)
         if False in results:
