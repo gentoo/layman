@@ -111,7 +111,7 @@ class LaymanAPI(object):
         results = []
         for ovl in repos:
             if not self.is_installed(ovl):
-                self._error("Repository '"+ovl+"': was not installed")
+                self._error("Repository '"+ovl+"' was not installed")
                 results.append(False)
                 continue
             try:
@@ -140,7 +140,8 @@ class LaymanAPI(object):
         results = []
         for ovl in repos:
             if self.is_installed(ovl):
-                results.append(True)
+                self._error("Repository '"+ovl+"' was already installed")
+                results.append(False)
                 continue
             if not self.is_repo(ovl):
                 self._error(UnknownOverlayMessage(ovl))
