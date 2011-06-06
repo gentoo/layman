@@ -3,6 +3,7 @@ include CHANGES
 include COPYING
 include INSTALL
 include README
+include README.api
 include RELEASE_NOTES
 include etc/layman.cfg
 include doc/asciidoc.conf

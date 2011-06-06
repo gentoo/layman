@@ -1,21 +1,8 @@
-Version 1.4.2 - Released 2011-02-08
-===================================
+Version 2.0.0_rc1 - Released 2011-06-06
+=======================================
 
-FULL CHANGES
-------------
-
- - Fixed: Ignore case when sorting data for layman -l|-L
-
- - Fixed: Improve documentation on option nocheck (bug #267686)
-
-
-SHORT CHANGES
--------------
-
- layman-1.4.2 is a bugfix release.  Updating is recommended.
-
- Internally, the man page has been migrated to AsciiDoc,
- which makes it easier for you to contribute patches to it.
+ - major rewrite of the api's, extensions,
+   new cli-api connections, other enhancements...
 
 
 FRESHMEAT
