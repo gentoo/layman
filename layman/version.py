@@ -10,11 +10,13 @@
 # Copyright:
 #             (c) 2005 - 2009 Gunnar Wrobel
 #             (c) 2009        Sebastian Pipping
+#             (c) 2011        Brian Dolbec
 #             Distributed under the terms of the GNU General Public License v2
 #
 # Author(s):
 #             Gunnar Wrobel <wrobel@gentoo.org>
 #             Sebastian Pipping <sebastian@pipping.org>
+#             Brian Dolbec <brian.dolbec@gmail.com>
 #
 
 from __future__ import print_function
@@ -22,7 +24,7 @@ from __future__ import print_function
 __version__ = "$Id: version.py 309 2007-04-09 16:23:38Z wrobel $"
 
 
-VERSION = '2.0-git'
+VERSION = '2.0.0_rc1'
 
 if __name__ == '__main__':
     print(VERSION)
