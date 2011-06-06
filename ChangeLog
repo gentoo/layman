@@ -1,487 +1,1959 @@
+commit c0fff99f7ae0168900eeea30dc27fc240caa9240
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Tue May 17 22:19:39 2011 -0700
+
+    fix the success result when adding already installed overlays
+
+commit 50b971a3724c2b5637d1ce3fc6587d6e3325f2ca
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Tue May 17 22:12:50 2011 -0700
+
+    fix a false -d success for non-existent overlay. fix a couple error messages.
+    fix a long line
+
+commit 6dbd30b42a513437e4219446f34997610b351353
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sat May 14 06:06:17 2011 -0700
+
+    fix /var/lib/layman/make.conf not being updated when adding an overlay
+
+commit e15707648c5024274bd91b9348dad8cc85b0a497
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Thu May 5 02:43:11 2011 -0700
+
+    quiet the "Fetching" output for locally defined overlays.
+
+commit e55554e5b5c6a9c95bb8ad56aab195df1fb35817
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Thu May 5 02:42:07 2011 -0700
+
+    fix a regression for the old xml format.
+    improve the Exception messages with the function name it originated in.
+
+commit 2812cf483e10b3f3a1dddc6f931192509dbbd36c
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sun May 1 22:07:10 2011 -0700
+
+    fix bug 363797 python-2.5 test errors cherypicked from 1.4.x branch
+
+commit b3c8fd83c0db1f8a38c59386452128b9bd04b7c9
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sun May 1 21:54:27 2011 -0700
+
+    set VERSION and set the 'User-Agent' header to use it.
+
+commit db3e6ddad1edf4b984abd49b23c35715614e733d
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sat Apr 30 19:18:21 2011 -0700
+
+    fix --quiet option.
+
+commit fa6bee894b2259941b2ca233fee1c07fed487d73
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sat Apr 30 17:53:35 2011 -0700
+
+    Add the timestamp and url to the RemoteDB.cache() outputs.
+
+commit d1520e65968d61eb100133ab1248e00bc79ac3e9
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sat Apr 30 17:26:06 2011 -0700
+
+    fix the wrong return value for sync() move an ouptut to .debug
+
+commit cfa618287cf94f5ba4b295aeadf8168e90374533
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sat Apr 30 15:37:21 2011 -0700
+
+    improve the output a bit.
+
+commit fcd35daad6e84fdaab69f4bd0c969b80daee590d
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sat Apr 30 15:36:54 2011 -0700
+
+    Add checks and code to fetch the new list using 'If-Modified-Since' protocol.
+    adds saving the 'last-modified' date of the same filename with a .timestamp extension.
+
+commit 1b94f151b74219541f87c8ec29b381c63075d07d
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sat Apr 30 00:01:30 2011 -0700
+
+    start moving to debug message types.
+
+commit e3bee4b35df8cc63e84a54a512020ee895ae5dfe
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Fri Apr 29 23:36:40 2011 -0700
+
+    Add the module and function to the error message for better tracking of the problem.
+
+commit 51424bf1f0aa7734dfc45672a5c6ae9ef10cbb6e
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Fri Apr 29 23:35:32 2011 -0700
+
+    Fix supported() use to return 1 if it is not supported.
+    This is a continuation of the move away from raising exceptions for everything.
+
+commit b44b5484afd1386a17021cee2922b1330ece5f63
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Fri Apr 29 23:32:38 2011 -0700
+
+    Add empty add, sync and postsync options to the defaults so they are defined.
+    Fixes sync not working due to the addition of them in the code.
+
+commit 97c96c8f6d616889bf9dcc423f27675c11af4af8
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sun Mar 27 19:52:48 2011 -0700
+
+    migrate to using explicit checks.
+
+commit 58530ac4e610f8eb9952ba8ee7ca920d400915db
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sun Mar 27 19:50:10 2011 -0700
+
+    fix double output for info sent to output.error() due to callback.
+
+commit eab52f261bda8aef53675271357b3ca742f865ad
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sun Mar 27 00:14:16 2011 -0700
+
+    migrate to explicit if check
+
+commit 34d7a5444ee72a7b6ca9193c2dc5975d0b894a8a
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sun Mar 27 00:13:32 2011 -0700
+
+    migrate to print()
+
+commit 0cd786b5d016d3b08dc8dbb1843ed04b5ce910a0
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sat Mar 26 23:37:19 2011 -0700
+
+    fix a missed change in error handling.
+
+commit d0339cb228c16eb491d489a2276e254bacb41c81
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sat Mar 26 20:39:37 2011 -0700
+
+    migrate except ... as
+
+commit e14906b88ec2da99dba82d565d88ed5ca1d40099
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sat Mar 26 20:24:26 2011 -0700
+
+    migrate to print()
+
+commit d73b5dacce0927e727db5aebb9384a6fd2bb1cd5
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sat Mar 26 20:23:02 2011 -0700
+
+    fix missed parameter.
+
+commit 50833d06b407b6028d6b6ec66e938bc26cc23141
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Thu Mar 17 21:17:23 2011 -0700
+
+    remove no longer used action.py
+
+commit 0a82306f384ab032a30cce35513a7a4a7c194991
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Fri Feb 25 18:46:44 2011 -0800
+
+    replace more exception raising with error reporting and proper return values.
+    some long line cleanup.
+
+commit d9de33168cfe46be2e269d04ec52afe003f7ba6d
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Wed Feb 23 23:42:42 2011 -0800
+
+    add being able to set the OptionConfig defaults as well
+
+commit 336d0c4b675dff698455cc9df91b71de78347fa7
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Wed Feb 23 23:17:06 2011 -0800
+
+    make add_from_dict() private.
+
+commit a160cc7323338779f8f96e4b63da3e22742d9063
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Wed Feb 23 23:05:45 2011 -0800
+
+    remove unused import.
+    change an exception into an output.error message.
+    set more functions to return True/False
+
+commit bc8019e52ba29b30b528d31aa46180576e7d9dcb
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Wed Feb 23 22:38:03 2011 -0800
+
+    clean out excessive use of try: except pairs
+
+commit f0f43429d260c9afa4bdda394e86a9b258e29150
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Wed Feb 23 22:17:00 2011 -0800
+
+    create a new create_overlay_dict() to assist in using a python dictionary for overlay definitions
+
+commit a9fe3d3dc2794ab46af1b68728aa7a12f0733f49
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Wed Feb 23 22:15:06 2011 -0800
+
+    fix whitespace, change the version
+
+commit fcadf2247b0982bc0449e65116bd7fd9a76bd789
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Wed Feb 23 22:14:18 2011 -0800
+
+    add a new OptionConfig subclass.
+    improve some debug messages.
+
+commit 091147c6abb9bdfa814a8fc571b6cad85669fa46
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Wed Feb 23 22:13:04 2011 -0800
+
+    remove a few raise Exception()'s and replace them with self.output.error messages.
+    wrap the make_Conf in a config check.
+
+commit 4c51f94ca343338c0d266fae5c5ab6500df5e258
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Wed Feb 23 22:10:33 2011 -0800
+
+    add 2 new functions, add_new & add_from_dict.
+    Modify the __init__ params a bit
+    whitespace additions between functions.
+
+commit ba5f0cd5c948bb7a65ab21008c940caf0fbe38e7
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Wed Feb 23 21:58:49 2011 -0800
+
+    removal of xml from the vcs class parameters.
+
+commit e4cbd7af207a2f21df967a080af5bb61c6c782d7
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Mon Feb 21 03:41:16 2011 -0800
+
+    set output's error callback to the api's _error().
+    update the overlay's info dictionary.
+
+commit 89455e5de82d644e5b034642bacaac8338e8987a
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Mon Feb 21 03:38:41 2011 -0800
+
+    add an error callback function ability to pass errors to.
+
+commit b68a9eaead31e08460460a13d999444118784a59
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Mon Feb 21 03:37:13 2011 -0800
+
+    Change most exceptions raised to output.errors().
+    set functions to return True/False.
+
+    Signed-off-by: Brian Dolbec <brian.dolbec@gmail.com>
+
+commit a79acc064e4bf9ba97e33b6fd66329f2fee9014d
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sat Feb 19 10:08:14 2011 -0800
+
+    separate out ArgsParser to it's own file and subclass BareConfig
+
+commit 990e967e10ec6511aa8e58beacdc9c3a5a029fcc
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sat Feb 19 03:01:30 2011 -0800
+
+    Create a new single import high level Layman class
+
+commit 3097da00099de860894ddde8f7b3df9722ec6734
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sat Feb 19 02:45:50 2011 -0800
+
+    remove no longer needed imports and OUT variable
+
+commit 9df5b23e5b71d6f35302572162239f3d23732e33
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sat Feb 19 02:45:03 2011 -0800
+
+    import Message directly add all options to BareConfig for easy instantiation with teh desired options.
+
+commit 7a970a992bfc1fea6c37ef96378c2fd4bfbc8b17
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sat Feb 19 02:43:11 2011 -0800
+
+    eliminate the need to import Message, cleanup some stale comments.
+
+commit bf5a704ebca23f917911c73994c708a1fa45d78d
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Fri Feb 18 20:49:33 2011 -0800
+
+    missed another typo
+
+commit 762d63a6bd055092ce2033c21bd70871c1c8d234
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Fri Feb 18 20:46:57 2011 -0800
+
+    fix typos
+
+commit a54b7138d76dacf2c8e3ba9b550d7619790a9010
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Fri Feb 18 20:10:18 2011 -0800
+
+    fix missed colon
+
+commit f2dd98035ee2c90bb01174d6f816a4866b1c0f7d
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Fri Feb 18 20:06:51 2011 -0800
+
+    add nocolr to BareConfig and improve quiet/quietness handling
+
+commit 3eaca0340384122c5d83e0aa2d0a8b6dc1165487
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Thu Feb 17 21:19:08 2011 -0800
+
+    Add per repo type postsync options.
+    Some minor long lines cleanup.
+
+commit 4872509aab4693638c957fcd8e9d38af06357769
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Thu Feb 17 13:52:44 2011 -0800
+
+    make the BareConfig more comparable with the ArgsParser.
+    Separate out a True/False function for config option string conversion.
+
+commit 6d023e32aa94c42f6307f2263ac49a6f09d7680e
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Thu Feb 17 13:49:28 2011 -0800
+
+    shorten long lines
+
+commit af55bea519642b9742135498e5fddaececab7d1f
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Thu Feb 17 13:48:54 2011 -0800
+
+    add per repo type config options
+
+commit cc15f2551e105540850101572ccba275a6fc1ace
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sun Feb 13 16:53:33 2011 -0800
+
+    fix the incorrect exit code settings which are opposite the True/False that the api returns
+
+commit 69ca817b92d78e91b03ee3e327b9e369c8f26e5a
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sun Feb 13 16:52:19 2011 -0800
+
+    Split out MessageBase class, more code reduction/cleanup
+
+commit d308b929d9fb4a0c69d331079f9a8b3ebbb2164a
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sun Feb 13 16:50:45 2011 -0800
+
+    more DebugMessage class cleanup/transition to subclassing Message
+
+commit 503c1586ac80109089f0bf6d0a1a0a579a19a6d7
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sun Feb 13 16:49:30 2011 -0800
+
+    fix a missed color_off(), add myself to the copyright, whitespace cleaning
+
+commit ac8a52948f107265718dabe97e144a7cc4a70091
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sun Feb 13 16:47:14 2011 -0800
+
+    fix a long line, clean an unused import, fix the sync return value better
+
+commit 6a85b05289ae2bb9f5da1748985322e83d064f60
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sun Feb 13 01:31:54 2011 -0800
+
+    simplify debug.py to subclass the simplified Message class
+
+commit 306b419af140c6e1eb41a2114005b20b82a5332c
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sun Feb 13 01:30:24 2011 -0800
+
+    further simplify, reduce the number of functions
+
+commit badca544dbd7e151e27b4f004962b139aa450ac3
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sat Feb 12 19:24:37 2011 -0800
+
+    output more info to the trial for adding an overlay
+
+commit 429281392d97880cb075456d85e878dc077e7d51
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sun Feb 6 15:40:15 2011 -0800
+
+    use the new message class and fix the error recording and output
+
+commit 43d5d08711fb4170b85505e3ec7edffc64cbf8e6
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sun Feb 6 15:38:49 2011 -0800
+
+    new simplified message class
+
+commit b9635c0d5a2b99263ba361bf957d31ac0907c5a0
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sun Feb 6 15:37:30 2011 -0800
+
+    rename Overlay's __str__().  split out UnknownOverlayMessage() from the exception class
+
+commit 8f3c12a02768bea0cf1ceed02b27886cdac3f2af
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sun Feb 6 15:34:36 2011 -0800
+
+    add the ability to plugin repository definition xml files without editing the config file
+
+commit 6c2ae66cf246a34fa4b3129df4cd01aa2ee47641
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sat Feb 5 10:35:27 2011 -0800
+
+    add an example testpath for testing the git checkout
+
+commit f91a4b9045933174384f558bd89aeb24a2579bef
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sat Feb 5 10:34:28 2011 -0800
+
+    add an irc data element to the overlay xml
+
+commit 2dd23d2be98537bebe647340a6ba6c6f88578300
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Mon Jan 17 23:58:04 2011 -0800
+
+    add a list_ids() and use the it
+
+commit 6780f08f787642bb3e1620a0909d96a7e43abb0d
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Mon Jan 17 23:57:18 2011 -0800
+
+    add missing output statements, debug all the new actions
+
+commit da083d70887673dbb3e26c28f4a796355f47b00e
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Mon Jan 17 20:48:38 2011 -0800
+
+    minor word change
+
+commit 3da3a059d7e0c251e457a3b803752dd517acf726
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Mon Jan 17 20:06:37 2011 -0800
+
+    add missing output messages
+
+commit 92298c7aa198f0492655d365fd8bb11f2d883869
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Mon Jan 17 20:05:48 2011 -0800
+
+    add a generator for source types the same as source uris.
+    use the generator in get_all_info().
+    pylint cleanup.
+
+commit f00559c0ae7d5abe8197c8e9a1052c02cdd0a273
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sun Jan 16 23:50:16 2011 -0800
+
+    add a few more files to ignore
+
+commit 7aa228d25d1fb1f1343f9cddb187a84bc1cd5a50
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sun Jan 16 22:57:58 2011 -0800
+
+    create a new cli interface to use the new api
+
+commit cf439af88990de7f7e0ef68faca1581e0480a458
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sun Jan 16 22:56:06 2011 -0800
+
+    overhaul the api, add several functions, delay loading of the db's, etc
+
+commit c551ad652c54eaccc974c1bb87e8c7582adacbae
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sun Jan 16 22:52:52 2011 -0800
+
+    move utility functions out of the Overlay class
+
+commit d7510f1f7ee5c5bec7bdba68a310c1ce17444821
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sun Jan 16 22:50:08 2011 -0800
+
+    add a linefeed to the hint message for better output separation
+
+commit 3ae0e5c0768081314183e66f589b57a13f271af5
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sun Jan 16 22:49:16 2011 -0800
+
+    fix long lines and a typo, minor code improvements
+
+commit b214cd3e79ee70aec597262f5bb9bbaf6fdc74e5
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sun Jan 16 22:46:38 2011 -0800
+
+    Move color codes to a new file.
+    Add some message string constants
+
+commit 4fbff6fc56d92aaba151bf2a02d27464425f1644
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sun Jan 16 22:41:32 2011 -0800
+
+    add optional repo list limiter to the list function
+
+commit 5e5809bd76bcdab37a6f270a47aa57f5900d4723
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sun Jan 16 22:39:47 2011 -0800
+
+    slight code change to my modified base.
+    whitespace cleanup
+
+commit ae654d7a403eb2d018543a9034a408689f26484c
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sun Nov 14 16:25:36 2010 -0800
+
+    update to using basestring instead of str.
+    Otherwise assume it is an iterable.
+
+commit 5c08a86e2c65c99a98bcfddf6f1f0d2b0c199a8c
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sat Aug 7 08:33:52 2010 -0700
+
+    Apply tulcod's g-common support changes.
+
+commit 3f0553996ab99a1923bc35e609efc42008c6d4cd
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Fri Jul 16 23:02:01 2010 -0700
+
+    some docstring updates
+
+commit 8802626d9ca6c325213f3d19b7da696892c6c1fe
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Fri Jul 16 14:04:24 2010 -0700
+
+    remove the extra comma that wrapped the dict in a tuple.
+
+commit 11ba6a09a61778dbe873246d9c4bcfb875f351d9
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Fri Jul 16 07:10:49 2010 -0700
+
+    change add_repo and delete_repo to add_repos,
+     delete_repos to reflect they can take a list.
+    fix the dumb error in get_errors().
+    change get_info() to get_info_str() and code get_all_info()
+     that returns data instead of the string representation of it.
+
+commit 5609d5d6f73b4e15477a4851c1f9701866b5a3c2
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Thu Jul 15 17:52:54 2010 -0700
+
+    fix the docstrings to match current input types.
+
+commit 63789af9d74191578d21159f0b19af524134eb9f
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sun Jul 11 15:21:56 2010 -0700
+
+    make the sync_results saved every time rather than conditional.
+
+commit 5a949d21c92aa729490bd9aa268354c5c08844ee
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sun Jul 11 14:04:57 2010 -0700
+
+    fix some typos, copy/paste errors, and debug/fix some changes to the api.
+
+commit e4b3560bf8b8dbce3c992086a5697fea7aefa200
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sun Jul 11 01:54:22 2010 -0700
+
+    Remove the Output class as it is not needed, was used for initial testing only.
+
+commit bb446c2f548b08ad745ff8b608383314e76a9224
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sat Jul 10 21:22:40 2010 -0700
+
+    Add a get_option function as a convenience function for option retrieval instead of using the class instance as a dictionary.
+
+commit af8c821f1b6c1a48b5ce2f6ba328ba9ff8807a9d
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Sat Jul 10 21:20:44 2010 -0700
+
+    Modify the API to be more compatible with a c interface.
+    Make all main repo functions accept either a string or a list of strings.
+    Change most functions to return True/False for success/failure and save error messages for separate retrieval.
+    Change other functions to return a dictionary instead of tuples or lists.
+    Add a get_errors() for retrieving and resetting error messages.
+    Change sync to either save or print the success, warnings, fatals info.
+
+commit a11c61f22f3df968f4c00f9a8f8b996e6a143df7
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Wed Jul 7 19:18:34 2010 -0700
+
+    Separate out the configs from the args parsing code.  This will allow basic configs for api consumers that are changeable.
+
+commit 61135ce4b04e52855e0ce320777ec671cccf710c
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Tue Jul 6 19:53:29 2010 -0700
+
+    change the shebang because it would not run in my test environment
+
+commit eeea37f1f26e26794df88ea60f48881b1e9ad5d7
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Tue Jul 6 19:32:09 2010 -0700
+
+    create a new readme to explain a bit how to use the new api
+
+commit 423dda9923eef331670ab3e79266e5d0ca19a699
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Tue Jul 6 18:42:53 2010 -0700
+
+    fix results tracking
+
+commit b0fec599217155459e26aba627f3297a7e857a09
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Tue Jul 6 18:20:56 2010 -0700
+
+    add new layman API file and class to be used by api consumers, but could also be used by the cli if they desire to migrate to it.  That would eliminate the duplication in hte action.py file.  Unfortunately, the action classes were not suitable for api consumers.  They worked efficiently as one time cli use only. I also have subclassed the debug.py's Message class to override some print statements for data capture instead.  This may not survive when the api is completed.  create_fd() is handy for creating opened file descriptors to use for output re-direction.
+
+commit 3731e182e0577165ede11e95d4bd447354ce3786
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Tue Jul 6 18:08:46 2010 -0700
+
+    Change the remaining modules to use the config['output'] variable so re-direction is possible for all output.
+
+commit c387c4eff9eb13ece3108cf1b5818d0ba6551f1f
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Tue Jul 6 18:07:41 2010 -0700
+
+    Add an output parameter to Message class and change the prints that weren't already re-directed to re-direct to it
+
+commit 8d5c2c9f9a64dd99f65bf3791cb88ca400339c45
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Tue Jul 6 17:36:22 2010 -0700
+
+    change to use the config['output'] variable
+
+commit 8c0b76134494339ff75bb5c3e8332c69f257838a
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Tue Jul 6 17:21:17 2010 -0700
+
+    Add an input parameter, 'output' to delete_empty_directory so that it can be overriden if desired
+
+commit 3b6f983f8d764e974c38ae4b4eccbfd63553ff2d
+Author: Brian Dolbec <brian.dolbec@gmail.com>
+Date:   Tue Jul 6 17:17:34 2010 -0700
+
+    add new __init__ input parameters, output (replaces OUT import), stdout, stdin, stderr.  These are then added to the config dictionary for all other modules to use.  This creates a single point to assign them and makes it possible to re-assign them from the defaults in the case of API consumers.
+
+commit 08c7aed2adc6ab162388b39074267ef8d3ffbab4
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Feb 8 04:55:13 2011 +0100
+
+    Extend .gitignore
+
+commit 440993c99ed2094d07a9d623ee12adb12ba0ad5f
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Feb 8 04:40:48 2011 +0100
+
+    MANIFEST.in: Ship file doc/docbook-xsl.css
+
+commit 2cf5b4e6ce1a89492ce0f343ce409de6ca19e76b
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Feb 8 04:36:08 2011 +0100
+
+    Prepare release of 1.4.2 (set release date, sync release notes)
+
+commit 1d1a3a78111f6204f60649119d53856f27da8ae3
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Feb 8 04:30:06 2011 +0100
+
+    Makefile: Extract version from layman/version.py (was hardcoded before)
+
+commit 52140908a6b046af3e28071eb1129e578b6ff6c8
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Feb 8 04:16:32 2011 +0100
+
+    Makefile: Add target "website" to ease uploading the latest man page to layman.sf.net
+
+commit c309635e0357b825531ca44df6e9019bb69d3a73
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Feb 8 04:15:33 2011 +0100
+
+    Makefile: Remove target "www"
+
+commit 73780463a727edd844a16f59abb321f89e0fd2c0
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Sun Nov 7 02:09:21 2010 +0100
+
+    Add missing asciidoc.conf
+
+commit 46fb83877a68c5ddc1841e93695248772c500168
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Sun Nov 7 00:58:39 2010 +0100
+
+    Improve documentation on option nocheck (bug #267686)
+
+commit 72042f2bc3d3f920753fddd68900a7ec057af813
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Sun Nov 7 00:08:14 2010 +0100
+
+    man page: Add "=" to long options
+
+commit d6bb0aa46b32b9675f3aab6e9b870f9184d416cb
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Sun Nov 7 00:06:18 2010 +0100
+
+    man page: Fix logic in synopsis
+
+commit eda4ea7cecaadc6ab2c4923efe8c65410ae91f5d
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Sun Nov 7 00:01:23 2010 +0100
+
+    man page: Uppercase parameter variables and fix their style in synopsis
+
+commit cd8893c95b7fb6d7bd28c998b4c6d472674035b7
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Sat Nov 6 23:57:53 2010 +0100
+
+    man page: Improve style
+
+commit ecc3c7b6b629ff4a62e359c2796dc71abaf3bb9d
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Sat Nov 6 23:47:00 2010 +0100
+
+    man page: Improve style
+
+commit 652f873d575efb014be62eef26e0f1c8b1183751
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Sat Nov 6 23:44:23 2010 +0100
+
+    man page: Introduce see also section
+
+commit 2288a74dd0a90c92bcf04da7d455e72cdd74c875
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Sat Nov 6 23:44:09 2010 +0100
+
+    man page: Add note on gpo.zugaina.org
+
+commit 835ede6a4cbdb69985400648f87523310eaf83a6
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Sat Nov 6 23:39:36 2010 +0100
+
+    man page: Replace PORTAGE_OVERLAYS by PORTDIR_OVERLAY
+
+commit a8eee022c6dc2085d4e37e838ffb45404f77242b
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Sat Nov 6 23:34:00 2010 +0100
+
+    Migrate documentation from DocBook to Asciidoc
+
+commit 467251b6cd44f146907dddb513b98ed0abbef364
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Sat Oct 23 00:44:35 2010 +0200
+
+    Ignore case when sorting data for layman -l|-L
+
+commit 224ed4d1b2f96b22756fcb72240356382d2705d0
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Fri Jul 9 20:43:17 2010 +0200
+
+    Prepare release of 1.4.1 (set release date, sync release notes)
+
+commit dd968998a2a3bba484b6387ee844d214c6774a75
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Thu Jul 8 18:08:47 2010 +0200
+
+    Add script to ease up test suite invocation
+
+commit 2024dd0c9337f91a676ec821bfca59246501ffae
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Thu Jul 8 17:47:43 2010 +0200
+
+    Fix doctest error reported by dabbott
+
+commit 3eac51fa7beb8e7cae657c394c2de52f3f47ef12
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Thu Jul 8 17:14:20 2010 +0200
+
+    Catch keyboard interrupts (Ctrl+C)
+
+commit 41155ede79c5a1f770f510e0f8e6fdd70c440b39
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Thu Jul 8 13:19:15 2010 +0200
+
+    Rename make target "release" to "dist"
+
+commit d8567e2059259f69918285eac1d720efc62132d8
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Thu Jul 8 13:17:02 2010 +0200
+
+    Prepare release of 1.4.0 (set release date, sync release notes)
+
+commit a2cc62702fb5d6b54aa68c4a4ed2bf300e582b31
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Wed Jul 7 21:40:51 2010 +0200
+
+    Close stdin of child processes in quiet mode
+
+commit 8eff1545b83aafba80074951829f6325199a5b25
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Wed Jul 7 21:20:56 2010 +0200
+
+    Replace os.system() by subprocess.Popen()
+
+commit a80e2f67c49d372397f96cf89ac1087b2c0f78d1
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Wed Jul 7 18:19:29 2010 +0200
+
+    Improve command line API cases "layman" and "layman foo"
+
+commit aa11838f38b40f4e34987cf12cb911d6633450db
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Wed Jul 7 17:46:29 2010 +0200
+
+    Tune usage summary display
+
+commit 995476bfa8af27b3f77c1ef8b6ec655d2156998b
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Mon Jul 5 16:41:51 2010 +0200
+
+    Prepare release of 1.3.4 (set release date, sync release notes)
+
+commit 108731312e8e6f682aa138bd63ddd1850fc5f29e
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Mon Jul 5 16:39:21 2010 +0200
+
+    Add make target "doc" to main Makefile
+
+commit afe5dd06a8c05efbef4936dcb9f3e68495832055
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Mon Jul 5 16:32:37 2010 +0200
+
+    No longer store generated file www/index.html
+
+commit 7a762a654c78a71cba8db860f74f584a5692498a
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Mon Jul 5 16:28:59 2010 +0200
+
+    Change date format in change log from YYYY/MM/DD to YYYY-MM-DD
+
+commit 3adaa2d12d66291232a45dafce1e869efe78b92d
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Mon Jul 5 15:35:21 2010 +0200
+
+    Propagate move of CVS and Subversion
+
+commit 18c03d4ce91370fe040af969f8bbb597ddc977af
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Thu Apr 8 20:27:07 2010 +0200
+
+    Prepare release of 1.3.3 (set release date, sync release notes, update website)
+
+commit bcc193c6e2a30ad8b22c6bdb239f63187b10151c
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Thu Apr 8 10:09:18 2010 +0200
+
+    Fix syncing of SVN overlays for users of SVN <1.6.5 (bug #313303)
+
+commit 3e3202109cf033b56a54917510cd338f7389a8e5
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Thu Apr 8 10:13:32 2010 +0200
+
+    Extend change log for bug #311419
+
+commit 8fb19064802856bc5700d0ac27a50590f252a1bf
+Author: Ondrej Sukup <mimi.vx@gmail.com>
+Date:   Fri Mar 26 09:54:23 2010 +0100
+
+    dev-util category changed to dev-vcs for bzr, darcs, git, mercurial
+
+commit fcf9411b7b44d1c1f6f575d49777bdb0579b09d8
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Mon Mar 15 23:26:51 2010 +0100
+
+    Update ChangeLog
+
+commit b3d326a19454ddd00b9f5fc8400f926123bd13db
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Mon Mar 15 23:21:22 2010 +0100
+
+    Fix handling of empty XML entities (bug #309617)
+
+commit ff2e47c9682bbd07e821110a34a67861cce2168e
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Sat Feb 27 00:45:57 2010 +0100
+
+    Extend in-config docs on proxy (suggested by James Broadhead)
+
+commit 92efbc0a73df31655597895c9526e8b80d3e7bef
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Fri Feb 26 20:25:07 2010 +0100
+
+    Move code from ListLocal/ListRemote up to List
+
+commit 10f33da79d6c99d0360bd2c1d3365af4d7fc991c
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Fri Feb 26 20:08:13 2010 +0100
+
+    Rename class List to ListRemote, make ListRemote and ListLocal derive from a new class List
+
+commit 83ea95d35bbbe3300ca09b755e38d316b015afe6
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Sun Feb 21 17:19:37 2010 +0100
+
+    pylint: Resolve redefinition of variable by renaming
+
+commit c7ad6d9e87954b1248a0bc01e31afa4fe59d5781
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Sun Feb 21 17:16:14 2010 +0100
+
+    pylint: Resolve unused import
+
+commit 806b99591eaab8f398988dfc4f2a2452738dd622
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Sun Feb 21 17:02:24 2010 +0100
+
+    Fix missing import
+
+commit 4b16c82ce4d7d78d943f81ea536f4407a7caf4bb
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Sat Feb 20 22:02:43 2010 +0100
+
+    Prepare release of 1.3.2 (set release date, sync release notes, update website)
+
+commit 15607e2a960e046a9d1cf23bbc04f30c505c5600
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Thu Feb 18 06:27:01 2010 +0100
+
+    Hint about broken overlay catalog
+
+commit b3c281c1c5060f4d28e83680dbbc3f2819f0bd42
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Thu Feb 18 05:42:00 2010 +0100
+
+    Move safe op out of try-except block, extend code doc
+
+commit 8c4ac69b03fbeae655e448fadf0d896ed8b2fb56
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Thu Feb 18 05:36:31 2010 +0100
+
+    No longer read same XML file twice
+
+commit 0920b37df448fda795a77a698fb82e23fdfdb20d
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Thu Feb 18 05:29:02 2010 +0100
+
+    Move MakeConf class to dedicated file
+
+commit 8990dad4eb192d342545589c66555faae88e8301
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Thu Feb 18 05:12:43 2010 +0100
+
+    Resolve Actions class, allow custom sys.argv for Config class
+
+commit f32f4851f604ff3e96d47f58a2044d3ca71a21b2
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Wed Feb 17 22:43:44 2010 +0100
+
+    Add pylint config
+
+commit 2661aa7e6ef777d7fcf3909c1bb181a3cf50449d
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Wed Feb 17 22:35:51 2010 +0100
+
+    pylint: Fix dangerous/mutable default value
+
+commit 46b5e63dda2b5bef24f5a4803c920a6637c5b56b
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Wed Feb 17 22:11:13 2010 +0100
+
+    pylint: Resolve redefinition of variable by renaming
+
+commit fd91a63d0a91a6d232f9345ae247d76d84e1a1a6
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Wed Feb 17 22:08:49 2010 +0100
+
+    pylint: Remove unused variable
+
+commit e404a75383b8b70e8d39f419ed77cbcc75918747
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Wed Feb 17 22:08:03 2010 +0100
+
+    pylint: Add child-only attribute to parent, too
+
+commit c043fc0b8fe9d1f2bc554769ecae40756b4546bb
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Wed Feb 17 22:05:15 2010 +0100
+
+    pylint: Resolve unused import
+
+commit e2b872c7c60d3935b99c12aaecba85f5190df6df
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Wed Feb 17 22:02:11 2010 +0100
+
+    pylint: Resolve use of blacklisted built-in funtions
+
+commit c5064d16abd462db1c5a9c65cc69ce2a3bd2298e
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Wed Feb 17 21:59:01 2010 +0100
+
+    pylint: Resolve re-import
+
+commit db48cf95e47649aa68bc70c39c88d49c3fb523c7
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Wed Feb 17 21:56:06 2010 +0100
+
+    pylint: Fix bad indentation
+
+commit d6313993a6559a752a13e8826fa95c1afb39b9cd
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Wed Feb 17 21:53:06 2010 +0100
+
+    pylint: Resolve method overriding with different arguments
+
+commit 3b5e998d2ad91d992cd9764bf8b3a3e00916ebf9
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Wed Feb 17 00:26:51 2010 +0100
+
+    Make fail of tar sync not leave temp files
+
+commit d7425a8bfc7d18a7f5b7e682f65cb8f8d7db4abe
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Feb 16 05:35:50 2010 +0100
+
+    Fix syncing of tar overlays (bug #304547)
+
+commit 44bfd48309633feaf0cec67d337945c1c41b1b65
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Feb 16 21:58:11 2010 +0100
+
+    Add test case for syncing of tar overlays (bug #304547)
+
+commit 2403aa7ea58f46b7113a5eac0cc52973748da411
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Fri Feb 5 02:12:47 2010 +0100
+
+    Prepare release of 1.3.1 (set release date, sync release notes, update website)
+
+commit e321b1c0abca64e2e3615a9e1a321b47a6adbbed
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Thu Jan 28 01:10:45 2010 +0100
+
+    Rename layman.overlay.Overlays to layman.dbbase.DbBase
+
+commit 7a4e280313f57f714c499aed2566c93744d60851
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Thu Jan 28 00:49:55 2010 +0100
+
+    Delete empty overlay directories
+
+commit c654e79fd18adb0e9f1cae6b783f8c81b39dda61
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Thu Jan 28 00:47:32 2010 +0100
+
+    Fix handling of non-existing overlays
+
+commit a223dc2c467cc05932aa5e42bdd905dd6aa83037
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Sun Jan 24 00:22:56 2010 +0100
+
+    Fix handling of CVS overlays
+
+commit 2de3c57b0f31249260943d93e6860913c03f37a8
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Jan 19 18:20:45 2010 +0100
+
+    Prepare release of 1.3.0 (set release date, sync release notes, update website)
+
+commit 218e6a12ceb1808e0f5544eaec933e1172762551
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Jan 19 01:16:58 2010 +0100
+
+    Move storage default to /var/lib/layman
+
+commit 8467497542c0b41e5361a9741d914a0ea2f42c39
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Mon Jan 18 02:38:45 2010 +0100
+
+    No longer treat sync warnings like errors
+
+commit 35b801214aabd8d4a06bcd501a21601827ea2256
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Sun Jan 17 17:02:02 2010 +0100
+
+    Fix refactoring faults
+
+commit 6c7d833b16fbe0c4d39af665e76fa47811edcad2
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Sat Jan 16 18:21:25 2010 +0100
+
+    Fix syncing of overlays gone from remote lists
+
+commit 8d8f7a47dd95ad6a69b8058888cb7aaae9430c76
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Fri Jan 15 19:02:31 2010 +0100
+
+    Prepare release of 1.3.0_rc1 (set release date, sync release notes, update website)
+
+commit 7ba4169637a767bfcf2c99e167c78df97c940a8f
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Fri Jan 15 18:50:19 2010 +0100
+
+    Fix Overlay and OverlaySource equality check
+
+commit 0b95d4b85c1d968060a28e762564a532d4c262f1
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Fri Jan 15 18:32:01 2010 +0100
+
+    Display related directory when deleting overlays
+
+commit 6db71f043212980cd590ced1790c0c91b7b8a553
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Fri Jan 15 01:54:48 2010 +0100
+
+    Fix whitspace handling for description field (with layman -i)
+
+commit e7773dee5669e65afbecc9f3f0a14497e7d6d5a5
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Fri Jan 15 01:38:13 2010 +0100
+
+    Include quality indicator in overlay info display
+
+commit f3c4dc76ff8c950f39dfff80bd47144e1ba2420f
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Fri Jan 15 01:18:56 2010 +0100
+
+    Include feed URIs in overlay info display
+
+commit d1e69d954ea403eb7f5d76c73ed80c248ac24bb3
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Fri Jan 15 01:10:34 2010 +0100
+
+    Remove format and category data from test case XML
+
+commit 9c8e55a689bc8938f3b3dcb0cd3b4e6df740b898
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Fri Jan 15 00:54:54 2010 +0100
+
+    Bump version to 1.3.0_rc1
+
+commit 4a7ed6990d142aed4b0773576b4375f208f8ee59
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Fri Jan 15 00:53:38 2010 +0100
+
+    Fix another test case
+
+commit c9e4f93f884564732b7cbb3961f01c1fb80f8093
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Thu Jan 14 23:57:08 2010 +0100
+
+    Make "layman -L" display as many source URIs as fit (not just one)
+
+commit f0306ea946d3f838c92c1127b0c0b825e7302f70
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Thu Jan 14 23:45:00 2010 +0100
+
+    Fix output for command "layman -L |& less"
+
+commit 71d8076d56646ab92f777d6090a388f86c1fe7e7
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Thu Jan 14 23:20:32 2010 +0100
+
+    Improve usage display
+
+commit 0939294c9265abb78e00124789ee86d9191f3d99
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Thu Jan 14 23:11:16 2010 +0100
+
+    Fix test case in TarOverlay
+
+commit 54a53d5aa0302d6c97a25de21c797cbc607770de
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Thu Jan 14 20:45:21 2010 +0100
+
+    Fix wrong(?) test cases
+
+commit 100390d0bd4253c4fb6eed8a5430bfabd03d6f07
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Thu Jan 14 20:37:51 2010 +0100
+
+    Fix test cases by using new Overlay.source_uris() generator
+
+commit 7cf05fe5c4fb83340d9927ee03df4172cb0b8605
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Thu Jan 14 20:32:02 2010 +0100
+
+    Fix display of overlay type
+
+commit 2a14ba6689f6104601533d0677fb9211a35c96e0
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Wed Jan 13 02:38:44 2010 +0100
+
+    Add support for multiple sources per overlay
+
+commit 82643d91c7814033626885285ee51ac06e66cbe9
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Wed Jan 13 00:29:03 2010 +0100
+
+    Move a few methods down from Overlay to OverlaySource
+
+commit 3f95bfa1f070876ee9f355c7a31d2cd03b089977
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Wed Jan 13 00:25:05 2010 +0100
+
+    Inject OverlaySource class into hierarchy
+
+commit b6f7eed0d97ebcdcb35ad38a1fc61b7544e5a69f
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Wed Jan 13 00:31:09 2010 +0100
+
+    Resolve method Overlay._set_source()
+
+commit 4ab9ad6868e63115ccf7259a152c9fa67fbee2c9
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Wed Jan 13 00:17:23 2010 +0100
+
+    Migrate overlay classes to using super()
+
+commit c0d50a487033ad63f342e2e73e9305cd0696386f
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Jan 12 22:48:48 2010 +0100
+
+    Prepare release of 1.2.6 (set release date, sync release notes, update website)
+
+commit 900903c2085f118a24786a5f4ac5d9fd4d0dde1e
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Jan 12 22:37:04 2010 +0100
+
+    Start shipping doc sources and release notes
+
+commit 8b36cd2f4838662a75cd252d81736ba984dde6a9
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Jan 12 22:32:35 2010 +0100
+
+    Improve release process
+
+commit 3004cad75da1af98f50c9f457bc43fc3aeda1a7a
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Jan 12 16:56:39 2010 +0100
+
+    New fail-logic on removal of an overlay
+
+commit 18d5ccac39d9c5a813331959f54a7961e83174ce
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Jan 12 03:09:43 2010 +0100
+
+    Make .tar.noidea extension for tar archives with unknown compression
+
+commit 38b8f5873f774202e9d9b47a1e702804cdeaee9e
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Jan 12 03:08:32 2010 +0100
+
+    Document arrival of support for .tar.lzma and friends
+
+commit 553ea1d895e3b9b74f9b6232bf0ca99fe9adc77b
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Jan 12 03:03:52 2010 +0100
+
+    Drop support for broken tar overlays
+
+commit b513cf5ddd0eae89a6ba7454a033586efb18e94e
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Mon Jan 11 04:32:45 2010 +0100
+
+    Migrate to GNU tar's compression format auto-detection
+
+commit 3df0bb5425b5988f1439a462bb5ff9484b1cd63c
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Wed Jan 6 07:06:17 2010 +0100
+
+    Fix and further improve write permission checks
+
+commit 6d6663f5519b400982037721a807528ea0b03202
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Jan 5 16:00:02 2010 +0100
+
+    Sync CHANGES
+
+commit 58fa6a3bf2600b8cb6338158c32d306a99658236
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Jan 5 15:56:57 2010 +0100
+
+    Add hint on not being root
+
+commit 07ebab92cbd300853e12c2e2ea3b405e31a8e6cc
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Jan 5 15:53:26 2010 +0100
+
+    No longer fetch twice
+
+commit a977b9542d18da2cde5ce03cb75e403c6630f5e2
+Author: Bjoern Tropf <asym@gentoo.org>
+Date:   Tue Jan 5 15:52:15 2010 +0100
+
+    Check write permission before fetching the list of overlays
+
+commit dbc4f712fa892bb067996f45821f8d3aeda5e2fc
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Mon Jan 4 21:05:30 2010 +0100
+
+    Prepare release of 1.2.5 (set release date, sync release notes, update website)
+
+commit acf9ef9a4b3b9aedbc9b1a6f9fec26fa0fe19afa
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Mon Jan 4 05:48:22 2010 +0100
+
+    Mute warnings from external test suite
+
+commit 3dd1f818e2e004c96f630e0aea77cded1b018b14
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Mon Jan 4 05:48:51 2010 +0100
+
+    Add test suite for format/subpath/category
+
+commit e54bec19b0a5e29df79b35d0f90574e22db538da
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Mon Jan 4 05:47:18 2010 +0100
+
+    Add reading of format/subpath/category from repositories.xml format
+
+commit 21f0e3ccbe47993cb8851aa62aab4e015da74e39
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Mon Jan 4 05:38:34 2010 +0100
+
+    Notify subclasses of Overlay which <source> is selected
+
+commit fb57193767a3b52ca6eafda31f2f7e4e33730458
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Mon Jan 4 05:44:57 2010 +0100
+
+    Bring back writing of format/subpath/category
+
+commit 836dea135b73c2b0e802888702c6b67c86f2bea4
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Mon Jan 4 05:36:34 2010 +0100
+
+    Introduce equality and inequality tests
+
+commit 4cfd62c88c855c90f56db1a60ef2e438b13ca3d6
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Mon Jan 4 05:31:15 2010 +0100
+
+    Make Overlay derive from object so we can use super() in subclasses
+
+commit 9c520cc5bfd77769ba989b11ce90372c8206b44b
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Mon Jan 4 00:52:17 2010 +0100
+
+    Handle sys.stdout.encoding being None
+
+commit a4ce3e5d2076528950155069999873a92b87833e
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Sat Jan 2 04:23:56 2010 +0100
+
+    Fix handling of non-ASCII characters
+
+commit 13b8a3969b3fcba55b25d2b593c78abf708fec06
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Fri Jan 1 01:39:33 2010 +0100
+
+    Fix handling of names containing '@' for Subversion overlays
+
+commit 04a856b8773f0838dcf0fd595b3869402cde769b
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Dec 29 15:33:10 2009 +0100
+
+    Bump version to 1.2.5
+
+commit 1d2c84df69f450318b2632ef5710ce392ef2802d
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Dec 29 15:32:03 2009 +0100
+
+    Rename Overlay.to_minidom to to_xml (as it no longer uses minidom)
+
+commit f70906f907df33672da506a178e00a726be41952
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Dec 29 15:28:35 2009 +0100
+
+    Fix post-1.2.4 whitespace-stripping bug
+
+commit 08c83772f69aaa7edf6c4809365809e8144cce3b
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Dec 29 14:50:25 2009 +0100
+
+    Allow running VCS from PATH
+
+commit 1fffa93607c68947ae4eea18bf22f95e0d514a66
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Dec 29 14:22:06 2009 +0100
+
+    Allow overriding VCS commands
+
+commit 4e5db6241219e5daf79ac20967aef03097d70bb8
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Dec 29 13:35:33 2009 +0100
+
+    Pass config down to Overlay instances
+
+commit 3ef674c91931a22a51bcdeb840897147c35e1db5
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Dec 29 13:33:52 2009 +0100
+
+    Migrate ElementTree imports to Python >=2.5
+
+commit ba638979c483a371e5be70ba4d5fc641089c45ad
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Dec 29 02:32:40 2009 +0100
+
+    Sync CHANGES and AUTHORS
+
+commit 42deac2d731c7ead984bc7cca79cf001e8ca387c
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Dec 29 02:01:31 2009 +0100
+
+    Indent XML when writing to disk
+
+commit a4499de57c1a71e29beda6320dfeb79286668799
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Dec 29 02:00:17 2009 +0100
+
+    Migrate ElementTree imports to Python >=2.5
+
+commit e0e15fa5177023b9d82569d9de0e8561bf83f128
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Tue Dec 29 01:59:05 2009 +0100
+
+    Fix license headers
+
+commit 507e8f4451e53de613228761b9bbf1a5d82f25cb
+Author: Christian Groschupp <christian@groschupp.org>
+Date:   Mon Dec 28 01:43:18 2009 +0100
+
+    Migrate XML handling to ElementTree
+
+commit 63b1dff9da3df8a63708a4ecb5f646af6951ecfd
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Sat Dec 5 03:16:43 2009 +0100
+
+    Update website to reflect release 1.2.4
+
+commit 38b74db5d5e29b360834f525a2d07444e30ba213
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Sat Dec 5 03:15:11 2009 +0100
+
+    Remove subversion'ess from helper Makefile
+
+commit e9279ed990f591d662c914a7d57c0c56b3c02679
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Fri Dec 4 21:38:15 2009 +0100
+
+    Prepare release 1.2.4 (sync change log and release notes, bump version)
+
+commit 8349b28317031a4ff45755079a0e4d47ade1768c
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Fri Dec 4 21:01:04 2009 +0100
+
+    Add support for repositories.xml database format
+
+commit 9c9f1661c23c96e97079eefa81f667cde38208f1
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Fri Dec 4 23:55:26 2009 +0100
+
+    Fix reading of CDATA sections
+
+commit a04926356ba19a23afc4f166f20e7edccfa350f7
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Fri Dec 4 22:03:09 2009 +0100
+
+    Introduce .gitignore
+
+commit 7008879fe154908916891bdf7e07ef4805e3c9c8
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Sat Dec 5 00:15:20 2009 +0100
+
+    Remove file uploading from helper Makefile
+
+commit 664c15b1f51339d5640f492abdab5c70c4612eb0
+Author: Sebastian Pipping <sebastian@pipping.org>
+Date:   Fri Dec 4 22:05:28 2009 +0100
+
+    Remove layman ebuild (as it went to the Gentoo tree)
+
 2009-10-12  Gunnar Wrobel  <p@rdus.de>
 
-	* layman/overlays/cvs.py (CvsOverlay.sync): app-portage/layman cvs
-	update command needs to include -d or it dosn't checkout new
-	directorys (#278807)
-	http://bugs.gentoo.org/show_bug.cgi?id=278807
+    * layman/overlays/cvs.py (CvsOverlay.sync): app-portage/layman cvs
+    update command needs to include -d or it dosn't checkout new
+    directorys (#278807)
+    http://bugs.gentoo.org/show_bug.cgi?id=278807
 
-	* doc/layman.8.xml: Old layman path in new documentation (#271457)
-	http://bugs.gentoo.org/show_bug.cgi?id=271457
+    * doc/layman.8.xml: Old layman path in new documentation (#271457)
+    http://bugs.gentoo.org/show_bug.cgi?id=271457
 
-	* layman/db.py (DB.add): app-portage/layman:output grammar
-	error (#259188)
-	http://bugs.gentoo.org/show_bug.cgi?id=259188
+    * layman/db.py (DB.add): app-portage/layman:output grammar
+    error (#259188)
+    http://bugs.gentoo.org/show_bug.cgi?id=259188
 
 2009-01-01  Gunnar Wrobel  <p@rdus.de>
 
-	* layman/version.py (VERSION): Bump to 1.2.3.
+    * layman/version.py (VERSION): Bump to 1.2.3.
 
-	* layman/overlays/overlay.py (Overlay.short_list): Support setting
-	the terminal screen width (also fixes #253016)
-	http://bugs.gentoo.org/show_bug.cgi?id=253016
+    * layman/overlays/overlay.py (Overlay.short_list): Support setting
+    the terminal screen width (also fixes #253016)
+    http://bugs.gentoo.org/show_bug.cgi?id=253016
 
-	* layman/action.py (Sync.run): layman -S fetches each overlay
-	twice (#253241)
-	http://bugs.gentoo.org/show_bug.cgi?id=253241
+    * layman/action.py (Sync.run): layman -S fetches each overlay
+    twice (#253241)
+    http://bugs.gentoo.org/show_bug.cgi?id=253241
 
 2008-12-28  Gunnar Wrobel  <p@rdus.de>
 
-	* layman/version.py (VERSION): Bump to 1.2.2.
+    * layman/version.py (VERSION): Bump to 1.2.2.
 
-	* layman/overlays/overlay.py (Overlay.short_list.terminal_width):
-	layman -L: better use of screen real estate for source
-	URLs (#251032).
-	Submitted by Martin von Gagern <Martin.vGagern@gmx.net>.
-	https://bugs.gentoo.org/show_bug.cgi?id=251032
+    * layman/overlays/overlay.py (Overlay.short_list.terminal_width):
+    layman -L: better use of screen real estate for source
+    URLs (#251032).
+    Submitted by Martin von Gagern <Martin.vGagern@gmx.net>.
+    https://bugs.gentoo.org/show_bug.cgi?id=251032
 
 2008-12-03  Gunnar Wrobel  <p@rdus.de>
 
-	* layman/overlays/overlay.py (Overlay.cmd): Execute subprocesses
-	in a shell. Fixes app-portage/layman-1.2.1: --quietness=2 is
-	broken (#247792).
-	http://bugs.gentoo.org/show_bug.cgi?id=247792
+    * layman/overlays/overlay.py (Overlay.cmd): Execute subprocesses
+    in a shell. Fixes app-portage/layman-1.2.1: --quietness=2 is
+    broken (#247792).
+    http://bugs.gentoo.org/show_bug.cgi?id=247792
 
-	* layman/overlays/git.py (GitOverlay.sync): app-portage/layman -
-	'layman -S --quiet' yields "git: 'pull-q' is not a
-	git-command." (#247964)
-	http://bugs.gentoo.org/show_bug.cgi?id=247964
-	
+    * layman/overlays/git.py (GitOverlay.sync): app-portage/layman -
+    'layman -S --quiet' yields "git: 'pull-q' is not a
+    git-command." (#247964)
+    http://bugs.gentoo.org/show_bug.cgi?id=247964
+
 2008-11-15  Gunnar Wrobel  <p@rdus.de>
 
-	* layman/version.py (VERSION): Bump to 1.2.1.
+    * layman/version.py (VERSION): Bump to 1.2.1.
 
 2008-11-14  Gunnar Wrobel  <p@rdus.de>
 
-	* layman/*: layman: pass --quiet flag down to the version control
-	system (#236165).
-	Submitted by A. F. T. Arahesis <arfrever.fta@gmail.com>.
-	http://bugs.gentoo.org/show_bug.cgi?id=236165
+    * layman/*: layman: pass --quiet flag down to the version control
+    system (#236165).
+    Submitted by A. F. T. Arahesis <arfrever.fta@gmail.com>.
+    http://bugs.gentoo.org/show_bug.cgi?id=236165
 
-	* layman/db.py (RemoteDB.path): Use the hashlib library (#237625).
-	Submitted by Mike Auty <ikelos@gentoo.org>.
-	http://bugs.gentoo.org/show_bug.cgi?id=237625
+    * layman/db.py (RemoteDB.path): Use the hashlib library (#237625).
+    Submitted by Mike Auty <ikelos@gentoo.org>.
+    http://bugs.gentoo.org/show_bug.cgi?id=237625
 
-	* layman/overlays/overlay.py (Overlay.cmd): Use the subprocess
-	module (#237625).
-	Submitted by Mike Auty <ikelos@gentoo.org>.
-	http://bugs.gentoo.org/show_bug.cgi?id=237625
+    * layman/overlays/overlay.py (Overlay.cmd): Use the subprocess
+    module (#237625).
+    Submitted by Mike Auty <ikelos@gentoo.org>.
+    http://bugs.gentoo.org/show_bug.cgi?id=237625
 
-	* layman/overlays/git.py (GitOverlay.add): layman git: handle
-	git+ssh://, ssh:// correctly (#230702)
-	Submitted by Donnie Berkholz <dberkholz@gentoo.org>
-	http://bugs.gentoo.org/show_bug.cgi?id=230702
+    * layman/overlays/git.py (GitOverlay.add): layman git: handle
+    git+ssh://, ssh:// correctly (#230702)
+    Submitted by Donnie Berkholz <dberkholz@gentoo.org>
+    http://bugs.gentoo.org/show_bug.cgi?id=230702
 
-	* layman/overlays/overlay.py: layman-1.2.0-r1, TR locale
-	error (#235165)
-	Submitted by A. F. T. Arahesis <arfrever.fta@gmail.com>.
-	http://bugs.gentoo.org/show_bug.cgi?id=235165
+    * layman/overlays/overlay.py: layman-1.2.0-r1, TR locale
+    error (#235165)
+    Submitted by A. F. T. Arahesis <arfrever.fta@gmail.com>.
+    http://bugs.gentoo.org/show_bug.cgi?id=235165
 
-	* layman/action.py: layman-1.2.0-r1, TR locale error (#235165)
-	Submitted by A. F. T. Arahesis <arfrever.fta@gmail.com>.
-	http://bugs.gentoo.org/show_bug.cgi?id=235165
+    * layman/action.py: layman-1.2.0-r1, TR locale error (#235165)
+    Submitted by A. F. T. Arahesis <arfrever.fta@gmail.com>.
+    http://bugs.gentoo.org/show_bug.cgi?id=235165
 
-	* layman/db.py (DB.add): Do not remove directories if adding an
-	overlay failed (#236945)
-	http://bugs.gentoo.org/show_bug.cgi?id=236945
+    * layman/db.py (DB.add): Do not remove directories if adding an
+    overlay failed (#236945)
+    http://bugs.gentoo.org/show_bug.cgi?id=236945
 
 2008-06-02  Gunnar Wrobel  <p@rdus.de>
 
-	* ebuild/layman-1.2.0.ebuild: Ebuild for 1.2.0
+    * ebuild/layman-1.2.0.ebuild: Ebuild for 1.2.0
 
-	* etc/layman.cfg (nocheck): Set nocheck to yes.
+    * etc/layman.cfg (nocheck): Set nocheck to yes.
 
-	* layman/version.py: Mark version 1.2.0
+    * layman/version.py: Mark version 1.2.0
 
-	* layman/config.py: Implement a umask setting (#186819)
-	http://bugs.gentoo.org/show_bug.cgi?id=186819
+    * layman/config.py: Implement a umask setting (#186819)
+    http://bugs.gentoo.org/show_bug.cgi?id=186819
 
-	* INSTALL: Fix the documentation.
+    * INSTALL: Fix the documentation.
 
-	* README: Updated project links.
+    * README: Updated project links.
 
-	* doc/layman.8.xml: Update the link section.
+    * doc/layman.8.xml: Update the link section.
 
 2007-11-08  Gunnar Wrobel  <p@rdus.de>
 
-	* layman/action.py (Info.run):
+    * layman/action.py (Info.run):
 
-	Catch non-existing overlay when calling --info
-	http://bugs.gentoo.org/show_bug.cgi?id=198483
+    Catch non-existing overlay when calling --info
+    http://bugs.gentoo.org/show_bug.cgi?id=198483
 
 2007-09-12  Gunnar Wrobel  <p@rdus.de>
 
-	* layman/version.py:
+    * layman/version.py:
 
-	Version 1.1.1
+    Version 1.1.1
 
-	* layman/action.py (Sync.__init__):
+    * layman/action.py (Sync.__init__):
 
-	Fixed --sync-all (#192190)
-	http://bugs.gentoo.org/show_bug.cgi?id=192190
+    Fixed --sync-all (#192190)
+    http://bugs.gentoo.org/show_bug.cgi?id=192190
 
 2007-09-11  Gunnar Wrobel  <p@rdus.de>
 
-	* layman/config.py (Config.__init__):
-	* doc/layman.8.xml:
+    * layman/config.py (Config.__init__):
+    * doc/layman.8.xml:
 
-	Add "nocolor" option (#183364)
-	http://bugs.gentoo.org/show_bug.cgi?id=183364
+    Add "nocolor" option (#183364)
+    http://bugs.gentoo.org/show_bug.cgi?id=183364
 
-	* layman/db.py:
-	* layman/debug.py:
+    * layman/db.py:
+    * layman/debug.py:
 
-	Fixes for unicode bug #184449
-	http://bugs.gentoo.org/show_bug.cgi?id=184449
+    Fixes for unicode bug #184449
+    http://bugs.gentoo.org/show_bug.cgi?id=184449
 
-	* layman/overlays/rsync.py (RsyncOverlay.sync):
+    * layman/overlays/rsync.py (RsyncOverlay.sync):
 
-	Fix bug #177045
-	http://bugs.gentoo.org/show_bug.cgi?id=177045
+    Fix bug #177045
+    http://bugs.gentoo.org/show_bug.cgi?id=177045
 
-	* doc/layman.8.xml:
+    * doc/layman.8.xml:
 
-	Improve the man page concerning the --overlays flag (#180107)
-	http://bugs.gentoo.org/show_bug.cgi?id=180107
+    Improve the man page concerning the --overlays flag (#180107)
+    http://bugs.gentoo.org/show_bug.cgi?id=180107
 
-	* layman/db.py (DB.add):
-	* layman/overlays/overlay.py (Overlay.set_priority):
+    * layman/db.py (DB.add):
+    * layman/overlays/overlay.py (Overlay.set_priority):
 
-	Correctly handle the priority setting (#185142)
-	http://bugs.gentoo.org/show_bug.cgi?id=185142
+    Correctly handle the priority setting (#185142)
+    http://bugs.gentoo.org/show_bug.cgi?id=185142
 
-	* layman/config.py (Config.__init__):
+    * layman/config.py (Config.__init__):
 
-	Finally fix the default for "nocheck"
+    Finally fix the default for "nocheck"
 
-	* layman/version.py:
+    * layman/version.py:
 
-	Update to version 1.1.
+    Update to version 1.1.
 
-	* layman/config.py (Config.__init__):
-	* layman/action.py (Info.run):
-	* doc/layman.8.xml:
+    * layman/config.py (Config.__init__):
+    * layman/action.py (Info.run):
+    * doc/layman.8.xml:
 
-	Add the new "--info" option (bug #188000)
-	http://bugs.gentoo.org/show_bug.cgi?id=188000
+    Add the new "--info" option (bug #188000)
+    http://bugs.gentoo.org/show_bug.cgi?id=188000
 
-	* doc/layman.8.xml:
+    * doc/layman.8.xml:
 
-	Description of the verbose switch (partial fix
-	for #188004).
-	http://bugs.gentoo.org/show_bug.cgi?id=188004
+    Description of the verbose switch (partial fix
+    for #188004).
+    http://bugs.gentoo.org/show_bug.cgi?id=188004
 
-	* layman/config.py (Config.__init__):
+    * layman/config.py (Config.__init__):
 
-	Add the output options into the list of documented
-	cli switches (partial fix for #188004).
-	http://bugs.gentoo.org/show_bug.cgi?id=188004
+    Add the output options into the list of documented
+    cli switches (partial fix for #188004).
+    http://bugs.gentoo.org/show_bug.cgi?id=188004
 
 2007-01-09  Gunnar Wrobel  <wrobel@pardus.de>
 
-	* layman/version.py:
+    * layman/version.py:
 
-	Update to version 1.0.10
+    Update to version 1.0.10
 
 2007-01-08  Gunnar Wrobel  <wrobel@pardus.de>
 
-	* layman/db.py (DB.add, MakeConf.write):
+    * layman/db.py (DB.add, MakeConf.write):
 
-	Added support for the --priority flag.
+    Added support for the --priority flag.
 
-	Modified order of entries in PORTDIR_OVERLAY.
+    Modified order of entries in PORTDIR_OVERLAY.
 
-	* layman/config.py (Config.__init__):
+    * layman/config.py (Config.__init__):
 
-	Added --priority flag.
+    Added --priority flag.
 
-	* doc/layman.8.xml:
+    * doc/layman.8.xml:
 
-	Added documentation for --priority switch.
+    Added documentation for --priority switch.
 
 2007-01-05  Gunnar Wrobel  <wrobel@pardus.de>
 
-	* layman/db.py:
+    * layman/db.py:
 
-	Fixed doc tests.
+    Fixed doc tests.
 
-	* layman/config.py:
+    * layman/config.py:
 
-	Fixed doc tests.
+    Fixed doc tests.
 
-	* layman/action.py:
+    * layman/action.py:
 
-	Fixed doc tests.
+    Fixed doc tests.
 
-	* layman/overlays/tar.py:
+    * layman/overlays/tar.py:
 
-	Fixed doc tests.
+    Fixed doc tests.
 
 2006-12-30  Gunnar Wrobel  <wrobel@pardus.de>
 
-	* layman/config.py (Config.__init__):
+    * layman/config.py (Config.__init__):
 
-	Fixed quietness option.
+    Fixed quietness option.
 
-	* layman/overlays/tar.py (TarOverlay.__init__):
+    * layman/overlays/tar.py (TarOverlay.__init__):
 
-	Fixed default values.
+    Fixed default values.
 
-	* layman/overlays/cvs.py (CvsOverlay.__init__):
+    * layman/overlays/cvs.py (CvsOverlay.__init__):
 
-	Fixed default values.
+    Fixed default values.
 
-	* layman/action.py:
+    * layman/action.py:
 
-	Add support for --quiet/--quietness
+    Add support for --quiet/--quietness
 
-	* layman/overlay.py (Overlays.__init__):
+    * layman/overlay.py (Overlays.__init__):
 
-	Add support for --quiet/--quietness
+    Add support for --quiet/--quietness
 
-	* layman/overlays/overlay.py (Overlay.__init__, Overlay.cmd):
+    * layman/overlays/overlay.py (Overlay.__init__, Overlay.cmd):
 
-	Add support for --quiet/--quietness
+    Add support for --quiet/--quietness
 
-	* layman/db.py (DB.__init__):
+    * layman/db.py (DB.__init__):
 
-	Add support for --quiet/--quietness
+    Add support for --quiet/--quietness
 
-	* layman/version.py:
+    * layman/version.py:
 
-	This will be version 1.0.9
+    This will be version 1.0.9
 
-	* doc/layman.8.xml:
+    * doc/layman.8.xml:
 
-	Added documentation for --quiet/--quietness
+    Added documentation for --quiet/--quietness
 
 2006-12-29  Gunnar Wrobel  <wrobel@pardus.de>
 
-	* layman/config.py (Config):
+    * layman/config.py (Config):
 
-	Added quietness and modified OUT.info / OUT.warn calls
-	accordingly (bug #151965)
+    Added quietness and modified OUT.info / OUT.warn calls
+    accordingly (bug #151965)
 
-	* layman/db.py (DB.sync, DB.add):
+    * layman/db.py (DB.sync, DB.add):
 
-	Catching error when syncing fails (bugs #148698 and #159051).
+    Catching error when syncing fails (bugs #148698 and #159051).
 
-	* ebuild/layman-1.0.8.ebuild:
+    * ebuild/layman-1.0.8.ebuild:
 
-	Fixed postinstall instructions for layman (bug #149867)
+    Fixed postinstall instructions for layman (bug #149867)
 
-	Added subversion "nowebdav" check by cardoe into repository.
+    Added subversion "nowebdav" check by cardoe into repository.
 
 2006-09-23    <post@gunnarwrobel.de>
 
-	* layman/version.py: Update to 1.0.8
+    * layman/version.py: Update to 1.0.8
 
 2006-09-22    <post@gunnarwrobel.de>
 
-	* layman/overlays/cvs.py (CvsOverlay.sync): CVS support
+    * layman/overlays/cvs.py (CvsOverlay.sync): CVS support
 
 2006-09-05    <post@gunnarwrobel.de>
 
-	* layman/*: Generic pylint and cleanup fixes
+    * layman/*: Generic pylint and cleanup fixes
 
-	* layman/config.py (Config.__init__): Modified to allow switching
-	strict checking off.
+    * layman/config.py (Config.__init__): Modified to allow switching
+    strict checking off.
 
 2006-08-08    <post@gunnarwrobel.de>
 
-	* layman/overlays/tar.py (TarOverlay.add): Support for explicit
-	file format of a tar package.
+    * layman/overlays/tar.py (TarOverlay.add): Support for explicit
+    file format of a tar package.
 
 2006-08-01    <post@gunnarwrobel.de>
 
-	* layman/action.py (Sync.run): Print successes and warning at the
-	end of the run.
-	(List.run): List only official overlays when not running verbose.
+    * layman/action.py (Sync.run): Print successes and warning at the
+    end of the run.
+    (List.run): List only official overlays when not running verbose.
 
-	* layman/db.py (MakeConf.write.prio_sort): Sort overlays by
-	priority when writing make.conf
+    * layman/db.py (MakeConf.write.prio_sort): Sort overlays by
+    priority when writing make.conf
 
-	* layman/overlay.py (Overlays.list): Support for marking overlays
-	as official.
-	(Overlays.read): Only warn on invalid overlay definitions and do
-	not add them.
+    * layman/overlay.py (Overlays.list): Support for marking overlays
+    as official.
+    (Overlays.read): Only warn on invalid overlay definitions and do
+    not add them.
 
-	* layman/overlays/bzr.py: Allow whitespace.
+    * layman/overlays/bzr.py: Allow whitespace.
 
-	* layman/overlays/darcs.py: Allow whitespace.
+    * layman/overlays/darcs.py: Allow whitespace.
 
-	* layman/overlays/git.py: Allow whitespace.
+    * layman/overlays/git.py: Allow whitespace.
 
-	* layman/overlays/mercurial.py: Allow whitespace.
+    * layman/overlays/mercurial.py: Allow whitespace.
 
-	* layman/overlays/rsync.py: Allow whitespace.
+    * layman/overlays/rsync.py: Allow whitespace.
 
-	* layman/overlays/svn.py: Allow whitespace.
+    * layman/overlays/svn.py: Allow whitespace.
 
-	* layman/overlays/tar.py: Allow whitespace.
+    * layman/overlays/tar.py: Allow whitespace.
 
-	* layman/overlays/overlay.py (Overlay.__init__): Required contact,
-	description. Added support for status and priority.
-	(Overlay.__str__): Modified display according to changes given
-	above.
-	(Overlay.is_official): Added new function for official overlays.
+    * layman/overlays/overlay.py (Overlay.__init__): Required contact,
+    description. Added support for status and priority.
+    (Overlay.__str__): Modified display according to changes given
+    above.
+    (Overlay.is_official): Added new function for official overlays.
 
-	* layman/overlay.py: Added mercurial support thanks to
-	Andres Loeh <kosmikus@gentoo.org>
+    * layman/overlay.py: Added mercurial support thanks to
+    Andres Loeh <kosmikus@gentoo.org>
 
-	* layman/overlays/mercurial.py: Added mercurial support thanks to
-	Andres Loeh <kosmikus@gentoo.org>
+    * layman/overlays/mercurial.py: Added mercurial support thanks to
+    Andres Loeh <kosmikus@gentoo.org>
 
 2006-07-25    <post@gunnarwrobel.de>
 
-	* layman/config.py (Config.__init__): Fixed error introduced in
-	changeset 204. Config file gets read again.
+    * layman/config.py (Config.__init__): Fixed error introduced in
+    changeset 204. Config file gets read again.
 
 2006-07-18    <post@gunnarwrobel.de>
 
-	* layman/version.py: version bump to 1.0.5
+    * layman/version.py: version bump to 1.0.5
 
-	* layman/config.py (Config.__getitem__): Fixed handling of overlays
-	specified on the command line.
+    * layman/config.py (Config.__getitem__): Fixed handling of overlays
+    specified on the command line.
 
-	* layman/db.py (RemoteDB.cache): Fixed handling of downloaded
-	overlay list.
+    * layman/db.py (RemoteDB.cache): Fixed handling of downloaded
+    overlay list.
 
-	* layman/overlay.py: Added darcs module.
+    * layman/overlay.py: Added darcs module.
 
 2006-07-17    <post@gunnarwrobel.de>
 
-	* layman/config.py (Config.__init__): Fixed some config defaults.
+    * layman/config.py (Config.__init__): Fixed some config defaults.
 
-	* layman/action.py (Actions.__init__): Reduced actions for which
-	the remote lists will be implicitely fetched.
+    * layman/action.py (Actions.__init__): Reduced actions for which
+    the remote lists will be implicitely fetched.
 
-	* doc/layman.8.xml: Updated documentation for implicit fetch.
+    * doc/layman.8.xml: Updated documentation for implicit fetch.
 
-	* layman/action.py (Actions.__init__): Run fetch implicitely
-	only on specific actions.
+    * layman/action.py (Actions.__init__): Run fetch implicitely
+    only on specific actions.
 
-	* layman/db.py (RemoteDB.cache): Modified download code for
-	improved handling of fetch problems.
+    * layman/db.py (RemoteDB.cache): Modified download code for
+    improved handling of fetch problems.
 
-	* layman/action.py (Sync.__init__): Added --sync-all support.
+    * layman/action.py (Sync.__init__): Added --sync-all support.
 
-	* doc/layman.8.xml: Added --sync-all documentation.
+    * doc/layman.8.xml: Added --sync-all documentation.
 
-	* layman/db.py (RemoteDB.__init__): Added proxy support.
+    * layman/db.py (RemoteDB.__init__): Added proxy support.
 
-	* etc/layman.cfg (make_conf): Added local file syntax example.
-	(overlays): Added proxy variable.
+    * etc/layman.cfg (make_conf): Added local file syntax example.
+    (overlays): Added proxy variable.
 
-	* doc/layman.8.xml: Added documentation about local overlay
-	definitions.
-	Added proxy documentation.
+    * doc/layman.8.xml: Added documentation about local overlay
+    definitions.
+    Added proxy documentation.
 
 2006-06-28    <post@gunnarwrobel.de>
 
-	* layman/version.py: Version bump to 1.0.4
+    * layman/version.py: Version bump to 1.0.4
 
-	* layman/action.py (Sync.run): Fixed src check.
+    * layman/action.py (Sync.run): Fixed src check.
 
 2006-06-27    <post@gunnarwrobel.de>
 
-	* layman/action.py (ListLocal.run): Fixed code for listing.
+    * layman/action.py (ListLocal.run): Fixed code for listing.
 
-	* doc/layman.8.xml: Fixed documentation for new nofetch option.
+    * doc/layman.8.xml: Fixed documentation for new nofetch option.
 
-	* layman/action.py (Actions.__init__): Made fetching the default
-	if nofetch is NOT set.
-	(Sync.run): Added source path comparison for overlay location changes.
-	(List.run): Modified output to differentiate between supported and
-	unsupported overlays.
+    * layman/action.py (Actions.__init__): Made fetching the default
+    if nofetch is NOT set.
+    (Sync.run): Added source path comparison for overlay location changes.
+    (List.run): Modified output to differentiate between supported and
+    unsupported overlays.
 
-	* layman/config.py (Config.__init__): Added nofetch option.
+    * layman/config.py (Config.__init__): Added nofetch option.
 
-	* layman/overlay.py: Added bzr support. Thanks to Adrian Perez.
+    * layman/overlay.py: Added bzr support. Thanks to Adrian Perez.
 
-	* layman/overlays/bzr.py: Added bzr support. Thanks to Adrian Perez.
+    * layman/overlays/bzr.py: Added bzr support. Thanks to Adrian Perez.
 
-	* layman/overlays/overlay.py (Overlay.short_list): Fixed length
-	of short listing.
-	(Overlay.supported): Fixed check for supported overlay types.
+    * layman/overlays/overlay.py (Overlay.short_list): Fixed length
+    of short listing.
+    (Overlay.supported): Fixed check for supported overlay types.
 
 2006-06-05    <post@gunnarwrobel.de>
 
-	* layman/overlays/overlay.py (Overlay): Forgot to add a check
-	if the overlay type is actually supported. -> 1.0.2
+    * layman/overlays/overlay.py (Overlay): Forgot to add a check
+    if the overlay type is actually supported. -> 1.0.2
 
-	* layman/overlay.py: genstef@gentoo.org provided support for
-	git based overlays. -> released 1.0.1
+    * layman/overlay.py: genstef@gentoo.org provided support for
+    git based overlays. -> released 1.0.1
 
 2006-05-27    <post@gunnarwrobel.de>
 
-	* doc/layman.8.xml: Updated docs to multi list support
+    * doc/layman.8.xml: Updated docs to multi list support
 
-	* layman/version.py: Version bump to 1.0.0
+    * layman/version.py: Version bump to 1.0.0
 
-	* etc/layman.cfg (overlays): Adapted configuration for change
-	in global list url and multiple list support.
+    * etc/layman.cfg (overlays): Adapted configuration for change
+    in global list url and multiple list support.
 
-	* layman/config.py (Config.__init__): Fixed link for global
-	overlay list.
+    * layman/config.py (Config.__init__): Fixed link for global
+    overlay list.
 
-	* layman/db.py: Added support for multiple overlay lists.
+    * layman/db.py: Added support for multiple overlay lists.
 
-	* layman/overlay.py: Added support for mutliple overlay lists.
+    * layman/overlay.py: Added support for mutliple overlay lists.
 
 2006-05-01    <post@gunnarwrobel.de>
 
-	* layman/version.py: Version bump to 0.9.2
+    * layman/version.py: Version bump to 0.9.2
 
-	* layman/tests/dtest.py (test_suite): Added utils.py test
+    * layman/tests/dtest.py (test_suite): Added utils.py test
 
-	* layman/overlays/tar.py (TarOverlay): Fixed testing results.
+    * layman/overlays/tar.py (TarOverlay): Fixed testing results.
 
 2006-04-14    <post@gunnarwrobel.de>
 
-	* layman/version.py: Version 0.9.1
+    * layman/version.py: Version 0.9.1
 
-	* layman/overlays/tar.py (TarOverlay.__init__): Added
-	category support to packaged overlays. Could/Should
-	also allow this for other overlay types.
+    * layman/overlays/tar.py (TarOverlay.__init__): Added
+    category support to packaged overlays. Could/Should
+    also allow this for other overlay types.
 
 2006-03-12    <post@gunnarwrobel.de>
 
-	* layman/db.py (RemoteDB.cache): Create storage
-	dir if it is missing.
-	(MakeConf.write): Add $PORTDIR_OVERLAY to include
-	manual PORTDIR_OVERLAY variable.
-	(MakeConf.read): Disregard PORTDIR_OVERLAY variable
-	as overlay name.
+    * layman/db.py (RemoteDB.cache): Create storage
+    dir if it is missing.
+    (MakeConf.write): Add $PORTDIR_OVERLAY to include
+    manual PORTDIR_OVERLAY variable.
+    (MakeConf.read): Disregard PORTDIR_OVERLAY variable
+    as overlay name.
 
-	* layman/action.py (Fetch.run): Added error handling
-	for fetch problems.
+    * layman/action.py (Fetch.run): Added error handling
+    for fetch problems.
 
-	* doc/layman.8.xml: Fixes to the man page.
+    * doc/layman.8.xml: Fixes to the man page.
 
-	* layman/version.py: Version bump to 0.9
+    * layman/version.py: Version bump to 0.9
 
-	* layman/action.py (Add.run): Added warning if
-	overlay is unkown.
+    * layman/action.py (Add.run): Added warning if
+    overlay is unkown.
 
-	* etc/cache.xml: Added kolab2 and xgloverlays.
+    * etc/cache.xml: Added kolab2 and xgloverlays.
 
-	* layman/overlays/overlay.py (Overlay.short_list): Added
-	shortened overlay listing
+    * layman/overlays/overlay.py (Overlay.short_list): Added
+    shortened overlay listing
 
-	* layman/overlay.py: Added tar support.
+    * layman/overlay.py: Added tar support.
 
-	* layman/overlays/tar.py: Added tar support.
+    * layman/overlays/tar.py: Added tar support.
 
 2006-02-04    <post@gunnarwrobel.de>
 
-	* etc/cache-private.xml: Added private overlay locations.
+    * etc/cache-private.xml: Added private overlay locations.
 
-	* layman/db.py (MakeConf.read): Allowed for a missing
-	make.conf. This now allows to source an external file
-	into the original make.conf
+    * layman/db.py (MakeConf.read): Allowed for a missing
+    make.conf. This now allows to source an external file
+    into the original make.conf
 
-	* etc/layman.cfg (cache): Fixed location of cache and
-	overlay list
+    * etc/layman.cfg (cache): Fixed location of cache and
+    overlay list
 
-	* layman/config.py (Config.__init__): Fixed description of
-	layman usage.
+    * layman/config.py (Config.__init__): Fixed description of
+    layman usage.

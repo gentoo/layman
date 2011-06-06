@@ -1,5 +1,19 @@
 CHANGES
 -------
+Version 2.0.0_rc1 - Released 2011-06-06
+=======================================
+
+ - major rewrite of the api's, extensions,
+   new cli-api connections, other enhancements...
+
+
+Version 1.4.2-r2 - Released 2011-04-28
+======================================
+
+ - fix bug 363797 python-2.5 test errors.
+
+ - fix broken *args for python 2.5 and 2.6+
+
 
 Version 1.4.2 - Released 2011-02-08
 ===================================

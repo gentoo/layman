@@ -9,7 +9,7 @@ INSTALL instructions
 Obtaining the software
 ----------------------
 
-Download the software at 
+Download the software at
 
   http://sourceforge.net/project/showfiles.php?group_id=195416
 
@@ -19,7 +19,7 @@ Prerequisites
 
   layman requires the following to work:
 
-    - >=python-2.4 (http://www.python.org)
+    - >=python-2.5 (http://www.python.org)
 
 
   In addition you will need to install the different version control /
@@ -35,6 +35,7 @@ Prerequisites
    - rsync
    - svn
    - tar
+   - g-common (g-cran)
 
 
 Installing the software
