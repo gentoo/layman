@@ -1,7 +1,7 @@
 AUTHORS
 -------
 
-Written by 
+Written by
 
   Gunnar Wrobel (wrobel@gentoo.org)
 
@@ -20,4 +20,21 @@ Donnie Berkholz  (dberkholz@gentoo.org)        - git support fixes
 Martin von Gagern (Martin.vGagern@gmx.net)     - Better list format.
 Sebastian Pipping (sebastian@pipping.org)      - repositories.xml support
                                                - ElementTree migration
+                                               - docbook migration
 Christian Groschupp (christian@groschupp.org)  - ElementTree migration
+
+Brian Dolbec  (brian.dolbec@gmail.com)         - New high level api,
+                                               - mid-level api enhancements,
+                                               - new message class,
+                                               - extend config options,
+                                               - code cleanup,
+                                               - new cli connections to
+                                                 the new api,
+                                               - per repo type add, sync options
+                                               - per repo type post sync command
+                                                 hooks,
+                                               - plug-in style repository.xml
+                                                 lists
+                                               - new dictionary repo definition
+                                                 support
+Auke Booij (auke@tulcod.com)                   - new g-common overlay support
