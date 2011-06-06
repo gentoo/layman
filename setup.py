@@ -12,9 +12,10 @@ from layman.version import VERSION
 setup(name          = 'layman',
       version       = VERSION,
       description   = 'Python script for retrieving gentoo overlays',
-      author        = 'Gunnar Wrobel',
-      author_email  = 'wrobel@gentoo.org',
-      url           = 'http://projects.gunnarwrobel.de/scripts',
+      author        = 'Gunnar Wrobel, Brian Dolbec',
+      author_email  = 'wrobel@gentoo.org, brian.dolbec@gmail.com',
+      url           = 'http://layman.sourceforge.net/, ' +\
+        'http://git.overlays.gentoo.org/gitweb/?p=proj/layman.git;a=summary',
       packages      = ['layman', 'layman.overlays'],
       scripts       = ['bin/layman'],
       license       = 'GPL',
