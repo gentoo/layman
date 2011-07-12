@@ -114,14 +114,15 @@ class LaymanAPI(object):
                 self._error("Repository '"+ovl+"' was not installed")
                 results.append(False)
                 continue
+            success = False
             try:
                 self._get_installed_db().delete(
                     self._get_installed_db().select(ovl))
-                results.append(True)
             except Exception as e:
                 self._error(
-                        "Failed to disable repository '"+ovl+"':\n"+str(e))
-                results.append(False)
+                        "Exception caught disabling repository '"+ovl+
+                            "':\n"+str(e))
+            results.append(success)
             self.get_installed(dbreload=True)
         if False in results:
             return False
@@ -147,12 +148,14 @@ class LaymanAPI(object):
                 self._error(UnknownOverlayMessage(ovl))
                 results.append(False)
                 continue
+            success = False
             try:
-                self._get_installed_db().add(self._get_remote_db().select(ovl), quiet=True)
-                results.append(True)
+                success = self._get_installed_db().add(
+                    self._get_remote_db().select(ovl), quiet=True)
             except Exception as e:
-                self._error("Failed to enable repository '"+ovl+"' : "+str(e))
-                results.append(False)
+                self._error("Exception caught enabling repository '"+ovl+
+                    "' : "+str(e))
+            results.append(success)
             self.get_installed(dbreload=True)
         if False in results:
             return False
