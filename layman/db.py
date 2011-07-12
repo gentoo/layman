@@ -206,7 +206,9 @@ class DB(DbBase):
             self.write(self.path)
             make_conf.delete(overlay)
         else:
-            raise Exception('No local overlay named "' + overlay.name + '"!')
+            self.output.error('No local overlay named "' + overlay.name + '"!')
+            return False
+        return True
 
     def sync(self, overlay_name, quiet = False):
         '''Synchronize the given overlay.'''
