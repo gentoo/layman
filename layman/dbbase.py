@@ -277,8 +277,8 @@ class DbBase:
 
         for overlay in selection:
             if verbose:
-                result.append(overlay.get_infostr(), overlay.is_supported(),
-                               overlay.is_official())
+                result.append((overlay.get_infostr(), overlay.is_supported(),
+                               overlay.is_official()))
             else:
                 result.append((overlay.short_list(width), overlay.is_supported(),
                                overlay.is_official()))

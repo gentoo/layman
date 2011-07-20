@@ -391,7 +391,7 @@ class RemoteDB(DbBase):
                 if hint:
                     self.output.warn(
                         'You do not have permission to update the cache (%s).'
-                        % mpath)
+                        % path)
                     import getpass
                     if getpass.getuser() != 'root':
                         self.output.warn('Hint: You are not root.\n')
