@@ -40,7 +40,7 @@ from   layman.overlays.source   import OverlaySource, require_supported
 class TarOverlay(OverlaySource):
     ''' Handles tar overlays.
 
-    >>> from   layman.debug             import OUT
+    >>> from   layman.output import Message
     >>> import xml.etree.ElementTree as ET # Python 2.5
     >>> repo = ET.Element('repo')
     >>> repo_name = ET.Element('name')
@@ -57,12 +57,12 @@ class TarOverlay(OverlaySource):
     >>> subpath = ET.Element('subpath')
     >>> subpath.text = 'layman-test'
     >>> repo[:] = [repo_name, desc, owner, source, subpath]
-    >>> config = {'tar_command':'/bin/tar'}
+    >>> config = {'tar_command':'/bin/tar', 'output': Message()}
     >>> testdir = os.tmpnam()
     >>> os.mkdir(testdir)
     >>> from layman.overlays.overlay import Overlay
-    >>> a = Overlay(repo, config, quiet=False)
-    >>> OUT.color_off()
+    >>> a = Overlay(config, repo, quiet=False)
+    >>> config['output'].set_colorize(False)
     >>> a.add(testdir) #doctest: +ELLIPSIS
     * Running... # /bin/tar -v -x -f...
     >>> sorted(os.listdir(testdir + '/dummy'))

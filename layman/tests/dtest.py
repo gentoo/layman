@@ -49,7 +49,9 @@ import unittest, doctest
 # clean but no testing  : CN
 # unclean but no testing: UN
 
-import layman.action             #CT
+#import layman.api                #CT
+import layman.argsparser         #CT
+import layman.cli                #CT
 import layman.config             #CT
 import layman.db                 #CT
 import layman.dbbase             #CT
@@ -65,7 +67,7 @@ import layman.overlays.tar       #CT
 
 def test_suite():
     return unittest.TestSuite((
-        doctest.DocTestSuite(layman.action),
+        #doctest.DocTestSuite(layman.api),
         doctest.DocTestSuite(layman.config),
         doctest.DocTestSuite(layman.db),
         doctest.DocTestSuite(layman.dbbase),
