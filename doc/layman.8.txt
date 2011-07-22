@@ -204,6 +204,26 @@ nocheck::
     Set to "yes" if *layman* should stop worrying about overlays
     with missing a contact address or the description.
 
+*New*
+Per repository type Add, Sync options.
+
+bzr_addopts :
+bzr_syncopts :
+...
+    These are command options to include in the commands sent to perform
+    the desired action.
+
+Per repository type Post Sync, Add hooks.
+
+bzr_postsync :
+cvs_postsync :
+darcs_postsync :
+git_postsync :
+...
+    These are commands that are run after each add, sync operation if they
+    are defined.
+
+
 
 HANDLING OVERLAYS
 -----------------
@@ -233,6 +253,9 @@ will merge the contents of all lists.
 
 *layman* also allows you to define local files in this list.
 Just make sure you prepend these path names in standard URL notation with 'file://'.
+*New* is the ability to just add an overlay definition to /etc/layman/overlays/
+ some-overlay.xml and it will be automatically available for actions such as
+  add, delete, info...  (see below for file format details)
 
 If you need to use a proxy for access to the Internet, you can use
 the corresponding variable in the *layman* configuration file.
@@ -328,8 +351,10 @@ on 'http://gpo.zugaina.org/'.
 OVERLAY TYPES
 ~~~~~~~~~~~~~
 Currently *layman* supports overlays that are exported via *rsync*,
-*subversion*, *bzr*, *darcs*, *git*, *mercurial* or provided as tar
-packages.
+*CVS*, *subversion*, *bzr*, *darcs*, *git*, *mercurial* or provided as *tar*
+packages.  It also supports the generated overlay type *g-common* installed
+with the g-cran package (at time of this writing, only available in the science
+ overlay).
 
 
 OVERLAY LISTS
@@ -347,18 +372,18 @@ Example 1. An example overlays.xml file
 <!DOCTYPE repositories SYSTEM "/dtd/repositories.dtd">
 <repositories xmlns="" version="1.0">
 <repo quality="experimental" status="official">
-	<name>gnome</name>
-	<description>experimental gnome ebuilds</description>
-	<homepage>http://git.overlays.gentoo.org/gitweb/?p=proj/gnome.git;a=summary</homepage>
-	<owner type="project">
-		<email>gnome@gentoo.org</email>
-		<name>GNOME herd</name>
-	</owner>
-	<source type="git">git://git.overlays.gentoo.org/proj/gnome.git</source>
-	<source type="git">http://git.overlays.gentoo.org/gitroot/proj/gnome.git</source>
-	<source type="git">git+ssh://git@git.overlays.gentoo.org/proj/gnome.git</source>
-	<feed>http://git.overlays.gentoo.org/gitweb/?p=proj/gnome.git;a=atom</feed>
-	<feed>http://git.overlays.gentoo.org/gitweb/?p=proj/gnome.git;a=rss</feed>
+    <name>gnome</name>
+    <description>experimental gnome ebuilds</description>
+    <homepage>http://git.overlays.gentoo.org/gitweb/?p=proj/gnome.git;a=summary</homepage>
+    <owner type="project">
+        <email>gnome@gentoo.org</email>
+        <name>GNOME herd</name>
+    </owner>
+    <source type="git">git://git.overlays.gentoo.org/proj/gnome.git</source>
+    <source type="git">http://git.overlays.gentoo.org/gitroot/proj/gnome.git</source>
+    <source type="git">git+ssh://git@git.overlays.gentoo.org/proj/gnome.git</source>
+    <feed>http://git.overlays.gentoo.org/gitweb/?p=proj/gnome.git;a=atom</feed>
+    <feed>http://git.overlays.gentoo.org/gitweb/?p=proj/gnome.git;a=rss</feed>
 </repo>
 </repositories>
 -------------------------------------------
@@ -368,7 +393,9 @@ ADDING AN OVERLAY LOCALLY
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 Simply create an overlay list in the format described above and run
 *layman* with the -o switch. You need to prepend local file URLs
-with 'file://'.
+with 'file://'.  *New* is the ability to just add an overlay definition like
+ the above to /etc/layman/overlays/ some-overlay.xml and it will be
+ automatically available for actions such as add, delete, info...
 
 
 ADDING AN OVERLAY GLOBALLY
@@ -426,6 +453,7 @@ AUTHORS
 -------
 - Gunnar Wrobel <wrobel@gentoo.org>
 - Sebastian Pipping <sping@gentoo.org>
+- Brian Dolbec <brian.dolbec@gmail.com>
 
 
 REPORTING BUGS
