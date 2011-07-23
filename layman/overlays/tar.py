@@ -57,15 +57,18 @@ class TarOverlay(OverlaySource):
     >>> subpath = ET.Element('subpath')
     >>> subpath.text = 'layman-test'
     >>> repo[:] = [repo_name, desc, owner, source, subpath]
-    >>> config = {'tar_command':'/bin/tar', 'output': Message()}
+    >>> from layman.config import BareConfig
+    >>> config = BareConfig()
     >>> testdir = os.tmpnam()
     >>> os.mkdir(testdir)
     >>> from layman.overlays.overlay import Overlay
     >>> a = Overlay(config, repo, quiet=False)
     >>> config['output'].set_colorize(False)
-    >>> a.add(testdir) #doctest: +ELLIPSIS
-    * Running... # /bin/tar -v -x -f...
-    >>> sorted(os.listdir(testdir + '/dummy'))
+    >>> a.add(testdir)
+    0
+    >>> os.listdir(testdir + '/dummy/')
+    ['layman-test']
+    >>> sorted(os.listdir(testdir + '/dummy/layman-test/'))
     ['app-admin', 'app-portage']
     >>> shutil.rmtree(testdir)
     '''
@@ -79,6 +82,7 @@ class TarOverlay(OverlaySource):
             config, _location, ignore, quiet)
 
         self.output = config['output']
+        self.subpath = None
 
     def __eq__(self, other):
         res = super(TarOverlay, self).__eq__(other) \

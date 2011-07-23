@@ -44,6 +44,7 @@ class CvsOverlay(OverlaySource):
     def __init__(self, parent, config, _location, ignore = 0, quiet = False):
 
         super(CvsOverlay, self).__init__(parent, config, _location, ignore, quiet)
+        self.subpath = None
 
 
     def __eq__(self, other):
