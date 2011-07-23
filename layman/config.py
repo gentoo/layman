@@ -68,14 +68,16 @@ class BareConfig(object):
 
         >>> a = BareConfig()
         >>> a['overlays']
-        '\\nhttp://www.gentoo.org/proj/en/overlays/repositories.xml'
+        'http://www.gentoo.org/proj/en/overlays/repositories.xml'
         >>> sorted(a.keys())
-        ['bzr_command', 'cache', 'config', 'cvs_command', 'darcs_command',
-        'git_command', 'local_list', 'make_conf', 'mercurial_command',
-        'nocheck', 'overlays', 'proxy', 'quietness', 'rsync_command', 'storage',
-        'svn_command', 'tar_command', 'umask', 'width', ...]
+        ['bzr_addopts', 'bzr_command', 'bzr_postsync', 'bzr_syncopts', 'cache', 'config', 'configdir', 'cvs_addopts', 'cvs_command', 'cvs_postsync', 'cvs_syncopts', 'darcs_addopts', 'darcs_command', 'darcs_postsync', 'darcs_syncopts', 'g-common_command', 'g-common_generateopts', 'g-common_postsync', 'g-common_syncopts', 'git_addopts', 'git_command', 'git_postsync', 'git_syncopts', 'local_list', 'make_conf', 'mercurial_addopts', 'mercurial_command', 'mercurial_postsync', 'mercurial_syncopts', 'nocheck', 'nocolor', 'output', 'overlay_defs', 'overlays', 'proxy', 'quiet', 'quietness', 'rsync_command', 'rsync_postsync', 'rsync_syncopts', 'stderr', 'stdin', 'stdout', 'storage', 'svn_addopts', 'svn_command', 'svn_postsync', 'svn_syncopts', 't/f_options', 'tar_command', 'tar_postsync', 'umask', 'verbose', 'width']
+        >>> a.get_option('nocheck')
+        True
         '''
-        self._defaults = {'config'    : '/etc/layman/layman.cfg',
+
+        self._defaults = {
+                    'configdir': '/etc/layman',
+                    'config'    : '%(configdir)s/layman.cfg',
                     'storage'   : '/var/lib/layman',
                     'cache'     : '%(storage)s/cache',
                     'local_list': '%(storage)s/overlays.xml',
@@ -85,7 +87,7 @@ class BareConfig(object):
                     'umask'     : '0022',
                     'overlays'  :
                     'http://www.gentoo.org/proj/en/overlays/repositories.xml',
-                    'overlay_defs': '/etc/layman/overlays',
+                    'overlay_defs': '%(configdir)s/overlays',
                     'bzr_command': '/usr/bin/bzr',
                     'cvs_command': '/usr/bin/cvs',
                     'darcs_command': '/usr/bin/darcs',
@@ -95,7 +97,7 @@ class BareConfig(object):
                     'rsync_command': '/usr/bin/rsync',
                     'svn_command': '/usr/bin/svn',
                     'tar_command': '/bin/tar',
-                    'T/F_options': ['nocheck'],
+                    't/f_options': ['nocheck'],
                     'bzr_addopts' : '',
                     'bzr_syncopts' : '',
                     'cvs_addopts' : '',
@@ -207,10 +209,12 @@ class BareConfig(object):
             and not self._options[key] is None):
             return self._options[key]
         if self.config and self.config.has_option('MAIN', key):
-            if key in self._defaults['T/F_options']:
-                return t_f_check(self.config.get('MAIN', key))
+            if key in self._defaults['t/f_options']:
+                return self.t_f_check(self.config.get('MAIN', key))
             return self.config.get('MAIN', key)
         self._options['output'].debug('Retrieving BareConfig default', 8)
+        if key in self._defaults['t/f_options']:
+            return self.t_f_check(self._defaults[key])
         if key in self._defaults:
             if '%(storage)s' in self._defaults[key]:
                 return self._defaults[key] %{'storage': self._defaults['storage']}
@@ -235,6 +239,16 @@ class OptionConfig(BareConfig):
         """
         @param options: dictionary of {'option': value, ...}
         @rtype OptionConfig class instance.
+
+        >>> options = {"overlays": ["http://www.gentoo-overlays.org/repositories.xml"]}
+        >>> new_defaults = {"configdir": "/etc/test-dir"}
+        >>> a = OptionConfig(options=options, defaults=new_defaults)
+        >>> a['overlays']
+        'http://www.gentoo-overlays.org/repositories.xml'
+        >>> a["configdir"]
+        '/etc/test-dir'
+        >>> sorted(a.keys())
+        ['bzr_addopts', 'bzr_command', 'bzr_postsync', 'bzr_syncopts', 'cache', 'config', 'configdir', 'cvs_addopts', 'cvs_command', 'cvs_postsync', 'cvs_syncopts', 'darcs_addopts', 'darcs_command', 'darcs_postsync', 'darcs_syncopts', 'g-common_command', 'g-common_generateopts', 'g-common_postsync', 'g-common_syncopts', 'git_addopts', 'git_command', 'git_postsync', 'git_syncopts', 'local_list', 'make_conf', 'mercurial_addopts', 'mercurial_command', 'mercurial_postsync', 'mercurial_syncopts', 'nocheck', 'nocolor', 'output', 'overlay_defs', 'overlays', 'proxy', 'quiet', 'quietness', 'rsync_command', 'rsync_postsync', 'rsync_syncopts', 'stderr', 'stdin', 'stdout', 'storage', 'svn_addopts', 'svn_command', 'svn_postsync', 'svn_syncopts', 't/f_options', 'tar_command', 'tar_postsync', 'umask', 'verbose', 'width']
         """
         BareConfig.__init__(self)
 
@@ -268,3 +282,13 @@ class OptionConfig(BareConfig):
         if new_defaults is not None:
             self._defaults.update(new_defaults)
         return
+
+#===============================================================================
+#
+# Testing
+#
+#-------------------------------------------------------------------------------
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod(sys.modules[__name__])

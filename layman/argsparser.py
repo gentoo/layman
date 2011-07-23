@@ -51,20 +51,19 @@ class ArgsParser(BareConfig):
     def __init__(self, args=None, stdout=None, stdin=None, stderr=None):
         '''
         Creates and describes all possible polymeraZe options and creates
-        a debugging object.
+        a Message object.
 
         >>> import os.path
         >>> here = os.path.dirname(os.path.realpath(__file__))
         >>> sys.argv.append('--config')
         >>> sys.argv.append(here + '/../etc/layman.cfg')
+        >>> sys.argv.append('--overlay_defs')
+        >>> sys.argv.append('')
         >>> a = ArgsParser()
         >>> a['overlays']
         '\\nhttp://www.gentoo.org/proj/en/overlays/repositories.xml'
         >>> sorted(a.keys())
-        ['bzr_command', 'cache', 'config', 'cvs_command', 'darcs_command',
-        'git_command', 'local_list', 'make_conf', 'mercurial_command',
-        'nocheck', 'overlays', 'proxy', 'quietness', 'rsync_command', 'storage',
-        'svn_command', 'tar_command', 'umask', 'width']
+        ['bzr_addopts', 'bzr_command', 'bzr_postsync', 'bzr_syncopts', 'cache', 'config', 'configdir', 'cvs_addopts', 'cvs_command', 'cvs_postsync', 'cvs_syncopts', 'darcs_addopts', 'darcs_command', 'darcs_postsync', 'darcs_syncopts', 'g-common_command', 'g-common_generateopts', 'g-common_postsync', 'g-common_syncopts', 'git_addopts', 'git_command', 'git_postsync', 'git_syncopts', 'local_list', 'make_conf', 'mercurial_addopts', 'mercurial_command', 'mercurial_postsync', 'mercurial_syncopts', 'nocheck', 'overlay_defs', 'overlays', 'proxy', 'quietness', 'rsync_command', 'rsync_postsync', 'rsync_syncopts', 'storage', 'svn_addopts', 'svn_command', 'svn_postsync', 'svn_syncopts', 't/f_options', 'tar_command', 'tar_postsync', 'umask', 'width']
         '''
 
         BareConfig.__init__(self, stdout=stdout, stderr=stderr, stdin=stdin)
@@ -159,6 +158,12 @@ class ArgsParser(BareConfig):
                          help = 'Path to the config file [default: ' \
                          + self.defaults['config'] + '].')
 
+        group.add_option('-O',
+                         '--overlay_defs',
+                         action = 'store',
+                         help = 'Path to aditional overlay.xml files [default: '\
+                         + self.defaults['overlay_defs'] + '].')
+
         group.add_option('-o',
                          '--overlays',
                          action = 'append',
@@ -235,7 +240,7 @@ class ArgsParser(BareConfig):
         (self.options, remain_args) = self.parser.parse_args(args)
         # remain_args starts with something like "bin/layman" ...
         if len(remain_args) > 1:
-            self.parser.error("Unhandled parameters: %s"
+            self.parser.error("ArgsParser(): Unhandled parameters: %s"
                 % ', '.join(('"%s"' % e) for e in remain_args[1:]))
 
         # handle debugging
@@ -244,14 +249,16 @@ class ArgsParser(BareConfig):
         if self.options.__dict__['nocolor']:
             self.output.set_colorize(OFF)
 
-        # Fetch only an alternate config setting from the options
-        #if not self.options.__dict__['config'] is None:
-        #    self._defaults['config'] = self.options.__dict__['config']
-
-            #self.output.debug('Got config file at ' + self.defaults['config'], 8)
+        # Set only alternate config settings from the options
+        if self.options.__dict__['config'] is not None:
+            self.defaults['config'] = self.options.__dict__['config']
+            self.output.debug('Got config file at ' + self.defaults['config'], 8)
+        if self.options.__dict__['overlay_defs'] is not None:
+            self.defaults['overlay_defs'] = self.options.__dict__['overlay_defs']
+            self.output.debug('Got overlay_defs location at ' + self.defaults['overlay_defs'], 8)
 
         # Now parse the config file
-        self.read_config(self._defaults)
+        self.read_config(self.defaults)
 
         # handle quietness
         if self.options.__dict__['quiet']:
@@ -284,7 +291,7 @@ class ArgsParser(BareConfig):
         self.output.debug('Retrieving option', 8)
 
         if self.config.has_option('MAIN', key):
-            if key in self._defaults['T/F_options']:
+            if key in self._defaults['t/f_options']:
                 return self.t_f_check(self.config.get('MAIN', key))
             return self.config.get('MAIN', key)
 
