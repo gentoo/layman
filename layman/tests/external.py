@@ -21,6 +21,8 @@ import tempfile
 import shutil
 import urllib
 from layman.dbbase import DbBase
+from layman.output import Message
+from layman.config import BareConfig
 from warnings import filterwarnings, resetwarnings
 
 HERE = os.path.dirname(os.path.realpath(__file__))
@@ -28,9 +30,9 @@ HERE = os.path.dirname(os.path.realpath(__file__))
 
 class Unicode(unittest.TestCase):
     def _overlays_bug(self, number):
-        config = {}
+        config = BareConfig()
         filename = os.path.join(HERE, 'testfiles', 'overlays_bug_%d.xml' % number)
-        o = DbBase([filename], config)
+        o = DbBase(config, [filename])
         for verbose in (True, False):
             for t in o.list(verbose=verbose):
                 print t[0]
@@ -45,15 +47,16 @@ class Unicode(unittest.TestCase):
 
 class FormatSubpathCategory(unittest.TestCase):
     def _run(self, number):
-        config = {}
+        #config = {'output': Message()}
+        config = BareConfig()
         filename1 = os.path.join(HERE, 'testfiles',
                 'subpath-%d.xml' % number)
 
         # Read, write, re-read, compare
-        os1 = DbBase([filename1], config)
+        os1 = DbBase(config, [filename1])
         filename2 = os.tmpnam()
         os1.write(filename2)
-        os2 = DbBase([filename2], config)
+        os2 = DbBase(config, [filename2])
         os.unlink(filename2)
         self.assertTrue(os1 == os2)
 
@@ -103,8 +106,9 @@ class TarAddRemoveSync(unittest.TestCase):
         temp_dir_path = tempfile.mkdtemp()
 
         # Make DB from it
-        config = {'tar_command':'/bin/tar'}
-        db = DbBase([temp_collection_path], config)
+        #config = {'output': Message(), 'tar_command':'/bin/tar'}
+        config = BareConfig()
+        db = DbBase(config, [temp_collection_path])
 
         specific_overlay_path = os.path.join(temp_dir_path, repo_name)
         o = db.select('tar-test-overlay')

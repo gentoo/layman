@@ -78,24 +78,27 @@ class DB(DbBase):
         >>> write2 = os.tmpnam()
         >>> write3 = os.tmpnam()
         >>> here = os.path.dirname(os.path.realpath(__file__))
-        >>> config = {'local_list' :
+        >>> from layman.config import OptionConfig
+        >>> myoptions = {'local_list' :
         ...           here + '/tests/testfiles/global-overlays.xml',
         ...           'make_conf' : write2,
-        ...           'nocheck'    : True,
-        ...           'storage'   : write3,
-        ...           'quietness':3}
+        ...           'nocheck'    : 'yes',
+        ...           'storage'   : write3}
 
-        >>> here = os.path.dirname(os.path.realpath(__file__))
+        >>> config = OptionConfig(myoptions)
+        >>> config.set_option('quietness', 3)
         >>> a = DB(config)
-        >>> config['local_list'] = write
+        >>> config.set_option('local_list', write)
         >>> b = DB(config)
-        >>> OUT.color_off()
+        >>> config['output'].set_colorize(False)
 
         >>> m = MakeConf(config, b.overlays)
         >>> m.path = write2
-        >>> m.write()
+        >>> success = m.write()
+        >>> success
+        True
 
-        Commented out since it needs network access:
+        # Commented out since it needs network access:
 
         # >>> b.add(a.select('wrobel-stable')) #doctest: +ELLIPSIS
         # * Running command "/usr/bin/rsync -rlptDvz --progress --delete --delete-after --timeout=180 --exclude="distfiles/*" --exclude="local/*" --exclude="packages/*" "rsync://gunnarwrobel.de/wrobel-stable/*" "/tmp/file.../wrobel-stable""...
@@ -107,11 +110,10 @@ class DB(DbBase):
         # >>> [i.name for i in m.overlays] #doctest: +ELLIPSIS
         # [u'wrobel-stable']
 
-
         # >>> os.unlink(write)
         >>> os.unlink(write2)
-        >>> import shutil
 
+        #>>> import shutil
         # >>> shutil.rmtree(write3)
         '''
 
@@ -155,25 +157,28 @@ class DB(DbBase):
         >>> write2 = os.tmpnam()
         >>> write3 = os.tmpnam()
         >>> here = os.path.dirname(os.path.realpath(__file__))
-        >>> config = {'local_list' :
+        >>> from layman.config import OptionConfig
+        >>> myoptions = {'local_list' :
         ...           here + '/tests/testfiles/global-overlays.xml',
         ...           'make_conf' : write2,
-        ...           'nocheck'    : True,
-        ...           'storage'   : write3,
-        ...           'quietness':3}
+        ...           'nocheck'    : 'yes',
+        ...           'storage'   : write3}
 
-        >>> here = os.path.dirname(os.path.realpath(__file__))
+        >>> config = OptionConfig(myoptions)
+        >>> config.set_option('quietness', 3)
         >>> a = DB(config)
-        >>> config['local_list'] = write
+        >>> config.set_option('local_list', write)
         >>> b = DB(config)
-        >>> .color_off()
+        >>> config['output'].set_colorize(False)
 
         >>> m = MakeConf(config, b.overlays)
         >>> m.path = here + '/tests/testfiles/make.conf'
         >>> m.read()
+        True
 
         >>> m.path = write2
         >>> m.write()
+        True
 
         # >>> b.add(a.select('wrobel-stable')) #doctest: +ELLIPSIS
         # * Running command "/usr/bin/rsync -rlptDvz --progress --delete --delete-after --timeout=180 --exclude="distfiles/*" --exclude="local/*" --exclude="packages/*" "rsync://gunnarwrobel.de/wrobel-stable/*" "/tmp/file.../wrobel-stable""...
@@ -194,8 +199,8 @@ class DB(DbBase):
 
         # >>> os.unlink(write)
         >>> os.unlink(write2)
-        >>> import shutil
 
+        #>>> import shutil
         # >>> shutil.rmtree(write3)
         '''
 
@@ -270,20 +275,23 @@ class RemoteDB(DbBase):
 
         >>> here = os.path.dirname(os.path.realpath(__file__))
         >>> cache = os.tmpnam()
-        >>> config = {'overlays' :
-        ...           'file://' + here + '/tests/testfiles/global-overlays.xml',
+        >>> myoptions = {'overlays' :
+        ...           ['file://' + here + '/tests/testfiles/global-overlays.xml'],
         ...           'cache' : cache,
-        ...           'nocheck'    : True,
-        ...           'proxy' : None,
-        ...           'quietness':3}
+        ...           'nocheck'    : 'yes',
+        ...           'proxy' : None}
+        >>> from layman.config import OptionConfig
+        >>> config = OptionConfig(myoptions)
+        >>> config.set_option('quietness', 3)
         >>> a = RemoteDB(config)
         >>> a.cache()
-        >>> b = open(a.path(config['overlays']))
+        True
+        >>> b = open(a.filepath(config['overlays'])+'.xml')
         >>> b.readlines()[24]
         '      A collection of ebuilds from Gunnar Wrobel [wrobel@gentoo.org].\\n'
 
         >>> b.close()
-        >>> os.unlink(a.path(config['overlays']))
+        >>> os.unlink(a.filepath(config['overlays'])+'.xml')
 
         >>> a.overlays.keys()
         [u'wrobel', u'wrobel-stable']

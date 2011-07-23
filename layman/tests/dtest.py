@@ -69,6 +69,7 @@ def test_suite():
     return unittest.TestSuite((
         #doctest.DocTestSuite(layman.api),
         doctest.DocTestSuite(layman.config),
+        doctest.DocTestSuite(layman.argsparser),
         doctest.DocTestSuite(layman.db),
         doctest.DocTestSuite(layman.dbbase),
         doctest.DocTestSuite(layman.utils),

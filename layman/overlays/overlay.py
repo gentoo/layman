@@ -80,7 +80,9 @@ class Overlay(object):
         >>> import xml.etree.ElementTree as ET # Python 2.5
         >>> document =ET.parse(here + '/../tests/testfiles/global-overlays.xml')
         >>> overlays = document.findall('overlay') + document.findall('repo')
-        >>> a = Overlay(overlays[0], dict())
+        >>> from layman.output import Message
+        >>> output = Message()
+        >>> a = Overlay({'output': output}, overlays[0])
         >>> a.name
         u'wrobel'
         >>> a.is_official()
@@ -93,7 +95,7 @@ class Overlay(object):
         u'Test'
         >>> a.priority
         10
-        >>> b = Overlay(overlays[1], dict())
+        >>> b = Overlay({'output': output}, overlays[1])
         >>> b.is_official()
         False
         '''
@@ -433,8 +435,10 @@ class Overlay(object):
         >>> import xml.etree.ElementTree as ET # Python 2.5
         >>> document =ET.parse(here + '/../tests/testfiles/global-overlays.xml')
         >>> overlays = document.findall('overlay') + document.findall('repo')
-        >>> a = Overlay(overlays[0], dict())
-        >>> print str(a)
+        >>> from layman.output import Message
+        >>> output = Message()
+        >>> a = Overlay({'output': output}, overlays[0])
+        >>> print a.get_infostr()
         wrobel
         ~~~~~~
         Source  : https://overlays.gentoo.org/svn/dev/wrobel
@@ -506,9 +510,11 @@ class Overlay(object):
         >>> import xml.etree.ElementTree as ET # Python 2.5
         >>> document =ET.parse(here + '/../tests/testfiles/global-overlays.xml')
         >>> overlays = document.findall('repo') + document.findall('overlay')
-        >>> a = Overlay(overlays[0], dict())
+        >>> from layman.output import Message
+        >>> output = Message()
+        >>> a = Overlay({'output': output}, overlays[0])
         >>> print a.short_list(80)
-        wrobel             [Subversion] (https://o.g.o/svn/dev/wrobel         )
+        wrobel                    [Subversion] (https://o.g.o/svn/dev/wrobel         )
         '''
         name   = pad(self.name, 25)
 
