@@ -319,7 +319,12 @@ class RemoteDB(DbBase):
 
             try:
                 connection = opener.open(request)
-                timestamp = connection.headers['last-modified']
+                if 'last-modified' in connection.headers.keys():
+                    timestamp = connection.headers['last-modified']
+                elif 'date' in connection.headers.keys():
+                    timestamp = connection.headers['date']
+                else:
+                    timestamp = None
             except urllib2.HTTPError as e:
                 if e.getcode() == 304:
                     self.output.info('Remote list already up to date: %s'
@@ -330,15 +335,16 @@ class RemoteDB(DbBase):
                         % str(e))
                 continue
             except IOError as error:
-                self.output.warn('Failed to update the overlay list from: '
-                         + url + '\nError was:\n' + str(error))
+                self.output.warn('RemoteDB.cache(); Failed to update the overlay list from: '
+                         + url + '\nIOError was:\n' + str(error))
             else:
                 if url.startswith('file://'):
                     quieter = 1
                 else:
                     quieter = 0
                 self.output.info('Fetching new list... %s' % url, 4 + quieter)
-                self.output.info('Last-modified: %s' % timestamp, 4 + quieter)
+                if timestamp is not None:
+                    self.output.info('Last-modified: %s' % timestamp, 4 + quieter)
                 # Fetch the remote list
                 olist = connection.read()
 
@@ -368,9 +374,10 @@ class RemoteDB(DbBase):
                     out_file.write(olist)
                     out_file.close()
 
-                    out_file = open(tpath, 'w')
-                    out_file.write(timestamp)
-                    out_file.close()
+                    if timestamp is not None:
+                        out_file = open(tpath, 'w')
+                        out_file.write(str(timestamp))
+                        out_file.close()
 
                     has_updates = True
 
