@@ -45,6 +45,7 @@ class BzrOverlay(OverlaySource):
 
         super(BzrOverlay, self).__init__(parent,
             config, _location, ignore, quiet)
+        self.subpath = None
 
     def add(self, base, quiet = False):
         '''Add overlay.'''

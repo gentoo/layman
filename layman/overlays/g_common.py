@@ -44,6 +44,7 @@ class GCommonOverlay(OverlaySource):
         #split source into driver and remote uri.
         self.driver=self.src[:self.src.find(' ')]
         self.remote_uri=self.src[self.src.find(' ')+1:]
+        self.subpath = None
 
     def add(self, base, quiet = False):
         '''Add overlay.'''
