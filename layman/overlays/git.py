@@ -95,4 +95,4 @@ class GitOverlay(OverlaySource):
 
         return require_supported(
             [(self.command(),  'git', 'dev-vcs/git'),],
-            self.output.error)
+            self.output.warn)

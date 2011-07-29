@@ -210,7 +210,7 @@ class TarOverlay(OverlaySource):
 
         return require_supported(
             [(self.command(),  'tar', 'app-arch/tar'), ],
-            self.output.error)
+            self.output.warn)
 
 if __name__ == '__main__':
     import doctest

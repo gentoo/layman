@@ -86,4 +86,4 @@ class RsyncOverlay(OverlaySource):
 
         return require_supported(
             [(self.command(),  'rsync', 'net-misc/rsync'),],
-            self.output.error)
+            self.output.warn)

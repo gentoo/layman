@@ -75,7 +75,7 @@ class BrokenOverlayCatalog(ValueError):
 #
 #-------------------------------------------------------------------------------
 
-class DbBase:
+class DbBase(object):
     ''' Handle a list of overlays.'''
 
     def __init__(self, config, paths=None, ignore = 0,

@@ -103,4 +103,4 @@ class SvnOverlay(OverlaySource):
 
         return require_supported(
             [(self.command(),  'svn','dev-vcs/subversion'),],
-            self.output.error)
+            self.output.warn)

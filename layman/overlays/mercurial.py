@@ -90,4 +90,4 @@ class MercurialOverlay(OverlaySource):
 
         return require_supported(
             [(self.command(),  'mercurial', 'dev-vcs/mercurial'),],
-            self.output.error)
+            self.output.warn)

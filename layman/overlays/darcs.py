@@ -90,4 +90,4 @@ class DarcsOverlay(OverlaySource):
 
         return require_supported(
             [(self.command(),  'darcs', 'dev-vcs/darcs'),],
-            self.output.error)
+            self.output.warn)

@@ -20,11 +20,21 @@ import shutil
 import subprocess
 from layman.utils import path
 
+supported_cache = {}
 
-def _resolve_command(command, error_output):
+def _supported(key, check_supported=None):
+    """internal caching function that checks tracks any
+    un-supported/supported repo types."""
+    if key is None:
+        return False
+    if key not in supported_cache:
+        supported_cache[key] = check_supported()
+    return supported_cache[key]
+
+def _resolve_command(command, _output):
     if os.path.isabs(command):
         if not os.path.exists(command):
-            error_output('Program "%s" not found' % command)
+            _output('Program "%s" not found' % command, 6)
             return ('File', None)
         return ('File', command)
     else:
@@ -34,18 +44,18 @@ def _resolve_command(command, error_output):
             f = os.path.join(d, command)
             if os.path.exists(f):
                 return ('Command', f)
-        error_output('Cound not resolve command ' +\
-            '"%s" based on PATH "%s"' % (command, env_path))
+        _output('Cound not resolve command ' +\
+            '"%s" based on PATH "%s"' % (command, env_path), 6)
         return ('Command', None)
 
 
-def require_supported(binaries, error_output):
+def require_supported(binaries, _output):
     for command, mtype, package in binaries:
-        kind, path = _resolve_command(command, error_output)
+        kind, path = _resolve_command(command, _output)
         if not path:
-            error_output(kind + ' ' + command + ' seems to be missing!'
+            _output(kind + ' ' + command + ' seems to be missing!'
                             ' Overlay type "' + mtype + '" not support'
-                            'ed. Did you emerge ' + package + '?')
+                            'ed. Did you emerge ' + package + '?', 6)
             return False
     return True
 
@@ -106,7 +116,10 @@ class OverlaySource(object):
 
     def is_supported(self):
         '''Is the overlay type supported?'''
-        return self.supported()
+        return _supported(self.get_type_key(), self.supported)
+
+    def get_type_key(self):
+        return '%s' % self.__class__.type_key
 
     def command(self):
         return self.config['%s_command' % self.__class__.type_key]

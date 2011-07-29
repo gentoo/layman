@@ -89,4 +89,4 @@ class BzrOverlay(OverlaySource):
 
         return require_supported(
             [(self.command(),  'bzr', 'dev-vcs/bzr'),],
-            self.output.error)
+            self.output.warn)

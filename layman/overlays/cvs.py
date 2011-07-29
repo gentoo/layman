@@ -114,4 +114,4 @@ class CvsOverlay(OverlaySource):
 
         return require_supported(
             [(self.command(),  'cvs', 'dev-vcs/cvs'),],
-            self.output.error)
+            self.output.warn)

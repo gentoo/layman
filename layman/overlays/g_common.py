@@ -84,4 +84,5 @@ class GCommonOverlay(OverlaySource):
             'app-portage/g-common'),
             ('/usr/share/g-common/drivers/'+self.driver+'.cfg',
             'g-common for '+self.driver,
-            'app-portage/g-'+self.driver),], self.output.error)
+            'app-portage/g-'+self.driver),],
+            self.output.warn)
