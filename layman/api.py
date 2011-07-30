@@ -22,6 +22,7 @@ from layman.config import BareConfig
 
 from layman.dbbase import UnknownOverlayException, UnknownOverlayMessage
 from layman.db import DB, RemoteDB
+from layman.overlays.source import require_supported
 #from layman.utils import path, delete_empty_directory
 
 # give them some values for now, these are from the packagekit backend
@@ -498,6 +499,17 @@ class LaymanAPI(object):
             self._error_messages = []
             return messages
         return []
+
+    def supported_types(self):
+        """returns a dictionary of all repository types,
+        with boolean values"""
+        cmds = [x for x in self.config.keys() if '_command' in x]
+        supported = {}
+        for cmd in cmds:
+            type_key = cmd.split('_')[0]
+            supported[type_key] = require_supported(
+                [(self.config[cmd],type_key, '')], self.output.warn)
+        return supported
 
 
 def create_fd():

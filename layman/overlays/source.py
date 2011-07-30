@@ -53,7 +53,8 @@ def require_supported(binaries, _output):
     for command, mtype, package in binaries:
         kind, path = _resolve_command(command, _output)
         if not path:
-            _output(kind + ' ' + command + ' seems to be missing!'
+            if _output:
+                _output(kind + ' ' + command + ' seems to be missing!'
                             ' Overlay type "' + mtype + '" not support'
                             'ed. Did you emerge ' + package + '?', 6)
             return False
