@@ -420,6 +420,7 @@ class Overlay(object):
 
 
     def sync(self, base, quiet = False):
+        self.output.debug("overlay.sync(); name = %s" % self.name, 4)
         assert len(self.sources) == 1
         return self.sources[0].sync(base, quiet)
 

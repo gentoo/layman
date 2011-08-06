@@ -44,12 +44,14 @@ from   layman.overlays.overlay   import Overlay
 #
 #-------------------------------------------------------------------------------
 def UnknownOverlayMessage(ovl):
-    return 'Overlay "%s" does not exist.' % ovl
+    return 'Exception: Overlay "%s" does not exist.' % ovl
 
 class UnknownOverlayException(Exception):
     def __init__(self, repo_name):
-        UnknownOverlayMessage(repo_name)
-        super(UnknownOverlayException, self).__init__(message)
+        self.repo_name = repo_name
+
+    def __str__(self):
+        return UnknownOverlayMessage(self.repo_name)
 
 #===============================================================================
 #
@@ -236,7 +238,12 @@ class DbBase(object):
         >>> list(a.select('wrobel-stable').source_uris())
         [u'rsync://gunnarwrobel.de/wrobel-stable']
         '''
+        self.output.debug("DbBase.select(), overlay = %s" % overlay, 5)
         if not overlay in self.overlays.keys():
+            self.output.debug("DbBase.select(), unknown overlay = %s"
+                % overlay, 4)
+            self.output.debug("DbBase.select(), known overlays = %s"
+                % ', '.join(self.overlays.keys()), 4)
             raise UnknownOverlayException(overlay)
         return self.overlays[overlay]
 

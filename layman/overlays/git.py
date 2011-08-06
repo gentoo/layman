@@ -74,6 +74,7 @@ class GitOverlay(OverlaySource):
     def sync(self, base, quiet = False):
         '''Sync overlay.'''
 
+        self.output.debug("git.sync(); starting...%s" % self.parent.name, 6)
         if not self.supported():
             return 1
 

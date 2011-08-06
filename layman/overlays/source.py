@@ -173,6 +173,11 @@ class OverlaySource(object):
         except KeyboardInterrupt:
             self.output.info('Interrupted manually', 2)
             result = 1
+        except Exception as err:
+            self.output.error(
+                'Unknown exception running command: %s' % command_repr, 2)
+            self.output.error('Original error was: %s' % str(err), 2)
+            result = 1
 
         if self.quiet:
             output_target.close()
