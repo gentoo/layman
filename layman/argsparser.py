@@ -224,6 +224,14 @@ class ArgsParser(BareConfig):
                          'ssue a warning if description or contact information'
                          ' are missing.')
 
+        group.add_option('--debug-level',
+                         action = 'store',
+                         type = 'int',
+                         help = 'A value between 0 and 10. 0 means no debugging '
+                         'messages will be selected, 10 selects all debugging me'
+                         'ssages. Default is "4".')
+
+
         self.parser.add_option_group(group)
 
         #-----------------------------------------------------------------
@@ -245,6 +253,15 @@ class ArgsParser(BareConfig):
 
         # handle debugging
         #self.output.cli_handle(self.options)
+
+        if (self.options.__dict__.has_key('debug_level') and
+            self.options.__dict__['debug_level']):
+            dbglvl = int(self.options.__dict__['debug_level'])
+            if dbglvl < 0:
+                dbglvl = 0
+            if dbglvl > 10:
+                dbglvl = 10
+            self.output.set_debug_level(dbglvl)
 
         if self.options.__dict__['nocolor']:
             self.output.set_colorize(OFF)

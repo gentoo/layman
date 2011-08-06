@@ -110,7 +110,14 @@ class Message(MessageBase):
         """empty debug function, does nothing,
         declared here for compatibility with DebugMessage
         """
-        pass
+        if type(info) not in types.StringTypes:
+            info = str(info)
+
+        if level > self.debug_lev:
+            return
+
+        for i in info.split('\n'):
+            print(self.color_func('yellow', 'DEBUG: ') + i, file=self.std_out)
 
 
     def notice (self, note):
@@ -180,8 +187,9 @@ class Message(MessageBase):
             # stay in nice order.  This is a workaround for calls like
             # "layman -L |& less".
             sys.stdout.flush()
-            print(self.color_func('red', '* ') + i, file=self.std_out)
             self.error_out.flush()
+            print(self.color_func('red', '* ') + i, file=self.std_out)
+            sys.stdout.flush()
         self.do_error_callback(error)
 
 
