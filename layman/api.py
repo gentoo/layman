@@ -112,7 +112,7 @@ class LaymanAPI(object):
         results = []
         for ovl in repos:
             if not self.is_installed(ovl):
-                self._error("Repository '"+ovl+"' was not installed")
+                self.output.error("Repository '"+ovl+"' was not installed")
                 results.append(False)
                 continue
             success = False
@@ -142,11 +142,11 @@ class LaymanAPI(object):
         results = []
         for ovl in repos:
             if self.is_installed(ovl):
-                self._error("Repository '"+ovl+"' was already installed")
+                self.output.error("Repository '"+ovl+"' was already installed")
                 results.append(False)
                 continue
             if not self.is_repo(ovl):
-                self._error(UnknownOverlayMessage(ovl))
+                self.output.error(UnknownOverlayMessage(ovl))
                 results.append(False)
                 continue
             success = False
@@ -199,7 +199,7 @@ class LaymanAPI(object):
 
         for ovl in repos:
             if not self.is_repo(ovl):
-                self._error(UnknownOverlayMessage(ovl))
+                self.output.error(UnknownOverlayMessage(ovl))
                 result[ovl] = ('', False, False)
                 continue
             try:
@@ -251,7 +251,7 @@ class LaymanAPI(object):
 
         for ovl in repos:
             if not self.is_repo(ovl):
-                self._error(UnknownOverlayMessage(ovl))
+                self.output.error(UnknownOverlayMessage(ovl))
                 result[ovl] = ('', False, False)
                 continue
             try:
@@ -298,26 +298,39 @@ class LaymanAPI(object):
         @param repos: ['repo-id1', ...] or 'repo-id'
         @rtype bool or {'repo-id': bool,...}
         """
+        self.output.debug("API.sync(); repos to sync = %s" % ', '.join(repos), 5)
         fatals = []
         warnings = []
         success  = []
         repos = self._check_repo_type(repos, "sync")
         db = self._get_installed_db()
 
+        self.output.debug("API.sync(); starting ovl loop", 5)
         for ovl in repos:
+            self.output.debug("API.sync(); starting ovl = %s" %ovl, 5)
             try:
+                self.output.debug("API.sync(); selecting %s, db = %s" % (ovl, str(db)), 5)
                 odb = db.select(ovl)
+                self.output.debug("API.sync(); %s now selected" %ovl, 5)
             except UnknownOverlayException as error:
-                self._error(UnknownOverlayException(error))
+                self.output.debug("API.sync(); UnknownOverlayException selecting %s" %ovl, 5)
+                self._error(str(error))
+                fatals.append((ovl,
+                    'Failed to select overlay "' + ovl + '".\nError was: '
+                    + str(error)))
+                self.output.debug("API.sync(); UnknownOverlayException "
+                    "selecting %s.   continuing to next ovl..." %ovl, 5)
                 continue
 
             try:
+                self.output.debug("API.sync(); try: self._get_remote_db().select(ovl)", 5)
                 ordb = self._get_remote_db().select(ovl)
             except UnknownOverlayException:
                 message = 'Overlay "%s" could not be found in the remote lists.\n' \
                         'Please check if it has been renamed and re-add if necessary.' % ovl
                 warnings.append((ovl, message))
             else:
+                self.output.debug("API.sync(); else: self._get_remote_db().select(ovl)", 5)
                 current_src = odb.sources[0].src
                 available_srcs = set(e.src for e in ordb.sources)
                 if ordb and odb and not current_src in available_srcs:
@@ -348,6 +361,7 @@ class LaymanAPI(object):
                             }))
 
             try:
+                self.output.debug("API.sync(); starting db.sync(ovl)", 5)
                 db.sync(ovl, self.config['quiet'])
                 success.append((ovl,'Successfully synchronized overlay "' + ovl + '".'))
             except Exception as error:
@@ -357,19 +371,22 @@ class LaymanAPI(object):
 
         if output_results:
             if success:
-                self.output.info('\nSucceeded:\n------\n', 3)
+                message = '\nSucceeded:\n------\n'
                 for ovl, result in success:
-                    self.output.info(result, 3)
+                    message += result + '\n'
+                self.output.info(message, 3)
 
             if warnings:
-                self.output.warn('\nWarnings:\n------\n', 2)
+                message = '\nWarnings:\n------\n'
                 for ovl, result in warnings:
-                    self.output.warn(result + '\n', 2)
+                    message += result + '\n'
+                self.output.warn(message, 2)
 
             if fatals:
-                self.output.error('\nErrors:\n------\n')
+                message = '\nErrors:\n------\n'
                 for ovl, result in fatals:
-                    self.output.error(result + '\n')
+                    message += result + '\n'
+                self.output.error(message)
 
         self.sync_results = (success, warnings, fatals)
 
@@ -434,7 +451,7 @@ class LaymanAPI(object):
                 'LaymanAPI.fetch_remote_list(); cache updated = %s'
                 % str(dbreload),8)
         except Exception as error:
-            self._error('Failed to fetch overlay list!\n Original Error was: '
+            self.output.error('Failed to fetch overlay list!\n Original Error was: '
                     + str(error))
             return False
         self.get_available(dbreload)
@@ -483,6 +500,7 @@ class LaymanAPI(object):
         due to code taken from the packagekit backend.
         """
         self._error_messages.append(message)
+        self.output.debug("API._error(); _error_messages = %s" % str(self._error_messages), 4)
         if self.report_errors:
             print(message, file=self.config['stderr'])
 
@@ -494,6 +512,7 @@ class LaymanAPI(object):
         @rtype: list
         @return: list of error strings
         """
+        self.output.debug("API.get_errors(); _error_messages = %s" % str(self._error_messages), 4)
         if len(self._error_messages):
             messages =  self._error_messages[:]
             self._error_messages = []
