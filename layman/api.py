@@ -353,7 +353,8 @@ class LaymanAPI(object):
                         '%(candidates)s\n'
                         '\n'
                         'as correct location%(plural)s.\n'
-                        'Please consider removing and re-adding the overlay.' , {
+                        'Please consider removing and re-adding the overlay.' %
+                        {
                             'repo_name':ovl,
                             'current_src':current_src,
                             'candidates':candidates,
