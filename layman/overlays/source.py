@@ -126,10 +126,12 @@ class OverlaySource(object):
         return self.config['%s_command' % self.__class__.type_key]
 
     def run_command(self, command, args, **kwargs):
+        self.output.debug("OverlaySource.run_command(): " + command, 6)
         file_to_run = _resolve_command(command, self.output.error)[1]
         args = [file_to_run] + args
         assert('pwd' not in kwargs)  # Bug detector
 
+        self.output.debug("OverlaySource.run_command(): cleared 'assert'", 7)
         cwd = kwargs.get('cwd', None)
         env = None
         env_updates = None
@@ -172,6 +174,8 @@ class OverlaySource(object):
             result = proc.wait()
         except KeyboardInterrupt:
             self.output.info('Interrupted manually', 2)
+            self.output.warn("Checking for cleanup actions to perform", 4)
+            self.cleanup()
             result = 1
         except Exception as err:
             self.output.error(
@@ -206,4 +210,9 @@ class OverlaySource(object):
         return failed_sync
 
     def to_xml_hook(self, repo_elem):
+        pass
+
+    def cleanup(self):
+        '''cleanup a failed/interrupted process
+        overridden in subclass if it is needed.'''
         pass

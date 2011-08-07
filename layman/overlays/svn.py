@@ -55,7 +55,7 @@ class SvnOverlay(OverlaySource):
         super(SvnOverlay, self).add(base)
 
         cfg_opts = self.config["svn_addopts"]
-        target = path([base, self.parent.name])
+        self.target = path([base, self.parent.name])
 
         args = ['co']
         if quiet:
@@ -63,11 +63,11 @@ class SvnOverlay(OverlaySource):
         if len(cfg_opts):
             args.append(cfg_opts)
         args.append(self.src + '/@')
-        args.append(target)
+        args.append(self.target)
 
         return self.postsync(
             self.run_command(self.command(), args, cmd=self.type),
-            cwd=target)
+            cwd=self.target)
 
     def sync(self, base, quiet = False):
         '''Sync overlay.'''
@@ -84,7 +84,7 @@ class SvnOverlay(OverlaySource):
             return path([base, repo_part])
 
         cfg_opts = self.config["svn_syncopts"]
-        target = checkout_location()
+        self.target = checkout_location()
 
         # svn up [-q] TARGET
         args = ['up']
@@ -92,11 +92,11 @@ class SvnOverlay(OverlaySource):
             args.append('-q')
         if len(cfg_opts):
             args.append(cfg_opts)
-        args.append(target)
+        args.append(self.target)
 
         return self.postsync(
             self.run_command(self.command(), args, cmd=self.type),
-            cwd=target)
+            cwd=self.target)
 
     def supported(self):
         '''Overlay type supported?'''
@@ -104,3 +104,13 @@ class SvnOverlay(OverlaySource):
         return require_supported(
             [(self.command(),  'svn','dev-vcs/subversion'),],
             self.output.warn)
+
+    def cleanup(self):
+        '''Code to run in the event of a keyboard interrupt.
+        runs svn cleanup
+        '''
+        self.output.warn("SVN: preparing to run cleanup()", 2)
+        args = ["cleanup"]
+        args.append(self.target)
+        cleanup = self.run_command(self.command(), args, cmd="svn cleanup")
+        return
