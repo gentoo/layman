@@ -218,10 +218,8 @@ class Main(object):
         result = self.api.fetch_remote_list()
         if result:
             self.output.info('Fetch Ok', 2)
-        #else:
-        #    errors = self.api.get_errors()
-        #    self.output.warn('Download failed.\nError was: '
-        #                     + str('\n'.join(errors)), 2)
+        # blank newline  -- no " *"
+        self.output.notice('')
         return result
 
 
@@ -237,10 +235,8 @@ class Main(object):
         if result:
             self.output.info('Successfully added overlay(s) '+\
                 ', '.join(selection) +'.', 2)
-        #else:
-        #    errors = self.api.get_errors()
-        #    self.output.warn('Failed to add overlay(s).\nError was: '
-        #                     + str('\n'.join(errors)), 2)
+        # blank newline  -- no " *"
+        self.output.notice('')
         return result
 
 
@@ -254,7 +250,10 @@ class Main(object):
         if self.config['sync_all'] or 'ALL' in selection:
             selection = self.api.get_installed()
         self.output.debug('Updating selected overlays', 6)
-        return self.api.sync(selection)
+        result = self.api.sync(selection)
+        # blank newline  -- no " *"
+        self.output.notice('')
+        return result
 
 
     def Delete(self):
@@ -268,10 +267,8 @@ class Main(object):
         if result:
             self.output.info('Successfully deleted overlay(s) ' +\
                 ', '.join(selection) + '.', 2)
-        #else:
-        #    errors = self.api.get_errors()
-        #    self.output.warn('Failed to delete overlay(s).\nError was: '
-        #                     + str('\n'.join(errors)), 2)
+        # blank newline  -- no " *"
+        self.output.notice('')
         return result
 
 
@@ -288,6 +285,8 @@ class Main(object):
         info = self.api.get_info_str(selection, local=False,
             verbose=True, width=list_printer.width)
         list_printer.print_shortdict(info, complain=_complain)
+        # blank newline  -- no " *"
+        self.output.notice('')
         return info != {}
 
 
@@ -302,6 +301,8 @@ class Main(object):
         info = self.api.get_info_list(local=False,
             verbose=self.config['verbose'], width=list_printer.width)
         list_printer.print_shortlist(info, complain=_complain)
+        # blank newline  -- no " *"
+        self.output.notice('')
 
         return info != {}
 
@@ -324,6 +325,8 @@ class Main(object):
         #info = self.api.get_all_info(self.api.get_installed(), local=True)
         #list_printer.print_fulldict(info, complain=_complain)
 
+        # blank newline  -- no " *"
+        self.output.notice('')
         return info != {}
 
 
