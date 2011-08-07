@@ -309,12 +309,12 @@ class LaymanAPI(object):
         for ovl in repos:
             self.output.debug("API.sync(); starting ovl = %s" %ovl, 5)
             try:
-                self.output.debug("API.sync(); selecting %s, db = %s" % (ovl, str(db)), 5)
+                #self.output.debug("API.sync(); selecting %s, db = %s" % (ovl, str(db)), 5)
                 odb = db.select(ovl)
                 self.output.debug("API.sync(); %s now selected" %ovl, 5)
             except UnknownOverlayException as error:
-                self.output.debug("API.sync(); UnknownOverlayException selecting %s" %ovl, 5)
-                self._error(str(error))
+                #self.output.debug("API.sync(); UnknownOverlayException selecting %s" %ovl, 5)
+                #self._error(str(error))
                 fatals.append((ovl,
                     'Failed to select overlay "' + ovl + '".\nError was: '
                     + str(error)))

@@ -150,6 +150,8 @@ class Main(object):
     def __call__(self):
         self.output.debug("CLI.__call__(): self.config.keys()"
             " %s" % str(self.config.keys()), 6)
+        # blank newline  -- no " *"
+        self.output.notice('')
         # Make fetching the overlay list a default action
         if not 'nofetch' in self.config.keys():
             # Actions that implicitely call the fetch operation before
@@ -196,11 +198,11 @@ class Main(object):
         self.output.debug('Checking for action errors', 4)
         if action_errors:
             for action, _errors in action_errors:
-                self.output.notice("\n")
                 self.output.warn("CLI: Errors occured processing action"
                     " %s" % action)
                 for _error in _errors:
                     self.output.error(_error)
+                self.output.notice("")
 
         # Reset umask
         os.umask(old_umask)
@@ -214,7 +216,7 @@ class Main(object):
     def Fetch(self):
         ''' Fetches the overlay listing.
         '''
-        self.output.info("\nFetching remote list,...", 2)
+        self.output.info("Fetching remote list,...", 2)
         result = self.api.fetch_remote_list()
         if result:
             self.output.info('Fetch Ok', 2)
@@ -226,7 +228,7 @@ class Main(object):
     def Add(self):
         ''' Adds the selected overlays.
         '''
-        self.output.info("\nAdding overlay,...", 2)
+        self.output.info("Adding overlay,...", 2)
         selection = decode_selection(self.config['add'])
         if 'ALL' in selection:
             selection = self.api.get_available()
@@ -244,7 +246,7 @@ class Main(object):
     def Sync(self):
         ''' Syncs the selected overlays.
         '''
-        self.output.info("\nSyncing selected overlays,...", 2)
+        self.output.info("Syncing selected overlays,...", 2)
         # Note api.sync() defaults to printing results
         selection = decode_selection(self.config['sync'])
         if self.config['sync_all'] or 'ALL' in selection:
@@ -259,7 +261,7 @@ class Main(object):
     def Delete(self):
         ''' Deletes the selected overlays.
         '''
-        self.output.info('\nDeleting selected overlays,...', 2)
+        self.output.info('Deleting selected overlays,...', 2)
         selection = decode_selection(self.config['delete'])
         if 'ALL' in selection:
             selection = self.api.get_installed()
