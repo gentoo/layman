@@ -269,12 +269,19 @@ class ArgsParser(BareConfig):
         # Set only alternate config settings from the options
         if self.options.__dict__['config'] is not None:
             self.defaults['config'] = self.options.__dict__['config']
-            self.output.debug('Got config file at ' + self.defaults['config'], 8)
+            self.output.debug('ARGSPARSER: Got config file at ' + \
+                self.defaults['config'], 8)
+        else: # fix the config path
+            self.defaults['config'] = self.defaults['config'] \
+                % {'configdir': self.defaults['configdir']}
         if self.options.__dict__['overlay_defs'] is not None:
             self.defaults['overlay_defs'] = self.options.__dict__['overlay_defs']
-            self.output.debug('Got overlay_defs location at ' + self.defaults['overlay_defs'], 8)
+            self.output.debug('ARGSPARSER: Got overlay_defs location at ' + \
+                self.defaults['overlay_defs'], 8)
 
         # Now parse the config file
+        self.output.debug('ARGSPARSER: Reading config file at ' + \
+            self.defaults['config'], 8)
         self.read_config(self.defaults)
 
         # handle quietness
@@ -283,9 +290,6 @@ class ArgsParser(BareConfig):
         elif self.options.__dict__['quietness']:
             self.set_option('quietness', self.options.__dict__['quietness'])
 
-        #self.output.debug('Reading config file at ' + self.defaults['config'], 8)
-
-        self.read_config(self.defaults)
 
     def __getitem__(self, key):
 
@@ -299,20 +303,20 @@ class ArgsParser(BareConfig):
             if len(overlays):
                 return  overlays
 
-        self.output.debug('Retrieving option', 8)
+        self.output.debug('ARGSPARSER: Retrieving options option: %s' % key, 9)
 
         if (key in self.options.__dict__.keys()
             and not self.options.__dict__[key] is None):
             return self.options.__dict__[key]
 
-        self.output.debug('Retrieving option', 8)
+        self.output.debug('ARGSPARSER: Retrieving config option: %s' % key, 9)
 
         if self.config.has_option('MAIN', key):
             if key in self._defaults['t/f_options']:
                 return self.t_f_check(self.config.get('MAIN', key))
             return self.config.get('MAIN', key)
 
-        self.output.debug('Retrieving option', 8)
+        self.output.debug('ARGSPARSER: Retrieving option: %s' % key, 9)
 
         if key in self._options.keys():
             return self._options[key]
@@ -320,7 +324,7 @@ class ArgsParser(BareConfig):
         if key in self.defaults.keys():
             return self.defaults[key]
 
-        self.output.debug('Retrieving option', 8)
+        self.output.debug('ARGSPARSER: Retrieving option failed. returning None', 9)
 
         return None
 
@@ -328,22 +332,22 @@ class ArgsParser(BareConfig):
     def keys(self):
         '''Special handler for the configuration keys.'''
 
-        self.output.debug('Retrieving keys', 8)
+        self.output.debug('ARGSPARSER: Retrieving keys', 9)
 
         keys = [i for i in self.options.__dict__.keys()
                 if not self.options.__dict__[i] is None]
 
-        self.output.debug('Retrieving keys', 8)
+        self.output.debug('ARGSPARSER: Retrieving keys 2', 9)
 
         keys += [name for name, _ in self.config.items('MAIN')
                  if not name in keys]
 
-        self.output.debug('Retrieving keys', 8)
+        self.output.debug('ARGSPARSER: Retrieving keys 3', 9)
 
         keys += [i for i in self.defaults.keys()
                  if not i in keys]
 
-        self.output.debug('Retrieving keys', 8)
+        self.output.debug('ARGSPARSER: Returning keys', 9)
 
         return keys
 

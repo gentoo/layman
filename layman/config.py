@@ -150,14 +150,14 @@ class BareConfig(object):
         '''Special handler for the configuration keys.
         '''
         self._options['output'].debug(
-            'Retrieving %s options' % self.__class__.__name__, 8)
+            'Retrieving %s options' % self.__class__.__name__, 9)
         keys = [i for i in self._options]
         self._options['output'].debug(
-            'Retrieving %s defaults' % self.__class__.__name__, 8)
+            'Retrieving %s defaults' % self.__class__.__name__, 9)
         keys += [i for i in self._defaults
                  if not i in keys]
         self._options['output'].debug(
-            'Retrieving %s done...' % self.__class__.__name__, 8)
+            'Retrieving %s done...' % self.__class__.__name__, 9)
         return keys
 
 
@@ -195,7 +195,7 @@ class BareConfig(object):
 
     def _get_(self, key):
         self._options['output'].debug(
-            'Retrieving %s option: %s' % (self.__class__.__name__, key), 8)
+            'Retrieving %s option: %s' % (self.__class__.__name__, key), 9)
         if key == 'overlays':
             overlays = ''
             if (key in self._options
@@ -212,7 +212,7 @@ class BareConfig(object):
             if key in self._defaults['t/f_options']:
                 return self.t_f_check(self.config.get('MAIN', key))
             return self.config.get('MAIN', key)
-        self._options['output'].debug('Retrieving BareConfig default', 8)
+        self._options['output'].debug('Retrieving BareConfig default', 9)
         if key in self._defaults['t/f_options']:
             return self.t_f_check(self._defaults[key])
         if key in self._defaults:
