@@ -50,6 +50,7 @@ class DB(DbBase):
         self.output = config['output']
 
         self.path = config['local_list']
+        self.output.debug("DB.__init__(): config['local_list'] = %s" % self.path, 3)
 
         if config['nocheck']:
             ignore = 2

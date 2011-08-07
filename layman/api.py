@@ -479,6 +479,8 @@ class LaymanAPI(object):
         """returns the list of installed overlays"""
         if not self._installed_db or dbreload:
             self._installed_db = DB(self.config)
+        self.output.debug("API._get_installed_db; len(installed) = %s, %s"
+            %(len(self._installed_db.list_ids()), self._installed_db.list_ids()), 5)
         return self._installed_db
 
 
