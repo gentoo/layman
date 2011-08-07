@@ -39,7 +39,7 @@ class ListPrinter(object):
         self.config = config
         self.output = self.config['output']
         if not self.config['width']:
-            self.width = terminal_width()
+            self.width = terminal_width()-1
         else:
             self.width = self.config['width']
         self.srclen = self.width - 43

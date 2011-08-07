@@ -526,7 +526,7 @@ class Overlay(object):
 
         mtype  = ' [' + pad(_type, 10) + ']'
         if not width:
-            width = terminal_width()
+            width = terminal_width()-1
         srclen = width - 43
         source = ', '.join(self.source_uris())
         if len(source) > srclen:
