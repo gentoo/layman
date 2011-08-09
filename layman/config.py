@@ -25,6 +25,7 @@
 __version__ = "0.2"
 
 
+
 import sys
 import os
 import ConfigParser
@@ -55,6 +56,14 @@ def read_layman_config(config=None, defaults=None):
         config.set('MAIN', 'overlays', '\n'.join(overlays))
 
 
+# establish the eprefix, initially set so eprefixify can
+# set it on install
+EPREFIX = "@GENTOO_PORTAGE_EPREFIX@"
+
+# check and set it if it wasn't
+if EPREFIX == "@GENTOO_PORTAGE_EPREFIX@":
+    EPREFIX = ''
+
 
 class BareConfig(object):
     '''Handles the configuration only.'''
@@ -76,9 +85,9 @@ class BareConfig(object):
         '''
 
         self._defaults = {
-                    'configdir': '/etc/layman',
+                    'configdir': EPREFIX + '/etc/layman',
                     'config'    : '%(configdir)s/layman.cfg',
-                    'storage'   : '/var/lib/layman',
+                    'storage'   : EPREFIX + '/var/lib/layman',
                     'cache'     : '%(storage)s/cache',
                     'local_list': '%(storage)s/overlays.xml',
                     'make_conf' : '%(storage)s/make.conf',
@@ -88,15 +97,15 @@ class BareConfig(object):
                     'overlays'  :
                     'http://www.gentoo.org/proj/en/overlays/repositories.xml',
                     'overlay_defs': '%(configdir)s/overlays',
-                    'bzr_command': '/usr/bin/bzr',
-                    'cvs_command': '/usr/bin/cvs',
-                    'darcs_command': '/usr/bin/darcs',
-                    'git_command': '/usr/bin/git',
-                    'g-common_command': '/usr/bin/g-common',
-                    'mercurial_command': '/usr/bin/hg',
-                    'rsync_command': '/usr/bin/rsync',
-                    'svn_command': '/usr/bin/svn',
-                    'tar_command': '/bin/tar',
+                    'bzr_command': EPREFIX +'/usr/bin/bzr',
+                    'cvs_command': EPREFIX +'/usr/bin/cvs',
+                    'darcs_command': EPREFIX +'/usr/bin/darcs',
+                    'git_command': EPREFIX +'/usr/bin/git',
+                    'g-common_command': EPREFIX +'/usr/bin/g-common',
+                    'mercurial_command': EPREFIX +'/usr/bin/hg',
+                    'rsync_command': EPREFIX +'/usr/bin/rsync',
+                    'svn_command': EPREFIX +'/usr/bin/svn',
+                    'tar_command': EPREFIX +'/bin/tar',
                     't/f_options': ['nocheck'],
                     'bzr_addopts' : '',
                     'bzr_syncopts' : '',
