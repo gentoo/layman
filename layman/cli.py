@@ -19,8 +19,6 @@
 #
 ''' Provides the command line actions that can be performed by layman.'''
 
-from __future__ import print_function
-
 __version__ = "$Id: cli.py 2011-01-15 23:52 PST Brian Dolbec$"
 
 
@@ -50,12 +48,12 @@ class ListPrinter(object):
             self.my_lister = self.short_list
 
     def print_shortdict(self, info, complain):
-        #print("ListPrinter.print_shortdict()",info, "\n\n")
+        #print "ListPrinter.print_shortdict()",info, "\n\n"
         overlays = sorted(info)
-        #print("ids =======>", overlays, "\n")
+        #print "ids =======>", overlays, "\n"
         for ovl in overlays:
             overlay = info[ovl]
-            #print("overlay =", overlay)
+            #print "overlay =", overlay
             summary, supported, official = overlay
             self.print_overlay(summary, supported, official, complain)
 
@@ -66,10 +64,10 @@ class ListPrinter(object):
 
     def print_fulldict(self, info, complain):
         ids = sorted(info)
-        #print("ids =======>", ids, "\n")
+        #print "ids =======>", ids, "\n"
         for ovl in ids:
             overlay = info[ovl]
-            #print(overlay)
+            #print overlay
             self.print_overlay(self.my_lister(overlay),
                                overlay['supported'],
                                overlay['official'],
@@ -105,7 +103,7 @@ class ListPrinter(object):
 
     def short_list(self, overlay):
         '''
-        >>> print(short_list(overlay))
+        >>> print short_list(overlay)
         wrobel                    [Subversion] (https://o.g.o/svn/dev/wrobel         )
         '''
         name   = pad(overlay['name'], 25)
@@ -131,7 +129,7 @@ class Main(object):
 
     def __init__(self, config):
         self.config = config
-        #print("config.keys()", config.keys())
+        #print "config.keys()", config.keys()
         self.output = config['output']
         self.api = LaymanAPI(config,
                              report_errors=False,
@@ -311,7 +309,7 @@ class Main(object):
     def ListLocal(self):
         ''' Lists the local overlays.
         '''
-        #print("ListLocal()")
+        #print "ListLocal()"
         self.output.debug('Printing installed overlays.', 6)
         list_printer = ListPrinter(self.config)
 

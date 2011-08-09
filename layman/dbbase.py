@@ -20,8 +20,6 @@
 #
 '''Main handler for overlays.'''
 
-from __future__ import print_function
-
 __version__ = "$Id: overlay.py 273 2006-12-30 15:54:50Z wrobel $"
 
 #===============================================================================
@@ -257,7 +255,7 @@ class DbBase(object):
         >>> config = {'output': output, 'svn_command': '/usr/bin/svn', 'rsync_command':'/usr/bin/rsync'}
         >>> a = DbBase(config, [here + '/tests/testfiles/global-overlays.xml', ])
         >>> for i in a.list(verbose=True):
-        ...     print(i[0])
+        ...     print i[0]
         wrobel
         ~~~~~~
         Source  : https://overlays.gentoo.org/svn/dev/wrobel
@@ -280,7 +278,7 @@ class DbBase(object):
         <BLANKLINE>
 
         >>> for i in a.list(verbose=False, width=80):
-        ...     print(i[0])
+        ...     print i[0]
         wrobel                    [Subversion] (https://o.g.o/svn/dev/wrobel         )
         wrobel-stable             [Rsync     ] (rsync://gunnarwrobel.de/wrobel-stable)
         '''

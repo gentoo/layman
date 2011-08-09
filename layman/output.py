@@ -6,7 +6,6 @@
  Distributed under the terms of the GNU General Public License v2
 """
 
-from __future__ import print_function
 
 __version__ = "0.1"
 
@@ -117,11 +116,11 @@ class Message(MessageBase):
             return
 
         for i in info.split('\n'):
-            print(self.color_func('yellow', 'DEBUG: ') + i, file=self.std_out)
+            print  >> self.std_out, self.color_func('yellow', 'DEBUG: ') + i
 
 
     def notice (self, note):
-        print(note, file=self.std_out)
+        print >> self.std_out, note
 
 
     def info (self, info, level = INFO_LEVEL):
@@ -133,7 +132,7 @@ class Message(MessageBase):
             return
 
         for i in info.split('\n'):
-            print(self.color_func('green', ' * ') + i, file=self.std_out)
+            print  >> self.std_out, self.color_func('green', ' * ') + i
 
 
     def status (self, message, status, info = 'ignored'):
@@ -147,7 +146,7 @@ class Message(MessageBase):
             return
 
         for i in lines[0:-1]:
-            print(self.color_func('green', ' * ') + i, file=self.std_out)
+            print >> self.std_out, self.color_func('green', ' * ') + i
 
         i = lines[-1]
 
@@ -161,8 +160,8 @@ class Message(MessageBase):
         else:
             result = '[' + self.color_func('yellow', info) + ']'
 
-        print(self.color_func('green', ' * ') + i + ' ' + \
-            '.' * (58 - len(i)) + ' ' + result, file=self.std_out)
+        print >> self.color_func('green', ' * ') + i + ' ' + \
+            '.' * (58 - len(i)) + ' ' + result
 
 
     def warn (self, warn, level = WARN_LEVEL):
@@ -174,7 +173,7 @@ class Message(MessageBase):
             return
 
         for i in warn.split('\n'):
-            print(self.color_func('yellow', ' * ') + i, file=self.std_out)
+            print  >> self.std_out, self.color_func('yellow', ' * ') + i
 
 
     def error (self, error):
@@ -188,7 +187,7 @@ class Message(MessageBase):
             # "layman -L |& less".
             sys.stdout.flush()
             self.error_out.flush()
-            print(self.color_func('red', ' * ') + i, file=self.std_out)
+            print >> self.std_out, self.color_func('red', ' * ') + i
             sys.stdout.flush()
         self.do_error_callback(error)
 

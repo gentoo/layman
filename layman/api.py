@@ -13,8 +13,6 @@
 #              Brian Dolbec <dol-sen@sourceforge.net>
 #
 
-from __future__ import print_function
-
 from sys import stderr
 import os
 
@@ -256,10 +254,10 @@ class LaymanAPI(object):
                 continue
             try:
                 overlay = db.select(ovl)
-                #print("overlay = ", ovl)
-                #print("!!!", overlay)
-            except UnknownOverlayException as error:
-                #print("ERRORS", str(error))
+                #print "overlay = ", ovl
+                #print "!!!", overlay
+            except UnknownOverlayException, error:
+                #print "ERRORS", str(error)
                 self._error(error)
                 result[ovl] = ('', False, False)
             else:
@@ -505,7 +503,7 @@ class LaymanAPI(object):
         self._error_messages.append(message)
         self.output.debug("API._error(); _error_messages = %s" % str(self._error_messages), 4)
         if self.report_errors:
-            print(message, file=self.config['stderr'])
+            print >>self.config['stderr'], message
 
 
     def get_errors(self):

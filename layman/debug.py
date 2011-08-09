@@ -6,8 +6,6 @@
 # Copyright 2005 - 2008 Gunnar Wrobel
 # Distributed under the terms of the GNU General Public License v2
 
-from __future__ import print_function
-
 __version__ = "$Id: debug.py 153 2006-06-05 06:03:16Z wrobel $"
 
 #################################################################################
@@ -103,7 +101,7 @@ class DebugMessage(Message):
 
     def cli_opts(self, parser):
 
-        #print("Parsing debug opts")
+        #print "Parsing debug opts"
 
         group = OptionGroup(parser,
                             '<Debugging options>',
@@ -329,11 +327,11 @@ class DebugMessage(Message):
             if lines > 0:
                 for j in range(lines):
                     ## Print line with continuation marker
-                    print(ls + '// ' + x[0:60] + ' \\', file=self.debug_out)
+                    print >> self.debug_out, ls + '// ' + x[0:60] + ' \\'
                     ## Remove printed characters from output
                     x = x[60:]
             ## Print final line
-            print(ls + '// ' + x, file=self.debug_out)
+            print >> self.debug_out, ls + '// ' + x
 
         if self.debug_vrb == 1:
             # Top line indicates class and method
@@ -342,61 +340,60 @@ class DebugMessage(Message):
                 c += 'Class: ' + str(callerobject.__class__.__name__) + ' | '
             if callermethod:
                 c += 'Method: ' + str(callermethod)
-            print('// ' + c, file=self.debug_out)
+            print >> self.debug_out, '// ' + c
             # Selected variables follow
             if callerlocals:
                 for i,j in callerlocals.items():
-                    print('// ' + self.maybe_color('turquoise',
-                        str(i)) + ':' + str(j), file=self.debug_out)
+                    print >> self.debug_out, '// '                              \
+                          + self.maybe_color('turquoise', str(i)) + ':' + str(j)
             # Finally the message
-            print(self.maybe_color('yellow', message), file=self.debug_out)
+            print >> self.debug_out, self.maybe_color('yellow', message)
             return
 
         if self.debug_vrb == 3:
-            print(ls + '/////////////////////////////////' + \
-                  '////////////////////////////////', file=self.debug_out)
+            print >> self.debug_out, ls + '/////////////////////////////////' + \
+                  '////////////////////////////////'
 
             # General information about what is being debugged
             #(module name or similar)
-            print(ls + '// ' + self.debug_env, file=self.debug_out)
-        print(ls + '//-----------------------------------' + \
-              '----------------------------', file=self.debug_out)
+            print >> self.debug_out, ls + '// ' + self.debug_env
+        print >> self.debug_out, ls + '//-----------------------------------' + \
+              '----------------------------'
 
         ## If the caller is a class print the name here
         if callerobject:
-            print(ls + '// Object Class: ' +
-                str(callerobject.__class__.__name__), file=self.debug_out)
+            print >> self.debug_out, ls +                                       \
+                  '// Object Class: ' + str(callerobject.__class__.__name__)
 
         ## If the method has been extracted print it here
         if callermethod:
-            print(ls + '// ' + self.maybe_color('green', 'Method: ')
-                + str(callermethod), file=self.debug_out)
+            print >> self.debug_out, ls + '// '                                 \
+                  + self.maybe_color('green', 'Method: ') + str(callermethod)
             if self.debug_vrb == 3:
-                print(ls + '//---------------------------' + \
-                    '------------------------------------', file=self.debug_out)
+                print >> self.debug_out, ls + '//---------------------------' + \
+                      '------------------------------------'
 
         ## Print the information on all available local variables
         if callerlocals:
             if self.debug_vrb == 3:
-                print(ls + '//', file=self.debug_out)
-                print(ls + '// VALUES ', file=self.debug_out)
+                print >> self.debug_out, ls + '//'
+                print >> self.debug_out, ls + '// VALUES '
             for i,j in callerlocals.items():
-                print(ls + '// ------------------> '         \
-                      + self.maybe_color('turquoise', str(i)) + ':',
-                      file=self.debug_out)
+                print >> self.debug_out, ls + '// ------------------> '         \
+                      + self.maybe_color('turquoise', str(i)) + ':'
                 breaklines(str(j))
             if self.debug_vrb == 3:
-                print(ls + '//------------------------------'\
-                      '---------------------------------', file=self.debug_out)
+                print >> self.debug_out, ls + '//------------------------------'\
+                      '---------------------------------'
 
         # Finally print the message
         breaklines(self.maybe_color('yellow', message))
 
         if self.debug_vrb == 3:
-            print(ls + '//-------------------------------' + \
-                  '--------------------------------', file=self.debug_out)
-            print(ls + '/////////////////////////////////' + \
-                  '////////////////////////////////', file=self.debug_out)
+            print >> self.debug_out, ls + '//-------------------------------' + \
+                  '--------------------------------'
+            print >> self.debug_out, ls + '/////////////////////////////////' + \
+                  '////////////////////////////////'
 
 ## gloabal message handler
 OUT = Message('layman')
