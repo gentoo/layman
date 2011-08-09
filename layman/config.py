@@ -61,7 +61,7 @@ def read_layman_config(config=None, defaults=None):
 EPREFIX = "@GENTOO_PORTAGE_EPREFIX@"
 
 # check and set it if it wasn't
-if EPREFIX == "@GENTOO_PORTAGE_EPREFIX@":
+if "GENTOO_PORTAGE_EPREFIX" in EPREFIX:
     EPREFIX = ''
 
 
