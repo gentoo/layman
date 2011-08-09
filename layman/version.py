@@ -24,7 +24,7 @@ from __future__ import print_function
 __version__ = "$Id: version.py 309 2007-04-09 16:23:38Z wrobel $"
 
 
-VERSION = '2.0.0_rc1'
+VERSION = '2.0.0-git'
 
 if __name__ == '__main__':
     print(VERSION)
