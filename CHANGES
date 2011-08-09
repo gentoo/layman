@@ -1,5 +1,33 @@
 CHANGES
 -------
+Version 2.0.0_rc2 - Released 2011-08-08
+=======================================
+
+ - fix success mistracking
+ - change raising an exception to outputing the error
+ - fix --list --verbose functionality, bug 375779
+ - update manpage
+ - add overlay_defs option to layman.cfg
+ - fix existing tests. add new tests for new classes
+   update all tests to pass
+ - fix undefined 'subpath'
+ - fix setting the timestamp from the remote server, bug # 376601
+ - fix the overly noisy output for unsupported overlay types
+ - add supported_types() to the api
+ - add --debug-level to cli options and code Message.debug()
+ - fix broken UnknownOverlayException
+ - fix error reporting in the api, refactor action & error processing/tracking.
+ - add a space before the * in the output func()'s as per "Etal"'s forum request
+ - fix a bug causing it to not get the correct config path
+ - fix typo causing traceback in bug 377401 comment # 31
+ - clean out some dead code.
+ - fix task spacing for running multiple tasks
+ - eliminate a duped error output
+ - run "svn cleanup..." for keyboard interrupts, bug 377035
+ - fix bug 378097. unofficial installed overlays not printing
+ - make it EPREFIX ready
+
+-------
 Version 2.0.0_rc1 - Released 2011-06-06
 =======================================
 
