@@ -2,9 +2,9 @@
 README
 ======
 
-:Last update:   $Date: 2008-02-10 07:51:13 +0100 (So, 10 Feb 2008) $
-:Revision:      $Revision: 28 $
-:Contact:       p@rdus.de
+:Last update:   Date: 2011-08-08
+:Revision:      
+:Contact:       brian.dolbec@gmail.com
 
 
 About
@@ -45,6 +45,9 @@ Wiki:
 Combined RSS feed:
 
  - http://www.google.com/reader/shared/user/02645926629531261525/label/%5Bproject%5D%20layman
+
+Git repository:
+ - http://git.overlays.gentoo.org/gitweb/?p=proj/layman.git;a=summary
 
 
 File description
