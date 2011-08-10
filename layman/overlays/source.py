@@ -177,7 +177,7 @@ class OverlaySource(object):
             self.output.warn("Checking for cleanup actions to perform", 4)
             self.cleanup()
             result = 1
-        except Exception as err:
+        except Exception, err:
             self.output.error(
                 'Unknown exception running command: %s' % command_repr, 2)
             self.output.error('Original error was: %s' % str(err), 2)
@@ -205,7 +205,7 @@ class OverlaySource(object):
                 kwargs.get('cwd', '')).split()
             command = _opt[0]
             args = _opt[1:]
-            return self.run_command(command, *args,
+            return self.run_command(command, args,
                 cmd='%s_postsync' % self.__class__.type_key)
         return failed_sync
 

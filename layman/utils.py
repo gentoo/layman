@@ -167,7 +167,7 @@ def delete_empty_directory(mdir, output=OUT):
             output.info('Deleting _empty_ directory "%s"' % mdir, 2)
             try:
                 os.rmdir(mdir)
-            except OSError as error:
+            except OSError, error:
                 output.warn(str(error))
         else:
             output.warn('Insufficient permissions to delete _empty_ folder "%s".' % mdir)

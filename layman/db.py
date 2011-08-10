@@ -16,6 +16,8 @@
 #
 '''Handles different storage files.'''
 
+from __future__ import with_statement
+
 __version__ = "$Id: db.py 309 2007-04-09 16:23:38Z wrobel $"
 
 #===============================================================================
@@ -326,7 +328,7 @@ class RemoteDB(DbBase):
                     timestamp = connection.headers['date']
                 else:
                     timestamp = None
-            except urllib2.HTTPError as e:
+            except urllib2.HTTPError, e:
                 if e.getcode() == 304:
                     self.output.info('Remote list already up to date: %s'
                         % url, 4)
@@ -335,7 +337,7 @@ class RemoteDB(DbBase):
                     self.output.info('RemoteDB.cache(); HTTPError was:\n %s'
                         % str(e))
                 continue
-            except IOError as error:
+            except IOError, error:
                 self.output.warn('RemoteDB.cache(); Failed to update the overlay list from: '
                          + url + '\nIOError was:\n' + str(error))
             else:
@@ -353,7 +355,7 @@ class RemoteDB(DbBase):
                 if not os.path.exists(os.path.dirname(mpath)):
                     try:
                         os.makedirs(os.path.dirname(mpath))
-                    except OSError as error:
+                    except OSError, error:
                         raise OSError('Failed to create layman storage direct'
                                       + 'ory ' + os.path.dirname(mpath) + '\n'
                                       + 'Error was:' + str(error))
@@ -362,7 +364,7 @@ class RemoteDB(DbBase):
                 # file is intact and can be parsed
                 try:
                     self.read(olist, origin=url)
-                except Exception as error:
+                except Exception, error:
                     raise IOError('Failed to parse the overlays list fetched fr'
                                   'om ' + url + '\nThis means that the download'
                                   'ed file is somehow corrupt or there was a pr'
@@ -382,7 +384,7 @@ class RemoteDB(DbBase):
 
                     has_updates = True
 
-                except Exception as error:
+                except Exception, error:
                     raise IOError('Failed to temporarily cache overlays list in'
                                   ' ' + mpath + '\nError was:\n' + str(error))
         return has_updates

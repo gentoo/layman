@@ -116,7 +116,7 @@ class DbBase(object):
         try:
             document = open(path, 'r').read()
 
-        except Exception as error:
+        except Exception, error:
             if not ignore_init_read_errors:
                 self.output.error('Failed to read the overlay list at ("'
                     + path + '")')
@@ -148,14 +148,14 @@ class DbBase(object):
         '''
         try:
             document = ET.fromstring(text)
-        except xml.parsers.expat.ExpatError as error:
+        except xml.parsers.expat.ExpatError, error:
             raise BrokenOverlayCatalog(origin, error, self._broken_catalog_hint())
 
         overlays = document.findall('overlay') + \
                 document.findall('repo')
 
         for overlay in overlays:
-            self.output.debug('Parsing overlay entry', 8)
+            self.output.debug('Parsing overlay: %s' % overlay, 9)
             ovl = Overlay(config=self.config, xml=overlay,
                     ignore=self.ignore, quiet=self.quiet)
             self.overlays[ovl.name] = ovl
@@ -220,7 +220,7 @@ class DbBase(object):
 """)
             tree.write(f, encoding='utf-8')
             f.close()
-        except Exception as error:
+        except Exception, error:
             raise Exception('Failed to write to local overlays file: '
                             + path + '\nError was:\n' + str(error))
 

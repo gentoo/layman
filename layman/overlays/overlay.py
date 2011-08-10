@@ -413,7 +413,7 @@ class Overlay(object):
                     # Worked, throw other sources away
                     self.sources = [s]
                     break
-            except Exception as error:
+            except Exception, error:
                 self.output.warn(str(error), 4)
             first_s = False
         return res

@@ -117,7 +117,7 @@ class LaymanAPI(object):
             try:
                 self._get_installed_db().delete(
                     self._get_installed_db().select(ovl))
-            except Exception as e:
+            except Exception, e:
                 self._error(
                         "Exception caught disabling repository '"+ovl+
                             "':\n"+str(e))
@@ -151,7 +151,7 @@ class LaymanAPI(object):
             try:
                 success = self._get_installed_db().add(
                     self._get_remote_db().select(ovl), quiet=True)
-            except Exception as e:
+            except Exception, e:
                 self._error("Exception caught enabling repository '"+ovl+
                     "' : "+str(e))
             results.append(success)
@@ -202,7 +202,7 @@ class LaymanAPI(object):
                 continue
             try:
                 overlay = db.select(ovl)
-            except UnknownOverlayException as error:
+            except UnknownOverlayException, error:
                 self._error(error)
                 result[ovl] = ('', False, False)
             else:
@@ -310,7 +310,7 @@ class LaymanAPI(object):
                 #self.output.debug("API.sync(); selecting %s, db = %s" % (ovl, str(db)), 5)
                 odb = db.select(ovl)
                 self.output.debug("API.sync(); %s now selected" %ovl, 5)
-            except UnknownOverlayException as error:
+            except UnknownOverlayException, error:
                 #self.output.debug("API.sync(); UnknownOverlayException selecting %s" %ovl, 5)
                 #self._error(str(error))
                 fatals.append((ovl,
@@ -363,7 +363,7 @@ class LaymanAPI(object):
                 self.output.debug("API.sync(); starting db.sync(ovl)", 5)
                 db.sync(ovl, self.config['quiet'])
                 success.append((ovl,'Successfully synchronized overlay "' + ovl + '".'))
-            except Exception as error:
+            except Exception, error:
                 fatals.append((ovl,
                     'Failed to sync overlay "' + ovl + '".\nError was: '
                     + str(error)))
@@ -449,7 +449,7 @@ class LaymanAPI(object):
             self.output.debug(
                 'LaymanAPI.fetch_remote_list(); cache updated = %s'
                 % str(dbreload),8)
-        except Exception as error:
+        except Exception, error:
             self.output.error('Failed to fetch overlay list!\n Original Error was: '
                     + str(error))
             return False
