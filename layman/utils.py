@@ -64,7 +64,16 @@ def get_encoding(output):
             and output.encoding != None:
         return output.encoding
     else:
-        return locale.getpreferredencoding()
+        encoding = locale.getpreferredencoding()
+        # Make sure that python knows the encoding. Bug 350156
+        try:
+            # We don't care about what is returned, we just want to
+            # verify that we can find a codec.
+            codecs.lookup(encoding)
+        except LookupError:
+            # Python does not know the encoding, so use utf-8.
+            encoding = 'utf_8'
+        return encoding
 
 
 def pad(string, length):
