@@ -329,7 +329,7 @@ class RemoteDB(DbBase):
                 else:
                     timestamp = None
             except urllib2.HTTPError, e:
-                if e.getcode() == 304:
+                if e.code == 304:
                     self.output.info('Remote list already up to date: %s'
                         % url, 4)
                     self.output.info('Last-modified: %s' % timestamp, 4)
