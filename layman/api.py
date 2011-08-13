@@ -23,10 +23,6 @@ from layman.db import DB, RemoteDB
 from layman.overlays.source import require_supported
 #from layman.utils import path, delete_empty_directory
 
-# give them some values for now, these are from the packagekit backend
-# TODO  establish some proper errors for the api.
-ERROR_REPO_NOT_FOUND = -1
-ERROR_INTERNAL_ERROR = -2
 UNKNOWN_REPO_ID = "Repo ID '%s' " + \
         "is not listed in the current available overlays list"
 
