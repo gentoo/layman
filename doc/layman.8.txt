@@ -172,7 +172,7 @@ cache::
     *layman* will store the downloaded global list of overlays here.
     The default is '%(storage)s/cache.xml'.
 
-overlays::
+local_list::
     *layman* will store the list of installed overlays here.
     The default is '%(storage)s/overlays.xml'.
 
@@ -394,7 +394,7 @@ ADDING AN OVERLAY LOCALLY
 Simply create an overlay list in the format described above and run
 *layman* with the -o switch. You need to prepend local file URLs
 with 'file://'.  *New* is the ability to just add an overlay definition like
- the above to /etc/layman/overlays/ some-overlay.xml and it will be
+ the above to /etc/layman/overlays/some-overlay.xml and it will be
  automatically available for actions such as add, delete, info...
 
 
