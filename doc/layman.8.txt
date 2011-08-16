@@ -170,9 +170,10 @@ storage::
 
 cache::
     *layman* will store the downloaded global list of overlays here.
-    The default is '%(storage)s/cache.xml'.
+    The default is '%(storage)s/cache_XXX.xml'.  The xxx is
+    determined by creating a hash of the filename or url.
 
-overlays::
+local_list::
     *layman* will store the list of installed overlays here.
     The default is '%(storage)s/overlays.xml'.
 
@@ -347,18 +348,18 @@ Example 1. An example overlays.xml file
 <!DOCTYPE repositories SYSTEM "/dtd/repositories.dtd">
 <repositories xmlns="" version="1.0">
 <repo quality="experimental" status="official">
-	<name>gnome</name>
-	<description>experimental gnome ebuilds</description>
-	<homepage>http://git.overlays.gentoo.org/gitweb/?p=proj/gnome.git;a=summary</homepage>
-	<owner type="project">
-		<email>gnome@gentoo.org</email>
-		<name>GNOME herd</name>
-	</owner>
-	<source type="git">git://git.overlays.gentoo.org/proj/gnome.git</source>
-	<source type="git">http://git.overlays.gentoo.org/gitroot/proj/gnome.git</source>
-	<source type="git">git+ssh://git@git.overlays.gentoo.org/proj/gnome.git</source>
-	<feed>http://git.overlays.gentoo.org/gitweb/?p=proj/gnome.git;a=atom</feed>
-	<feed>http://git.overlays.gentoo.org/gitweb/?p=proj/gnome.git;a=rss</feed>
+    <name>gnome</name>
+    <description>experimental gnome ebuilds</description>
+    <homepage>http://git.overlays.gentoo.org/gitweb/?p=proj/gnome.git;a=summary</homepage>
+    <owner type="project">
+        <email>gnome@gentoo.org</email>
+        <name>GNOME herd</name>
+    </owner>
+    <source type="git">git://git.overlays.gentoo.org/proj/gnome.git</source>
+    <source type="git">http://git.overlays.gentoo.org/gitroot/proj/gnome.git</source>
+    <source type="git">git+ssh://git@git.overlays.gentoo.org/proj/gnome.git</source>
+    <feed>http://git.overlays.gentoo.org/gitweb/?p=proj/gnome.git;a=atom</feed>
+    <feed>http://git.overlays.gentoo.org/gitweb/?p=proj/gnome.git;a=rss</feed>
 </repo>
 </repositories>
 -------------------------------------------
