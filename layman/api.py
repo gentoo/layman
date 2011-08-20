@@ -441,7 +441,7 @@ class LaymanAPI(object):
         """
 
         try:
-            dbreload = self._get_remote_db().cache()
+            dbreload, succeeded = self._get_remote_db().cache()
             self.output.debug(
                 'LaymanAPI.fetch_remote_list(); cache updated = %s'
                 % str(dbreload),8)
@@ -450,7 +450,7 @@ class LaymanAPI(object):
                     + str(error))
             return False
         self.get_available(dbreload)
-        return True
+        return succeeded
 
 
     def get_available(self, dbreload=False):

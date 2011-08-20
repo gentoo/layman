@@ -288,7 +288,7 @@ class RemoteDB(DbBase):
         >>> config.set_option('quietness', 3)
         >>> a = RemoteDB(config)
         >>> a.cache()
-        True
+        (True, True)
         >>> b = open(a.filepath(config['overlays'])+'.xml')
         >>> b.readlines()[24]
         '      A collection of ebuilds from Gunnar Wrobel [wrobel@gentoo.org].\\n'
@@ -300,6 +300,8 @@ class RemoteDB(DbBase):
         [u'wrobel', u'wrobel-stable']
         '''
         has_updates = False
+        # succeeded reset when a failure is detected
+        succeeded = True
         for url in self.urls:
 
             filepath = self.filepath(url)
@@ -334,12 +336,17 @@ class RemoteDB(DbBase):
                         % url, 4)
                     self.output.info('Last-modified: %s' % timestamp, 4)
                 else:
-                    self.output.info('RemoteDB.cache(); HTTPError was:\n %s'
-                        % str(e))
+                    self.output.error('RemoteDB.cache(); HTTPError was:\n'
+                        'url: %s\n%s'
+                        % (url, str(e)))
+                    succeeded = False
                 continue
             except IOError, error:
-                self.output.warn('RemoteDB.cache(); Failed to update the overlay list from: '
-                         + url + '\nIOError was:\n' + str(error))
+                self.output.error('RemoteDB.cache(); Failed to update the '
+                    'overlay list from: %s\nIOError was:%s\n'
+                    % (url, str(error)))
+                succeeded = False
+                continue
             else:
                 if url.startswith('file://'):
                     quieter = 1
@@ -387,7 +394,9 @@ class RemoteDB(DbBase):
                 except Exception, error:
                     raise IOError('Failed to temporarily cache overlays list in'
                                   ' ' + mpath + '\nError was:\n' + str(error))
-        return has_updates
+        self.output.debug("RemoteDB.cache() returning:  has_updates, succeeded"
+            " %s, %s" % (str(has_updates), str(succeeded)), 4)
+        return has_updates, succeeded
 
 
     def filepath(self, url):
