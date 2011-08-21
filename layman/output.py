@@ -100,7 +100,8 @@ class Message(MessageBase):
                  error_callback = None
                 ):
 
-        MessageBase.__init__(self)
+        MessageBase.__init__(self, out, err, info_level, warn_level,
+            col, error_callback)
 
 
     ## Output Functions
