@@ -62,7 +62,7 @@ class TarOverlay(OverlaySource):
     >>> testdir = os.tmpnam()
     >>> os.mkdir(testdir)
     >>> from layman.overlays.overlay import Overlay
-    >>> a = Overlay(config, repo, quiet=False)
+    >>> a = Overlay(config, repo)
     >>> config['output'].set_colorize(False)
     >>> a.add(testdir)
     0
@@ -76,10 +76,10 @@ class TarOverlay(OverlaySource):
     type = 'Tar'
     type_key = 'tar'
 
-    def __init__(self, parent, config, _location, ignore = 0, quiet = False):
+    def __init__(self, parent, config, _location, ignore = 0):
 
         super(TarOverlay, self).__init__(parent,
-            config, _location, ignore, quiet)
+            config, _location, ignore)
 
         self.output = config['output']
         self.subpath = None
@@ -132,7 +132,7 @@ class TarOverlay(OverlaySource):
         os.unlink(pkg)
         return result
 
-    def _add_unchecked(self, base, quiet):
+    def _add_unchecked(self, base):
         def try_to_wipe(folder):
             if not os.path.exists(folder):
                 return
@@ -177,7 +177,7 @@ class TarOverlay(OverlaySource):
         try_to_wipe(temp_path)
         return result
 
-    def add(self, base, quiet = False):
+    def add(self, base):
         '''Add overlay.'''
 
         if not self.supported():
@@ -190,10 +190,10 @@ class TarOverlay(OverlaySource):
                 ' Will not overwrite its contents!')
 
         return self.postsync(
-            self._add_unchecked(base, quiet),
+            self._add_unchecked(base),
             cwd=target)
 
-    def sync(self, base, quiet = False):
+    def sync(self, base):
         '''Sync overlay.'''
 
         if not self.supported():
@@ -202,7 +202,7 @@ class TarOverlay(OverlaySource):
         target = path([base, self.parent.name])
 
         return self.postsync(
-            self._add_unchecked(base, quiet),
+            self._add_unchecked(base),
             cwd=target)
 
     def supported(self):

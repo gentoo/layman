@@ -41,9 +41,9 @@ class CvsOverlay(OverlaySource):
     type = 'cvs'
     type_key = 'cvs'
 
-    def __init__(self, parent, config, _location, ignore = 0, quiet = False):
+    def __init__(self, parent, config, _location, ignore = 0):
 
-        super(CvsOverlay, self).__init__(parent, config, _location, ignore, quiet)
+        super(CvsOverlay, self).__init__(parent, config, _location, ignore)
         self.subpath = None
 
 
@@ -63,7 +63,7 @@ class CvsOverlay(OverlaySource):
             repo_elem.append(_subpath)
             del _subpath
 
-    def add(self, base, quiet = False):
+    def add(self, base):
         '''Add overlay.'''
 
         if not self.supported():
@@ -74,7 +74,7 @@ class CvsOverlay(OverlaySource):
 
         # cvs [-q] co -d SOURCE SCOPE
         args = []
-        if quiet:
+        if self.config['quiet']:
             args.append('-q')
         args.append('co')
         args.append('-d')
@@ -88,7 +88,7 @@ class CvsOverlay(OverlaySource):
                 env=dict(CVSROOT=self.src), cmd=self.type),
             cwd=target)
 
-    def sync(self, base, quiet = False):
+    def sync(self, base):
         '''Sync overlay.'''
 
         if not self.supported():
@@ -99,7 +99,7 @@ class CvsOverlay(OverlaySource):
 
         # cvs [-q] update -d
         args = []
-        if quiet:
+        if self.config['quiet']:
             args.append('-q')
         args.append('update')
         args.append('-d')

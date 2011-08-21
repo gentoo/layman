@@ -146,7 +146,7 @@ class LaymanAPI(object):
             success = False
             try:
                 success = self._get_installed_db().add(
-                    self._get_remote_db().select(ovl), quiet=True)
+                    self._get_remote_db().select(ovl))
             except Exception, e:
                 self._error("Exception caught enabling repository '"+ovl+
                     "' : "+str(e))
@@ -357,7 +357,7 @@ class LaymanAPI(object):
 
             try:
                 self.output.debug("API.sync(); starting db.sync(ovl)", 5)
-                db.sync(ovl, self.config['quiet'])
+                db.sync(ovl)
                 success.append((ovl,'Successfully synchronized overlay "' + ovl + '".'))
             except Exception, error:
                 fatals.append((ovl,

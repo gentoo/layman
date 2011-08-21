@@ -38,15 +38,15 @@ class GCommonOverlay(OverlaySource):
     type = 'g-common'
     type_key = 'g-common'
 
-    def __init__(self, parent, config, _location, ignore = 0, quiet = False):
+    def __init__(self, parent, config, _location, ignore = 0):
         super(GCommonOverlay, self).__init__(parent, config,
-            _location, ignore, quiet)
+            _location, ignore)
         #split source into driver and remote uri.
         self.driver=self.src[:self.src.find(' ')]
         self.remote_uri=self.src[self.src.find(' ')+1:]
         self.subpath = None
 
-    def add(self, base, quiet = False):
+    def add(self, base):
         '''Add overlay.'''
 
         if not self.supported():
@@ -56,9 +56,9 @@ class GCommonOverlay(OverlaySource):
 
         os.makedirs(target)
 
-        return self.sync(base, quiet)
+        return self.sync(base)
 
-    def sync(self, base, quiet = False):
+    def sync(self, base):
         '''Sync overlay.'''
 
         if not self.supported():

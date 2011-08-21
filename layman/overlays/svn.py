@@ -40,13 +40,13 @@ class SvnOverlay(OverlaySource):
     type_key = 'svn'
 
     def __init__(self, parent, config, _location,
-            ignore = 0, quiet = False):
+            ignore = 0):
 
         super(SvnOverlay, self).__init__(
-            parent, config, _location, ignore, quiet)
+            parent, config, _location, ignore)
         self.subpath = None
 
-    def add(self, base, quiet = False):
+    def add(self, base):
         '''Add overlay.'''
 
         if not self.supported():
@@ -58,7 +58,7 @@ class SvnOverlay(OverlaySource):
         self.target = path([base, self.parent.name])
 
         args = ['co']
-        if quiet:
+        if self.config['quiet']:
             args.append('-q')
         if len(cfg_opts):
             args.append(cfg_opts)
@@ -69,7 +69,7 @@ class SvnOverlay(OverlaySource):
             self.run_command(self.command(), args, cmd=self.type),
             cwd=self.target)
 
-    def sync(self, base, quiet = False):
+    def sync(self, base):
         '''Sync overlay.'''
 
         if not self.supported():
@@ -88,7 +88,7 @@ class SvnOverlay(OverlaySource):
 
         # svn up [-q] TARGET
         args = ['up']
-        if quiet:
+        if self.config['quiet']:
             args.append('-q')
         if len(cfg_opts):
             args.append(cfg_opts)

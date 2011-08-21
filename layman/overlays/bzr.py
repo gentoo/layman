@@ -41,13 +41,13 @@ class BzrOverlay(OverlaySource):
     type = 'Bzr'
     type_key = 'bzr'
 
-    def __init__(self, parent, config, _location, ignore = 0, quiet = False):
+    def __init__(self, parent, config, _location, ignore = 0):
 
         super(BzrOverlay, self).__init__(parent,
-            config, _location, ignore, quiet)
+            config, _location, ignore)
         self.subpath = None
 
-    def add(self, base, quiet = False):
+    def add(self, base):
         '''Add overlay.'''
 
         if not self.supported():
@@ -66,7 +66,7 @@ class BzrOverlay(OverlaySource):
             self.run_command(self.command(), args, cmd=self.type),
             cwd=target)
 
-    def sync(self, base, quiet = False):
+    def sync(self, base):
         '''Sync overlay.'''
 
         if not self.supported():

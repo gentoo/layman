@@ -59,13 +59,13 @@ class DB(DbBase):
         else:
             ignore = 1
 
-        quiet = int(config['quietness']) < 3
+        #quiet = int(config['quietness']) < 3
 
         DbBase.__init__(self,
                           config,
                           paths=[config['local_list'], ],
                           ignore=ignore,
-                          quiet=quiet)
+                          )
 
         self.output.debug('DB handler initiated', 6)
 
@@ -73,7 +73,7 @@ class DB(DbBase):
     def _broken_catalog_hint(self):
         return ''
 
-    def add(self, overlay, quiet = False):
+    def add(self, overlay):
         '''
         Add an overlay to the local list of overlays.
 
@@ -121,7 +121,7 @@ class DB(DbBase):
         '''
 
         if overlay.name not in self.overlays.keys():
-            result = overlay.add(self.config['storage'], quiet)
+            result = overlay.add(self.config['storage'])
             if result == 0:
                 if 'priority' in self.config.keys():
                     overlay.set_priority(self.config['priority'])
@@ -218,11 +218,11 @@ class DB(DbBase):
             return False
         return True
 
-    def sync(self, overlay_name, quiet = False):
+    def sync(self, overlay_name):
         '''Synchronize the given overlay.'''
 
         overlay = self.select(overlay_name)
-        result = overlay.sync(self.config['storage'], quiet)
+        result = overlay.sync(self.config['storage'])
         if result:
             raise Exception('Syncing overlay "' + overlay_name +
                             '" returned status ' + str(result) + '!' +
@@ -263,10 +263,10 @@ class RemoteDB(DbBase):
         else:
             ignore = 0
 
-        quiet = int(config['quietness']) < 3
+        #quiet = int(config['quietness']) < 3
 
         DbBase.__init__(self, config, paths=paths, ignore=ignore,
-            quiet=quiet, ignore_init_read_errors=ignore_init_read_errors)
+            ignore_init_read_errors=ignore_init_read_errors)
 
     # overrider
     def _broken_catalog_hint(self):

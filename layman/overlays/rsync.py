@@ -40,13 +40,13 @@ class RsyncOverlay(OverlaySource):
     type_key = 'rsync'
 
 
-    def __init__(self, parent, config, _location, ignore = 0, quiet = False):
+    def __init__(self, parent, config, _location, ignore = 0):
 
         super(RsyncOverlay, self).__init__(parent, config,
-            _location, ignore, quiet)
+            _location, ignore)
         self.subpath = None
 
-    def add(self, base, quiet = False):
+    def add(self, base):
         '''Add overlay.'''
 
         if not self.supported():
@@ -56,7 +56,7 @@ class RsyncOverlay(OverlaySource):
 
         return self.sync(base)
 
-    def sync(self, base, quiet = False):
+    def sync(self, base):
         '''Sync overlay.'''
 
         if not self.supported():
@@ -70,7 +70,7 @@ class RsyncOverlay(OverlaySource):
         cfg_opts = self.config["rsync_syncopts"]
         target = path([base, self.parent.name])
 
-        if quiet:
+        if self.config['quiet']:
             args.append('-q')
         if len(cfg_opts):
             args.append(cfg_opts)

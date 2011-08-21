@@ -66,12 +66,11 @@ class OverlaySource(object):
     type_key = None
 
     def __init__(self, parent, config, _location,
-            ignore = 0, quiet = False):
+            ignore = 0):
         self.parent = parent
         self.src = _location
         self.config = config
         self.ignore = ignore
-        self.quiet = quiet
 
         self.output = config['output']
 
@@ -81,7 +80,7 @@ class OverlaySource(object):
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    def add(self, base, quiet = False):
+    def add(self, base):
         '''Add the overlay.'''
 
         mdir = path([base, self.parent.name])
@@ -94,7 +93,7 @@ class OverlaySource(object):
         os.makedirs(mdir)
         return True
 
-    def sync(self, base, quiet = False):
+    def sync(self, base):
         '''Sync the overlay.'''
         pass
 
@@ -151,7 +150,8 @@ class OverlaySource(object):
         cmd = kwargs.get('cmd', '')
         self.output.info('Running %s... # %s' % (cmd, command_repr), 2)
 
-        if self.quiet:
+        if self.config['quiet']:
+
             input_source = subprocess.PIPE
             output_target = open('/dev/null', 'w')
         else:
@@ -166,7 +166,7 @@ class OverlaySource(object):
             cwd=cwd,
             env=env)
 
-        if self.quiet:
+        if self.config['quiet']:
             # Make child non-interactive
             proc.stdin.close()
 
@@ -183,7 +183,7 @@ class OverlaySource(object):
             self.output.error('Original error was: %s' % str(err), 2)
             result = 1
 
-        if self.quiet:
+        if self.config['quiet']:
             output_target.close()
 
         if result:

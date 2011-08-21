@@ -73,8 +73,7 @@ class Overlay(object):
     ''' Derive the real implementations from this.'''
 
     def __init__(self, config, xml=None, ovl_dict=None,
-        ignore = 0, quiet = False
-        ):
+        ignore = 0):
         '''
         >>> here = os.path.dirname(os.path.realpath(__file__))
         >>> import xml.etree.ElementTree as ET # Python 2.5
@@ -104,12 +103,12 @@ class Overlay(object):
         self._encoding_ = get_encoding(self.output)
 
         if xml is not None:
-            self.from_xml(xml, ignore, quiet)
+            self.from_xml(xml, ignore)
         elif ovl_dict is not None:
-            self.from_dict(ovl_dict, ignore, quiet)
+            self.from_dict(ovl_dict, ignore)
 
 
-    def from_xml(self, xml, ignore, quiet):
+    def from_xml(self, xml, ignore):
         """Process an xml overlay definition
         """
         def strip_text(node):
@@ -147,7 +146,7 @@ class Overlay(object):
                     'Unknown overlay type "%s"!' % _type)
             _location = ensure_unicode(strip_text(source_elem))
             return _class(parent=self, config=self.config,
-                _location=_location, ignore=ignore, quiet=quiet)
+                _location=_location, ignore=ignore)
 
         if not len(_sources):
             raise Exception('Overlay from_xml(), "' + self.name + \
@@ -236,7 +235,7 @@ class Overlay(object):
             self.irc = None
 
 
-    def from_dict(self, overlay, ignore, quiet):
+    def from_dict(self, overlay, ignore):
         """Process an xml overlay definition
         """
         self.output.debug("Overlay from_dict(); overlay" + str(overlay))
@@ -262,7 +261,7 @@ class Overlay(object):
                     'Unknown overlay type "%s"!' % _type)
             _location = ensure_unicode(_src)
             return _class(parent=self, config=self.config,
-                _location=_location, ignore=ignore, quiet=quiet)
+                _location=_location, ignore=ignore)
 
         self.sources = [create_dict_overlay_source(e) for e in _sources]
 
@@ -401,14 +400,14 @@ class Overlay(object):
         return repo
 
 
-    def add(self, base, quiet = False):
+    def add(self, base):
         res = 1
         first_s = True
         for s in self.sources:
             if not first_s:
                 self.output.info("\nTrying next source of listed sources...", 4)
             try:
-                res = s.add(base, quiet)
+                res = s.add(base)
                 if res == 0:
                     # Worked, throw other sources away
                     self.sources = [s]
@@ -419,10 +418,10 @@ class Overlay(object):
         return res
 
 
-    def sync(self, base, quiet = False):
+    def sync(self, base):
         self.output.debug("overlay.sync(); name = %s" % self.name, 4)
         assert len(self.sources) == 1
-        return self.sources[0].sync(base, quiet)
+        return self.sources[0].sync(base)
 
 
     def delete(self, base):

@@ -79,11 +79,10 @@ class DbBase(object):
     ''' Handle a list of overlays.'''
 
     def __init__(self, config, paths=None, ignore = 0,
-        quiet = False, ignore_init_read_errors=False
+        ignore_init_read_errors=False
         ):
 
         self.config = config
-        self.quiet = quiet
         self.paths = paths
         self.ignore = ignore
         self.output = config['output']
@@ -157,7 +156,7 @@ class DbBase(object):
         for overlay in overlays:
             self.output.debug('Parsing overlay: %s' % overlay, 9)
             ovl = Overlay(config=self.config, xml=overlay,
-                    ignore=self.ignore, quiet=self.quiet)
+                    ignore=self.ignore)
             self.overlays[ovl.name] = ovl
         return
 
@@ -184,7 +183,7 @@ class DbBase(object):
         for overlay in overlays:
             self.output.debug('Parsing overlay entry', 8)
             ovl = Overlay(self.config, ovl_dict=overlay,
-                    ignore=self.ignore, quiet=self.quiet)
+                    ignore=self.ignore)
             self.overlays[ovl.name] = ovl
         return
 
