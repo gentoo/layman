@@ -138,12 +138,13 @@ class BareConfig(object):
                     'stdin': stdin if stdin else sys.stdin,
                     'stderr': stderr if stderr else sys.stderr,
                     'output': output if output else Message(),
-                    'quietness': 4,
-                    'nocolor': False,
-                    'width': 0,
-                    'verbose': False,
-                    'quiet': False,
+                    'quietness': quietness,
+                    'nocolor': nocolor,
+                    'width': width,
+                    'verbose': verbose,
+                    'quiet': quiet,
                     }
+        self._set_quietness(quietness)
         self.config = None
         if read_configfile:
             self.read_config(self.get_defaults())
