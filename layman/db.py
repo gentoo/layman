@@ -44,30 +44,56 @@ from   layman.version           import VERSION
 #-------------------------------------------------------------------------------
 
 class DB(DbBase):
-    ''' Handle the list of local overlays.'''
+    ''' Handle the list of installed overlays.'''
 
     def __init__(self, config):
 
         self.config = config
         self.output = config['output']
 
-        self.path = config['local_list']
-        self.output.debug("DB.__init__(): config['local_list'] = %s" % self.path, 3)
+        self.path = config['installed']
+        self.output.debug("DB.__init__(): config['installed'] = %s" % self.path, 3)
 
         if config['nocheck']:
             ignore = 2
         else:
             ignore = 1
 
-        #quiet = int(config['quietness']) < 3
+        # check and handle the name change
+        #if not os.access(self.path, os.F_OK):
+        #    self.rename_db()
 
         DbBase.__init__(self,
                           config,
-                          paths=[config['local_list'], ],
+                          paths=[config['installed'], ],
                           ignore=ignore,
                           )
 
         self.output.debug('DB handler initiated', 6)
+
+
+    def rename_db(self):
+        """small upgarde function to handle the name change
+        for the installed xml file"""
+        if os.access(self.config['local_list'], os.F_OK):
+            self.output.info("Automatic db rename, old name was: %s"
+                % self.config['local_list'],2)
+            try:
+                os.rename(self.config['local_list'], self.path)
+                self.output.info("Automatic db rename, new installed db "
+                    "name is: %s" %self.path, 2)
+                self.output.notice('')
+                return
+            except OSError, err:
+                self.output.error("Automatic db rename failed:\n%s" %str(err))
+        else:
+            self.output.info("Automatic db rename, failed access to: %s"
+                % self.config['local_list'],2)
+        self.output.die("Please check that /etc/layman.cfg is up"
+                " to date\nThen try running layman again.\n"
+                "You may need to rename the old 'local_list' config setting"
+                " to\nthe new 'installed' config setting's filename.\n")
+
 
     # overrider
     def _broken_catalog_hint(self):
@@ -82,7 +108,7 @@ class DB(DbBase):
         >>> write3 = os.tmpnam()
         >>> here = os.path.dirname(os.path.realpath(__file__))
         >>> from layman.config import OptionConfig
-        >>> myoptions = {'local_list' :
+        >>> myoptions = {'installed' :
         ...           here + '/tests/testfiles/global-overlays.xml',
         ...           'make_conf' : write2,
         ...           'nocheck'    : 'yes',
@@ -91,7 +117,7 @@ class DB(DbBase):
         >>> config = OptionConfig(myoptions)
         >>> config.set_option('quietness', 3)
         >>> a = DB(config)
-        >>> config.set_option('local_list', write)
+        >>> config.set_option('installed', write)
         >>> b = DB(config)
         >>> config['output'].set_colorize(False)
 
@@ -161,7 +187,7 @@ class DB(DbBase):
         >>> write3 = os.tmpnam()
         >>> here = os.path.dirname(os.path.realpath(__file__))
         >>> from layman.config import OptionConfig
-        >>> myoptions = {'local_list' :
+        >>> myoptions = {'installed' :
         ...           here + '/tests/testfiles/global-overlays.xml',
         ...           'make_conf' : write2,
         ...           'nocheck'    : 'yes',
@@ -170,7 +196,7 @@ class DB(DbBase):
         >>> config = OptionConfig(myoptions)
         >>> config.set_option('quietness', 3)
         >>> a = DB(config)
-        >>> config.set_option('local_list', write)
+        >>> config.set_option('installed', write)
         >>> b = DB(config)
         >>> config['output'].set_colorize(False)
 

@@ -36,7 +36,7 @@ class MakeConf:
     >>> import hashlib
     >>> write = os.tmpnam()
     >>> here = os.path.dirname(os.path.realpath(__file__))
-    >>> config = {'local_list' :
+    >>> config = {'installed' :
     ...           here + '/tests/testfiles/global-overlays.xml',
     ...           'make_conf' : here + '/tests/testfiles/make.conf',
     ...           'nocheck'    : True,
@@ -86,7 +86,7 @@ class MakeConf:
 
         >>> write = os.tmpnam()
         >>> here = os.path.dirname(os.path.realpath(__file__))
-        >>> config = {'local_list' :
+        >>> config = {'installed' :
         ...           here + '/tests/testfiles/global-overlays.xml',
         ...           'make_conf' : here + '/tests/testfiles/make.conf',
         ...           'nocheck'    : True,
@@ -114,7 +114,7 @@ class MakeConf:
 
         >>> write = os.tmpnam()
         >>> here = os.path.dirname(os.path.realpath(__file__))
-        >>> config = {'local_list' :
+        >>> config = {'installed' :
         ...           here + '/tests/testfiles/global-overlays.xml',
         ...           'make_conf' : here + '/tests/testfiles/make.conf',
         ...           'nocheck'    : True,
@@ -143,7 +143,7 @@ class MakeConf:
         Read the list of registered overlays from /etc/make.conf.
 
         >>> here = os.path.dirname(os.path.realpath(__file__))
-        >>> config = {'local_list' :
+        >>> config = {'installed' :
         ...           here + '/tests/testfiles/global-overlays.xml',
         ...           'make_conf' : here + '/tests/testfiles/make.conf',
         ...           'nocheck'    : True,
@@ -203,7 +203,7 @@ class MakeConf:
 
         >>> write = os.tmpnam()
         >>> here = os.path.dirname(os.path.realpath(__file__))
-        >>> config = {'local_list' :
+        >>> config = {'installed' :
         ...           here + '/tests/testfiles/global-overlays.xml',
         ...           'make_conf' : here + '/tests/testfiles/make.conf',
         ...           'nocheck'    : True,
