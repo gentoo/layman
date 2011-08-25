@@ -241,7 +241,7 @@ class ArgsParser(BareConfig):
         # Parse the command line first since we need to get the config
         # file option.
         if len(args) == 1:
-            print   >> self.std_out, 'Usage:%s' % _USAGE
+            self.output.notice('Usage:%s' % _USAGE)
             sys.exit(0)
 
         (self.options, remain_args) = self.parser.parse_args(args)
