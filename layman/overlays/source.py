@@ -179,8 +179,8 @@ class OverlaySource(object):
             result = 1
         except Exception, err:
             self.output.error(
-                'Unknown exception running command: %s' % command_repr, 2)
-            self.output.error('Original error was: %s' % str(err), 2)
+                'Unknown exception running command: %s' % command_repr)
+            self.output.error('Original error was: %s' % str(err))
             result = 1
 
         if self.config['quiet']:
