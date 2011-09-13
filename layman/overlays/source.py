@@ -104,7 +104,7 @@ class OverlaySource(object):
         if not os.path.exists(mdir):
             self.output.warn('Directory ' + mdir + \
                 ' did not exist, no files deleted.')
-            return false
+            return False
 
         self.output.info('Deleting directory "%s"' % mdir, 2)
         shutil.rmtree(mdir)
