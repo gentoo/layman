@@ -137,12 +137,12 @@ List of other available *layman* options.
 *-N*, *--nocolor*::
     Remove color codes from the *layman* output.
 
-*-Q*'LEVEL', *--quietness*='LEVEL'::
+*-Q* 'LEVEL', *--quietness*='LEVEL'::
     Makes *layman* less verbose. Choose a value between 0 and 4
     with 0 being completely quiet. Once you set this below 3,
     the same warning as given for *--quiet* applies.
 
-*-p*'LEVEL', *--priority*='LEVEL'::
+*-p* 'LEVEL', *--priority*='LEVEL'::
     Use this option in combination with the *--add*. It will modify
     the priority of the added overlay and thus influence the order
     of entries in the make.conf file. The lower the priority,
@@ -172,9 +172,9 @@ cache::
     *layman* will store the downloaded global list of overlays here.
     The default is '%(storage)s/cache.xml'.
 
-local_list::
+installed::
     *layman* will store the list of installed overlays here.
-    The default is '%(storage)s/overlays.xml'.
+    The default is '%(storage)s/installed.xml'.
 
 make.conf::
     This is the *portage* configuration file that *layman* will
@@ -187,8 +187,12 @@ make.conf::
     external file that only contains the setting for
     *PORTDIR_OVERLAY*. This file is then sourced at the end of
     '/etc/make.conf'. This is the reason why *layman* suggests running
-    `echo 'source /var/lib/layman/make.conf' >> /etc/make.conf`
-    after it has been installed.
+    the following *after* it has been installed.
+
+    echo 'source /var/lib/layman/make.conf' >> /etc/make.conf
+
+
+
 
 overlays::
     Specifies the URL for the remote list of all available overlays.
@@ -204,22 +208,23 @@ nocheck::
     Set to "yes" if *layman* should stop worrying about overlays
     with missing a contact address or the description.
 
-*New*
-Per repository type Add, Sync options.
+*NEW* Per repository type Add, Sync options.
 
-bzr_addopts :
-bzr_syncopts :
-...
+bzr_addopts::
+bzr_syncopts::
+cvs_addopts::
+cvs_syncopts::
+...::
     These are command options to include in the commands sent to perform
     the desired action.
 
-Per repository type Post Sync, Add hooks.
+*NEW* Per repository type Post Add, Sync hooks.
 
-bzr_postsync :
-cvs_postsync :
-darcs_postsync :
-git_postsync :
-...
+bzr_postsync::
+cvs_postsync::
+darcs_postsync::
+git_postsync::
+...::
     These are commands that are run after each add, sync operation if they
     are defined.
 
@@ -342,7 +347,9 @@ SEARCHING EBUILDS IN OVERLAYS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 You can search through the ebuilds available in the overlays on
 'http://overlays.gentoo.org/' by using *eix*. Emerge the package and
-run `update-eix-remote update`.
+run:
+
+    update-eix-remote update
 
 Alternatively, you can browse overlays that you have not installed
 on 'http://gpo.zugaina.org/'.
