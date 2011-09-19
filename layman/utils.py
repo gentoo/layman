@@ -43,6 +43,10 @@ from layman.debug import OUT
 #
 #-------------------------------------------------------------------------------
 
+def encoder(text, _encoding_):
+    return codecs.encode(text, _encoding_, 'replace')
+
+
 def decode_selection(selection):
     '''utility function to decode a list of strings
     accoring to the filesystem encoding
@@ -51,12 +55,8 @@ def decode_selection(selection):
     selection = selection or []
     enc = sys.getfilesystemencoding()
     if enc is not None:
-        return [i.decode(enc) for i in selection]
+        return [encoder(i, enc) for i in selection]
     return selection
-
-
-def encoder(unicode_text, _encoding_):
-    return codecs.encode(unicode_text, _encoding_, 'replace')
 
 
 def get_encoding(output):
@@ -103,12 +103,6 @@ def terminal_width():
         pass
     return 80
 
-
-def ensure_unicode(obj, encoding='utf-8'):
-    if isinstance(obj, basestring):
-        if not isinstance(obj, unicode):
-            obj = unicode(obj, encoding)
-    return obj
 
 # From <http://effbot.org/zone/element-lib.htm>
 # BEGIN

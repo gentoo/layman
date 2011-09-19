@@ -27,7 +27,7 @@ __version__ = "$Id: tar.py 310 2007-04-09 16:30:40Z wrobel $"
 import os, os.path, sys, urllib2, shutil, tempfile
 import xml.etree.ElementTree as ET # Python 2.5
 
-from   layman.utils             import path, ensure_unicode
+from   layman.utils             import path
 #from   layman.debug             import OUT
 from   layman.overlays.source   import OverlaySource, require_supported
 

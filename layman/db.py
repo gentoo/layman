@@ -30,10 +30,11 @@ import os, os.path
 import urllib2
 import hashlib
 
-from   layman.utils             import path, delete_empty_directory
+from   layman.utils             import path, delete_empty_directory, encoder
 from   layman.dbbase            import DbBase
 from   layman.makeconf          import MakeConf
 from   layman.version           import VERSION
+from layman.compatibility       import fileopen
 
 #from   layman.debug             import OUT
 
@@ -315,7 +316,7 @@ class RemoteDB(DbBase):
         >>> a = RemoteDB(config)
         >>> a.cache()
         (True, True)
-        >>> b = open(a.filepath(config['overlays'])+'.xml')
+        >>> b = fileopen(a.filepath(config['overlays'])+'.xml')
         >>> b.readlines()[24]
         '      A collection of ebuilds from Gunnar Wrobel [wrobel@gentoo.org].\\n'
 
@@ -341,7 +342,7 @@ class RemoteDB(DbBase):
             opener.addheaders = [('User-Agent', 'Layman-' + VERSION)]
 
             if os.path.exists(tpath):
-                with open(tpath,'r') as previous:
+                with fileopen(tpath,'r') as previous:
                     timestamp = previous.read()
                 request.add_header('If-Modified-Since', timestamp)
 
@@ -350,10 +351,12 @@ class RemoteDB(DbBase):
 
             try:
                 connection = opener.open(request)
-                if 'last-modified' in connection.headers.keys():
-                    timestamp = connection.headers['last-modified']
-                elif 'date' in connection.headers.keys():
-                    timestamp = connection.headers['date']
+                # py2, py3 compatibility, since only py2 returns keys as lower()
+                headers = dict((x.lower(), x) for x in connection.headers.keys())
+                if 'last-modified' in headers:
+                    timestamp = connection.headers[headers['last-modified']]
+                elif 'date' in headers:
+                    timestamp = connection.headers[headers['date']]
                 else:
                     timestamp = None
             except urllib2.HTTPError, e:
@@ -406,12 +409,14 @@ class RemoteDB(DbBase):
 
                 # Ok, now we can overwrite the old cache
                 try:
-                    out_file = open(mpath, 'w')
+                    out_file = fileopen(mpath, 'w')
+                    if hasattr(olist, 'decode'):
+                        olist = olist.decode("UTF-8")
                     out_file.write(olist)
                     out_file.close()
 
                     if timestamp is not None:
-                        out_file = open(tpath, 'w')
+                        out_file = fileopen(tpath, 'w')
                         out_file.write(str(timestamp))
                         out_file.close()
 
@@ -431,8 +436,9 @@ class RemoteDB(DbBase):
         base = self.config['cache']
 
         self.output.debug('Generating cache path.', 6)
+        url_encoded = encoder(url, "UTF-8")
 
-        return base + '_' + hashlib.md5(url).hexdigest()
+        return base + '_' + hashlib.md5(url_encoded).hexdigest()
 
 
     def check_path(self, paths, hint=True):

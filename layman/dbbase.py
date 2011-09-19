@@ -34,6 +34,7 @@ import xml.etree.ElementTree as ET # Python 2.5
 
 #from   layman.debug              import OUT
 from   layman.utils              import indent
+from   layman.compatibility      import fileopen
 from   layman.overlays.overlay   import Overlay
 
 #===============================================================================
@@ -114,7 +115,8 @@ class DbBase(object):
         '''Read the overlay definition file.'''
 
         try:
-            document = open(path, 'r').read()
+            df = fileopen(path, 'r')
+            document = df.read()
 
         except Exception, error:
             if not self.ignore_init_read_errors:
@@ -214,7 +216,7 @@ class DbBase(object):
         indent(tree)
         tree = ET.ElementTree(tree)
         try:
-            f = open(path, 'w')
+            f = fileopen(path, 'w')
             f.write("""\
 <?xml version="1.0" encoding="UTF-8"?>
 """)

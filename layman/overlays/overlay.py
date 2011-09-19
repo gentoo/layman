@@ -33,8 +33,8 @@ import codecs
 import locale
 import xml.etree.ElementTree as ET # Python 2.5
 
-from layman.utils import (pad, terminal_width, get_encoding, encoder,
-    ensure_unicode)
+from layman.utils import pad, terminal_width, get_encoding, encoder
+from layman.compatibility import encode
 
 from   layman.overlays.bzr       import BzrOverlay
 from   layman.overlays.darcs     import DarcsOverlay
@@ -119,9 +119,9 @@ class Overlay(object):
 
         _name = xml.find('name')
         if _name != None:
-            self.name = ensure_unicode(strip_text(_name))
+            self.name = encode(strip_text(_name))
         elif 'name' in xml.attrib:
-            self.name = ensure_unicode(xml.attrib['name'])
+            self.name = encode(xml.attrib['name'])
         else:
             raise Exception('Overlay from_xml(), "' + self.name + \
                 'is missing a "name" entry!')
@@ -144,7 +144,7 @@ class Overlay(object):
             except KeyError:
                 raise Exception('Overlay from_xml(), "' + self.name + \
                     'Unknown overlay type "%s"!' % _type)
-            _location = ensure_unicode(strip_text(source_elem))
+            _location = encode(strip_text(source_elem))
             return _class(parent=self, config=self.config,
                 _location=_location, ignore=ignore)
 
@@ -156,9 +156,9 @@ class Overlay(object):
 
         _subpath = xml.find('subpath')
         if _subpath != None:
-            self.subpath = ensure_unicode(_subpath.text.strip())
+            self.subpath = encode(_subpath.text.strip())
         elif 'subpath' in xml.attrib:
-            self.subpath = ensure_unicode(xml.attrib['subpath'])
+            self.subpath = encode(xml.attrib['subpath'])
         else:
             self.subpath = ''
 
@@ -168,14 +168,14 @@ class Overlay(object):
         else:
             _email = _owner.find('email')
         if _owner != None and _email != None:
-            self.owner_email = ensure_unicode(strip_text(_email))
+            self.owner_email = encode(strip_text(_email))
             _name = _owner.find('name')
             if _name != None:
-                self.owner_name = ensure_unicode(strip_text(_name))
+                self.owner_name = encode(strip_text(_name))
             else:
                 self.owner_name = None
         elif 'contact' in xml.attrib:
-            self.owner_email = ensure_unicode(xml.attrib['contact'])
+            self.owner_email = encode(xml.attrib['contact'])
             self.owner_name = None
         else:
             self.owner_email = ''
@@ -190,7 +190,7 @@ class Overlay(object):
         _desc = xml.find('description')
         if _desc != None:
             d = WHITESPACE_REGEX.sub(' ', strip_text(_desc))
-            self.description = ensure_unicode(d)
+            self.description = encode(d)
             del d
         else:
             self.description = ''
@@ -202,14 +202,14 @@ class Overlay(object):
                          '"description" entry!', 4)
 
         if 'status' in xml.attrib:
-            self.status = ensure_unicode(xml.attrib['status'])
+            self.status = encode(xml.attrib['status'])
         else:
             self.status = None
 
         self.quality = u'experimental'
         if 'quality' in xml.attrib:
             if xml.attrib['quality'] in set(QUALITY_LEVELS):
-                self.quality = ensure_unicode(xml.attrib['quality'])
+                self.quality = encode(xml.attrib['quality'])
 
         if 'priority' in xml.attrib:
             self.priority = int(xml.attrib['priority'])
@@ -219,18 +219,18 @@ class Overlay(object):
         h = xml.find('homepage')
         l = xml.find('link')
         if h != None:
-            self.homepage = ensure_unicode(strip_text(h))
+            self.homepage = encode(strip_text(h))
         elif l != None:
-            self.homepage = ensure_unicode(strip_text(l))
+            self.homepage = encode(strip_text(l))
         else:
             self.homepage = None
 
-        self.feeds = [ensure_unicode(strip_text(e)) \
+        self.feeds = [encode(strip_text(e)) \
             for e in xml.findall('feed')]
 
         _irc = xml.find('irc')
         if _irc != None:
-            self.irc = ensure_unicode(strip_text(_irc))
+            self.irc = encode(strip_text(_irc))
         else:
             self.irc = None
 
@@ -241,7 +241,7 @@ class Overlay(object):
         self.output.debug("Overlay from_dict(); overlay" + str(overlay))
         _name = overlay['name']
         if _name != None:
-            self.name = ensure_unicode(_name)
+            self.name = encode(_name)
         else:
             raise Exception('Overlay from_dict(), "' + self.name +
                 'is missing a "name" entry!')
@@ -259,7 +259,7 @@ class Overlay(object):
             except KeyError:
                 raise Exception('Overlay from_dict(), "' + self.name +
                     'Unknown overlay type "%s"!' % _type)
-            _location = ensure_unicode(_src)
+            _location = encode(_src)
             return _class(parent=self, config=self.config,
                 _location=_location, ignore=ignore)
 
@@ -270,10 +270,10 @@ class Overlay(object):
             self.owner_name = None
             _email = None
         else:
-            self.owner_name = ensure_unicode(_owner)
+            self.owner_name = encode(_owner)
             _email = overlay['owner_email']
         if _email != None:
-            self.owner_email = ensure_unicode(_email)
+            self.owner_email = encode(_email)
         else:
             self.owner_email = None
             if not ignore:
@@ -286,7 +286,7 @@ class Overlay(object):
         _desc = overlay['description']
         if _desc != None:
             d = WHITESPACE_REGEX.sub(' ', _desc)
-            self.description = ensure_unicode(d)
+            self.description = encode(d)
             del d
         else:
             self.description = ''
@@ -298,14 +298,14 @@ class Overlay(object):
                     '" is missing a "description" entry!', 4)
 
         if overlay['status']:
-            self.status = ensure_unicode(overlay['status'])
+            self.status = encode(overlay['status'])
         else:
             self.status = None
 
         self.quality = u'experimental'
         if len(overlay['quality']):
             if overlay['quality'] in set(QUALITY_LEVELS):
-                self.quality = ensure_unicode(overlay['quality'])
+                self.quality = encode(overlay['quality'])
 
         if overlay['priority']:
             self.priority = int(overlay['priority'])
@@ -314,16 +314,16 @@ class Overlay(object):
 
         h = overlay['homepage']
         if h != None:
-            self.homepage = ensure_unicode(h)
+            self.homepage = encode(h)
         else:
             self.homepage = None
 
-        self.feeds = [ensure_unicode(e) \
+        self.feeds = [encode(e) \
             for e in overlay['feeds']]
 
         _irc = overlay['irc']
         if _irc != None:
-            self.irc = ensure_unicode(_irc)
+            self.irc = encode(_irc)
         else:
             self.irc = None
 

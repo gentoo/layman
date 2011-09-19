@@ -22,6 +22,8 @@ from layman.dbbase import UnknownOverlayException, UnknownOverlayMessage
 from layman.db import DB, RemoteDB
 from layman.overlays.source import require_supported
 #from layman.utils import path, delete_empty_directory
+from layman.compatibility import encode, fileopen
+
 
 UNKNOWN_REPO_ID = "Repo ID '%s' " + \
         "is not listed in the current available overlays list"
@@ -91,7 +93,7 @@ class LaymanAPI(object):
         if isinstance(repos, basestring):
             repos = [repos]
         # else assume it is an iterable, if not it will error
-        return repos
+        return [encode(i) for i in repos]
 
 
     def delete_repos(self, repos):
@@ -411,7 +413,7 @@ class LaymanAPI(object):
         >>> api.get_errors()
         []
         >>> filename = api._get_remote_db().filepath(config['overlays'])+'.xml'
-        >>> b = open(filename)
+        >>> b = fileopen(filename, 'r')
         >>> b.readlines()[24]
         '      A collection of ebuilds from Gunnar Wrobel [wrobel@gentoo.org].\\n'
 
