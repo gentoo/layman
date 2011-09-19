@@ -86,6 +86,7 @@ class DbBase(object):
         self.paths = paths
         self.ignore = ignore
         self.output = config['output']
+        self.ignore_init_read_errors = ignore_init_read_errors
 
         self.overlays = {}
 
@@ -116,7 +117,7 @@ class DbBase(object):
             document = open(path, 'r').read()
 
         except Exception, error:
-            if not ignore_init_read_errors:
+            if not self.ignore_init_read_errors:
                 self.output.error('Failed to read the overlay list at ("'
                     + path + '")')
                 raise error
