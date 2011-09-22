@@ -58,10 +58,10 @@ class BzrOverlay(OverlaySource):
 
         # bzr get SOURCE TARGET
         if len(cfg_opts):
-            args = ['get', cfg_opts,
+            args = ['branch', cfg_opts,
                 self.src + '/', target]
         else:
-            args = ['get', self.src + '/', target]
+            args = ['branch', self.src + '/', target]
         return self.postsync(
             self.run_command(self.command(), args, cmd=self.type),
             cwd=target)
