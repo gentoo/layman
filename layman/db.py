@@ -104,16 +104,17 @@ class DB(DbBase):
         '''
         Add an overlay to the local list of overlays.
 
-        >>> write = os.tmpnam()
-        >>> write2 = os.tmpnam()
-        >>> write3 = os.tmpnam()
+        >>> import tempfile
+        >>> tmpdir = tempfile.mkdtemp(prefix="laymantmp_")
+        >>> write = os.path.join(tmpdir, 'installed.xml')
+        >>> write2 = os.path.join(tmpdir, 'make.conf')
         >>> here = os.path.dirname(os.path.realpath(__file__))
         >>> from layman.config import OptionConfig
         >>> myoptions = {'installed' :
         ...           here + '/tests/testfiles/global-overlays.xml',
         ...           'make_conf' : write2,
         ...           'nocheck'    : 'yes',
-        ...           'storage'   : write3}
+        ...           'storage'   : tmpdir}
 
         >>> config = OptionConfig(myoptions)
         >>> config.set_option('quietness', 3)
@@ -143,8 +144,8 @@ class DB(DbBase):
         # >>> os.unlink(write)
         >>> os.unlink(write2)
 
-        #>>> import shutil
-        # >>> shutil.rmtree(write3)
+        >>> import shutil
+        >>> shutil.rmtree(tmpdir)
         '''
 
         if overlay.name not in self.overlays.keys():
@@ -183,16 +184,17 @@ class DB(DbBase):
         '''
         Add an overlay to the local list of overlays.
 
-        >>> write = os.tmpnam()
-        >>> write2 = os.tmpnam()
-        >>> write3 = os.tmpnam()
+        >>> import tempfile
+        >>> tmpdir = tempfile.mkdtemp(prefix="laymantmp_")
+        >>> write = os.path.join(tmpdir, 'installed.xml')
+        >>> write2 = os.path.join(tmpdir, 'make.conf')
         >>> here = os.path.dirname(os.path.realpath(__file__))
         >>> from layman.config import OptionConfig
         >>> myoptions = {'installed' :
         ...           here + '/tests/testfiles/global-overlays.xml',
         ...           'make_conf' : write2,
         ...           'nocheck'    : 'yes',
-        ...           'storage'   : write3}
+        ...           'storage'   : tmpdir}
 
         >>> config = OptionConfig(myoptions)
         >>> config.set_option('quietness', 3)
@@ -230,8 +232,8 @@ class DB(DbBase):
         # >>> os.unlink(write)
         >>> os.unlink(write2)
 
-        #>>> import shutil
-        # >>> shutil.rmtree(write3)
+        >>> import shutil
+        >>> shutil.rmtree(tmpdir)
         '''
 
         if overlay.name in self.overlays.keys():
@@ -303,8 +305,10 @@ class RemoteDB(DbBase):
         '''
         Copy the remote overlay list to the local cache.
 
+        >>> import tempfile
         >>> here = os.path.dirname(os.path.realpath(__file__))
-        >>> cache = os.tmpnam()
+        >>> tmpdir = tempfile.mkdtemp(prefix="laymantmp_")
+        >>> cache = os.path.join(tmpdir, 'cache')
         >>> myoptions = {'overlays' :
         ...           ['file://' + here + '/tests/testfiles/global-overlays.xml'],
         ...           'cache' : cache,
@@ -325,6 +329,9 @@ class RemoteDB(DbBase):
 
         >>> a.overlays.keys()
         [u'wrobel', u'wrobel-stable']
+
+        >>> import shutil
+        >>> shutil.rmtree(tmpdir)
         '''
         has_updates = False
         # succeeded reset when a failure is detected

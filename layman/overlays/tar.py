@@ -59,8 +59,8 @@ class TarOverlay(OverlaySource):
     >>> repo[:] = [repo_name, desc, owner, source, subpath]
     >>> from layman.config import BareConfig
     >>> config = BareConfig()
-    >>> testdir = os.tmpnam()
-    >>> os.mkdir(testdir)
+    >>> import tempfile
+    >>> testdir = tempfile.mkdtemp(prefix="laymantmp_")
     >>> from layman.overlays.overlay import Overlay
     >>> a = Overlay(config, repo)
     >>> config['output'].set_colorize(False)

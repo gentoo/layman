@@ -195,7 +195,9 @@ class DbBase(object):
         '''
         Write the list of overlays to a file.
 
-        >>> write = os.tmpnam()
+        >>> import tempfile
+        >>> tmpdir = tempfile.mkdtemp(prefix="laymantmp_")
+        >>> write = os.path.join(tmpdir, 'test.xml')
         >>> here = os.path.dirname(os.path.realpath(__file__))
         >>> from layman.config import BareConfig
         >>> config = BareConfig()
@@ -209,6 +211,7 @@ class DbBase(object):
         [u'wrobel-stable']
 
         >>> os.unlink(write)
+        >>> os.rmdir(tmpdir)
         '''
 
         tree = ET.Element('repositories', version="1.0")

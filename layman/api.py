@@ -396,7 +396,9 @@ class LaymanAPI(object):
 
         >>> import os
         >>> here = os.path.dirname(os.path.realpath(__file__))
-        >>> cache = os.tmpnam()
+        >>> import tempfile
+        >>> tmpdir = tempfile.mkdtemp(prefix="laymantmp_")
+        >>> cache = os.path.join(tmpdir, 'cache')
         >>> from layman.config import OptionConfig
         >>> opts = {'overlays' :
         ...           ['file://' + here + '/tests/testfiles/global-overlays.xml'],
@@ -440,6 +442,8 @@ class LaymanAPI(object):
         #'priority': 10, 'feeds': [], 'irc': None, 'homepage': None}}
 
         >>> os.unlink(filename)
+        >>> import shutil
+        >>> shutil.rmtree(tmpdir)
         """
 
         try:

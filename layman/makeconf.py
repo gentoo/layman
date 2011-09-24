@@ -34,7 +34,9 @@ class MakeConf:
     Check that an add/remove cycle does not modify the make.conf:
 
     >>> import hashlib
-    >>> write = os.tmpnam()
+    >>> import tempfile
+    >>> tmpdir = tempfile.mkdtemp(prefix="laymantmp_")
+    >>> write = os.path.join(tmpdir, 'make.conf')
     >>> here = os.path.dirname(os.path.realpath(__file__))
     >>> config = {'installed' :
     ...           here + '/tests/testfiles/global-overlays.xml',
@@ -63,6 +65,8 @@ class MakeConf:
     >>> o_md5 == n_md5
     True
     >>> os.unlink(write)
+    >>> import shutil
+    >>> shutil.rmtree(tmpdir)
     '''
 
     my_re = re.compile('PORTDIR_OVERLAY\s*=\s*"([^"]*)"')
@@ -84,7 +88,9 @@ class MakeConf:
         '''
         Add an overlay to make.conf.
 
-        >>> write = os.tmpnam()
+        >>> import tempfile
+        >>> tmpdir = tempfile.mkdtemp(prefix="laymantmp_")
+        >>> write = os.path.join(tmpdir, 'make.conf')
         >>> here = os.path.dirname(os.path.realpath(__file__))
         >>> config = {'installed' :
         ...           here + '/tests/testfiles/global-overlays.xml',
@@ -104,6 +110,8 @@ class MakeConf:
         [u'/usr/local/portage/ebuilds/testing', u'/usr/local/portage/ebuilds/stable', u'/usr/local/portage/kolab2', u'/usr/local/portage/gentoo-webapps-overlay/experimental', u'/usr/local/portage/gentoo-webapps-overlay/production-ready']
 
         >>> os.unlink(write)
+        >>> import shutil
+        >>> shutil.rmtree(tmpdir)
         '''
         self.overlays.append(overlay)
         return self.write()
@@ -112,7 +120,9 @@ class MakeConf:
         '''
         Delete an overlay from make.conf.
 
-        >>> write = os.tmpnam()
+        >>> import tempfile
+        >>> tmpdir = tempfile.mkdtemp(prefix="laymantmp_")
+        >>> write = os.path.join(tmpdir, 'make.conf')
         >>> here = os.path.dirname(os.path.realpath(__file__))
         >>> config = {'installed' :
         ...           here + '/tests/testfiles/global-overlays.xml',
@@ -132,6 +142,8 @@ class MakeConf:
         [u'/usr/local/portage/ebuilds/testing', u'/usr/local/portage/ebuilds/stable', u'/usr/local/portage/kolab2', u'/usr/local/portage/gentoo-webapps-overlay/experimental', u'/usr/local/portage/gentoo-webapps-overlay/production-ready']
 
         >>> os.unlink(write)
+        >>> import shutil
+        >>> shutil.rmtree(tmpdir)
         '''
         self.overlays = [i
                          for i in self.overlays
@@ -201,7 +213,9 @@ class MakeConf:
         '''
         Write the list of registered overlays to /etc/make.conf.
 
-        >>> write = os.tmpnam()
+        >>> import tempfile
+        >>> tmpdir = tempfile.mkdtemp(prefix="laymantmp_")
+        >>> os.path.join(tmpdir, 'make.conf')
         >>> here = os.path.dirname(os.path.realpath(__file__))
         >>> config = {'installed' :
         ...           here + '/tests/testfiles/global-overlays.xml',
@@ -221,6 +235,8 @@ class MakeConf:
         [u'/usr/local/portage/ebuilds/testing', u'/usr/local/portage/ebuilds/stable', u'/usr/local/portage/kolab2', u'/usr/local/portage/gentoo-webapps-overlay/experimental', u'/usr/local/portage/gentoo-webapps-overlay/production-ready']
 
         >>> os.unlink(write)
+        >>> import shutil
+        >>> shutil.rmtree(tmpdir)
         '''
         def prio_sort(a, b):
             '''Sort by priority.'''

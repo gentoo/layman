@@ -54,7 +54,7 @@ class FormatSubpathCategory(unittest.TestCase):
 
         # Read, write, re-read, compare
         os1 = DbBase(config, [filename1])
-        filename2 = os.tmpnam()
+        filename2 = tempfile.mkstemp()[1]
         os1.write(filename2)
         os2 = DbBase(config, [filename2])
         os.unlink(filename2)
