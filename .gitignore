@@ -7,3 +7,14 @@
 /MANIFEST
 *.patch
 testpath
+Makefile
+*/Makefile
+8.Plo
+*.m4
+c-layman/autom4te*
+c-layman/config.log
+c-layman/config.status
+c-layman/src/.*
+c-layman/tester
+*.lo
+c-layman/libtool
