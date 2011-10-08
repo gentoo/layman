@@ -1,19 +1,63 @@
 #include <stdlib.h>
+
 #include "interpreter.h"
 #include "config.h"
 #include "laymanapi.h"
 #include "message.h"
+#include "basic.h"
+#include "stringlist.h"
 
-int main(int argc, char *argv[])
+
+void
+output_errors(LaymanAPI *l)
+{
+	StringList *errors = laymanAPIGetErrors(l);
+	if(errors == NULL)
+		printf("Failed to get any errors\n");
+	else
+	{
+		printf("Recorded errors were:\n");
+		printf("Error count = %d\n", stringListCount(errors));
+		stringListPrint(errors);
+	}
+}
+
+
+int
+test_fetch_remote(LaymanAPI *l)
+/**/
+{
+	int ret;
+	if (False == laymanAPIFetchRemoteList(l))
+	{
+		printf("Unable to fetch the remote list.\n");
+		output_errors(l);
+		ret = False;
+	}
+	else
+		ret = True;
+	return ret;
+}
+
+ 
+int 
+main(int argc, char *argv[])
 {
 	argc = argc;
 	argv = argv;
 	int ret = 0;
 	laymanInit();
 	
-	Message *msg = messageCreate("layman", 0, 0, 0);
+	Message *msg = messageCreate( 0, 0, 4, 4, True);
+	if(msg == NULL)
+		printf("Failed to create a Message object\n");
+	
 	BareConfig *cfg = bareConfigCreate(msg, 0, 0, 0);
-	/*if (!bareConfigSetOptionValue(cfg, "local_list", "/home/detlev/src/gsoc2010/layman/layman/tests/testfiles/global-overlays.xml"))
+	if(cfg == NULL)
+		printf("Failed to create BareConfig object\n");
+	
+	/*if (!bareConfigSetOptionValue(cfg, "local_list", 
+		"/home/detlev/src/gsoc2010/layman/layman/tests/testfiles/global-overlays.xml"))
 		printf("Error setting config option.\n");
 	if (!bareConfigSetOptionValue(cfg, "storage", "/home/detlev/gsoc2010/layman-test"))
 		printf("Error setting config option.\n");
@@ -22,11 +66,9 @@ int main(int argc, char *argv[])
 	printf("local_list: %s\n", bareConfigGetOptionValue(cfg, "local_list"));*/
 
 	LaymanAPI *l = laymanAPICreate(cfg, 0, 0);
-	if (0 == laymanAPIFetchRemoteList(l))
-	{
-		printf("Unable to fetch the remote list.\n");
-		ret = -1;
-	}
+	
+	if(!test_fetch_remote(l))
+		printf("\nFetch test failed.\n");
 
 	StringList *strs = laymanAPIGetAvailable(l, 0);
 	printf("list:\n");
@@ -34,7 +76,7 @@ int main(int argc, char *argv[])
 
 	printf("\n");
 
-	unsigned int len = stringListCount(strs);
+	//unsigned int len = stringListCount(strs);
 	//OverlayInfo *infos = calloc(len, sizeof(OverlayInfo));
 	//int count = laymanAPIGetAllInfos(l, strs, infos);
 	
@@ -63,7 +105,7 @@ int main(int argc, char *argv[])
 	//free(infos);
 	stringListFree(strs);
 
-	bareConfigFree(cfg);
+	ConfigFree(cfg);
 	laymanAPIFree(l);
 
 	laymanFinalize();

@@ -1,10 +1,10 @@
 AUTOMAKE_OPTIONS = subdir-objects
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
 lib_LTLIBRARIES = liblayman.la
-
+ 
 AM_CFLAGS = $(PYTHON_CFLAGS) --std=c99 -W -Wall
  
-liblayman_la_SOURCES = src/config.c src/dict.c src/interpreter.c src/laymanapi.c src/message.c src/stringlist.c
+liblayman_la_SOURCES = src/config.c src/dict.c src/interpreter.c src/laymanapi.c src/message.c src/stringlist.c src/layman.c
 #src/tester.c
 liblayman_la_LIBADD = $(PYTHON_LIBS)
 

@@ -1,25 +1,32 @@
 #include <Python.h>
 #include <stdlib.h>
+
 #include "stringlist.h"
+
 
 /** \defgroup string_list StringList
  * \brief String list management class
  */
 
+
 /** \addtogroup string_list
  * @{
  */
+
+
 struct StringList
 {
 	char **list;
 	unsigned int count;
 };
 
+
 /**
  * Creates a String list to use with the library.
  * \param len the number of strings in the list.
  */
-StringList* stringListCreate(size_t len)
+StringList *
+stringListCreate(size_t len)
 {
 	StringList *ret = malloc(sizeof(StringList));
 	ret->count = len;
@@ -27,12 +34,14 @@ StringList* stringListCreate(size_t len)
 
 	return ret;
 }
+ 
 
 /**
  * Inserts the string str in the list l at position pos.
  * \return True if it succeeded, False if not.
  */
-int stringListInsertAt(StringList *l, unsigned int pos, char *str)
+int 
+stringListInsertAt(StringList *l, unsigned int pos, char *str)
 {
 	if(!l || !l->list || l->count < pos)
 		return 0;
@@ -42,23 +51,27 @@ int stringListInsertAt(StringList *l, unsigned int pos, char *str)
 	return 1;
 }
 
+
 /**
  * Get the number of strings in the list.
  *
  * \return the number of strings in the list
  */
-unsigned int stringListCount(StringList *l)
+unsigned int 
+stringListCount(StringList *l)
 {
 	if (!l)
 		return 0;
 	return l->count;
 }
 
+
 /**
  * Get the String at position pos
  * \return the String at position pos
  */
-char* stringListGetAt(StringList *l, unsigned int pos)
+char *
+stringListGetAt(StringList *l, unsigned int pos)
 {
 	if (!l || !l->list || pos >= l->count)
 		return NULL;
@@ -66,24 +79,28 @@ char* stringListGetAt(StringList *l, unsigned int pos)
 	return l->list[pos];
 }
 
+
 /**
  * \section internal
  * @{
  * \internal
  */
 
+
 /**
  * Converts a Python list object to a C String list
  */
-StringList* listToCList(PyObject* list)
+StringList *
+listToCList(PyObject *list)
 {
 	if (!list || !PyList_Check(list))
 		return NULL;
 
 	unsigned int len = PyList_Size(list);
+	//printf("listToCList(): len = %d\n", len);
 	StringList *ret = malloc(sizeof(StringList));
 	ret->count = len;
-	ret->list = malloc(sizeof(char*) * len);
+	ret->list = malloc(sizeof(char*) *len);
 
 	for (unsigned int i = 0; i < len; i++)
 	{
@@ -97,10 +114,12 @@ StringList* listToCList(PyObject* list)
 	return ret;
 }
 
+
 /**
  * Converts a C String list to a Python List object
  */
-PyObject* cListToPyList(StringList* list)
+PyObject *
+cListToPyList(StringList *list)
 {
 	if (!list)
 		Py_RETURN_NONE;
@@ -114,29 +133,36 @@ PyObject* cListToPyList(StringList* list)
 	return ret;
 }
 
+
 /** @} */
+
 
 /**
  * Prints a C String list.
  */
-void stringListPrint(StringList* list)
+void 
+stringListPrint(StringList *list)
 {
 	if (!list)
 		return;
+	
+	//printf("ListPrint: count = %d\n", list->count);
 
 	for(unsigned int i = 0; i < list->count; i++)
 	{
-		printf("\"%s\"", list->list[i]);
+		printf("[%s]", list->list[i]);
 		// No coma after the last item.
 		if (i < list->count - 1)
 			printf(", ");
 	}
 }
 
+
 /**
  * Frees a string list and it's data
  */
-void stringListFree(StringList* list)
+void 
+stringListFree(StringList *list)
 {
 	if (list && list->list)
 	{
@@ -149,7 +175,11 @@ void stringListFree(StringList* list)
 	}
 
 	if (list)
+	{
 		free(list);
+		list = NULL;
+	}
 }
+
 
 /** @} */

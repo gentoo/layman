@@ -1,7 +1,10 @@
 #include <Python.h>
+
 #include "internal.h"
 #include "laymanapi.h"
+#include "basic.h"
 
+ 
 /** \defgroup layman_api Layman API
  * \brief Main API functions
  */
@@ -10,7 +13,8 @@
  * @{
  */
 
-static int _laymanAPIGetAllInfos(LaymanAPI* l, StringList* overlays, OverlayInfo *results, const char *overlay);
+static int _laymanAPIGetAllInfos(LaymanAPI *l, StringList *overlays, OverlayInfo *results, const char *overlay);
+
 
 /**
  * Layman structure that is used in all functions
@@ -33,13 +37,14 @@ struct LaymanAPI
  * \param output ?
  * \return a new instance of the LaymanAPI class, to be freed with laymanAPIFree()
  */
-LaymanAPI* laymanAPICreate(BareConfig* config, int report_error, int output)
+LaymanAPI *
+laymanAPICreate(BareConfig *config, int report_error, int output)
 {
 	PyObject *cfg;
 	if (!config)
 		cfg = Py_None;
 	else
-		cfg = _bareConfigObject(config);
+		cfg = _ConfigObject(config);
 
 	PyObject *obj = executeFunction("layman.api", "LaymanAPI", "Oii", cfg, report_error, output);
 	if (!obj)
@@ -51,6 +56,7 @@ LaymanAPI* laymanAPICreate(BareConfig* config, int report_error, int output)
 	return ret;
 }
 
+
 /**
  * Check if the given string is a valid repository
  *
@@ -59,14 +65,15 @@ LaymanAPI* laymanAPICreate(BareConfig* config, int report_error, int output)
  *
  * \return True if the repository is valid, False if not
  */
-int laymanAPIIsRepo(LaymanAPI *l, const char* repo)
+int 
+laymanAPIIsRepo(LaymanAPI *l, const char *repo)
 {
 	if (!l || !l->object)
-		return 0;
+		return False;
 
 	PyObject *obj = PyObject_CallMethod(l->object, "is_repo", "(s)", repo);
 	if (!obj)
-		return 0;
+		return False;
 
 	int ret = PyObject_IsTrue(obj);
 	// ret must be 1 or 0
@@ -76,6 +83,7 @@ int laymanAPIIsRepo(LaymanAPI *l, const char* repo)
 
 	return ret;
 }
+
 
 /**
  * Check if the given string is a valid and installed repository
@@ -85,14 +93,15 @@ int laymanAPIIsRepo(LaymanAPI *l, const char* repo)
  *
  * \return True if the repository is valid and installed, False if not
  */
-int laymanAPIIsInstalled(LaymanAPI *l, const char* repo)
+int 
+laymanAPIIsInstalled(LaymanAPI *l, const char *repo)
 {
 	if (!l || !l->object)
-		return 0;
+		return False;
 
 	PyObject *obj = PyObject_CallMethod(l->object, "is_installed", "(s)", repo);
 	if (!obj)
-		return 0;
+		return False;
 
 	int ret = PyObject_IsTrue(obj);
 	// ret must be 1 or 0
@@ -103,6 +112,7 @@ int laymanAPIIsInstalled(LaymanAPI *l, const char* repo)
 	return ret;
 }
 
+
 /**
  * Returns a list of the available overlays.
  *
@@ -111,7 +121,8 @@ int laymanAPIIsInstalled(LaymanAPI *l, const char* repo)
  *
  * \return the list of available overlays
  */
-StringList* laymanAPIGetAvailable(LaymanAPI* l, int reload)
+StringList *
+laymanAPIGetAvailable(LaymanAPI *l, int reload)
 {
 	if (!l || !l->object)
 		return NULL;
@@ -127,6 +138,7 @@ StringList* laymanAPIGetAvailable(LaymanAPI* l, int reload)
 	return ret;
 }
 
+
 /**
  * Returns a list of the installed overlays.
  *
@@ -135,7 +147,8 @@ StringList* laymanAPIGetAvailable(LaymanAPI* l, int reload)
  *
  * \return the list of installed overlays
  */
-StringList* laymanAPIGetInstalled(LaymanAPI* l, int reload)
+StringList *
+laymanAPIGetInstalled(LaymanAPI *l, int reload)
 {
 	if (!l || !l->object)
 		return NULL;
@@ -144,11 +157,12 @@ StringList* laymanAPIGetInstalled(LaymanAPI* l, int reload)
 	if (!obj)
 		return NULL;
 
-	StringList* ret = listToCList(obj);
+	StringList *ret = listToCList(obj);
 	Py_DECREF(obj);
 
 	return ret;
 }
+
 
 /**
  * Syncs an overlay.
@@ -158,14 +172,15 @@ StringList* laymanAPIGetInstalled(LaymanAPI* l, int reload)
  *
  * \return True if it succeeded, False if not.
  */
-int laymanAPISync(LaymanAPI* l, const char* overlay, int verbose)
+int 
+laymanAPISync(LaymanAPI *l, const char *overlay, int verbose)
 {
 	if (!l || !l->object)
-		return 0;
+		return False;
 
 	PyObject *obj = PyObject_CallMethod(l->object, "sync", "(si)", overlay, verbose);
 	if (!obj)
-		return 0;
+		return False;
 
 	int ret = PyObject_IsTrue(obj);
 
@@ -177,19 +192,21 @@ int laymanAPISync(LaymanAPI* l, const char* overlay, int verbose)
 	return ret;
 }
 
+
 /**
  * Updates the local overlay list.
  *
  * \return True if it succeeded, False if not.
  */
-int laymanAPIFetchRemoteList(LaymanAPI* l)
+int 
+laymanAPIFetchRemoteList(LaymanAPI *l)
 {
 	if (!l || !l->object)
-		return 0;
+		return False;
 	
 	PyObject *obj = PyObject_CallMethod(l->object, "fetch_remote_list", NULL);
 	if (!obj)
-		return 0;
+		return False;
 
 	int ret = PyObject_IsTrue(obj);
 	assert(-1 != ret);
@@ -198,6 +215,7 @@ int laymanAPIFetchRemoteList(LaymanAPI* l)
 
 	return ret;
 }
+
 
 /**
  * Gets the information from the overlays given in the StringList overlays.
@@ -210,11 +228,12 @@ int laymanAPIFetchRemoteList(LaymanAPI* l)
  *
  * \return the number of results structures that have been filled
  */
-int laymanAPIGetInfoStrList(LaymanAPI* l, StringList* overlays, OverlayInfo* results)
+int 
+laymanAPIGetInfoStrList(LaymanAPI *l, StringList *overlays, OverlayInfo *results)
 {
 	// Check input data.
 	if (!l || !l->object || !overlays || !results)
-		return 0;
+		return False;
 
 	// Convert the StringList to a Python list object.
 	PyObject *list = cListToPyList(overlays);
@@ -226,11 +245,8 @@ int laymanAPIGetInfoStrList(LaymanAPI* l, StringList* overlays, OverlayInfo* res
 	// Check if the returned value is a dict as expected.
 	if (!obj || !PyDict_Check(obj))
 	{
-		if (obj)
-		{
-			Py_DECREF(obj);
-		}
-		return 0;
+		is Py_XDECREF(obj);
+		return False;
 	}
 
 	PyObject *name, *tuple;
@@ -258,7 +274,7 @@ int laymanAPIGetInfoStrList(LaymanAPI* l, StringList* overlays, OverlayInfo* res
 			continue;
 
 		// Copy values in the kth structure of the results.
-		char* tmp = PyString_AsString(name);
+		char *tmp = PyString_AsString(name);
 		assert(NULL != tmp);
 		results[k].name = strdup(tmp);
 
@@ -280,6 +296,7 @@ int laymanAPIGetInfoStrList(LaymanAPI* l, StringList* overlays, OverlayInfo* res
 	return k;
 }
 
+
 /**
  * Provided for convenience, this function get the information for only 1 overlay.
  *
@@ -287,7 +304,8 @@ int laymanAPIGetInfoStrList(LaymanAPI* l, StringList* overlays, OverlayInfo* res
  *
  * \return NULL if it fails, an OverlayInfo struct if not.
  */
-OverlayInfo *laymanAPIGetInfoStr(LaymanAPI* l, const char* overlay)
+OverlayInfo *
+laymanAPIGetInfoStr(LaymanAPI *l, char *overlay)
 {
 	// Check input data.
 	if (!l || !l->object || !overlay)
@@ -306,6 +324,7 @@ OverlayInfo *laymanAPIGetInfoStr(LaymanAPI* l, const char* overlay)
 	return oi;
 }
 
+
 /**
  * Get all information from an overlay.
  * This function fills every fields but the text field of the OverlayInfo structure.
@@ -314,7 +333,8 @@ OverlayInfo *laymanAPIGetInfoStr(LaymanAPI* l, const char* overlay)
  *
  * \return NULL if it fails, an OverlayInfo struct if not.
  */
-OverlayInfo *laymanAPIGetAllInfo(LaymanAPI* l, const char* overlay)
+OverlayInfo *
+laymanAPIGetAllInfo(LaymanAPI *l, const char *overlay)
 {
 	// Check input data.
 	if (!l || !l->object || !overlay)
@@ -324,7 +344,7 @@ OverlayInfo *laymanAPIGetAllInfo(LaymanAPI* l, const char* overlay)
 	OverlayInfo *ret = calloc(1, sizeof(OverlayInfo));
 	
 	// Fill it in.
-	if (0 == _laymanAPIGetAllInfos(l, NULL, ret, overlay))
+	if (False == _laymanAPIGetAllInfos(l, NULL, ret, overlay))
 	{
 		free(ret);
 		return NULL;
@@ -333,6 +353,7 @@ OverlayInfo *laymanAPIGetAllInfo(LaymanAPI* l, const char* overlay)
 	// Return it
 	return ret;
 }
+
 
 /**
  * Gives a list of OverlayInfo's from the overaly names found in the overlays StringList.
@@ -348,10 +369,12 @@ OverlayInfo *laymanAPIGetAllInfo(LaymanAPI* l, const char* overlay)
  *
  * @return the number of OverlayInfo structures filled.
  */
-int laymanAPIGetAllInfoList(LaymanAPI* l, StringList* overlays, OverlayInfo *results)
+int 
+laymanAPIGetAllInfoList(LaymanAPI *l, StringList *overlays, OverlayInfo *results)
 {
 	return _laymanAPIGetAllInfos(l, overlays, results, NULL);
 }
+
 
 /**
  * \internal
@@ -369,11 +392,12 @@ int laymanAPIGetAllInfoList(LaymanAPI* l, StringList* overlays, OverlayInfo *res
  * 
  * \return the number of OverlayInfo structures filled.
  */
-int _laymanAPIGetAllInfos(LaymanAPI* l, StringList* overlays, OverlayInfo *results, const char *overlay)
+int 
+_laymanAPIGetAllInfos(LaymanAPI *l, StringList *overlays, OverlayInfo *results, const char *overlay)
 {
 	// Check input data.
 	if (!l || !l->object || !results || (!overlays && !overlay))
-		return 0;
+		return False;
 
 	PyObject *obj = NULL;
 
@@ -400,7 +424,7 @@ int _laymanAPIGetAllInfos(LaymanAPI* l, StringList* overlays, OverlayInfo *resul
 		{
 			Py_DECREF(obj);
 		}
-		return 0;
+		return False;
 	}
 
 	PyObject *name, *dict;
@@ -426,10 +450,10 @@ int _laymanAPIGetAllInfos(LaymanAPI* l, StringList* overlays, OverlayInfo *resul
 		PyObject *srcType = PyDict_GetItemString(dict, "src_type");
 		PyObject *priority = PyDict_GetItemString(dict, "priority");
 		PyObject *quality = PyDict_GetItemString(dict, "quality");
-//'status':?? TODO
+		//'status':?? TODO
 
 		// Copy values in the kth structure of the results.
-		char* tmp = PyString_AsString(name);
+		char *tmp = PyString_AsString(name);
 		assert(NULL != tmp); //name must not be NULL
 		results[k].name = strdup(tmp);
 
@@ -477,6 +501,7 @@ int _laymanAPIGetAllInfos(LaymanAPI* l, StringList* overlays, OverlayInfo *resul
 	return k;
 }
 
+
 /**
  * Adds an overlay to layman
  *
@@ -484,10 +509,11 @@ int _laymanAPIGetAllInfos(LaymanAPI* l, StringList* overlays, OverlayInfo *resul
  *
  * \return True if it succeeded, False if not
  */
-int laymanAPIAddRepo(LaymanAPI* l, const char *repo)
+int 
+laymanAPIAddRepo(LaymanAPI *l, const char *repo)
 {
 	if (!l || !l->object || !repo)
-		return 0;
+		return False;
 
 	// Call the method
 	PyObject *obj = PyObject_CallMethod(l->object, "delete_repos", "(s)", repo);
@@ -495,14 +521,15 @@ int laymanAPIAddRepo(LaymanAPI* l, const char *repo)
 	// If the call returned NULL, it failed.
 	int ret;
 	if (!obj)
-		ret = 0;
+		ret = False;
 	else
-		ret = 1;
+		ret = True;
 
 	Py_DECREF(obj);
 
 	return ret;
 }
+
 
 /**
  * Adds a list of overlays to layman
@@ -511,10 +538,11 @@ int laymanAPIAddRepo(LaymanAPI* l, const char *repo)
  *
  * Return True if it succeeded, False if not
  */
-int laymanAPIAddRepoList(LaymanAPI* l, StringList *repos)
+int 
+laymanAPIAddRepoList(LaymanAPI *l, StringList *repos)
 {
 	if (!l || !l->object || !repos)
-		return 0;
+		return False;
 
 	// Converting the C list to a python list
 	PyObject *pyrepos = cListToPyList(repos);
@@ -526,14 +554,15 @@ int laymanAPIAddRepoList(LaymanAPI* l, StringList *repos)
 	// If the call returned NULL, it failed.
 	int ret;
 	if (!obj)
-		ret = 0;
+		ret = False;
 	else
-		ret = 1;
+		ret = True;
 
 	Py_DECREF(obj);
 
 	return ret;
 }
+
 
 /**
  * Deletes an overlay from layman
@@ -542,10 +571,11 @@ int laymanAPIAddRepoList(LaymanAPI* l, StringList *repos)
  *
  * \return True if it succeeded, False if not
  */
-int laymanAPIDeleteRepo(LaymanAPI* l, const char *repo)
+int 
+laymanAPIDeleteRepo(LaymanAPI *l, const char *repo)
 {
 	if (!l || !l->object || !repo)
-		return 0;
+		return False;
 
 	// Call the method
 	PyObject *obj = PyObject_CallMethod(l->object, "delete_repos", "(s)", repo);
@@ -553,14 +583,15 @@ int laymanAPIDeleteRepo(LaymanAPI* l, const char *repo)
 	// If the call returned NULL, it failed.
 	int ret;
 	if (!obj)
-		ret = 0;
+		ret = False;
 	else
-		ret = 1;
+		ret = True;
 
 	Py_DECREF(obj);
 
 	return ret;
 }
+
 
 /**
  * Deletes a list of overlays from layman
@@ -569,10 +600,11 @@ int laymanAPIDeleteRepo(LaymanAPI* l, const char *repo)
  *
  * \return True if it succeeded, False if not
  */
-int laymanAPIDeleteRepoList(LaymanAPI* l, StringList *repos)
+int 
+laymanAPIDeleteRepoList(LaymanAPI *l, StringList *repos)
 {
 	if (!l || !l->object || !repos)
-		return 0;
+		return False;
 
 	// Converting the C list to a python list
 	PyObject *pyrepos = cListToPyList(repos);
@@ -584,19 +616,54 @@ int laymanAPIDeleteRepoList(LaymanAPI* l, StringList *repos)
 	// If the call returned NULL, it failed.
 	int ret;
 	if (!obj)
-		ret = 0;
+		ret = False;
 	else
-		ret = 1;
+		ret = True;
 
 	Py_DECREF(obj);
 
 	return ret;
 }
 
+
+/**
+ * Retrieves any errors that were recorded by the LaymanAPI
+ */
+StringList *
+laymanAPIGetErrors(LaymanAPI *l)
+{
+	if (!l)
+		return NULL;
+	
+	// Call the method
+	PyObject *obj = PyObject_CallMethod(l->object, "get_errors", "(O)", NULL);
+	if (!obj)
+	{
+		StringList *ret = stringListCreate(1);
+		char *msg = "*****laymanAPIGetErrors(): Failed to get a PyObject from get_errors call.\n";
+		int ok = stringListInsertAt(ret, 1, msg);
+		if(ok == False)
+		{
+			printf("laymanAPIGetErrors(): Failed to insert failure message in StringList\n");
+			printf("%s", msg);
+			stringListFree(ret);
+			return NULL;
+		}
+		return ret;
+	}
+	//listToCList() will return Type_NONE if the python list is not valid.
+	StringList *ret = listToCList(obj);
+	Py_DECREF(obj);
+
+	return ret;
+}
+
+
 /**
  * Frees a LaymanAPI object from memory
  */
-void laymanAPIFree(LaymanAPI* l)
+void 
+laymanAPIFree(LaymanAPI* l)
 {
 	if (l && l->object)
 	{
@@ -611,7 +678,8 @@ void laymanAPIFree(LaymanAPI* l)
 /*
  * Function that properly frees an OverlayInfo structure's data
  */
-void overlayInfoFree(OverlayInfo oi)
+void 
+overlayInfoFree(OverlayInfo oi)
 {
 	if (oi.name)
 		free(oi.name);
@@ -632,6 +700,46 @@ void overlayInfoFree(OverlayInfo oi)
 	if (oi.srcUris)
 		stringListFree(oi.srcUris);
 }
+
+
+/**
+ * Creates a high level LaymanAPI object that must be used for all functions.
+ *
+ * \param config a BareConfig object that contains all configuration options. If NULL, the default configuration will be used.
+ * \param report_error if True, errors reporting on stdout will be activated.
+ * \param output ?
+ * \return a new instance of the LaymanAPI class, to be freed with laymanAPIFree()
+ */
+LaymanAPI *laymanCreate(
+		FILE *outfd, FILE *infd, FILE *errfd,
+		BareConfig *cfg, int *read_configfile, int *quiet, int *quietness,
+		int *verbose, int *nocolor, int *width)
+{
+	PyObject *cfg;
+	if (!config)
+		cfg = Py_None;
+	else
+		cfg = _ConfigObject(config);
+
+	PyObject *obj = executeFunction("layman", "Layman", "Oii", 
+		outfd, infd, errfd,
+		_ConfigObject(cfg),
+		PyBool_FromLong(read_configfile),
+		PyBool_FromLong(quiet),
+		PyBool_FromLong(quietness),
+		PyBool_FromLong(verbose),
+		PyBool_FromLong(nocolor),
+		PyBool_FromLong(width)
+	);
+	if (!obj)
+		return NULL;
+
+	LaymanAPI *ret = malloc(sizeof(LaymanAPI));
+	ret->object = obj;
+
+	return ret;
+}
+
 
 /**
  * @}

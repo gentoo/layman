@@ -1,16 +1,22 @@
 #include <Python.h>
+#include <stdio.h>
 
 #include "config.h"
 #include "internal.h"
+#include "dict.h"
+#include "basic.h"
+
 
 /**
  * \internal
  */
+
 #define debug(x)	printf(x)
 
 /** \defgroup config Config
  * \brief Layman library configuration module
  */
+
 
 /** \addtogroup config
  * @{
@@ -23,13 +29,14 @@
 struct BareConfig
 {
 	PyObject *object;
-};
+}
 
 /**
  * \internal
  * Returns the internal Python object.
  */
-PyObject *_bareConfigObject(BareConfig *c)
+PyObject *
+_ConfigObject(BareConfig *c)
 {
 	if (c && c->object)
 		return c->object;
@@ -46,8 +53,12 @@ PyObject *_bareConfigObject(BareConfig *c)
  *
  * \return a new instance of a BareConfig object. It must be freed with bareConfigFree()
  */
-BareConfig *bareConfigCreate(Message *m, FILE* outFd, FILE* inFd, FILE* errFd)
+BareConfig *
+bareConfigCreate(Message *m, FILE *outFd, FILE *inFd, FILE *errFd)
 {
+	if(!m)
+		return NULL;
+	
 	if (!outFd || fileno(outFd) <= 0)
 		outFd = stdout;
 	if (!inFd || fileno(inFd) <= 0)
@@ -55,18 +66,18 @@ BareConfig *bareConfigCreate(Message *m, FILE* outFd, FILE* inFd, FILE* errFd)
 	if (!errFd || fileno(errFd) <= 0)
 		errFd = stderr;
 	
-	PyObject *pyout = PyFile_FromFile(outFd, "", "w", 0);
+	PyObject *pyout = PyFile_FromFile(outFd, "", "w", 0); 
 	PyObject *pyin = PyFile_FromFile(inFd, "", "r", 0);
 	PyObject *pyerr = PyFile_FromFile(errFd, "", "w", 0);
 
-	PyObject *obj = executeFunction("layman.config", "BareConfig", "OOOO", _messageObject(m), pyout, pyin, pyerr);
+	PyObject *obj = executeFunction("layman.config", "BareConfig", "OOOO", _messagePyObject(m), pyout, pyin, pyerr);
 	Py_DECREF(pyout);
 	Py_DECREF(pyin);
 	Py_DECREF(pyerr);
 
 	if (!obj)
 	{
-		debug("The execution failed, Are you sure app-portage/layman-8888 is properly installed ?\n");
+		debug("The execution failed, Are you sure >=app-portage/layman-2.0* is properly installed ?\n");
 		return NULL;
 	}
 
@@ -76,10 +87,12 @@ BareConfig *bareConfigCreate(Message *m, FILE* outFd, FILE* inFd, FILE* errFd)
 	return ret;
 }
 
+
 /**
  * Frees a BareConfig object.
  */
-void bareConfigFree(BareConfig* cfg)
+void 
+ConfigFree(BareConfig *cfg)
 {
 	if (cfg && cfg->object)
 	{
@@ -87,8 +100,12 @@ void bareConfigFree(BareConfig* cfg)
 	}
 
 	if (cfg)
+	{
 		free(cfg);
+		cfg = NULL;
+	}
 }
+
 
 /**
  * Get an option's default value.
@@ -97,9 +114,10 @@ void bareConfigFree(BareConfig* cfg)
  * 
  * \return the value or NULL on failure.
  */
-const char* bareConfigGetDefaultValue(BareConfig* cfg, const char* opt)
+const char *
+ConfigGetDefaultValue(BareConfig *cfg, const char *opt)
 {
-	PyObject *obj = PyObject_CallMethod(cfg->object, "get_defaults", NULL);
+	PyObject *obj = PyObject_CallMethod(_ConfigObject(cfg), "get_defaults", NULL);
 	if (!obj)
 		return NULL;
 
@@ -119,14 +137,16 @@ const char* bareConfigGetDefaultValue(BareConfig* cfg, const char* opt)
 		return "";
 }
 
-/*
+
+/**
  * Get an option's current value.
  *
  * \param opt the name of the option
  *
  * \return the value or NULL on failure
  */
-const char* bareConfigGetOptionValue(BareConfig* cfg, const char* opt)
+const char *
+ConfigGetOptionValue(BareConfig *cfg, const char *opt)
 {
 	PyObject *obj = PyObject_CallMethod(cfg->object, "get_option", "(z)", opt);
 	char *tmp = PyString_AsString(obj);
@@ -139,7 +159,8 @@ const char* bareConfigGetOptionValue(BareConfig* cfg, const char* opt)
 	return ret;
 }
 
-/*
+
+/**
  * Modifies an option's value
  *
  * \param opt the name of the option
@@ -147,18 +168,100 @@ const char* bareConfigGetOptionValue(BareConfig* cfg, const char* opt)
  *
  * \return True on success, 0 on failure
  */
-int bareConfigSetOptionValue(BareConfig* cfg, const char* opt, const char* val)
+int 
+ConfigSetOptionValue(BareConfig *cfg, const char *opt, const char *val)
 {
 	PyObject *obj = PyObject_CallMethod(cfg->object, "set_option", "(zz)", opt, val);
 	int ret;
 	if (obj)
-		ret = 1;
+		ret = True;
 	else
-		ret = 0;
+		ret = False;
 	
 	Py_DECREF(obj);
 
 	return ret;
 }
+
+
+/**
+ * Creates an option config object with new option and/or default values.
+ *
+  *
+ * \return a new instance of a OptionConfig object. It must be freed with ConfigFree()
+ */
+BareConfig *
+optionConfigCreate( Dict *options, Dict *defaults)
+{
+
+	PyObject *opts = dictToPyDict(options);
+	PyObject *dflts = dictToPyDict(defaults);
+	PyObject *obj = executeFunction("layman.config", "OptionConfig", "OOOO", opts, dflts);
+
+	if (!obj)
+	{
+		debug("The execution failed, Are you sure >=app-portage/layman-2.0* is properly installed ?\n");
+		return NULL;
+	}
+
+	BareConfig *ret = malloc(sizeof(BareConfig));
+	ret->object = obj;
+	
+	Py_DECREF(opts);
+	Py_DECREF(dflts);
+
+	return ret;
+}
+
+
+/**
+ * Updates the options values
+ *
+ * \param opt Dict of the key/value pairs
+  *
+ * \return True on success, False on failure
+ */
+int 
+optionConfigUpdateOptions(BareConfig *cfg, Dict *opt)
+{
+	PyObject *opts = dictToPyDict(opt);
+	PyObject *obj = PyObject_CallMethod(cfg->object, "update", "(zz)", opts);
+	int ret;
+	if (obj)
+		ret = True;
+	else
+		ret = False;
+	
+	Py_DECREF(obj);
+	Py_DECREF(opt);
+
+	return ret;
+}
+
+
+/**
+ * Updates the defaults values
+ *
+* \param opt Dict of the default key/value pairs
+  *
+ * \return True on success, 0 on failure
+ */
+int 
+optionConfigUpdateDefaults(BareConfig *cfg, Dict *opt)
+{
+	PyObject *opts = dictToPyDict(opt);
+	PyObject *obj = PyObject_CallMethod(cfg->object, "update_defaults", "(zz)", opts);
+	int ret;
+	if (obj)
+		ret = True;
+	else
+		ret = False;
+	
+	Py_DECREF(obj);
+	Py_DECREF(opt);
+
+	return ret;
+}
+
 
 /** @} */

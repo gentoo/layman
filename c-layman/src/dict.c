@@ -5,6 +5,7 @@
 #include "internal.h"
 #include "dict.h"
 
+
 /*
  * Dict
  */
@@ -16,11 +17,13 @@ struct DictElem
 	struct DictElem *next;
 };
 
+
 struct Dict
 {
 	DictElem *root;
 	int count;
 };
+
 
 Dict *dictCreate()
 {
@@ -30,7 +33,9 @@ Dict *dictCreate()
 	return ret;
 }
 
-void dictInsert(Dict* list, const char* key, const char* value)
+
+void 
+dictInsert(Dict *list, const char *key, const char *value)
 {
 	if (!list)
 		return;
@@ -42,12 +47,16 @@ void dictInsert(Dict* list, const char* key, const char* value)
 	list->count++;
 }
 
-unsigned int dictCount(Dict *list)
+
+unsigned int 
+dictCount(Dict *list)
 {
 	return (list ? list->count : 0);
 }
 
-void dictFree(Dict *list)
+
+void 
+dictFree(Dict *list)
 {
 	if (!list)
 		return;
@@ -63,7 +72,9 @@ void dictFree(Dict *list)
 	free(list);
 }
 
-PyObject *dictToPyDict(Dict *dict)
+
+PyObject *
+dictToPyDict(Dict *dict)
 {
 	PyObject *pydict = PyDict_New();
 	DictElem *node = dict->root;

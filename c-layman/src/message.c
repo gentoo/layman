@@ -1,6 +1,9 @@
 #include <Python.h>
+
 #include "message.h"
 #include "internal.h"
+#include "basic.h"
+
 
 /** \defgroup message Message
  * \brief Debug message management
@@ -9,9 +12,11 @@
  * debug levels.
  */
 
+
 /** \addtogroup message
  * @{
  */
+
 
 /**
  * Message structure that is used in all functions
@@ -24,6 +29,7 @@ struct Message
 	PyObject *object;
 };
 
+
 /**
  * Creates a Message instance with default values.
  * To modify those values, use the corresponding functions.
@@ -35,34 +41,33 @@ struct Message
  *
  * \return a new instance of a Message object. It must be freed with messageFree()
  */
-Message *messageCreate(const char* module,
-			FILE* out,
-			FILE* err,
-			FILE* dbg)
+Message *
+messageCreate(
+		FILE *out, FILE *err, 
+		int infolevel, int warnlevel, 
+		int col)
 {
-	PyObject *pyout, *pyerr, *pydbg;
+	PyObject *pyout, *pyerr;
 
 	if (!out || fileno(out) <= 0)
 		out = stdout;
 	if (!err || fileno(err) <= 0)
 		err = stderr;
-	if (!dbg || fileno(dbg) <= 0)
-		dbg = stderr;
 
 	pyout = PyFile_FromFile(out, "", "w", 0);
 	pyerr = PyFile_FromFile(err, "", "w", 0);
-	pydbg = PyFile_FromFile(dbg, "", "w", 0);
 
-	PyObject *object = executeFunction("layman.debug", "Message",
+	PyObject *object = executeFunction("layman.output", "Message",
 					"(sOOO)",
-					module,
 					pyout,
 					pyerr,
-					pydbg);
+					PyInt_FromLong(infolevel),
+					PyInt_FromLong(warnlevel),
+					PyBool_FromLong(col)
+					);
 
 	Py_DECREF(pyout);
 	Py_DECREF(pyerr);
-	Py_DECREF(pydbg);
 
 	if (!object)
 		return NULL;
@@ -73,6 +78,7 @@ Message *messageCreate(const char* module,
 	return ret;
 }
 
+
 /**
  * Set the debug level.
  *
@@ -80,23 +86,25 @@ Message *messageCreate(const char* module,
  *
  * \return True on success, False on failure.
  */
-int messageSetDebugLevel(Message *m, int debug_level)
+int 
+messageSetDebugLevel(Message *m, int debug_level)
 {
 	if (!m || !m->object)
-		return 0;
+		return False;
 
 	PyObject *obj = PyObject_CallMethod(m->object, "set_debug_level", "(I)", debug_level);
 	int ret;
 
 	if (obj)
-		ret = 1;
+		ret = True;
 	else
-		ret = 0;
+		ret = False;
 
 	Py_DECREF(obj);
 
 	return ret;
 }
+
 
 /**
  * Set the debug verbosity.
@@ -105,7 +113,7 @@ int messageSetDebugLevel(Message *m, int debug_level)
  *
  * \return True on success, False on failure.
  */
-int messageSetDebugVerbosity(Message *m, int debug_verbosity)
+/*int messageSetDebugVerbosity(Message *m, int debug_verbosity)
 {
 	if (!m || !m->object)
 		return 0;
@@ -122,6 +130,8 @@ int messageSetDebugVerbosity(Message *m, int debug_verbosity)
 
 	return ret;
 }
+*/
+
 
 /**
  * Set the info level.
@@ -130,18 +140,20 @@ int messageSetDebugVerbosity(Message *m, int debug_verbosity)
  *
  * \return True on success, False on failure.
  */
-int messageSetInfoLevel(Message *m, int info_level)
+int 
+messageSetInfoLevel(Message *m, int info_level)
 {
 	if (!m || !m->object)
-		return 0;
+		return False;
 
-	PyObject *obj = PyObject_CallMethod(m->object, "set_info_level", "(I)", info_level);
+	PyObject *obj = PyObject_CallMethod(m->object, "set_info_level", "(I)",
+		PyInt_FromLong(info_level));
 	int ret;
 
 	if (obj)
-		ret = 1;
+		ret = True;
 	else
-		ret = 0;
+		ret = False;
 
 	Py_DECREF(obj);
 
@@ -155,18 +167,20 @@ int messageSetInfoLevel(Message *m, int info_level)
  *
  * \return True on success, False on failure.
  */
-int messageSetWarnLevel(Message *m, int warn_level)
+int 
+messageSetWarnLevel(Message *m, int warn_level)
 {
 	if (!m || !m->object)
-		return 0;
+		return False;
 
-	PyObject *obj = PyObject_CallMethod(m->object, "set_warn_level", "(I)", warn_level);
+	PyObject *obj = PyObject_CallMethod(m->object, "set_warn_level", "(I)",
+		PyInt_FromLong(warn_level));
 	int ret;
 
 	if (obj)
-		ret = 1;
+		ret = True;
 	else
-		ret = 0;
+		ret = False;
 
 	Py_DECREF(obj);
 
@@ -178,18 +192,19 @@ int messageSetWarnLevel(Message *m, int warn_level)
  *
  * \return 1 on success, 0 on failure
  */
-int messageSetColorsOn(Message *m)
+int 
+messageSetColorsOn(Message *m)
 {
 	if (!m || !m->object)
-		return 0;
+		return False;
 
-	PyObject *obj = PyObject_CallMethod(m->object, "color_on", NULL);
+	PyObject *obj = PyObject_CallMethod(m->object, "set_colorize", Py_True);
 	int ret;
 
 	if (obj)
-		ret = 1;
+		ret = True;
 	else
-		ret = 0;
+		ret = False;
 
 	Py_DECREF(obj);
 
@@ -201,18 +216,19 @@ int messageSetColorsOn(Message *m)
  *
  * \return 1 on success, 0 on failure
  */
-int messageSetColorsOff(Message *m)
+int 
+messageSetColorsOff(Message *m)
 {
 	if (!m || !m->object)
-		return 0;
+		return False;
 
-	PyObject *obj = PyObject_CallMethod(m->object, "color_off", NULL);
+	PyObject *obj = PyObject_CallMethod(m->object, "set_colorize", Py_False);
 	int ret;
 
 	if (obj)
-		ret = 1;
+		ret = True;
 	else
-		ret = 0;
+		ret = False;
 
 	Py_DECREF(obj);
 
@@ -226,7 +242,7 @@ int messageSetColorsOff(Message *m)
  *
  * \return 1 on success, 0 on failure
  */
-int messageSetDebugMethods(Message *m, const char* mth)
+/*int messageSetDebugMethods(Message *m, const char* mth)
 {
 	if (!m || !m->object)
 		return 0;
@@ -243,6 +259,8 @@ int messageSetDebugMethods(Message *m, const char* mth)
 
 	return ret;
 }
+*/
+
 
 /**
  * Sets the classes to be debugged.
@@ -251,7 +269,7 @@ int messageSetDebugMethods(Message *m, const char* mth)
  *
  * \return 1 on success, 0 on failure
  */
-int messageSetDebugClasses(Message *m, const char* cla)
+/*int messageSetDebugClasses(Message *m, const char* cla)
 {
 	if (!m || !m->object)
 		return 0;
@@ -268,6 +286,8 @@ int messageSetDebugClasses(Message *m, const char* cla)
 
 	return ret;
 }
+*/
+
 
 /**
  * Sets the variables to be debugged.
@@ -276,7 +296,7 @@ int messageSetDebugClasses(Message *m, const char* cla)
  *
  * \return 1 on success, 0 on failure
  */
-int messageSetDebugVariables(Message *m, const char* var)
+/*int messageSetDebugVariables(Message *m, const char* var)
 {
 	if (!m || !m->object)
 		return 0;
@@ -293,25 +313,32 @@ int messageSetDebugVariables(Message *m, const char* var)
 
 	return ret;
 }
+*/
 
+ 
 /**
  * Frees a message structure.
  */
-void messageFree(Message *m)
+void 
+messageFree(Message *m)
 {
 	if (m && m->object)
 	{
 		Py_DECREF(m->object);
 	}
 	if (m)
+	{
 		free(m);
+		m = NULL;
+	}
 }
 
 /**
  * \internal
  * Returns the internal Python object
  */
-PyObject *_messageObject(Message* m)
+PyObject *
+_messagePyObject(Message* m)
 {
 	if (m && m->object)
 		return m->object;
