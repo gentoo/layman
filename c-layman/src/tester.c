@@ -48,13 +48,13 @@ main(int argc, char *argv[])
 	int ret = 0;
 	laymanInit();
 	
-	Message *msg = messageCreate( 0, 0, 4, 4, True);
+	MessageStruct *msg = messageCreate( 0, 0, 4, 4, True);
 	if(msg == NULL)
-		printf("Failed to create a Message object\n");
+		printf("Failed to create a MessageStruct object\n");
 	
-	BareConfig *cfg = bareConfigCreate(msg, 0, 0, 0);
+	BareConfigStruct *cfg = bareConfigCreate(msg, 0, 0, 0);
 	if(cfg == NULL)
-		printf("Failed to create BareConfig object\n");
+		printf("Failed to create BareConfigStruct object\n");
 	
 	/*if (!bareConfigSetOptionValue(cfg, "local_list", 
 		"/home/detlev/src/gsoc2010/layman/layman/tests/testfiles/global-overlays.xml"))

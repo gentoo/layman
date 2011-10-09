@@ -78,7 +78,7 @@ typedef struct PythonSessionStruct
 	public:
 
 	
-	Interpreter initialized = 0;
+	PythonInterpreter interpreter = 0;
 
 
 	/** \defgroup base Layman base
@@ -100,14 +100,14 @@ typedef struct PythonSessionStruct
 	void 
 	Initialize()
 	{
-		if (initialized)
+		if (interpreter)
 			return;
 
 		if (!Py_IsInitialized())
 			Py_Initialize();
 
-		initialized = malloc(sizeof(struct Interpreter));
-		initialized->modules = createObjectList();
+		interpreter = malloc(sizeof(struct Interpreter));
+		interpreter->modules = createObjectList();
 	}
 
 	/**
@@ -117,10 +117,10 @@ typedef struct PythonSessionStruct
 	void 
 	Finalize()
 	{
-		if (!initialized)
+		if (!interpreter)
 			return;
-		freeList(initialized->modules, 1);
-		free(initialized);
+		freeList(interpreter->modules, 1);
+		free(interpreter);
 
 		if (Py_IsInitialized())
 			Py_Finalize();
@@ -142,7 +142,7 @@ typedef struct PythonSessionStruct
 	PyObject *
 	executeFunction(const char *module, const char *funcName, const char *format, ...)
 	{
-		assert(initialized);
+		assert(interpreter);
 
 		// Make argument list
 		PyObject *args;
@@ -158,9 +158,9 @@ typedef struct PythonSessionStruct
 
 		// Look for the module.
 		PyObject *mod = 0;
-		if (initialized->modules)
+		if (interpreter->modules)
 		{
-			mod = moduleNamed(module, initialized->modules);
+			mod = moduleNamed(module, interpreter->modules);
 		}
 		// If module is not loaded yet, do it.
 		if (!mod)
@@ -168,7 +168,7 @@ typedef struct PythonSessionStruct
 			mod = PyImport_ImportModule(module);
 			if (!mod)
 				return NULL;
-			insert(initialized->modules, mod);
+			insert(interpreter->modules, mod);
 		}
 
 		// Look for the function

@@ -26,19 +26,19 @@ struct LaymanAPI
 	 * PyObject that is used to call methods
 	 */
 	PyObject *object;
-};
+}
 
 
 /**
  * Creates a LaymanAPI object that must be used in all function in this file.
  *
- * \param config a BareConfig object that contains all configuration options. If NULL, the default configuration will be used.
+ * \param config a BareConfigStruct object that contains all configuration options. If NULL, the default configuration will be used.
  * \param report_error if True, errors reporting on stdout will be activated.
  * \param output ?
  * \return a new instance of the LaymanAPI class, to be freed with laymanAPIFree()
  */
 LaymanAPI *
-laymanAPICreate(BareConfig *config, int report_error, int output)
+laymanAPICreate(BareConfigStruct *config, int report_error, int output)
 {
 	PyObject *cfg;
 	if (!config)
@@ -705,14 +705,14 @@ overlayInfoFree(OverlayInfo oi)
 /**
  * Creates a high level LaymanAPI object that must be used for all functions.
  *
- * \param config a BareConfig object that contains all configuration options. If NULL, the default configuration will be used.
+ * \param config a BareConfigStruct object that contains all configuration options. If NULL, the default configuration will be used.
  * \param report_error if True, errors reporting on stdout will be activated.
  * \param output ?
  * \return a new instance of the LaymanAPI class, to be freed with laymanAPIFree()
  */
 LaymanAPI *laymanCreate(
 		FILE *outfd, FILE *infd, FILE *errfd,
-		BareConfig *cfg, int *read_configfile, int *quiet, int *quietness,
+		BareConfigStruct *cfg, int *read_configfile, int *quiet, int *quietness,
 		int *verbose, int *nocolor, int *width)
 {
 	PyObject *cfg;

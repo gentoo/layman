@@ -11,7 +11,7 @@
  
 PyObject *executeFunction(const char *module, const char *funcName, const char *format, ...);
 
-PyObject *_ConfigObject(BareConfig*);
+PyObject *_ConfigObject(BareConfigStruct*);
 
 PyObject *_messagePyObject(Message *m);
 
@@ -42,7 +42,7 @@ typedef struct PyObjectList
  * \internal
  * A Python interpreter object keeps the context like the loaded modules.
  */
-typedef struct Interpreter
+typedef struct PythonInterpreter
 {
 	PyObjectList modules;
 }

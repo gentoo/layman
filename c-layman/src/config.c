@@ -26,7 +26,7 @@
 /**
  * \internal
  */
-struct BareConfig
+struct BareConfigStruct
 {
 	PyObject *object;
 }
@@ -36,7 +36,7 @@ struct BareConfig
  * Returns the internal Python object.
  */
 PyObject *
-_ConfigObject(BareConfig *c)
+_ConfigObject(BareConfigStruct *c)
 {
 	if (c && c->object)
 		return c->object;
@@ -51,10 +51,10 @@ _ConfigObject(BareConfig *c)
  * \param inFd where information must be read from
  * \param errFd where errors must be written to
  *
- * \return a new instance of a BareConfig object. It must be freed with bareConfigFree()
+ * \return a new instance of a BareConfigStruct object. It must be freed with bareConfigFree()
  */
-BareConfig *
-bareConfigCreate(Message *m, FILE *outFd, FILE *inFd, FILE *errFd)
+BareConfigStruct *
+bareConfigCreate(MessageStruct *m, FILE *outFd, FILE *inFd, FILE *errFd)
 {
 	if(!m)
 		return NULL;
@@ -81,7 +81,7 @@ bareConfigCreate(Message *m, FILE *outFd, FILE *inFd, FILE *errFd)
 		return NULL;
 	}
 
-	BareConfig *ret = malloc(sizeof(BareConfig));
+	BareConfigStruct *ret = malloc(sizeof(BareConfigStruct));
 	ret->object = obj;
 
 	return ret;
@@ -89,10 +89,10 @@ bareConfigCreate(Message *m, FILE *outFd, FILE *inFd, FILE *errFd)
 
 
 /**
- * Frees a BareConfig object.
+ * Frees a BareConfigStruct object.
  */
 void 
-ConfigFree(BareConfig *cfg)
+ConfigFree(BareConfigStruct *cfg)
 {
 	if (cfg && cfg->object)
 	{
@@ -115,7 +115,7 @@ ConfigFree(BareConfig *cfg)
  * \return the value or NULL on failure.
  */
 const char *
-ConfigGetDefaultValue(BareConfig *cfg, const char *opt)
+ConfigGetDefaultValue(BareConfigStruct *cfg, const char *opt)
 {
 	PyObject *obj = PyObject_CallMethod(_ConfigObject(cfg), "get_defaults", NULL);
 	if (!obj)
@@ -146,7 +146,7 @@ ConfigGetDefaultValue(BareConfig *cfg, const char *opt)
  * \return the value or NULL on failure
  */
 const char *
-ConfigGetOptionValue(BareConfig *cfg, const char *opt)
+ConfigGetOptionValue(BareConfigStruct *cfg, const char *opt)
 {
 	PyObject *obj = PyObject_CallMethod(cfg->object, "get_option", "(z)", opt);
 	char *tmp = PyString_AsString(obj);
@@ -169,7 +169,7 @@ ConfigGetOptionValue(BareConfig *cfg, const char *opt)
  * \return True on success, 0 on failure
  */
 int 
-ConfigSetOptionValue(BareConfig *cfg, const char *opt, const char *val)
+ConfigSetOptionValue(BareConfigStruct *cfg, const char *opt, const char *val)
 {
 	PyObject *obj = PyObject_CallMethod(cfg->object, "set_option", "(zz)", opt, val);
 	int ret;
@@ -190,7 +190,7 @@ ConfigSetOptionValue(BareConfig *cfg, const char *opt, const char *val)
   *
  * \return a new instance of a OptionConfig object. It must be freed with ConfigFree()
  */
-BareConfig *
+BareConfigStruct *
 optionConfigCreate( Dict *options, Dict *defaults)
 {
 
@@ -204,7 +204,7 @@ optionConfigCreate( Dict *options, Dict *defaults)
 		return NULL;
 	}
 
-	BareConfig *ret = malloc(sizeof(BareConfig));
+	BareConfigStruct *ret = malloc(sizeof(BareConfigStruct));
 	ret->object = obj;
 	
 	Py_DECREF(opts);
@@ -222,7 +222,7 @@ optionConfigCreate( Dict *options, Dict *defaults)
  * \return True on success, False on failure
  */
 int 
-optionConfigUpdateOptions(BareConfig *cfg, Dict *opt)
+optionConfigUpdateOptions(BareConfigStruct *cfg, Dict *opt)
 {
 	PyObject *opts = dictToPyDict(opt);
 	PyObject *obj = PyObject_CallMethod(cfg->object, "update", "(zz)", opts);
@@ -247,7 +247,7 @@ optionConfigUpdateOptions(BareConfig *cfg, Dict *opt)
  * \return True on success, 0 on failure
  */
 int 
-optionConfigUpdateDefaults(BareConfig *cfg, Dict *opt)
+optionConfigUpdateDefaults(BareConfigStruct *cfg, Dict *opt)
 {
 	PyObject *opts = dictToPyDict(opt);
 	PyObject *obj = PyObject_CallMethod(cfg->object, "update_defaults", "(zz)", opts);

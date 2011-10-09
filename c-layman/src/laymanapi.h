@@ -32,12 +32,12 @@ typedef struct OverlayInfo
 /**
  * Creates a LaymanAPI object that must be used in all function in this file.
  *
- * \param config a BareConfig object that contains all configuration options. If NULL, the default configuration will be used.
+ * \param config a BareConfigStruct object that contains all configuration options. If NULL, the default configuration will be used.
  * \param report_error if True, errors reporting on stdout will be activated.
  * \param output ?
  * \return a new instance of the LaymanAPI class, to be freed with laymanAPIFree()
  */
-LaymanAPI *laymanAPICreate(BareConfig *config, int report_error, int output);
+LaymanAPI *laymanAPICreate(BareConfigStruct *config, int report_error, int output);
 
 int		laymanAPIIsRepo(LaymanAPI *l, const char *repo);
 int		laymanAPIIsInstalled(LaymanAPI *l, const char *repo);
@@ -60,7 +60,7 @@ void		overlayInfoFree(OverlayInfo oi);
 
 LaymanAPI *laymanCreate(
 		FILE *outfd, FILE *infd, FILE *errfd,
-		BareConfig *cfg, int *read_configfile, int *quiet, int *quietness,
+		BareConfigStruct *cfg, int *read_configfile, int *quiet, int *quietness,
 		int *verbose, int *nocolor, int *width);
 
 #endif

@@ -8,21 +8,21 @@
 #include "dict.h"
 
 
-typedef struct BareConfig BareConfig;
+typedef struct BareConfigStruct BareConfigStruct;
 
-BareConfig *bareConfigCreate(Message *m, FILE *outFd, FILE *inFd, FILE *errFd);
+BareConfigStruct *bareConfigCreate(MessageStruct *m, FILE *outFd, FILE *inFd, FILE *errFd);
 
 /*
  * FIXME : could the Python lib work the same way ?
  */
 
-const char *ConfigGetDefaultValue(BareConfig *cfg, const char*);
-const char *ConfigGetOptionValue(BareConfig *cfg, const char *opt);
-int 		ConfigSetOptionValue(BareConfig *cfg, const char*, const char*);
-void 	ConfigFree(BareConfig*);
+const char *ConfigGetDefaultValue(BareConfigStruct *cfg, const char*);
+const char *ConfigGetOptionValue(BareConfigStruct *cfg, const char *opt);
+int 		ConfigSetOptionValue(BareConfigStruct *cfg, const char*, const char*);
+void 	ConfigFree(BareConfigStruct*);
 
-BareConfig *optionConfigCreate(Dict *options, Dict *defaults);
-int optionConfigUpdateDefaults(BareConfig *cfg, Dict *opt);
-int optionConfigUpdateOptions(BareConfig *cfg, Dict *opt);
+BareConfigStruct *optionConfigCreate(Dict *options, Dict *defaults);
+int optionConfigUpdateDefaults(BareConfigStruct *cfg, Dict *opt);
+int optionConfigUpdateOptions(BareConfigStruct *cfg, Dict *opt);
 
 #endif
