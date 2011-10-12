@@ -1,4 +1,7 @@
 #include <Python.h>
+// temp workaround for my environment
+// since at times it fails to find Python.h
+#include <python2.6/Python.h>
 #include <stdlib.h>
 
 #include "stringlist.h"

@@ -63,4 +63,5 @@ LaymanAPI *laymanCreate(
 		BareConfigStruct *cfg, int *read_configfile, int *quiet, int *quietness,
 		int *verbose, int *nocolor, int *width);
 
+void assign_api_functions(LaymanObject *layman_session);
 #endif

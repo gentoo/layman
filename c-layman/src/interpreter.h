@@ -2,7 +2,17 @@
 #define INTERPRETER_H
 
  
-typedef struct PythonSessionStruct PythonSessionStruct;
+/**  High level interactive python session structure */
+typedef struct PythonSessionStruct
+{
+	// variables
+	PythonInterpreter interpreter;
+	
+	// Functions
+	
+	static void Finalize(PythonSessionStruct *session)
+} PythonSessionStruct;
+
 
 PythonSessionStruct PySession();
 

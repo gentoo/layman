@@ -1,4 +1,7 @@
 #include <Python.h>
+// temp workaround for my environment
+// since at times it fails to find Python.h
+#include <python2.6/Python.h>
 #include <stdio.h>
 
 #include "config.h"
@@ -29,7 +32,7 @@
 struct BareConfigStruct
 {
 	PyObject *object;
-}
+};
 
 /**
  * \internal
@@ -38,7 +41,7 @@ struct BareConfigStruct
 PyObject *
 _ConfigObject(BareConfigStruct *c)
 {
-	if (c && c->object)
+	if ((c != NULL) && (c->object != NULL))
 		return c->object;
 	else
 		Py_RETURN_NONE;
@@ -57,11 +60,16 @@ BareConfigStruct *
 bareConfigCreate(MessageStruct *m, FILE *outFd, FILE *inFd, FILE *errFd)
 {
 	if(!m)
-		return NULL;
+	{
+		BareConfigStruct *n = NULL;
+		return n;
+	}
 	
-	if (!outFd || fileno(outFd) <= 0)
+	int  fo = fileno(outFd);
+	int  fi = fileno(inFd);
+	if (!outFd || fo <= 0)
 		outFd = stdout;
-	if (!inFd || fileno(inFd) <= 0)
+	if (!inFd || fi <= 0)
 		inFd = stdin;
 	if (!errFd || fileno(errFd) <= 0)
 		errFd = stderr;
@@ -78,7 +86,8 @@ bareConfigCreate(MessageStruct *m, FILE *outFd, FILE *inFd, FILE *errFd)
 	if (!obj)
 	{
 		debug("The execution failed, Are you sure >=app-portage/layman-2.0* is properly installed ?\n");
-		return NULL;
+		BareConfigStruct *n = NULL;
+		return n;
 	}
 
 	BareConfigStruct *ret = malloc(sizeof(BareConfigStruct));
@@ -191,7 +200,7 @@ ConfigSetOptionValue(BareConfigStruct *cfg, const char *opt, const char *val)
  * \return a new instance of a OptionConfig object. It must be freed with ConfigFree()
  */
 BareConfigStruct *
-optionConfigCreate( Dict *options, Dict *defaults)
+optionConfigCreate(Dict *options, Dict *defaults)
 {
 
 	PyObject *opts = dictToPyDict(options);

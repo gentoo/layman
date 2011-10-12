@@ -1,4 +1,7 @@
 #include <Python.h>
+// temp workaround for my environment
+// since at times it fails to find Python.h
+#include <python2.6/Python.h>
 
 #include "config.h"
 #include "internal.h"
@@ -13,58 +16,60 @@
 /** High level object structure to hold a complete layman instance */
 typedef struct LaymanObject
 {
-	// Python (auto-magic)
-	bool initialized = False;
+	// Python session placeholder
+	bool pyinitialized = False;
 	PythonSessionStruct *pysession;
-	initialized = (pysession.interpreter != NULL);
 	
-	// Layman
+	// Layman, placeholders for our primary modules
 	BareConfigStruct *config = NULL;
 	MessageStruct *output = NULL;
 	LaymanAPI *api = NULL;
-	
+	bool initialized = False;
 	// Functions
 	
-	// Creates the highest level Layman class instance
-	int Layman(FILE *outfd, FILE *infd, FILE *errfd,
+	/** Creates the highest level Layman class instance,
+	* the config will default if not passed in.
+	* the message class is automatic.
+	*/
+	static int (* Layman) (FILE *outfd, FILE *infd, FILE *errfd,
 			BareConfigStruct *cfg, int *read_configfile, int *quiet, int *quietness,
 			int *verbose, int *nocolor, int *width);
-	{
-		
-		LaymanAPI *layman = laymanCreate(
-			FILE *outfd, FILE *infd, FILE *errfd,
-			BareConfigStruct *cfg, int *read_configfile, int *quiet, int *quietness,
-			int *verbose, int *nocolor, int *width);
-		// ...
-		
-		return True;
-	}
 
-	// Create a Bare Config class instance
-	BareConfigStruct *
-	BareConfig()
-	{
+	/** Create a Bare Config class instance
+	* edit the options as desired.
+	*/
+	static BareConfigStruct (* BareConfig) (MessageStruct *m, FILE *outFd, FILE *inFd, FILE *errFd);
+	
+	/** Create an Option Config class instance
+	* pass in the options and default overrides in
+	* as desired.
+	*/
+	static BareConfigStruct (* OptionConfig) (Dict *options, Dict *defaults);
+	
+	/** Create an Output Message class instance
+	*/
+	static MessageStruct (* Message) (FILE *out, FILE *err, int infolevel, int warnlevel, int col);
+	
+	/** Creates a LaymanAPI class instance
+	*/
+	static laymanAPI (* LaymanAPI) (FILE *outfd, FILE *infd, FILE *errfd,
+		BareConfigStruct *cfg, int *read_configfile, int *quiet, int *quietness,
+		int *verbose, int *nocolor, int *width);
 		
-	}
-	
-	
-	// Create a Option Config class instance
-	BareConfigStruct *
-	OptionConfig()
-	{
-		
-	}
-	
-	
-	// Create an Output Message class instance
-	MessageStruct *
-	Message()
-	{
-		
-	}
-	
-	
-	// Creates a LaymanAPI class instance
 };
 
 
+static LaymanObject
+Layman_session_create()
+{
+	LaymanObject *layman_session = malloc(sizeof(LaymanObject));
+	
+	PythonSessionStruct *pysession = PySession_create();
+	layman_session->pysession = pysession;
+	layman_session->pyinitialized = (pysession.interpreter != NULL);
+	
+	// now assign the function pointers
+	assign_api_functions(layman_session);
+
+	return layman_session;
+}

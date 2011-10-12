@@ -1,4 +1,7 @@
 #include <Python.h>
+// temp workaround for my environment
+// since at times it fails to find Python.h
+#include <python2.6/Python.h>
 
 #include "internal.h"
 #include "laymanapi.h"
@@ -245,7 +248,7 @@ laymanAPIGetInfoStrList(LaymanAPI *l, StringList *overlays, OverlayInfo *results
 	// Check if the returned value is a dict as expected.
 	if (!obj || !PyDict_Check(obj))
 	{
-		is Py_XDECREF(obj);
+		Py_XDECREF(obj);
 		return False;
 	}
 
@@ -739,6 +742,38 @@ LaymanAPI *laymanCreate(
 
 	return ret;
 }
+
+
+/**
+ * Creates a fully capable layman api 
+*/
+static int 
+Layman(FILE *outfd, FILE *infd, FILE *errfd,
+			BareConfigStruct *cfg, int *read_configfile, int *quiet, int *quietness,
+			int *verbose, int *nocolor, int *width);
+{
+	
+	LaymanAPI *layman = laymanCreate(
+		FILE *outfd, FILE *infd, FILE *errfd,
+		BareConfigStruct *cfg, int *read_configfile, int *quiet, int *quietness,
+		int *verbose, int *nocolor, int *width);
+	// ...
+	
+	return True;
+}
+
+
+void
+assign_api_functions(LaymanObject *layman_session)
+{
+	layman_session->Layman = Layman;
+	layman_session->BareConfig = bareConfigCreate;
+	layman_session->OptionConfig = optionConfigCreate;
+	layman_session->Message = messageCreate;
+	layman_session->LaymanAPI = laymanCreate;
+}
+
+
 
 
 /**

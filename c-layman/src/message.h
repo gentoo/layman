@@ -5,13 +5,18 @@
 
 #include "stringlist.h"
 
-typedef struct Message Message;
+typedef struct MessageStruct MessageStruct;
 
-Message *messageCreate(FILE *out, FILE *err, int infolevel, int warnlevel, int col);
-void		messageFree(Message *m);
-int messageSetDebugLevel(Message *m, int debug_level);
-int messageSetInfoLevel(Message *m, int info_level);
-int messageSetWarnLevel(Message *m, int warn_level);
+MessageStruct *messageCreate(PythonSessionStruct *_pysession, 
+												FILE *out,
+												FILE *err, 
+												int infolevel, 
+												int warnlevel, 
+												int col);
+void		messageFree(MessageStruct *m);
+int messageSetDebugLevel(MessageStruct *m, int debug_level);
+int messageSetInfoLevel(MessageStruct *m, int info_level);
+int messageSetWarnLevel(MessageStruct *m, int warn_level);
 
  
 #endif

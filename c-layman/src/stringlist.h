@@ -1,7 +1,6 @@
 #ifndef STRINGLIST_H
 #define STRINGLIST_H
 
-#include <sys/types.h>
 
 typedef struct StringList StringList;
 
