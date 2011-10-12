@@ -78,7 +78,8 @@ am__DEPENDENCIES_1 =
 liblayman_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am__dirstamp = $(am__leading_dot)dirstamp
 am_liblayman_la_OBJECTS = src/config.lo src/dict.lo src/interpreter.lo \
-	src/laymanapi.lo src/message.lo src/stringlist.lo
+	src/laymanapi.lo src/message.lo src/stringlist.lo \
+	src/layman.lo
 liblayman_la_OBJECTS = $(am_liblayman_la_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -124,6 +125,7 @@ CPPFLAGS = @CPPFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
@@ -147,6 +149,7 @@ LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
+MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 NM = @NM@
 NMEDIT = @NMEDIT@
@@ -174,6 +177,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 am__include = @am__include@
@@ -225,7 +229,7 @@ AUTOMAKE_OPTIONS = subdir-objects
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
 lib_LTLIBRARIES = liblayman.la
 AM_CFLAGS = $(PYTHON_CFLAGS) --std=c99 -W -Wall
-liblayman_la_SOURCES = src/config.c src/dict.c src/interpreter.c src/laymanapi.c src/message.c src/stringlist.c
+liblayman_la_SOURCES = src/config.c src/dict.c src/interpreter.c src/laymanapi.c src/message.c src/stringlist.c src/layman.c
 #src/tester.c
 liblayman_la_LIBADD = $(PYTHON_LIBS)
 layman_includedir = $(includedir)/layman
@@ -313,6 +317,7 @@ src/interpreter.lo: src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
 src/laymanapi.lo: src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
 src/message.lo: src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
 src/stringlist.lo: src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
+src/layman.lo: src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
 liblayman.la: $(liblayman_la_OBJECTS) $(liblayman_la_DEPENDENCIES) 
 	$(LINK) -rpath $(libdir) $(liblayman_la_OBJECTS) $(liblayman_la_LIBADD) $(LIBS)
 
@@ -324,6 +329,8 @@ mostlyclean-compile:
 	-rm -f src/dict.lo
 	-rm -f src/interpreter.$(OBJEXT)
 	-rm -f src/interpreter.lo
+	-rm -f src/layman.$(OBJEXT)
+	-rm -f src/layman.lo
 	-rm -f src/laymanapi.$(OBJEXT)
 	-rm -f src/laymanapi.lo
 	-rm -f src/message.$(OBJEXT)
@@ -337,6 +344,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/config.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/dict.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/interpreter.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/layman.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/laymanapi.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/message.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/stringlist.Plo@am__quote@
