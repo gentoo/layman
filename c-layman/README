@@ -1,0 +1,17 @@
+This is the C version of the new layman API.
+
+To use it, you must first get the new Layman API :
+
+	git clone http://dev.gentooexperimental.org/~dol-sen/git/layman.git
+
+Then, type
+	
+	./configure
+	make
+
+After that, you can compile and run the tester with
+
+	./run-test.sh
+
+Note that it's still in an unstable state, try to always use the latest git
+version of this library and of the new Layman API.

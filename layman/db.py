@@ -27,6 +27,7 @@ __version__ = "$Id: db.py 309 2007-04-09 16:23:38Z wrobel $"
 #-------------------------------------------------------------------------------
 
 import os, os.path
+import sys
 import urllib2
 import hashlib
 
@@ -414,11 +415,12 @@ class RemoteDB(DbBase):
                                   'oblem with the webserver. Check the content '
                                   'of the file. Error was:\n' + str(error))
 
+                # the folowing is neded for py3 only
+                if sys.hexversion >= 0x3000000 and hasattr(olist, 'decode'):
+                    olist = olist.decode("UTF-8")
                 # Ok, now we can overwrite the old cache
                 try:
                     out_file = fileopen(mpath, 'w')
-                    if hasattr(olist, 'decode'):
-                        olist = olist.decode("UTF-8")
                     out_file.write(olist)
                     out_file.close()
 

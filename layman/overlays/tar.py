@@ -118,7 +118,7 @@ class TarOverlay(OverlaySource):
         pkg = path([base, self.parent.name + ext])
 
         try:
-            out_file = open(pkg, 'w')
+            out_file = open(pkg, 'w+b')
             out_file.write(tar)
             out_file.close()
         except Exception, error:
