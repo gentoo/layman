@@ -32,8 +32,6 @@ UNKNOWN_REPO_ID = "Repo ID '%s' " + \
 class LaymanAPI(object):
     """class to hold and run a layman instance for use by API consumer apps, guis, etc.
     """
-    ## hell, even the current cli should probably be converted to use this one.
-    ## It is a near duplicate of the actions classes.
 
     def __init__(self, config=None, report_errors=False, output=None):
         """
@@ -126,12 +124,12 @@ class LaymanAPI(object):
         return True
 
 
-    def add_repos(self, repos):
+    def add_repos(self, repos, update_news=False):
         """installs the seleted repo id
 
         @type repos: list of strings or string
         @param repos: ['repo-id', ...] or 'repo-id'
-        @param output: method to handle output if desired
+        @param update_news: bool, defaults to False
         @rtype dict
         """
         repos = self._check_repo_type(repos, "add_repo")
@@ -154,6 +152,9 @@ class LaymanAPI(object):
                     "' : "+str(e))
             results.append(success)
             self.get_installed(dbreload=True)
+        if (True in results) and update_news:
+            self.update_news(repos)
+
         if False in results:
             return False
         return True
@@ -287,11 +288,13 @@ class LaymanAPI(object):
             return self._get_remote_db().list(verbose=verbose, width=width)
 
 
-    def sync(self, repos, output_results=True):
+    def sync(self, repos, output_results=True, update_news=False):
         """syncs the specified repo(s) specified by repos
 
         @type repos: list of strings or string
         @param repos: ['repo-id1', ...] or 'repo-id'
+        @param output_results: bool, defaults to True
+        @param update_news: bool, defaults to False
         @rtype bool or {'repo-id': bool,...}
         """
         self.output.debug("API.sync(); repos to sync = %s" % ', '.join(repos), 5)
@@ -386,6 +389,9 @@ class LaymanAPI(object):
                 self.output.error(message)
 
         self.sync_results = (success, warnings, fatals)
+
+        if update_news:
+            self.update_news(repos)
 
         return fatals == []
 
@@ -522,6 +528,7 @@ class LaymanAPI(object):
             return messages
         return []
 
+
     def supported_types(self):
         """returns a dictionary of all repository types,
         with boolean values"""
@@ -532,6 +539,25 @@ class LaymanAPI(object):
             supported[type_key] = require_supported(
                 [(self.config[cmd],type_key, '')], self.output.warn)
         return supported
+
+
+    def update_news(self, repos=None):
+        try:
+            if self.config['news_reporter'] == 'portage':
+                from _emerge.actions import (display_news_notification,
+                    load_emerge_config)
+                settings, trees, mtimedb = load_emerge_config()
+                display_news_notification(trees[settings["ROOT"]]["root_config"],
+                    {"news_repos": repos})
+            elif self.config['news_reporter'] == 'custom':
+                self.config['custom_news_func'](repos)
+            elif self.config['news_reporter'] == 'pkgcore':
+                return
+        except:
+            self._error("update_news() failed running %s news reporter function"
+                % self.config['news_reporter'])
+        return
+
 
 
 def create_fd():

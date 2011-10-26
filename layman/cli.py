@@ -230,7 +230,7 @@ class Main(object):
         if 'ALL' in selection:
             selection = self.api.get_available()
         self.output.debug('Adding selected overlays', 6)
-        result = self.api.add_repos(selection)
+        result = self.api.add_repos(selection, update_news=True)
         if result:
             self.output.info('Successfully added overlay(s) '+\
                 ', '.join(selection) +'.', 2)
@@ -249,7 +249,7 @@ class Main(object):
         if self.config['sync_all'] or 'ALL' in selection:
             selection = self.api.get_installed()
         self.output.debug('Updating selected overlays', 6)
-        result = self.api.sync(selection)
+        result = self.api.sync(selection, update_news=True)
         # blank newline  -- no " *"
         self.output.notice('')
         return result

@@ -95,6 +95,7 @@ class BareConfig(object):
                     'nocheck'   : 'yes',
                     'proxy'     : '',
                     'umask'     : '0022',
+                    'news_reporter': 'portage',
                     'overlays'  :
                     'http://www.gentoo.org/proj/en/overlays/repositories.xml',
                     'overlay_defs': '%(configdir)s/overlays',
@@ -144,6 +145,7 @@ class BareConfig(object):
                     'width': width,
                     'verbose': verbose,
                     'quiet': quiet,
+                    'custom_news_func': None,
                     }
         self._set_quietness(quietness)
         self.config = None
