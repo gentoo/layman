@@ -544,18 +544,32 @@ class LaymanAPI(object):
     def update_news(self, repos=None):
         try:
             if self.config['news_reporter'] == 'portage':
-                from _emerge.actions import (display_news_notification,
-                    load_emerge_config)
-                settings, trees, mtimedb = load_emerge_config()
-                display_news_notification(trees[settings["ROOT"]]["root_config"],
-                    {"news_repos": repos})
+                try:
+                    from portage import db, root
+                    from portage.news import count_unread_news, \
+                        display_news_notifications
+                    portdb = db[root]["porttree"].dbapi
+                    vardb = db[root]["vartree"].dbapi
+                    news_counts = count_unread_news(portdb, vardb, repos)
+                    display_news_notifications(news_counts)
+                except ImportError:
+                    # deprecated funtionality, remove when the above method
+                    # is available in all portage versions
+                    self.output.info("New portage news functionality not "
+                        "available, using fallback method", 5)
+                    from _emerge.actions import (display_news_notification,
+                        load_emerge_config)
+                    settings, trees, mtimedb = load_emerge_config()
+                    display_news_notification(
+                        trees[settings["ROOT"]]["root_config"], {})
             elif self.config['news_reporter'] == 'custom':
                 self.config['custom_news_func'](repos)
             elif self.config['news_reporter'] == 'pkgcore':
                 return
-        except:
-            self._error("update_news() failed running %s news reporter function"
-                % self.config['news_reporter'])
+        except Exception as err:
+            msg = "update_news() failed running %s news reporter function\n" +\
+                  "Error was; %s"
+            self._error(msg % (self.config['news_reporter'], err))
         return
 
 
