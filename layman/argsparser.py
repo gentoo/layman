@@ -40,6 +40,8 @@ from layman.version import VERSION
 
 _USAGE = """
   layman (-a|-d|-s|-i) (OVERLAY|ALL)
+  # it also supports multiple actions
+  layman (-a|-d|-s|-i) (OVERLAY|ALL) [ [(-a|-d|-s|-i) (OVERLAY)] ...]
   layman -f [-o URL]
   layman (-l|-L|-S)"""
 
