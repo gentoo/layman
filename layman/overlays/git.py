@@ -68,7 +68,10 @@ class GitOverlay(OverlaySource):
         args.append(fix_git_source(self.src))
         args.append(target)
         return self.postsync(
-            self.run_command(self.command(), args, cmd=self.type),
+            # adding cwd=base due to a new git bug in selinux due to
+            # not having user_home_dir_t and portage_fetch_t permissions
+            # but changing dir works around it.
+            self.run_command(self.command(), args, cmd=self.type, cwd=base),
             cwd=target)
 
     def sync(self, base):
