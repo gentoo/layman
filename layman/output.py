@@ -134,7 +134,7 @@ class Message(MessageBase):
             return
 
         for i in info.split('\n'):
-            print  >> self.std_out, self.color_func('green', ' * ') + i
+            print  >> self.std_out, " %s %s" % (self.color_func('green', '*'),i)
 
 
     def status (self, message, status, info = 'ignored'):
@@ -148,7 +148,7 @@ class Message(MessageBase):
             return
 
         for i in lines[0:-1]:
-            print >> self.std_out, self.color_func('green', ' * ') + i
+            print >> self.std_out, " %s %s" % (self.color_func('green', '*'),i)
 
         i = lines[-1]
 
@@ -162,8 +162,8 @@ class Message(MessageBase):
         else:
             result = '[' + self.color_func('yellow', info) + ']'
 
-        print >> self.color_func('green', ' * ') + i + ' ' + \
-            '.' * (58 - len(i)) + ' ' + result
+        print >> " %s %s %s %S" % (self.color_func('green', '*'), i,
+            ('.' * (58 - len(i))), result)
 
 
     def warn (self, warn, level = WARN_LEVEL):
@@ -175,7 +175,7 @@ class Message(MessageBase):
             return
 
         for i in warn.split('\n'):
-            print  >> self.std_out, self.color_func('yellow', ' * ') + i
+            print >> self.std_out, " %s %s" % (self.color_func('yellow', '*'),i)
 
 
     def error (self, error):
@@ -189,7 +189,7 @@ class Message(MessageBase):
             # "layman -L |& less".
             sys.stdout.flush()
             self.error_out.flush()
-            print >> self.std_out, self.color_func('red', ' * ') + i
+            print >> self.std_out, " %s %s" % (self.color_func('red', '*'), i)
             sys.stdout.flush()
         self.do_error_callback(error)
 
