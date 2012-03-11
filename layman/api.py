@@ -562,9 +562,17 @@ class LaymanAPI(object):
                     settings, trees, mtimedb = load_emerge_config()
                     display_news_notification(
                         trees[settings["ROOT"]]["root_config"], {})
+
             elif self.config['news_reporter'] == 'custom':
+                if self.config['custom_news_func'] is None:
+                    _temp = __import__(
+                        'custom_news_pkg', globals(), locals(),
+                        ['layman_news_func'], -1)
+                    self.config['custom_news_func'] = _temp.custom_news_func
                 self.config['custom_news_func'](repos)
+
             elif self.config['news_reporter'] == 'pkgcore':
+                # pkgcore is not yet capable
                 return
         except Exception as err:
             msg = "update_news() failed running %s news reporter function\n" +\

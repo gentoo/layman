@@ -96,6 +96,7 @@ class BareConfig(object):
                     'proxy'     : '',
                     'umask'     : '0022',
                     'news_reporter': 'portage',
+                    'custom_news_pkg': '',
                     'overlays'  :
                     'http://www.gentoo.org/proj/en/overlays/repositories.xml',
                     'overlay_defs': '%(configdir)s/overlays',
