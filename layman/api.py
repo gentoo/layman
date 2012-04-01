@@ -582,7 +582,7 @@ class LaymanAPI(object):
             elif self.config['news_reporter'] == 'pkgcore':
                 # pkgcore is not yet capable
                 return
-        except Exception as err:
+        except Exception, err:
             msg = "update_news() failed running %s news reporter function\n" +\
                   "Error was; %s"
             self._error(msg % (self.config['news_reporter'], err))
