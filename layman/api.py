@@ -557,7 +557,8 @@ class LaymanAPI(object):
                         ovl = self._get_installed_db().select(repo)
                         ovl_path = os.path.join(ovl.config['storage'], repo)
                         repo_names.append(portdb.getRepositoryName(ovl_path))
-                    self.output.debug("LaymanAPI: update_news(); repo_names =", repo_names, 4)
+                    self.output.debug("LaymanAPI: update_news(); repo_names = "
+                        + str(repo_names), 4)
                     news_counts = count_unread_news(portdb, vardb, repo_names)
                     display_news_notifications(news_counts)
                 except ImportError:
