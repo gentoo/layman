@@ -151,13 +151,18 @@ class BareConfig(object):
         self._set_quietness(quietness)
         self.config = None
         if read_configfile:
-            self.read_config(self.get_defaults())
+            defaults = self.get_defaults()
+            if "%(configdir)s" in defaults['config']:
+                # fix the config path
+                defaults['config'] = defaults['config'] \
+                    % {'configdir': defaults['configdir']}
+            self.read_config(defaults)
 
 
     def read_config(self, defaults):
-            self.config = ConfigParser.ConfigParser(defaults)
-            self.config.add_section('MAIN')
-            read_layman_config(self.config, defaults)
+        self.config = ConfigParser.ConfigParser(defaults)
+        self.config.add_section('MAIN')
+        read_layman_config(self.config, defaults)
 
 
     def keys(self):
