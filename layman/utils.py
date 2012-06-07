@@ -34,7 +34,7 @@ import sys
 import locale
 import codecs
 
-from layman.debug import OUT
+from layman.output import Message
 
 
 #===============================================================================
@@ -163,7 +163,11 @@ def path(path_elements):
 
     return pathname
 
-def delete_empty_directory(mdir, output=OUT):
+def delete_empty_directory(mdir, output=None):
+    # test for a usable output parameter,
+    # and make it usable if not
+    if output is None:
+        output = Message()
     if os.path.exists(mdir) and not os.listdir(mdir):
         # Check for sufficient privileges
         if os.access(mdir, os.W_OK):
