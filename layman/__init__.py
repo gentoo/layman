@@ -5,12 +5,13 @@
 on all gentoo repositories and overlays
 """
 
+import sys
+
 try:
     from layman.api import LaymanAPI
     from layman.config import BareConfig
     from layman.output import Message
 except ImportError:
-    import sys
     sys.stderr.write("!!! Layman API import failed.")
 
 
@@ -19,7 +20,7 @@ class Layman(LaymanAPI):
     """A complete high level interface capable of performing all
     overlay repository actions."""
 
-    def __init__(self, stdout=None, stdin=None, stderr=None,
+    def __init__(self, stdout=sys.stdout, stdin=sys.stdin, stderr=sys.stderr,
         config=None, read_configfile=True, quiet=False, quietness=4,
         verbose=False, nocolor=False, width=0
         ):
