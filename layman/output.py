@@ -29,10 +29,16 @@ class MessageBase(object):
                  error_callback=None
                  ):
         # Where should the error output go? This can also be a file
-        self.error_out = err
+        if isinstance(err, file):
+            self.error_out = err
+        else:
+            raise Exception("MessageBase: input parameter 'err' must be of type: file")
 
         # Where should the normal output go? This can also be a file
-        self.std_out = out
+        if isinstance(out, file):
+            self.std_out = out
+        else:
+            raise Exception("MessageBase: input parameter 'out' must be of type: file")
 
         # The higher the level the more information you will get
         self.warn_lev = warn_level
@@ -187,10 +193,10 @@ class Message(MessageBase):
             # NOTE: Forced flushing ensures that stdout and stderr
             # stay in nice order.  This is a workaround for calls like
             # "layman -L |& less".
-            sys.stdout.flush()
+            self.std_out.flush()
             self.error_out.flush()
             print >> self.std_out, " %s %s" % (self.color_func('red', '*'), i)
-            sys.stdout.flush()
+            self.std_out.flush()
         self.do_error_callback(error)
 
 
