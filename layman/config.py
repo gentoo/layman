@@ -134,6 +134,8 @@ class BareConfig(object):
                     'svn_postsync' : '',
                     'tar_postsync' : '',
                     'g-common_postsync' : '',
+                    'git_user': 'layman',
+                    'git_email': 'layman@localhost',
                     }
         self._options = {
                     'config': config if config else self._defaults['config'],

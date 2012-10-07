@@ -67,12 +67,28 @@ class GitOverlay(OverlaySource):
             args.append(cfg_opts)
         args.append(fix_git_source(self.src))
         args.append(target)
-        return self.postsync(
-            # adding cwd=base due to a new git bug in selinux due to
-            # not having user_home_dir_t and portage_fetch_t permissions
-            # but changing dir works around it.
-            self.run_command(self.command(), args, cmd=self.type, cwd=base),
-            cwd=target)
+        success = False
+        # adding cwd=base due to a new git bug in selinux due to
+        # not having user_home_dir_t and portage_fetch_t permissions
+        # but changing dir works around it.
+        success = self.run_command(self.command(), args, cmd=self.type, cwd=base)
+        self.output.debug("cloned git repo...success=%s" % str(success), 8)
+        success = self.set_user(target)
+        return self.postsync(success, cwd=target)
+
+    def set_user(self, target):
+        '''Set dummy user.name and user.email to prevent possible errors'''
+        user = '"%s"' % self.config['git_user']
+        email = '"%s"' % self.config['git_email']
+        args = ['config', 'user.name', user]
+        self.output.debug("set git user info...args=%s" % ' '.join(args), 8)
+        failure = self.run_command(self.command(), args, cmd=self.type, cwd=target)
+        if failure:
+            self.output.debug("set git user info...failure setting name")
+            return failure
+        args = ['config', 'user.email', email]
+        self.output.debug("set git user info...args=%s" % ' '.join(args), 8)
+        return self.run_command(self.command(), args, cmd=self.type, cwd=target)
 
     def sync(self, base):
         '''Sync overlay.'''
