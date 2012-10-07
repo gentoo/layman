@@ -34,7 +34,7 @@ def _supported(key, check_supported=None):
 def _resolve_command(command, _output):
     if os.path.isabs(command):
         if not os.path.exists(command):
-            _output('Program "%s" not found' % command, 6)
+            _output('Program "%s" not found' % command)
             return ('File', None)
         return ('File', command)
     else:
@@ -45,7 +45,7 @@ def _resolve_command(command, _output):
             if os.path.exists(f):
                 return ('Command', f)
         _output('Cound not resolve command ' +\
-            '"%s" based on PATH "%s"' % (command, env_path), 6)
+            '"%s" based on PATH "%s"' % (command, env_path))
         return ('Command', None)
 
 
@@ -56,7 +56,7 @@ def require_supported(binaries, _output):
             if _output:
                 _output(kind + ' ' + command + ' seems to be missing!'
                             ' Overlay type "' + mtype + '" not support'
-                            'ed. Did you emerge ' + package + '?', 6)
+                            'ed. Did you emerge ' + package + '?')
             return False
     return True
 
