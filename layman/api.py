@@ -556,7 +556,9 @@ class LaymanAPI(object):
                     for repo in repos:
                         ovl = self._get_installed_db().select(repo)
                         ovl_path = os.path.join(ovl.config['storage'], repo)
-                        repo_names.append(portdb.getRepositoryName(ovl_path))
+                        name = portdb.getRepositoryName(ovl_path)
+                        if name:
+                            repo_names.append(name)
                     self.output.debug("LaymanAPI: update_news(); repo_names = "
                         + str(repo_names), 4)
                     news_counts = count_unread_news(portdb, vardb, repo_names)
