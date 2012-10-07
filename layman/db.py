@@ -75,7 +75,7 @@ class DB(DbBase):
 
 
     def rename_db(self):
-        """small upgarde function to handle the name change
+        """small upgrade function to handle the name change
         for the installed xml file"""
         if os.access(self.config['local_list'], os.F_OK):
             self.output.info("Automatic db rename, old name was: %s"
