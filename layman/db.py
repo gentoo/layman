@@ -61,9 +61,6 @@ class DB(DbBase):
         else:
             ignore = 1
 
-        # check and handle the name change
-        #if not os.access(self.path, os.F_OK):
-        #    self.rename_db()
 
         DbBase.__init__(self,
                           config,
@@ -73,28 +70,11 @@ class DB(DbBase):
 
         self.output.debug('DB handler initiated', 6)
 
-
-    def rename_db(self):
-        """small upgrade function to handle the name change
-        for the installed xml file"""
-        if os.access(self.config['local_list'], os.F_OK):
-            self.output.info("Automatic db rename, old name was: %s"
-                % self.config['local_list'],2)
-            try:
-                os.rename(self.config['local_list'], self.path)
-                self.output.info("Automatic db rename, new installed db "
-                    "name is: %s" %self.path, 2)
-                self.output.notice('')
-                return
-            except OSError, err:
-                self.output.error("Automatic db rename failed:\n%s" %str(err))
-        else:
-            self.output.info("Automatic db rename, failed access to: %s"
-                % self.config['local_list'],2)
-        self.output.die("Please check that /etc/layman.cfg is up"
-                " to date\nThen try running layman again.\n"
-                "You may need to rename the old 'local_list' config setting"
-                " to\nthe new 'installed' config setting's filename.\n")
+        # check and handle the name change
+        if not os.access(self.config['installed'], os.F_OK) and \
+            os.access(self.config['local_list'], os.F_OK):
+                self.output.die("Please run layman-updater, "
+                    "then run layman again")
 
 
     # overrider
