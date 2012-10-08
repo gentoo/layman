@@ -56,12 +56,17 @@ class BzrOverlay(OverlaySource):
         cfg_opts = self.config["bzr_addopts"]
         target = path([base, self.parent.name])
 
+        if self.src.endswith("/"):
+            src = self.src
+        else:
+            src = self.src + '/'
+
         # bzr get SOURCE TARGET
         if len(cfg_opts):
             args = ['branch', cfg_opts,
-                self.src + '/', target]
+                src, target]
         else:
-            args = ['branch', self.src + '/', target]
+            args = ['branch', src, target]
         return self.postsync(
             self.run_command(self.command(), args, cmd=self.type),
             cwd=target)

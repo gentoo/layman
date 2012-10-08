@@ -53,7 +53,10 @@ class GitOverlay(OverlaySource):
         def fix_git_source(source):
             # http:// should get trailing slash, other protocols shouldn't
             if source.split(':')[0] == 'http':
-                return source + '/'
+                if source.endswith('/'):
+                    return source
+                else:
+                    return source + '/'
             return source
 
         cfg_opts = self.config["git_addopts"]

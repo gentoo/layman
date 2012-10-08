@@ -67,7 +67,13 @@ class SvnOverlay(OverlaySource):
             args.append('-q')
         if len(cfg_opts):
             args.append(cfg_opts)
-        args.append(self.src + '/@')
+
+        if self.src.endswith("/"):
+            src = self.src + '@'
+        else:
+            src = self.src + '/@'
+
+        args.append(src)
         args.append(self.target)
 
         return self.postsync(

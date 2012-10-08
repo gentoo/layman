@@ -56,11 +56,16 @@ class MercurialOverlay(OverlaySource):
         cfg_opts = self.config["mercurial_addopts"]
         target = path([base, self.parent.name])
 
+        if self.src.endswith("/"):
+            src = self.src
+        else:
+            src = self.src + '/'
+
         # hg clone SOURCE TARGET
         if len(cfg_opts):
-            args = ['clone', cfg_opts, self.src + '/', target]
+            args = ['clone', cfg_opts, src, target]
         else:
-            args = ['clone', self.src + '/', target]
+            args = ['clone', src, target]
 
         return self.postsync(
             self.run_command(self.command(), args, cmd=self.type),

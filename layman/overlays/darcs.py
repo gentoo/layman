@@ -55,13 +55,18 @@ class DarcsOverlay(OverlaySource):
         cfg_opts = self.config["darcs_addopts"]
         target = path([base, self.parent.name])
 
+        if self.src.endswith("/"):
+            src = self.src
+        else:
+            src = self.src + '/'
+
         # darcs get --partial SOURCE TARGET
         if len(cfg_opts):
             args = ['get', '--partial', cfg_opts,
-                self.src + '/', target]
+                src, target]
         else:
             args = ['get', '--partial',
-                self.src + '/', target]
+                src, target]
 
         return self.postsync(
             self.run_command(self.command(), args, cmd=self.type),
