@@ -18,14 +18,19 @@
 
 __version__ = "$Id: svn.py 236 2006-09-05 20:39:37Z wrobel $"
 
+
+import os
+from subprocess import PIPE, Popen
+
 #==============================================================================
 #
 # Dependencies
 #
 #------------------------------------------------------------------------------
 
-from   layman.utils             import path
-from   layman.overlays.source   import OverlaySource, require_supported
+from layman.utils           import path
+from layman.overlays.source import (OverlaySource, require_supported,
+    _resolve_command)
 
 #==============================================================================
 #
@@ -86,6 +91,10 @@ class SvnOverlay(OverlaySource):
         cfg_opts = self.config["svn_syncopts"]
         self.target = checkout_location()
 
+        # first check if an svn upgrade is needed.
+        self.output.debug("SVN: check_upgrade() call", 4)
+        self.check_upgrade(path([base, self.parent.name]))
+
         # svn up [-q] TARGET
         args = ['up']
         if self.config['quiet']:
@@ -114,3 +123,29 @@ class SvnOverlay(OverlaySource):
         args.append(self.target)
         cleanup = self.run_command(self.command(), args, cmd="svn cleanup")
         return
+
+    def check_upgrade(self, target):
+        '''Code to check the installed svn version and
+        run "svn upgrade" if needed.'''
+        file_to_run = _resolve_command(self.command(), self.output.error)[1]
+        args = file_to_run + ' -q --version'
+        pipe = Popen(args, shell=True, stdout=PIPE)
+        if pipe:
+            self.output.debug("SVN: check_upgrade()... have a valid pipe", 4)
+            version = pipe.stdout.readline().strip('\n')
+            self.output.debug("SVN: check_upgrade()... svn version found: %s"
+                % version, 4)
+            pipe.terminate()
+            if version >= '1.7.0':
+                self.output.debug("SVN: check_upgrade()... svn upgrade maybe",
+                    4)
+                _path = path([target,'.svn/wc.db'])
+                if not os.path.exists(_path):
+                    self.output.info("An svn upgrade needs to be run...",
+                        2)
+                    args = ["upgrade"]
+                    return self.run_command(self.command(), args,
+                        cwd=target, cmd="svn upgrade")
+                return
+        else:
+            return
