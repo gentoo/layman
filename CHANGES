@@ -1,5 +1,54 @@
 CHANGES
 -------
+
+Version 2.0.0 - Released 2012-10-08
+=======================================
+ - man page updates, formatting changes
+ - fix unknown variable
+ - fix bug 384085, deprecated "bzr get" to "bzr branch"
+ - py2, py3 compatability changes so 2to3 will work correctly (unfinished)
+ - make the tests more py3 compatibile
+ - improve the usage to include an example of multiple actions
+ - Add cwd=base to git's add() run_command function call.
+   This fixes Bug 396643 in selinux and newer git.
+ - change to only wrap the '*' with the color, not the spaces around it
+ - Add news reporting capability to meet GLEP 42 requirement
+ - several news fixes
+ - fix bug 408897 for when profiles/repo_name is not the same as
+   the layman overlay name
+ - config fixes
+ - set some sane defaults for stdout, stderr, stdin
+ - Bug 390127 fix: for an extra level parameter in the error _output() calls
+ - Bug 433687. Add setting the default user name and email
+   when adding new git based overlays.
+ - Bug 408039. An an automatic 'svn upgrade' capability for svn type repos
+ - doctest updates.
+ - Fix bug 372583.  Don't add redundant trailing slashes on
+   src uri's where trailing slashes are required
+ - move the rename_db code to a standalone updater utility
+
+
+
+Version 2.0.0_rc3 - Released 2011-09-17
+=======================================
+ - fix wrong variable name in the layman.cfg explanations
+ - remove some dead ERROR constants
+ - fix success reporting identified in bug 379779.
+   Improve and change error output from info(), warn() to error()
+ - set some options to the ones passed in that were previously missed
+ - continue establishing a proper high level interface
+ - pass the input parameters to MessageBase
+ - clean out nearly useless quiet parameter, use config['quiet'] instead
+ - rename local_list to installed,
+   create an update function to migrate the change
+ - fix a missed conversion to using the Message class
+ - fix bug 381853, remove the noise level param as error() does not have it
+   like the other output functions
+ - fix typo, bug 382785
+ - better explain the variable change
+
+
+
 Version 2.0.0_rc2 - Released 2011-08-10
 =======================================
 
