@@ -8,26 +8,27 @@ import argparse
 from layman.config import OptionConfig
 from layman.api import LaymanAPI
 from layman.version import VERSION
+from layman.compatibility import fileopen
 
 
 def rename_db(config, newname, output):
     """small upgrade function to handle the name change
     for the installed xml file"""
     if os.access(config['local_list'], os.F_OK):
-        output.info("Automatic db rename, old name was..: %s"
+        output.info("  Automatic db rename, old name was..: %s"
             % config['local_list'],2)
         try:
             os.rename(config['local_list'], newname)
-            output.info("Automatic db rename, new "
+            output.info("  Automatic db rename, new "
                 "name is...: %s" %newname, 2)
             output.notice('')
             return
         except OSError, err:
-            output.error("Automatic db rename failed:\n%s" %str(err))
+            output.error("  Automatic db rename failed:\n%s" %str(err))
     else:
-        output.info("Automatic db rename, failed access to: %s"
+        output.info("  Automatic db rename, failed access to: %s"
             % config['local_list'],2)
-    output.die("Please check that /etc/layman.cfg is up"
+    output.die("  Please check that /etc/layman.cfg is up"
             " to date\nThen try running layman again.\n"
             "You may need to rename the old 'local_list' config setting"
             " to\nthe new 'installed' config setting's filename.\n")
@@ -43,7 +44,7 @@ class Main(object):
 
     def args_parser(self):
         self.parser = argparse.ArgumentParser(prog='layman-updater',
-            description="Layman's DB update script")
+            description="Layman's update script")
         self.parser.add_argument("-c", "--config",
             help='the path to config file')
         self.parser.add_argument('--version', action='version',
@@ -65,7 +66,16 @@ class Main(object):
 
         self.output = layman_inst.output
 
-        self.rename_check()
+        if not self.check_is_new():
+            self.rename_check()
+
+
+    def check_is_new(self):
+        if not os.access(self.config['make_conf'], os.F_OK):
+            self.create_make_conf()
+            self.print_instructions()
+            return True
+        return False
 
 
     def rename_check(self):
@@ -76,17 +86,64 @@ class Main(object):
         # check and handle the name change
         if not os.access(newname, os.F_OK):
             if os.access(self.config['local_list'], os.F_OK):
-                self.output.info("Layman automatic db rename utility, "
+                self.output.info("  Layman automatic db rename utility, "
                     "performing update", 2)
                 rename_db(self.config, newname, self.output)
         elif os.access(newname, os.F_OK) and \
             os.access(self.config['local_list'], os.F_OK):
-            self.output.error("Automatic db rename failed: "
+            self.output.error("  Automatic db rename failed: "
                 "Both old and new files exist")
-            self.output.error("Old file: %s still exists"
+            self.output.error(" Old file: %s still exists"
                 % self.config['local_list'])
-            self.output.error("New file: %s already exists" % newname)
+            self.output.error("  New file: %s already exists" % newname)
+        elif os.access(newname, os.F_OK):
+            self.output.info("  Automatic db rename: "
+                "db already updated: %s" % newname)
         else:
-            self.output.info("Automatic db rename "
-                "already updated: %s" % newname)
+            self.output.info("  Automatic db rename: "
+                "nothing to update")
         return
+
+
+    def print_instructions(self):
+        messages = [
+            "You are now ready to add overlays into your system.",
+            "",
+            "  layman -L",
+            "",
+            "will display a list of available overlays.",
+            "",
+            "Select an overlay and add it using",
+            "",
+            "  layman -a overlay-name",
+            "",
+            "If this is the very first overlay you add with layman,",
+            "you need to append the following statement to your",
+            "/etc/make.conf file:",
+            "",
+            "  source /var/lib/layman/make.conf",
+            "",
+            "If you modify the 'storage' parameter in the layman",
+            "configuration file (/etc/layman/layman.cfg) you will",
+            "need to adapt the path given above to the new storage",
+            "directory.",
+            "",
+        ]
+
+        for message in messages:
+            self.output.info("  " + message)
+
+
+    def create_make_conf(self):
+        self.output.info("  Creating layman's make.conf file")
+        # create layman's %(storage)s/make.conf
+        # so portage won't error
+        try:
+            make_conf = fileopen(self.config['make_conf'], mode="w")
+            make_conf.write("# Layman's make.conf\n\n")
+            make_conf.close()
+        except Exception, error:
+            self.output.error("  layman-updater: Error creating make.conf:")
+            self.output.error("  %s" % error)
+
+
