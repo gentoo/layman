@@ -1,8 +1,10 @@
-Version 2.0.0_rc1 - Released 2011-06-06
+Version 2.0.0 - Released 2012-10-13
 =======================================
 
  - major rewrite of the api's, extensions,
    new cli-api connections, other enhancements...
+ - Added GLEP 42 news reporting capability
+ - Numerous bugfixes, updates and enhancements
 
 
 FRESHMEAT
@@ -20,7 +22,7 @@ FRESHMEAT
 # 8 - Minor security fixes
 # 9 - Major security fixes
 
-focus:
+focus: 5
 name:
 project:
 branch:

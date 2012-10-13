@@ -1,3 +1,571 @@
+commit 1113e5d337b4f3c94d3b049200157b00c3b8226f
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Sat Oct 13 14:40:53 2012 -0700
+
+    move elog, einfo messages into updater and print them only if relavent.
+
+commit bebffd9c6c017f37404c51218961b96c2d3427b4
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Sat Oct 13 12:58:00 2012 -0700
+
+    tab output messages for better terminal output.
+
+commit 094c02c157ef8f5749c971ce166399dfbbaff9b5
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Sat Oct 13 12:02:10 2012 -0700
+
+    commit missed compatibility file for py3, py2 functioning.
+
+commit c870e4c74058ec1599930f2cd998ee9dbc099048
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Sat Oct 13 11:40:56 2012 -0700
+
+    Pre-release updates to CHANGES, README, stup.py, etc..
+
+commit fc1de4a933320965e390b2e765bf73a54425e0eb
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Mon Oct 8 19:19:19 2012 -0700
+
+    update CHANGES
+
+commit b2f4591004a0f16a4c348123e999b0912745833e
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Mon Oct 8 15:37:58 2012 -0700
+
+    move the rename_db code to a standalone updater utility.
+
+commit 729923d4a2d5a22f6509de438953ef6035d38e20
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Sun Oct 7 23:15:51 2012 -0700
+
+    Fix bug 372583.  Don't add redundant trailing slashes on src uri's where trailing slashes are required.
+
+commit 25da05250a60d1bae9a03eadb8db4eb744cc4ae0
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Sun Oct 7 22:37:00 2012 -0700
+
+    Update doctest data for config changes.
+
+commit fc3cd9942ac71e118796d823fe3303a8c7cecdc2
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Sun Oct 7 21:33:51 2012 -0700
+
+    An an automatic 'svn upgrade' capability for svn type repos.  Bug 408039.
+
+commit faf6c74c1aa866d62137dcf203b3bca7a0e32634
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Sun Oct 7 16:38:41 2012 -0700
+
+    Add setting the default user name and email when adding new git based overlays. Bug 433687.
+
+commit 2bc0b7478a14a9bf95a2e3728ed5a5f8d755e9b1
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Sun Oct 7 16:36:49 2012 -0700
+
+    fix an "Invalid repoID" assertion error when it does not get a valid repoID in the news reporting.
+
+commit 0ad65cb126dfe1b41b559675a9b571e5e2d277ef
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Sun Oct 7 13:18:45 2012 -0700
+
+    fix a typo.
+
+commit 915e3c0865ecee24cb31ead94d573b397ae67c51
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Sun Oct 7 13:07:54 2012 -0700
+
+    fix traceback caused by an extra level parameter in the error _output() calls.  This caused the errors to not be printed.  Bug 390127.
+
+commit 4ec06a0babf271b1664d1850ebcd75a05d4e3599
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Wed Jun 6 21:47:40 2012 -0700
+
+    fix a missed update from the old OUT variable usage.
+
+commit afb17b0a5bef67fa51e92373fd5043ac27f4c8f2
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Wed Jun 6 21:42:27 2012 -0700
+
+    Tighten up the code to prevent exceptions and tracebacks if stdout and stderr are not of the file type.
+
+commit 15fd9944117dcc90f0f297aac4f6fcbb7d9e2f95
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Wed Jun 6 21:41:02 2012 -0700
+
+    set some sane defaults for stdout, stderr, stdin.
+
+commit 9ec59c4d881960ce0e1f7c2fdc55bad471a8d7b7
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Fri Apr 13 19:13:42 2012 -0700
+
+    fix the BareConfig not str sub'ing %(configdir)s before calling read_config().  indent fix in read_config().
+
+commit b7b7df1489d582443462d88dfa0ce86a35caf4af
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Mon Apr 9 12:45:38 2012 -0700
+
+    fix news debug statement.
+
+commit 4e781a58ea922911d09287e95b0c666216212e4a
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Sun Apr 1 14:52:58 2012 -0700
+
+    fix news exception for py2.5 comaptability.
+
+commit 7a74871ab63f3b36d7d2377a5af5b0cfc1a2ee29
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Sun Mar 25 20:40:11 2012 -0700
+
+    fix bug 408897 for when profiles/repo_name is not the same as the layman overlay name.
+
+commit 5c33fbc34acca869ec9fe80c4f470edfe560d9a0
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Sat Mar 10 16:14:09 2012 -0800
+
+    Add news reporting capability to meet GLEP 42 requirement.
+
+commit 216ffc02a31cc4ee5c01c836def8d497ee5c5764
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Sun Mar 4 07:36:02 2012 -0800
+
+    change to only wrap the '*' with the color, not the spaces around it.
+
+commit 77fd9c78984df218d33520c6dce7a8a0c630c456
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Fri Jan 6 00:14:20 2012 -0800
+
+    Add cwd=base to git's add() run_command function call.  This fixes  Bug 396643 in selinux and newer git.
+
+commit 46444286c8d70797964dc80dd70e42a0f2d35723
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Mon Dec 26 18:18:10 2011 -0800
+
+    improve the usage to include an example of multiple actions.
+
+commit ad38a35a994b32ea65df5395d78a9ffabe9773e4
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Wed Oct 26 21:42:21 2011 -0700
+
+    update portage news reporting to use the new public api functions.
+
+commit c40874bd95d1525961692dd7d742ed565a2b4334
+Merge: 9a74747 bce2785
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Wed Oct 26 16:19:06 2011 -0700
+
+    Merge branch 'master' of git+ssh://git.overlays.gentoo.org/proj/layman
+
+commit 9a74747e60f08a6f303d36d45ad9bb2ba828af42
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Wed Oct 26 16:17:06 2011 -0700
+
+    add news reporting capability when adding/syncing overlays. Bug 388233
+
+commit bce27850d7e2d86e1b8046be8eb1d51c83dbdd2c
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Thu Oct 13 20:11:30 2011 -0700
+
+    fix an encode error regression in python 2 introduced in the py2, py3 compatibility changes.
+
+commit b59d8988174e0af06b0ec614b077800171bc139b
+Merge: 1160eeb 78eefa4
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Wed Oct 5 13:54:03 2011 -0700
+
+    Merge remote-tracking branch 'c-layman/master'
+
+commit 78eefa4b5a74690a537fc725b4de2224548a0826
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Wed Oct 5 13:50:03 2011 -0700
+
+    move everything to prep for a merge into layman.
+
+commit 1160eeb2569486785c0568cd84090e4029cc0747
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sun Sep 25 18:17:11 2011 -0700
+
+    fix a py3 failure, because the file was not opened in binary mode.
+
+commit 25ae8b28da0632ed33935e32071c9aa683814da2
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Fri Sep 23 23:03:26 2011 -0700
+
+    make the tests more py3 compatibile.
+
+commit f3e1976da8eeef942a95019669633255fa3b6c50
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sun Sep 18 23:22:15 2011 -0700
+
+    py2, py3 compatability changes so 2to3 will work correctly.
+
+commit 2413c2f4d2c5eb09063f477bcd158244ab8d32ff
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Thu Sep 22 08:11:06 2011 -0700
+
+    fix bug 384085, deprecated "bzr get" to "bzr branch"
+
+commit 658f794a3a7675bba9d746d1a17ee0e0a95ee400
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sun Sep 18 21:31:33 2011 -0700
+
+    fix unknown variable
+
+commit 22364beaf81bec677c72cc58a385a57be07565a0
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sat Sep 17 17:44:59 2011 -0700
+
+    man page updates, formatting changes.
+
+commit 269e5644783f03e74eb74b387f0542bd38d4c10a
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Tue Sep 13 07:15:51 2011 -0700
+
+    better explain the variable change.
+
+commit 1a5291a46e9412c2cb784327f3e61f6dad217175
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Tue Sep 13 07:14:54 2011 -0700
+
+    fix typo, bug 382785
+
+commit 6566ed3969a81d5d54cc17d9ec15ccef31ab9000
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Mon Sep 5 09:08:42 2011 -0700
+
+    fix bug 381853, remove the noise level param as error() does not have it like the other output functions.
+
+commit de32dea6179e96cb5b7fa1088134a41f4e78fa9b
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Wed Aug 24 20:33:03 2011 -0700
+
+    fix a missed conversion to using the Message class
+
+commit 6a7cf195966b9d809a9fe005ef3547503c02776b
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Wed Aug 24 06:48:33 2011 -0700
+
+    rename local_list to installed, create an update function to migrate the change.
+
+commit fb629bea7f7c19790078ec0b72acc7671f1ae2f3
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sun Aug 21 02:19:09 2011 -0700
+
+    clean out nearly useless quiet parameter, use config['quiet'] instead.
+
+commit 2c9df94436e25e45f0324929ebdbf33a1aa1a2d5
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sun Aug 21 00:35:18 2011 -0700
+
+    pass the input parameters to MessageBase
+
+commit b2b7b5899a6f61a6545a5b91c5fe8691f4d29cbe
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sun Aug 21 00:32:42 2011 -0700
+
+    continue establishing a proper high level interface.
+
+commit 623337f3b461c15f22805f1c55c86f911763183f
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sun Aug 21 00:03:25 2011 -0700
+
+    set some options to the ones passed in that were previously missed.
+
+commit f1ac6fc5b697632d4db04265bc0c0ec6554e6855
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Fri Aug 19 18:08:43 2011 -0700
+
+    fix success reporting identified in bug 379779.  Improve and change error output from info(), warn() to error().
+
+commit e78113321c0627291c176930e0493867e9cafc1d
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sat Aug 13 08:01:49 2011 -0700
+
+    remove some dead ERROR constants
+
+commit cea2072fcc0fa1bfb05fd0146e643f3db16d113e
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sat Aug 13 08:00:20 2011 -0700
+
+    fix wrong variable name in the layman.cfg explanations.
+
+commit b60df7e9130bc366b5e82530f06c132f5f3b57de
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Wed Aug 10 19:49:13 2011 -0700
+
+    update CHANGES
+
+commit c939e9b3cfd433dbcc589c5f335d18d16018a1aa
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Wed Aug 10 19:37:26 2011 -0700
+
+    HTTPError in 2.5 does not have getcode(). use error.code
+
+commit ee2ba4c60fb555f406b23aa3daf1c8fe5f35022d
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Tue Aug 9 18:04:21 2011 -0700
+
+    add the gentoolkit encoding bugfix
+
+commit 779c56e34676bcf113dea93c748eeec5f214952f
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Tue Aug 9 17:47:00 2011 -0700
+
+    revert using "as" in exceptions. enable using the "with" statement in py-2.5.
+    fix run_command( ,*arg, )
+
+commit e9742ba56ea23e9d61505a41e9a5cdda60bbfc99
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Tue Aug 9 16:44:32 2011 -0700
+
+    Revert "migrate to print()" to restore py-2.5 compatibility.
+
+    This reverts commit e14906b88ec2da99dba82d565d88ed5ca1d40099.
+
+    Conflicts:
+
+        layman/api.py
+        layman/cli.py
+        layman/dbbase.py
+        layman/output.py
+
+commit e0f12ac23154baf04f4c82146501450103a8b12a
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Tue Aug 9 08:05:32 2011 -0700
+
+    make EPREFIX test code eprefixy proof
+
+commit 58d3e812dd7917b9e3657f840ed51f1a94792a63
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Mon Aug 8 19:46:13 2011 -0700
+
+    update AUTHORS
+
+commit bcac468262240fb1043b60f71af837aeaa7de981
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Mon Aug 8 19:45:49 2011 -0700
+
+    reset version to git
+
+commit 51c56097745c97d6b8d43a1f619e901f793aa21a
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Mon Aug 8 19:03:52 2011 -0700
+
+    update README
+
+commit 5394b37cb44c0a1e0499d2f8827cab946b0ccb92
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Mon Aug 8 18:55:12 2011 -0700
+
+    update CHANGES
+
+commit 0a03f32c1257af352bf9ffa2be324c53f2656aa3
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Mon Aug 8 18:14:18 2011 -0700
+
+    make it EPREFIX ready
+
+commit b2ee5463687471c42b87831f77de3322ec83e1f9
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sun Aug 7 14:20:02 2011 -0700
+
+    fix bug 378097. unofficial installed overlays not printing (due to nocheck=no option).  Add some additional debug output
+
+commit acc9c9163a0ff4fe3e19e4cb49228b93f1c5999e
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sun Aug 7 01:38:34 2011 -0700
+
+    run "svn cleanup..." for keyboard interrupts, bug 377035
+
+commit 8f850f20af9c1b6360500b36ffada70e07ce45e9
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sun Aug 7 00:05:33 2011 -0700
+
+    tidy up some task spacing, eliminate a duped error output, comment out some debug output.
+
+commit 009d0632ae496197807d520df380017dca664543
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sat Aug 6 23:39:34 2011 -0700
+
+    clean out some dead commented out code. add a blank line after each action task for spacing tasks.
+
+commit e76952c1e6817c0bec94665a6307a06507a0e029
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sat Aug 6 23:38:01 2011 -0700
+
+    fix typo causing traceback in bug 377401 comment # 31
+
+commit 4a856960773b513a6dd821b4dac2c5aa87ccc929
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sat Aug 6 19:27:30 2011 -0700
+
+    fix a bug causing it to not get the correct config path.
+    improve debug messages, set levels to 9
+
+commit c3fe77a1e76daa7a2b5a7b92d0061eb2cc44eed8
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sat Aug 6 18:35:20 2011 -0700
+
+    adjust width for the leading space
+
+commit f4ccd5f6ac6449eee0a5144027ee7faa24a6e3d4
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sat Aug 6 13:29:35 2011 -0700
+
+    add a space before the * in the output func()'s as per "Etal"'s request in http://forums.gentoo.org/viewtopic-t-877029.html
+
+commit 341f69005710839bc984e414a823238c9329bd08
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sat Aug 6 11:28:53 2011 -0700
+
+    add debug messages, fix error reporting in the api, refactor action & error processing/tracking.
+
+commit b99c5c5c78a8d2e1313ae91e25d3938c01aab9bc
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sat Aug 6 11:26:44 2011 -0700
+
+    add debug messages, fix broken UnknownOverlayException
+
+commit 53db3cb076054b41e5479299526c67f7cd4d0871
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sat Aug 6 11:24:51 2011 -0700
+
+    add --debug-level to cli options and code Message.debug()
+
+commit 6bfa7e9204b4af2ee0fc816c87ea2bffcce61ccb
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sat Jul 30 09:52:54 2011 -0700
+
+    add supported_types() to the api
+
+commit ba4481d37cbedc5700b5ea21c5a1897389ecc1cb
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Thu Jul 28 23:10:33 2011 -0700
+
+    fix the overly noisy output for unsupported overlay types.  Thank you fuzzyray for reporting.
+
+commit a0592d60f5420e13e3833fed2e3e8885c4b033e1
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Thu Jul 28 14:32:02 2011 -0700
+
+    add api.py to the tests.  create first api test.
+
+commit 10dddbc5d9fb6d33d881f17ffb864c40b04ed31c
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Thu Jul 28 14:31:13 2011 -0700
+
+    initialize subpath variable for consistency between the  overlay types.
+
+commit b08a5e4b34e0258e84714bcef16c1d5d09c71b39
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Thu Jul 28 14:29:12 2011 -0700
+
+    fix setting the timestamp from the remote server, bug # 376601.
+
+commit 0fde69e7ef993c3e5cca925cef35c8c895cfd834
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Fri Jul 22 23:44:26 2011 -0700
+
+    fix undefined 'subpath', update tests
+
+commit 7fa3a45f35d8571e384f8648aed49384de0d8a4d
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Fri Jul 22 23:43:29 2011 -0700
+
+    update all tests to pass
+
+commit 76631892e26c1f08d3a00232e58f454acda09fef
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Fri Jul 22 23:40:41 2011 -0700
+
+    fix existing tests. add tests for new classes. rename T/F_options to lowwercase due to ConfigParser making it lowercase, creating a dupe.
+
+commit 47a2fa5e3bef21e057f6f40b02e2ea8c08ebb9c4
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Fri Jul 22 23:36:05 2011 -0700
+
+    add overlay_defs option to layman.cfg
+
+commit 1e4647627b386b83f49c5a42e0c12b43439623c4
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Thu Jul 21 19:41:48 2011 -0700
+
+    some docstring test updates
+
+commit f7f4c8eba9212c9474800bbd8ea5da104005f45c
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Thu Jul 21 19:40:58 2011 -0700
+
+    update manpage
+
+commit 2a3d535c9a6ec6680832ce2bc249f9bc80b67864
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Wed Jul 20 11:27:12 2011 -0700
+
+    fix --list --verbose functionality, bug 375779
+
+commit bebce640cda970df5f98e1a9d3a2d0c4a68b2e57
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Tue Jul 12 13:00:54 2011 -0700
+
+    change raising an exceptio to outputing the error.
+
+commit 021d8bc9211cb4f4adad814f6c1bbcd399f72786
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Tue Jul 12 12:57:08 2011 -0700
+
+    fix success mistracking
+
+commit 76fb866e094ebefb2ba57f230d5e26f96346e3d4
+Merge: c5c3121 36b0e7f
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Tue Jul 12 12:48:40 2011 -0700
+
+    Revert "fix mistracking success adding an overlay."
+
+    This reverts commit c5c3121331d8f2f2b39b8f41b91d705d197be250.
+
+commit c5c3121331d8f2f2b39b8f41b91d705d197be250
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Tue Jul 12 12:01:43 2011 -0700
+
+    fix mistracking success adding an overlay.
+
+commit 36b0e7f01af24ed622d7ebab1bda9ad00ab8dcfc
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Tue Jul 12 12:01:43 2011 -0700
+
+    fix an errant mistracking of the success of adding an overlay.
+
+commit 925f99c614b8708e1b79681ee7ae166152f0c396
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sun Jun 5 23:50:34 2011 -0700
+
+    pre-release update
+
+commit dab958354a0fda939c702fd8ddfae834d5916a16
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sun Jun 5 23:40:16 2011 -0700
+
+    more pre-release updates...
+
+commit ad73692fb585474acfd6eae8f139d80bd0ddee17
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sun Jun 5 23:28:36 2011 -0700
+
+    Add myself to author info
+
+commit 26a4425efb1567be0950ff7f813ed5d945367d9d
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sun Jun 5 23:26:28 2011 -0700
+
+    pre-release updates
+
+commit d02348dfce5aad4b1ec68b8f59c278194d660e03
+Author: dol-sen <brian.dolbec@gmail.com>
+Date:   Sun Jun 5 23:25:59 2011 -0700
+
+    update AUTHORS
+
 commit c0fff99f7ae0168900eeea30dc27fc240caa9240
 Author: dol-sen <brian.dolbec@gmail.com>
 Date:   Tue May 17 22:19:39 2011 -0700

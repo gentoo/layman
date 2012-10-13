@@ -2,9 +2,9 @@
 README
 ======
 
-:Last update:   Date: 2011-08-08
-:Revision:      
-:Contact:       brian.dolbec@gmail.com
+:Last update:   Date: 2012-10-13
+:Revision:
+:Contact:       Brian Dolbec <dolsen@gentoo.org>
 
 
 About
@@ -22,7 +22,7 @@ Primary project web site:
 
  - http://layman.sourceforge.net/
 
-Project site on SourceForge: 
+Project site on SourceForge:
 
  - http://sourceforge.net/projects/layman
 
@@ -62,5 +62,6 @@ INSTALL      : Installation instructions
 MANIFEST.in  : The listing of files that get included into the python
                package.
 README       : This file.
+README.api   : Example api use information
 RELEASE_NOTES: Release notes for the latest version
 TODO         : Task list for the project
