@@ -1,26 +1,28 @@
-commit 1113e5d337b4f3c94d3b049200157b00c3b8226f
+commit 92a545dc6b64bbebfa9bc4c3788f1ae3db058788
 Author: Brian Dolbec <dolsen@gentoo.org>
-Date:   Sat Oct 13 14:40:53 2012 -0700
+Date:   Sun Oct 14 18:03:27 2012 -0700
 
-    move elog, einfo messages into updater and print them only if relavent.
+    Add checking for ROOT in the environment on statup, and setting it in the appropriate paths.
+    Add warnings for not finding the config file and installed db. Fix updaters config file path
 
-commit bebffd9c6c017f37404c51218961b96c2d3427b4
-Author: Brian Dolbec <dolsen@gentoo.org>
-Date:   Sat Oct 13 12:58:00 2012 -0700
-
-    tab output messages for better terminal output.
-
-commit 094c02c157ef8f5749c971ce166399dfbbaff9b5
-Author: Brian Dolbec <dolsen@gentoo.org>
-Date:   Sat Oct 13 12:02:10 2012 -0700
-
-    commit missed compatibility file for py3, py2 functioning.
-
-commit c870e4c74058ec1599930f2cd998ee9dbc099048
+commit e13bca9defe7d7dce41757cf414c4ad8ac5a7e8c
 Author: Brian Dolbec <dolsen@gentoo.org>
 Date:   Sat Oct 13 11:40:56 2012 -0700
 
     Pre-release updates to CHANGES, README, stup.py, etc..
+
+commit 6330ab24c38a054247ed712df4f9e64927644145
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Sat Oct 13 12:58:00 2012 -0700
+
+    move elog, einfo messages into updater and print them only if relavent.
+    indent ouput for better display.
+
+commit 4896f9a6e5d8b09187ffd0a000dbae3bdbcabd30
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Sat Oct 13 12:02:10 2012 -0700
+
+    commit missed compatibility file for py3, py2 functioning.
 
 commit fc1de4a933320965e390b2e765bf73a54425e0eb
 Author: Brian Dolbec <dolsen@gentoo.org>
