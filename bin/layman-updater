@@ -16,9 +16,15 @@
 
 __version__ = "0.1"
 
+import os
 
 from layman.updater import Main
 
+root = None
+try:
+    root = os.environ['ROOT']
+except KeyError:
+    pass
 
-main = Main()
+main = Main(root=root)
 main()

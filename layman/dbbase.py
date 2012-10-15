@@ -93,11 +93,17 @@ class DbBase(object):
 
         self.output.debug('Initializing overlay list handler', 8)
 
+        path_found = False
         for path in self.paths:
             if not os.path.exists(path):
                 continue
 
             self.read_file(path)
+            path_found = True
+
+        if not path_found:
+            self.output.warn("Warning: an installed db file was not found at: %s"
+                % str(self.paths))
 
 
     def __eq__(self, other):

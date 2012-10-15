@@ -36,11 +36,12 @@ def rename_db(config, newname, output):
 
 class Main(object):
 
-    def __init__(self):
+    def __init__(self, root=None):
         self.parser = None
         self.output = None
         self.config = None
         self.args = None
+        self.root = root
 
     def args_parser(self):
         self.parser = argparse.ArgumentParser(prog='layman-updater',
@@ -59,8 +60,14 @@ class Main(object):
                 'config': self.args.config,
             }
 
-        self.config = OptionConfig(options=options)
-        self.config.read_config(self.config.get_defaults())
+        self.config = OptionConfig(options=options, root=self.root)
+        # fix the config path
+        defaults = self.config.get_defaults()
+        defaults['config'] = defaults['config'] \
+                % {'configdir': defaults['configdir']}
+        self.config.update_defaults({'config': defaults['config']})
+
+        self.config.read_config(defaults)
 
         layman_inst = LaymanAPI(config=self.config)
 

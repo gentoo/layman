@@ -31,9 +31,9 @@ import os
 import ConfigParser
 
 from layman.output import Message
+from layman.utils import path
 
-
-def read_layman_config(config=None, defaults=None):
+def read_layman_config(config=None, defaults=None, output=None):
     """reads the config file defined in defaults['config']
     and updates the config
 
@@ -41,7 +41,10 @@ def read_layman_config(config=None, defaults=None):
     @param defaults: dict
     @modifies config['MAIN']['overlays']
     """
-    config.read(defaults['config'])
+    read_files = config.read(defaults['config'])
+    if read_files == [] and output is not None:
+        output.warn("Warning: not able to parse config file: %s"
+            % defaults['config'])
     if config.get('MAIN', 'overlay_defs'):
         try:
             filelist = os.listdir(config.get('MAIN', 'overlay_defs'))
@@ -70,7 +73,7 @@ class BareConfig(object):
 
     def __init__(self, output=None, stdout=None, stdin=None, stderr=None,
         config=None, read_configfile=False, quiet=False, quietness=4,
-        verbose=False, nocolor=False, width=0
+        verbose=False, nocolor=False, width=0, root=None
         ):
         '''
         Creates a bare config with defaults and a few output options.
@@ -84,10 +87,15 @@ class BareConfig(object):
         True
         '''
 
+        if root is None:
+            self.root = ''
+        else:
+            self.root = root
+
         self._defaults = {
-                    'configdir': EPREFIX + '/etc/layman',
+                    'configdir': path([self.root, EPREFIX,'/etc/layman']),
                     'config'    : '%(configdir)s/layman.cfg',
-                    'storage'   : EPREFIX + '/var/lib/layman',
+                    'storage'   : path([self.root, EPREFIX,'/var/lib/layman']),
                     'cache'     : '%(storage)s/cache',
                     'local_list': '%(storage)s/overlays.xml',
                     'installed': '%(storage)s/installed.xml',
@@ -100,15 +108,15 @@ class BareConfig(object):
                     'overlays'  :
                     'http://www.gentoo.org/proj/en/overlays/repositories.xml',
                     'overlay_defs': '%(configdir)s/overlays',
-                    'bzr_command': EPREFIX +'/usr/bin/bzr',
-                    'cvs_command': EPREFIX +'/usr/bin/cvs',
-                    'darcs_command': EPREFIX +'/usr/bin/darcs',
-                    'git_command': EPREFIX +'/usr/bin/git',
-                    'g-common_command': EPREFIX +'/usr/bin/g-common',
-                    'mercurial_command': EPREFIX +'/usr/bin/hg',
-                    'rsync_command': EPREFIX +'/usr/bin/rsync',
-                    'svn_command': EPREFIX +'/usr/bin/svn',
-                    'tar_command': EPREFIX +'/bin/tar',
+                    'bzr_command': path([self.root, EPREFIX,'/usr/bin/bzr']),
+                    'cvs_command': path([self.root, EPREFIX,'/usr/bin/cvs']),
+                    'darcs_command': path([self.root, EPREFIX,'/usr/bin/darcs']),
+                    'git_command': path([self.root, EPREFIX,'/usr/bin/git']),
+                    'g-common_command': path([self.root, EPREFIX,'/usr/bin/g-common']),
+                    'mercurial_command': path([self.root, EPREFIX,'/usr/bin/hg']),
+                    'rsync_command': path([self.root, EPREFIX,'/usr/bin/rsync']),
+                    'svn_command': path([self.root, EPREFIX,'/usr/bin/svn']),
+                    'tar_command': path([self.root, EPREFIX,'/bin/tar']),
                     't/f_options': ['nocheck'],
                     'bzr_addopts' : '',
                     'bzr_syncopts' : '',
@@ -158,13 +166,13 @@ class BareConfig(object):
                 # fix the config path
                 defaults['config'] = defaults['config'] \
                     % {'configdir': defaults['configdir']}
-            self.read_config(defaults)
+            self.read_config(self.config, defaults, output=self.output)
 
 
     def read_config(self, defaults):
         self.config = ConfigParser.ConfigParser(defaults)
         self.config.add_section('MAIN')
-        read_layman_config(self.config, defaults)
+        read_layman_config(self.config, defaults, self._options['output'])
 
 
     def keys(self):
@@ -256,7 +264,7 @@ class OptionConfig(BareConfig):
     by using dictionaries.
     """
 
-    def __init__(self, options=None, defaults=None):
+    def __init__(self, options=None, defaults=None, root=None):
         """
         @param options: dictionary of {'option': value, ...}
         @rtype OptionConfig class instance.
@@ -271,7 +279,7 @@ class OptionConfig(BareConfig):
         >>> sorted(a.keys())
         ['bzr_addopts', 'bzr_command', 'bzr_postsync', 'bzr_syncopts', 'cache', 'config', 'configdir', 'custom_news_func', 'custom_news_pkg', 'cvs_addopts', 'cvs_command', 'cvs_postsync', 'cvs_syncopts', 'darcs_addopts', 'darcs_command', 'darcs_postsync', 'darcs_syncopts', 'g-common_command', 'g-common_generateopts', 'g-common_postsync', 'g-common_syncopts', 'git_addopts', 'git_command', 'git_email', 'git_postsync', 'git_syncopts', 'git_user', 'installed', 'local_list', 'make_conf', 'mercurial_addopts', 'mercurial_command', 'mercurial_postsync', 'mercurial_syncopts', 'news_reporter', 'nocheck', 'nocolor', 'output', 'overlay_defs', 'overlays', 'proxy', 'quiet', 'quietness', 'rsync_command', 'rsync_postsync', 'rsync_syncopts', 'stderr', 'stdin', 'stdout', 'storage', 'svn_addopts', 'svn_command', 'svn_postsync', 'svn_syncopts', 't/f_options', 'tar_command', 'tar_postsync', 'umask', 'verbose', 'width']
         """
-        BareConfig.__init__(self)
+        BareConfig.__init__(self, root=root)
 
         self.update_defaults(defaults)
 

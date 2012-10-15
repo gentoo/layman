@@ -18,6 +18,8 @@
 
 __version__ = "0.2"
 
+import os
+
 #===============================================================================
 #
 # Dependencies
@@ -33,5 +35,11 @@ from   layman.cli            import Main
 #
 #-------------------------------------------------------------------------------
 
-main = Main(ArgsParser())
+root = None
+try:
+    root = os.environ['ROOT']
+except KeyError:
+    pass
+
+main = Main(ArgsParser(root=root))
 main()
