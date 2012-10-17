@@ -180,16 +180,16 @@ make.conf::
     This is the *portage* configuration file that *layman* will
     modify in order to make the new overlays available within
     *portage*. The default is '%(storage)s/make.conf'. You could
-    also specify '/etc/make.conf' directly. But that would mean
+    also specify '/etc/portage/make.conf' directly. But that would mean
     that you have an external program trying to automatically
     set variables within this very central configuration file.
     Since I consider that dangerous I prefer having a very small
     external file that only contains the setting for
     *PORTDIR_OVERLAY*. This file is then sourced at the end of
-    '/etc/make.conf'. This is the reason why *layman* suggests running
+    '/etc/portage/make.conf'. This is the reason why *layman* suggests running
     the following *after* it has been installed.
 
-    echo 'source /var/lib/layman/make.conf' >> /etc/make.conf
+    echo 'source /var/lib/layman/make.conf' >> /etc/portage/make.conf
 
 
 
@@ -279,18 +279,18 @@ HANDLING /ETC/MAKE.CONF
 ~~~~~~~~~~~~~~~~~~~~~~~
 Since *layman* is designed to automatically handle the inclusion of
 overlays into your system it needs to be able to modify the
-*PORTDIR_OVERLAY* variable in your '/etc/make.conf' file.
-But '/etc/make.conf' is a very central and essential configuration
+*PORTDIR_OVERLAY* variable in your '/etc/portage/make.conf' file.
+But '/etc/portage/make.conf' is a very central and essential configuration
 file for a Gentoo system. Automatically modifying this file would
 be somewhat dangerous. You can allow *layman* to do this by
 setting the make_conf variable in the configuration file to
-'/etc/make.conf'.
+'/etc/portage/make.conf'.
 
 A much safer and in fact recommended solution to the problem is
 to let *layman* handle an external file that only contains the
 *PORTDIR_OVERLAY* variable and is sourced within the standard
-'/etc/make.conf' file. Just add the following line to the end of
-your '/etc/make.conf' file:
+'/etc/portage/make.conf' file. Just add the following line to the end of
+your '/etc/portage/make.conf' file:
 
 -------------------------------------------
 source /var/lib/layman/make.conf

@@ -126,7 +126,7 @@ class Main(object):
             "",
             "If this is the very first overlay you add with layman,",
             "you need to append the following statement to your",
-            "/etc/make.conf file:",
+            "/etc/portage/make.conf file:",
             "",
             "  source /var/lib/layman/make.conf",
             "",
