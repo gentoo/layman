@@ -5,7 +5,7 @@
 #################################################################################
 # File:       makeconf.py
 #
-#             Handles modifications to /etc/make.conf
+#             Handles modifications to /var/layman/make.conf
 #
 # Copyright:
 #             (c) 2005 - 2009 Gunnar Wrobel
@@ -29,7 +29,7 @@ from layman.utils import path
 
 class MakeConf:
     '''
-    Handles modifications to /etc/make.conf
+    Handles modifications to /var/layman/make.conf
 
     Check that an add/remove cycle does not modify the make.conf:
 
@@ -152,7 +152,7 @@ class MakeConf:
 
     def read(self, raise_error=False):
         '''
-        Read the list of registered overlays from /etc/make.conf.
+        Read the list of registered overlays from /var/layman/make.conf.
 
         >>> here = os.path.dirname(os.path.realpath(__file__))
         >>> config = {'installed' :
@@ -211,7 +211,7 @@ class MakeConf:
 
     def write(self):
         '''
-        Write the list of registered overlays to /etc/make.conf.
+        Write the list of registered overlays to /var/layman/make.conf.
 
         >>> import tempfile
         >>> tmpdir = tempfile.mkdtemp(prefix="laymantmp_")
@@ -281,7 +281,7 @@ class MakeConf:
 
     def content(self):
         '''
-        Returns the content of the /etc/make.conf file.
+        Returns the content of the /var/layman/make.conf file.
         '''
         try:
             make_conf = codecs.open(self.path, 'r', 'utf-8')
