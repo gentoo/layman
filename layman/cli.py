@@ -195,7 +195,7 @@ class Main(object):
         self.output.debug('Checking for action errors', 4)
         if action_errors:
             for action, _errors in action_errors:
-                self.output.warn("CLI: Errors occured processing action"
+                self.output.warn("CLI: Errors occurred processing action"
                     " %s" % action)
                 for _error in _errors:
                     self.output.error(_error)
