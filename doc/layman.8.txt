@@ -2,7 +2,7 @@ LAYMAN(8)
 =========
 :man source:   layman {laymanversion}
 :man manual:   layman {laymanversion}
-Gunnar Wrobel <wrobel@gentoo.org>
+Brian Dolbec <dolsen@gentoo.org>
 
 
 NAME
@@ -454,11 +454,14 @@ FILES
 -----
 '/etc/layman/layman.cfg'::
     Configuration file, holding the defaults for *layman*
+'/var/lib/layman/make.conf'::
+    Configuration file that layman modifies to
+    register the installed overlay(s) with the package manager
 
 
 AUTHORS
 -------
-- Gunnar Wrobel <wrobel@gentoo.org>
+- Gunnar Wrobel <wrobel@gentoo.org> (original, retired)
 - Sebastian Pipping <sping@gentoo.org>
 - Brian Dolbec <brian.dolbec@gmail.com>
 
