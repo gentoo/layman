@@ -1,9 +1,50 @@
+commit c19187f5d7e8b5226e3b9f1903f6677c87f87383
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Sat Oct 20 13:54:34 2012 -0700
+
+    add /var/lib/layman/make.conf to Files: . Set myself as Author so the
+    html/man page shows a current/valid email (current maintainer, developer)
+    rather than Gunnar's...
+
+commit ae3d902f050ecd64bac1eab0a499e1bed8a20907
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Wed Oct 17 17:12:08 2012 -0700
+
+    missesd one make.conf.
+
+commit 8d66d64d26b80c336661beb03e5b3c0dfe491c50
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Tue Oct 16 23:21:03 2012 -0700
+
+    update the make.conf path to the correct one.
+
+commit c5c2032602adf640f3b9841b6370046f3ea01632
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Tue Oct 16 23:20:26 2012 -0700
+
+    update the make.conf path to the new /etc/portage one.
+    Thanks kurly for reporting it.
+
+commit c1d3b0799e7fa4effd62372545f7a4a962f31bac
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Tue Oct 16 23:18:57 2012 -0700
+
+    fix typo reported by kurly in
+    http://forums.gentoo.org/viewtopic-t-939646.html.
+
+commit e60c52a5f266571195947e7cd68f5e145d5ac948
+Author: Brian Dolbec <dolsen@gentoo.org>
+Date:   Sun Oct 14 18:08:25 2012 -0700
+
+    hopefully a final pre-release update.
 commit 92a545dc6b64bbebfa9bc4c3788f1ae3db058788
 Author: Brian Dolbec <dolsen@gentoo.org>
 Date:   Sun Oct 14 18:03:27 2012 -0700
 
-    Add checking for ROOT in the environment on statup, and setting it in the appropriate paths.
-    Add warnings for not finding the config file and installed db. Fix updaters config file path
+    Add checking for ROOT in the environment on statup, and setting it
+    in the appropriate paths.
+    Add warnings for not finding the config file and installed db.
+    Fix updaters config file path
 
 commit e13bca9defe7d7dce41757cf414c4ad8ac5a7e8c
 Author: Brian Dolbec <dolsen@gentoo.org>
@@ -40,7 +81,8 @@ commit 729923d4a2d5a22f6509de438953ef6035d38e20
 Author: Brian Dolbec <dolsen@gentoo.org>
 Date:   Sun Oct 7 23:15:51 2012 -0700
 
-    Fix bug 372583.  Don't add redundant trailing slashes on src uri's where trailing slashes are required.
+    Fix bug 372583.  Don't add redundant trailing slashes on src uri's where
+    trailing slashes are required.
 
 commit 25da05250a60d1bae9a03eadb8db4eb744cc4ae0
 Author: Brian Dolbec <dolsen@gentoo.org>
@@ -58,13 +100,15 @@ commit faf6c74c1aa866d62137dcf203b3bca7a0e32634
 Author: Brian Dolbec <dolsen@gentoo.org>
 Date:   Sun Oct 7 16:38:41 2012 -0700
 
-    Add setting the default user name and email when adding new git based overlays. Bug 433687.
+    Add setting the default user name and email when adding new git based
+    overlays. Bug 433687.
 
 commit 2bc0b7478a14a9bf95a2e3728ed5a5f8d755e9b1
 Author: Brian Dolbec <dolsen@gentoo.org>
 Date:   Sun Oct 7 16:36:49 2012 -0700
 
-    fix an "Invalid repoID" assertion error when it does not get a valid repoID in the news reporting.
+    fix an "Invalid repoID" assertion error when it does not get a
+    valid repoID in the news reporting.
 
 commit 0ad65cb126dfe1b41b559675a9b571e5e2d277ef
 Author: Brian Dolbec <dolsen@gentoo.org>
@@ -76,7 +120,9 @@ commit 915e3c0865ecee24cb31ead94d573b397ae67c51
 Author: Brian Dolbec <dolsen@gentoo.org>
 Date:   Sun Oct 7 13:07:54 2012 -0700
 
-    fix traceback caused by an extra level parameter in the error _output() calls.  This caused the errors to not be printed.  Bug 390127.
+    fix traceback caused by an extra level parameter in the
+    error _output() calls.  This caused the errors to not be printed.
+    Bug 390127.
 
 commit 4ec06a0babf271b1664d1850ebcd75a05d4e3599
 Author: Brian Dolbec <dolsen@gentoo.org>
@@ -88,7 +134,8 @@ commit afb17b0a5bef67fa51e92373fd5043ac27f4c8f2
 Author: Brian Dolbec <dolsen@gentoo.org>
 Date:   Wed Jun 6 21:42:27 2012 -0700
 
-    Tighten up the code to prevent exceptions and tracebacks if stdout and stderr are not of the file type.
+    Tighten up the code to prevent exceptions and tracebacks if stdout and
+    stderr are not of the file type.
 
 commit 15fd9944117dcc90f0f297aac4f6fcbb7d9e2f95
 Author: Brian Dolbec <dolsen@gentoo.org>
@@ -100,7 +147,8 @@ commit 9ec59c4d881960ce0e1f7c2fdc55bad471a8d7b7
 Author: Brian Dolbec <dolsen@gentoo.org>
 Date:   Fri Apr 13 19:13:42 2012 -0700
 
-    fix the BareConfig not str sub'ing %(configdir)s before calling read_config().  indent fix in read_config().
+    fix the BareConfig not str sub'ing %(configdir)s before calling
+    read_config().  indent fix in read_config().
 
 commit b7b7df1489d582443462d88dfa0ce86a35caf4af
 Author: Brian Dolbec <dolsen@gentoo.org>
@@ -118,7 +166,8 @@ commit 7a74871ab63f3b36d7d2377a5af5b0cfc1a2ee29
 Author: Brian Dolbec <dolsen@gentoo.org>
 Date:   Sun Mar 25 20:40:11 2012 -0700
 
-    fix bug 408897 for when profiles/repo_name is not the same as the layman overlay name.
+    fix bug 408897 for when profiles/repo_name is not the same as the
+    layman overlay name.
 
 commit 5c33fbc34acca869ec9fe80c4f470edfe560d9a0
 Author: Brian Dolbec <dolsen@gentoo.org>
@@ -136,7 +185,8 @@ commit 77fd9c78984df218d33520c6dce7a8a0c630c456
 Author: Brian Dolbec <dolsen@gentoo.org>
 Date:   Fri Jan 6 00:14:20 2012 -0800
 
-    Add cwd=base to git's add() run_command function call.  This fixes  Bug 396643 in selinux and newer git.
+    Add cwd=base to git's add() run_command function call.  This fixes
+    Bug 396643 in selinux and newer git.
 
 commit 46444286c8d70797964dc80dd70e42a0f2d35723
 Author: Brian Dolbec <dolsen@gentoo.org>
@@ -167,7 +217,8 @@ commit bce27850d7e2d86e1b8046be8eb1d51c83dbdd2c
 Author: dol-sen <brian.dolbec@gmail.com>
 Date:   Thu Oct 13 20:11:30 2011 -0700
 
-    fix an encode error regression in python 2 introduced in the py2, py3 compatibility changes.
+    fix an encode error regression in python 2 introduced in the py2, py3
+    compatibility changes.
 
 commit b59d8988174e0af06b0ec614b077800171bc139b
 Merge: 1160eeb 78eefa4
@@ -234,7 +285,8 @@ commit 6566ed3969a81d5d54cc17d9ec15ccef31ab9000
 Author: dol-sen <brian.dolbec@gmail.com>
 Date:   Mon Sep 5 09:08:42 2011 -0700
 
-    fix bug 381853, remove the noise level param as error() does not have it like the other output functions.
+    fix bug 381853, remove the noise level param as error() does not have it
+    like the other output functions.
 
 commit de32dea6179e96cb5b7fa1088134a41f4e78fa9b
 Author: dol-sen <brian.dolbec@gmail.com>
@@ -246,7 +298,8 @@ commit 6a7cf195966b9d809a9fe005ef3547503c02776b
 Author: dol-sen <brian.dolbec@gmail.com>
 Date:   Wed Aug 24 06:48:33 2011 -0700
 
-    rename local_list to installed, create an update function to migrate the change.
+    rename local_list to installed, create an update function to migrate
+    the change.
 
 commit fb629bea7f7c19790078ec0b72acc7671f1ae2f3
 Author: dol-sen <brian.dolbec@gmail.com>
@@ -276,7 +329,8 @@ commit f1ac6fc5b697632d4db04265bc0c0ec6554e6855
 Author: dol-sen <brian.dolbec@gmail.com>
 Date:   Fri Aug 19 18:08:43 2011 -0700
 
-    fix success reporting identified in bug 379779.  Improve and change error output from info(), warn() to error().
+    fix success reporting identified in bug 379779.  Improve and change error
+    output from info(), warn() to error().
 
 commit e78113321c0627291c176930e0493867e9cafc1d
 Author: dol-sen <brian.dolbec@gmail.com>
@@ -370,7 +424,8 @@ commit b2ee5463687471c42b87831f77de3322ec83e1f9
 Author: dol-sen <brian.dolbec@gmail.com>
 Date:   Sun Aug 7 14:20:02 2011 -0700
 
-    fix bug 378097. unofficial installed overlays not printing (due to nocheck=no option).  Add some additional debug output
+    fix bug 378097. unofficial installed overlays not printing
+    (due to nocheck=no option).  Add some additional debug output
 
 commit acc9c9163a0ff4fe3e19e4cb49228b93f1c5999e
 Author: dol-sen <brian.dolbec@gmail.com>
@@ -382,13 +437,15 @@ commit 8f850f20af9c1b6360500b36ffada70e07ce45e9
 Author: dol-sen <brian.dolbec@gmail.com>
 Date:   Sun Aug 7 00:05:33 2011 -0700
 
-    tidy up some task spacing, eliminate a duped error output, comment out some debug output.
+    tidy up some task spacing, eliminate a duped error output,
+    comment out some debug output.
 
 commit 009d0632ae496197807d520df380017dca664543
 Author: dol-sen <brian.dolbec@gmail.com>
 Date:   Sat Aug 6 23:39:34 2011 -0700
 
-    clean out some dead commented out code. add a blank line after each action task for spacing tasks.
+    clean out some dead commented out code. add a blank line after
+    each action task for spacing tasks.
 
 commit e76952c1e6817c0bec94665a6307a06507a0e029
 Author: dol-sen <brian.dolbec@gmail.com>
@@ -413,13 +470,15 @@ commit f4ccd5f6ac6449eee0a5144027ee7faa24a6e3d4
 Author: dol-sen <brian.dolbec@gmail.com>
 Date:   Sat Aug 6 13:29:35 2011 -0700
 
-    add a space before the * in the output func()'s as per "Etal"'s request in http://forums.gentoo.org/viewtopic-t-877029.html
+    add a space before the * in the output func()'s as per "Etal"'s request
+    in http://forums.gentoo.org/viewtopic-t-877029.html
 
 commit 341f69005710839bc984e414a823238c9329bd08
 Author: dol-sen <brian.dolbec@gmail.com>
 Date:   Sat Aug 6 11:28:53 2011 -0700
 
-    add debug messages, fix error reporting in the api, refactor action & error processing/tracking.
+    add debug messages, fix error reporting in the api,
+    refactor action & error processing/tracking.
 
 commit b99c5c5c78a8d2e1313ae91e25d3938c01aab9bc
 Author: dol-sen <brian.dolbec@gmail.com>
@@ -443,7 +502,8 @@ commit ba4481d37cbedc5700b5ea21c5a1897389ecc1cb
 Author: dol-sen <brian.dolbec@gmail.com>
 Date:   Thu Jul 28 23:10:33 2011 -0700
 
-    fix the overly noisy output for unsupported overlay types.  Thank you fuzzyray for reporting.
+    fix the overly noisy output for unsupported overlay types.
+    Thank you fuzzyray for reporting.
 
 commit a0592d60f5420e13e3833fed2e3e8885c4b033e1
 Author: dol-sen <brian.dolbec@gmail.com>
@@ -479,7 +539,8 @@ commit 76631892e26c1f08d3a00232e58f454acda09fef
 Author: dol-sen <brian.dolbec@gmail.com>
 Date:   Fri Jul 22 23:40:41 2011 -0700
 
-    fix existing tests. add tests for new classes. rename T/F_options to lowwercase due to ConfigParser making it lowercase, creating a dupe.
+    fix existing tests. add tests for new classes. rename T/F_options to
+    lowwercase due to ConfigParser making it lowercase, creating a dupe.
 
 commit 47a2fa5e3bef21e057f6f40b02e2ea8c08ebb9c4
 Author: dol-sen <brian.dolbec@gmail.com>
@@ -760,7 +821,8 @@ commit f0f43429d260c9afa4bdda394e86a9b258e29150
 Author: Brian Dolbec <brian.dolbec@gmail.com>
 Date:   Wed Feb 23 22:17:00 2011 -0800
 
-    create a new create_overlay_dict() to assist in using a python dictionary for overlay definitions
+    create a new create_overlay_dict() to assist in using a
+    python dictionary for overlay definitions
 
 commit a9fe3d3dc2794ab46af1b68728aa7a12f0733f49
 Author: Brian Dolbec <brian.dolbec@gmail.com>
@@ -779,7 +841,8 @@ commit 091147c6abb9bdfa814a8fc571b6cad85669fa46
 Author: Brian Dolbec <brian.dolbec@gmail.com>
 Date:   Wed Feb 23 22:13:04 2011 -0800
 
-    remove a few raise Exception()'s and replace them with self.output.error messages.
+    remove a few raise Exception()'s and replace them with
+    self.output.error messages.
     wrap the make_Conf in a config check.
 
 commit 4c51f94ca343338c0d266fae5c5ab6500df5e258
@@ -840,7 +903,8 @@ commit 9df5b23e5b71d6f35302572162239f3d23732e33
 Author: Brian Dolbec <brian.dolbec@gmail.com>
 Date:   Sat Feb 19 02:45:03 2011 -0800
 
-    import Message directly add all options to BareConfig for easy instantiation with teh desired options.
+    import Message directly add all options to BareConfig for
+    easy instantiation with teh desired options.
 
 commit 7a970a992bfc1fea6c37ef96378c2fd4bfbc8b17
 Author: Brian Dolbec <brian.dolbec@gmail.com>
@@ -902,7 +966,8 @@ commit cc15f2551e105540850101572ccba275a6fc1ace
 Author: Brian Dolbec <brian.dolbec@gmail.com>
 Date:   Sun Feb 13 16:53:33 2011 -0800
 
-    fix the incorrect exit code settings which are opposite the True/False that the api returns
+    fix the incorrect exit code settings which are opposite the
+    True/False that the api returns
 
 commit 69ca817b92d78e91b03ee3e327b9e369c8f26e5a
 Author: Brian Dolbec <brian.dolbec@gmail.com>
@@ -962,13 +1027,15 @@ commit b9635c0d5a2b99263ba361bf957d31ac0907c5a0
 Author: Brian Dolbec <brian.dolbec@gmail.com>
 Date:   Sun Feb 6 15:37:30 2011 -0800
 
-    rename Overlay's __str__().  split out UnknownOverlayMessage() from the exception class
+    rename Overlay's __str__().  split out UnknownOverlayMessage()
+    from the exception class
 
 commit 8f3c12a02768bea0cf1ceed02b27886cdac3f2af
 Author: Brian Dolbec <brian.dolbec@gmail.com>
 Date:   Sun Feb 6 15:34:36 2011 -0800
 
-    add the ability to plugin repository definition xml files without editing the config file
+    add the ability to plugin repository definition xml files without
+    editing the config file
 
 commit 6c2ae66cf246a34fa4b3129df4cd01aa2ee47641
 Author: Brian Dolbec <brian.dolbec@gmail.com>
@@ -1127,13 +1194,15 @@ commit e4b3560bf8b8dbce3c992086a5697fea7aefa200
 Author: Brian Dolbec <brian.dolbec@gmail.com>
 Date:   Sun Jul 11 01:54:22 2010 -0700
 
-    Remove the Output class as it is not needed, was used for initial testing only.
+    Remove the Output class as it is not needed, was used for initial
+    testing only.
 
 commit bb446c2f548b08ad745ff8b608383314e76a9224
 Author: Brian Dolbec <brian.dolbec@gmail.com>
 Date:   Sat Jul 10 21:22:40 2010 -0700
 
-    Add a get_option function as a convenience function for option retrieval instead of using the class instance as a dictionary.
+    Add a get_option function as a convenience function for option retrieval
+    instead of using the class instance as a dictionary.
 
 commit af8c821f1b6c1a48b5ce2f6ba328ba9ff8807a9d
 Author: Brian Dolbec <brian.dolbec@gmail.com>
@@ -1141,7 +1210,8 @@ Date:   Sat Jul 10 21:20:44 2010 -0700
 
     Modify the API to be more compatible with a c interface.
     Make all main repo functions accept either a string or a list of strings.
-    Change most functions to return True/False for success/failure and save error messages for separate retrieval.
+    Change most functions to return True/False for success/failure and save
+    error messages for separate retrieval.
     Change other functions to return a dictionary instead of tuples or lists.
     Add a get_errors() for retrieving and resetting error messages.
     Change sync to either save or print the success, warnings, fatals info.
@@ -1150,7 +1220,8 @@ commit a11c61f22f3df968f4c00f9a8f8b996e6a143df7
 Author: Brian Dolbec <brian.dolbec@gmail.com>
 Date:   Wed Jul 7 19:18:34 2010 -0700
 
-    Separate out the configs from the args parsing code.  This will allow basic configs for api consumers that are changeable.
+    Separate out the configs from the args parsing code.  This will allow
+    basic configs for api consumers that are changeable.
 
 commit 61135ce4b04e52855e0ce320777ec671cccf710c
 Author: Brian Dolbec <brian.dolbec@gmail.com>
@@ -1174,19 +1245,30 @@ commit b0fec599217155459e26aba627f3297a7e857a09
 Author: Brian Dolbec <brian.dolbec@gmail.com>
 Date:   Tue Jul 6 18:20:56 2010 -0700
 
-    add new layman API file and class to be used by api consumers, but could also be used by the cli if they desire to migrate to it.  That would eliminate the duplication in hte action.py file.  Unfortunately, the action classes were not suitable for api consumers.  They worked efficiently as one time cli use only. I also have subclassed the debug.py's Message class to override some print statements for data capture instead.  This may not survive when the api is completed.  create_fd() is handy for creating opened file descriptors to use for output re-direction.
+    add new layman API file and class to be used by api consumers,
+    but could also be used by the cli if they desire to migrate to it.
+    That would eliminate the duplication in hte action.py file.
+    Unfortunately, the action classes were not suitable for api consumers.
+    They worked efficiently as one time cli use only.
+    I also have subclassed the debug.py's Message class to override some
+    print statements for data capture instead.
+    This may not survive when the api is completed.
+    create_fd() is handy for creating opened file descriptors to use
+    for output re-direction.
 
 commit 3731e182e0577165ede11e95d4bd447354ce3786
 Author: Brian Dolbec <brian.dolbec@gmail.com>
 Date:   Tue Jul 6 18:08:46 2010 -0700
 
-    Change the remaining modules to use the config['output'] variable so re-direction is possible for all output.
+    Change the remaining modules to use the config['output'] variable so
+    re-direction is possible for all output.
 
 commit c387c4eff9eb13ece3108cf1b5818d0ba6551f1f
 Author: Brian Dolbec <brian.dolbec@gmail.com>
 Date:   Tue Jul 6 18:07:41 2010 -0700
 
-    Add an output parameter to Message class and change the prints that weren't already re-directed to re-direct to it
+    Add an output parameter to Message class and change the prints
+    that weren't already re-directed to re-direct to it
 
 commit 8d5c2c9f9a64dd99f65bf3791cb88ca400339c45
 Author: Brian Dolbec <brian.dolbec@gmail.com>
@@ -1198,13 +1280,18 @@ commit 8c0b76134494339ff75bb5c3e8332c69f257838a
 Author: Brian Dolbec <brian.dolbec@gmail.com>
 Date:   Tue Jul 6 17:21:17 2010 -0700
 
-    Add an input parameter, 'output' to delete_empty_directory so that it can be overriden if desired
+    Add an input parameter, 'output' to delete_empty_directory so
+    that it can be overriden if desired
 
 commit 3b6f983f8d764e974c38ae4b4eccbfd63553ff2d
 Author: Brian Dolbec <brian.dolbec@gmail.com>
 Date:   Tue Jul 6 17:17:34 2010 -0700
 
-    add new __init__ input parameters, output (replaces OUT import), stdout, stdin, stderr.  These are then added to the config dictionary for all other modules to use.  This creates a single point to assign them and makes it possible to re-assign them from the defaults in the case of API consumers.
+    add new __init__ input parameters, output (replaces OUT import),
+    stdout, stdin, stderr.
+    These are then added to the config dictionary for all other modules to use.
+    This creates a single point to assign them and makes it possible to
+    re-assign them from the defaults in the case of API consumers.
 
 commit 08c7aed2adc6ab162388b39074267ef8d3ffbab4
 Author: Sebastian Pipping <sebastian@pipping.org>
@@ -1234,7 +1321,8 @@ commit 52140908a6b046af3e28071eb1129e578b6ff6c8
 Author: Sebastian Pipping <sebastian@pipping.org>
 Date:   Tue Feb 8 04:16:32 2011 +0100
 
-    Makefile: Add target "website" to ease uploading the latest man page to layman.sf.net
+    Makefile: Add target "website" to ease uploading the latest man page to
+    layman.sf.net
 
 commit c309635e0357b825531ca44df6e9019bb69d3a73
 Author: Sebastian Pipping <sebastian@pipping.org>
@@ -1456,7 +1544,8 @@ commit 10f33da79d6c99d0360bd2c1d3365af4d7fc991c
 Author: Sebastian Pipping <sebastian@pipping.org>
 Date:   Fri Feb 26 20:08:13 2010 +0100
 
-    Rename class List to ListRemote, make ListRemote and ListLocal derive from a new class List
+    Rename class List to ListRemote, make ListRemote and ListLocal derive
+    from a new class List
 
 commit 83ea95d35bbbe3300ca09b755e38d316b015afe6
 Author: Sebastian Pipping <sebastian@pipping.org>
@@ -1480,7 +1569,8 @@ commit 4b16c82ce4d7d78d943f81ea536f4407a7caf4bb
 Author: Sebastian Pipping <sebastian@pipping.org>
 Date:   Sat Feb 20 22:02:43 2010 +0100
 
-    Prepare release of 1.3.2 (set release date, sync release notes, update website)
+    Prepare release of 1.3.2 (set release date, sync release notes,
+    update website)
 
 commit 15607e2a960e046a9d1cf23bbc04f30c505c5600
 Author: Sebastian Pipping <sebastian@pipping.org>
@@ -1594,7 +1684,8 @@ commit 2403aa7ea58f46b7113a5eac0cc52973748da411
 Author: Sebastian Pipping <sebastian@pipping.org>
 Date:   Fri Feb 5 02:12:47 2010 +0100
 
-    Prepare release of 1.3.1 (set release date, sync release notes, update website)
+    Prepare release of 1.3.1 (set release date, sync release notes,
+    update website)
 
 commit e321b1c0abca64e2e3615a9e1a321b47a6adbbed
 Author: Sebastian Pipping <sebastian@pipping.org>
@@ -1624,7 +1715,8 @@ commit 2de3c57b0f31249260943d93e6860913c03f37a8
 Author: Sebastian Pipping <sebastian@pipping.org>
 Date:   Tue Jan 19 18:20:45 2010 +0100
 
-    Prepare release of 1.3.0 (set release date, sync release notes, update website)
+    Prepare release of 1.3.0 (set release date, sync release notes,
+    update website)
 
 commit 218e6a12ceb1808e0f5544eaec933e1172762551
 Author: Sebastian Pipping <sebastian@pipping.org>
@@ -1654,7 +1746,8 @@ commit 8d8f7a47dd95ad6a69b8058888cb7aaae9430c76
 Author: Sebastian Pipping <sebastian@pipping.org>
 Date:   Fri Jan 15 19:02:31 2010 +0100
 
-    Prepare release of 1.3.0_rc1 (set release date, sync release notes, update website)
+    Prepare release of 1.3.0_rc1 (set release date, sync release notes,
+    update website)
 
 commit 7ba4169637a767bfcf2c99e167c78df97c940a8f
 Author: Sebastian Pipping <sebastian@pipping.org>
@@ -1780,7 +1873,8 @@ commit c0d50a487033ad63f342e2e73e9305cd0696386f
 Author: Sebastian Pipping <sebastian@pipping.org>
 Date:   Tue Jan 12 22:48:48 2010 +0100
 
-    Prepare release of 1.2.6 (set release date, sync release notes, update website)
+    Prepare release of 1.2.6 (set release date, sync release notes,
+    update website)
 
 commit 900903c2085f118a24786a5f4ac5d9fd4d0dde1e
 Author: Sebastian Pipping <sebastian@pipping.org>
@@ -1858,7 +1952,8 @@ commit dbc4f712fa892bb067996f45821f8d3aeda5e2fc
 Author: Sebastian Pipping <sebastian@pipping.org>
 Date:   Mon Jan 4 21:05:30 2010 +0100
 
-    Prepare release of 1.2.5 (set release date, sync release notes, update website)
+    Prepare release of 1.2.5 (set release date, sync release notes,
+    update website)
 
 commit acf9ef9a4b3b9aedbc9b1a6f9fec26fa0fe19afa
 Author: Sebastian Pipping <sebastian@pipping.org>
