@@ -166,7 +166,7 @@ class BareConfig(object):
                 # fix the config path
                 defaults['config'] = defaults['config'] \
                     % {'configdir': defaults['configdir']}
-            self.read_config(self.config, defaults, output=self.output)
+            self.read_config(defaults)
 
 
     def read_config(self, defaults):
