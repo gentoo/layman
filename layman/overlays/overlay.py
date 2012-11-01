@@ -516,7 +516,11 @@ class Overlay(object):
         >>> print a.short_list(80)
         wrobel                    [Subversion] (https://o.g.o/svn/dev/wrobel         )
         '''
-        name   = pad(self.name, 25)
+        if len(self.name) > 25:
+            name = self.name + "   ###\n"
+            name += pad(" ", 25)
+        else:
+            name   = pad(self.name, 25)
 
         if len(set(e.type for e in self.sources)) == 1:
             _type = self.sources[0].type
