@@ -145,12 +145,9 @@ class Main(object):
         self.output.info("  Creating layman's make.conf file")
         # create layman's %(storage)s/make.conf
         # so portage won't error
-        try:
-            make_conf = fileopen(self.config['make_conf'], mode="w")
-            make_conf.write("# Layman's make.conf\n\n")
-            make_conf.close()
-        except Exception, error:
-            self.output.error("  layman-updater: Error creating make.conf:")
-            self.output.error("  %s" % error)
+        from layman.makeconf import MakeConf
+        maker = MakeConf(self.config, None)
+        maker.write()
+
 
 

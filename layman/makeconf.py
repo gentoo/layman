@@ -281,7 +281,7 @@ class MakeConf:
 
     def content(self):
         '''
-        Returns the content of the /var/layman/make.conf file.
+        Returns the content of the /var/lib/layman/make.conf file.
         '''
         try:
             make_conf = codecs.open(self.path, 'r', 'utf-8')
