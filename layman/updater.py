@@ -113,6 +113,9 @@ class Main(object):
 
 
     def print_instructions(self):
+        make_conf = '/etc/portage/make.conf'
+        if not os.access(make_conf, os.F_OK):
+            make_conf = '/etc/make.conf'
         messages = [
             "You are now ready to add overlays into your system.",
             "",
@@ -126,7 +129,7 @@ class Main(object):
             "",
             "If this is the very first overlay you add with layman,",
             "you need to append the following statement to your",
-            "/etc/portage/make.conf file:",
+            "%s file:" %make_conf,
             "",
             "  source /var/lib/layman/make.conf",
             "",
