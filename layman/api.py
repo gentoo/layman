@@ -13,16 +13,16 @@
 #              Brian Dolbec <dol-sen@sourceforge.net>
 #
 
-from sys import stderr
 import os
 
 from layman.config import BareConfig
 
 from layman.dbbase import UnknownOverlayException, UnknownOverlayMessage
-from layman.db import DB, RemoteDB
+from layman.db import DB
+from layman.remotedb import RemoteDB
 from layman.overlays.source import require_supported
 #from layman.utils import path, delete_empty_directory
-from layman.compatibility import encode, fileopen
+from layman.compatibility import encode
 
 
 UNKNOWN_REPO_ID = "Repo ID '%s' " + \
@@ -499,8 +499,8 @@ class LaymanAPI(object):
 
     def reload(self):
         """reloads the installed and remote db's to the data on disk"""
-        result = self.get_available(dbreload=True)
-        result = self.get_installed(dbreload=True)
+        self.get_available(dbreload=True)
+        self.get_installed(dbreload=True)
 
 
     def _error(self, message):
@@ -599,7 +599,7 @@ def create_fd():
     """
     fd_r, fd_w = os.pipe()
     write = os.fdopen(fd_w, 'w')
-    rread = os.fdopen(fd_r, 'r')
+    read = os.fdopen(fd_r, 'r')
     return (read, write, fd_r, fd_w)
 
 

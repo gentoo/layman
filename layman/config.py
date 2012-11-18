@@ -53,9 +53,9 @@ def read_layman_config(config=None, defaults=None, output=None):
         filelist = [f for f in filelist if f.endswith('.xml')]
         overlays = set(config.get('MAIN', 'overlays').split('\n'))
         for _file in filelist:
-            path = os.path.join(config.get('MAIN', 'overlay_defs'), _file)
-            if os.path.isfile(path):
-                overlays.update(["file://" + path])
+            _path = os.path.join(config.get('MAIN', 'overlay_defs'), _file)
+            if os.path.isfile(_path):
+                overlays.update(["file://" + _path])
         config.set('MAIN', 'overlays', '\n'.join(overlays))
 
 
@@ -105,6 +105,8 @@ class BareConfig(object):
                     'umask'     : '0022',
                     'news_reporter': 'portage',
                     'custom_news_pkg': '',
+                    'gpg_detached_lists': '',
+                    'gpg_signed_lists': '',
                     'overlays'  :
                     'http://www.gentoo.org/proj/en/overlays/repositories.xml',
                     'overlay_defs': '%(configdir)s/overlays',
