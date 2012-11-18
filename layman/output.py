@@ -10,7 +10,7 @@
 __version__ = "0.1"
 
 
-import sys, types
+import sys
 
 from layman.constants import codes, INFO_LEVEL, WARN_LEVEL, DEBUG_LEVEL, OFF
 from layman.compatibility import encode
