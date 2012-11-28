@@ -31,13 +31,21 @@ import sys
 import urllib2
 import hashlib
 
-from pygpg.config import GPGConfig
-from pygpg.gpg import GPG
+
+GPG_ENABLED = False
+try:
+    from pygpg.config import GPGConfig
+    from pygpg.gpg import GPG
+    GPG_ENABLED = True
+except ImportError:
+    pass
+
 
 from   layman.utils             import encoder
 from   layman.dbbase            import DbBase
 from   layman.version           import VERSION
 from layman.compatibility       import fileopen
+
 
 class RemoteDB(DbBase):
     '''Handles fetching the remote overlay list.'''
@@ -46,6 +54,8 @@ class RemoteDB(DbBase):
 
         self.config = config
         self.output = config['output']
+        self.detached_urls = []
+        self.signed_urls = []
 
         self.proxies = {}
 
@@ -62,20 +72,10 @@ class RemoteDB(DbBase):
         self.urls  = [i.strip()
             for i in config['overlays'].split('\n') if len(i)]
 
-        #pair up the list url and detached sig url
-        d_urls = [i.strip()
-            for i in config['gpg_detached_lists'].split('\n') if len(i)]
-        self.detached_urls = []
-        #for index in range(0, len(d_urls), 2):
-        #    self.detached_urls.append((d_urls[index], d_urls[index+1]))
-        for i in d_urls:
-            u = i.split()
-            self.detached_urls.append((u[0], u[1]))
-
-        self.signed_urls = [i.strip()
-            for i in config['gpg_signed_lists'].split('\n') if len(i)]
-
-        self.output.debug('RemoteDB.__init__(), url lists= \nself.urls: %s\nself.detached_urls: %s\nself.signed_urls: %s' % (str(self.urls), str(self.detached_urls), str(self.signed_urls)), 2)
+        if GPG_ENABLED:
+            self.get_gpg_urls()
+        else:
+            self.output.debug('RemoteDB.__init__(), NOT GPG_ENABLED, bypassing...', 2)
 
         # add up the lists to load for display, etc.
         # unsigned overlay lists
@@ -84,6 +84,8 @@ class RemoteDB(DbBase):
         paths.extend([self.filepath(i[0]) + '.xml' for i in self.detached_urls])
         # single file signed, compressed, clearsigned
         paths.extend([self.filepath(i) + '.xml' for i in self.signed_urls])
+
+        self.output.debug('RemoteDB.__init__(), url lists= \nself.urls: %s\nself.detached_urls: %s\nself.signed_urls: %s' % (str(self.urls), str(self.detached_urls), str(self.signed_urls)), 2)
 
         self.output.debug('RemoteDB.__init__(), paths to load = %s' %str(paths), 2)
 
@@ -396,6 +398,24 @@ class RemoteDB(DbBase):
         if not self.gpg:
             self.gpg = GPG(self.gpg_config)
         self.output.debug("RemoteDB.init_gpg(), initialized :D",2)
+
+    def get_gpg_urls(self):
+        '''Extend paths with gpg signed url listings from the config
+
+        @param paths: list or urls to fetch
+        '''
+        #pair up the list url and detached sig url
+        d_urls = [i.strip()
+            for i in self.config['gpg_detached_lists'].split('\n') if len(i)]
+
+        #for index in range(0, len(d_urls), 2):
+        #    self.detached_urls.append((d_urls[index], d_urls[index+1]))
+        for i in d_urls:
+            u = i.split()
+            self.detached_urls.append((u[0], u[1]))
+
+        self.signed_urls = [i.strip()
+            for i in config['gpg_signed_lists'].split('\n') if len(i)]
 
 
 if __name__ == '__main__':
