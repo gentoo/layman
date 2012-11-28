@@ -12,7 +12,8 @@ try:
     from layman.config import BareConfig
     from layman.output import Message
 except ImportError:
-    sys.stderr.write("!!! Layman API import failed.")
+    sys.stderr.write("!!! Layman API imports failed.")
+    raise
 
 
 
