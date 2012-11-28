@@ -415,7 +415,7 @@ class RemoteDB(DbBase):
             self.detached_urls.append((u[0], u[1]))
 
         self.signed_urls = [i.strip()
-            for i in config['gpg_signed_lists'].split('\n') if len(i)]
+            for i in self.config['gpg_signed_lists'].split('\n') if len(i)]
 
 
 if __name__ == '__main__':
