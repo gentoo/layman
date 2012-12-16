@@ -1,6 +1,20 @@
 CHANGES
 -------
 
+Version 2.0.0 final - Released 2012-12-16
+=========================================
+ - re-released rc5 as 2.0.0 final
+
+
+Version 2.0.0_rc5 - Released 2012-11-19
+=======================================
+ - fix a regression in calling read_config()
+ - fix layman-updater when creating a new make.conf file
+ - fix truncating of long overlay names
+ - remove a mispelled duplicate program file
+ - auto-detect portage's make.conf location
+
+
 Version 2.0.0_rc4 - Released 2012-10-20
 =======================================
  - man page updates, formatting changes
