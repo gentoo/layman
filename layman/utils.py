@@ -214,5 +214,5 @@ def create_overlay_dict(**kwargs):
 #-------------------------------------------------------------------------------
 
 if __name__ == '__main__':
-    import doctest, sys
+    import doctest
     doctest.testmod(sys.modules[__name__])
