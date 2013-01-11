@@ -87,6 +87,7 @@ class DB(DbBase):
         >>> from layman.config import OptionConfig
         >>> myoptions = {'installed' :
         ...           here + '/tests/testfiles/global-overlays.xml',
+        ...           'local_list': here + '/tests/testfiles/overlays.xml',
         ...           'make_conf' : write2,
         ...           'nocheck'    : 'yes',
         ...           'storage'   : tmpdir}
@@ -167,6 +168,7 @@ class DB(DbBase):
         >>> from layman.config import OptionConfig
         >>> myoptions = {'installed' :
         ...           here + '/tests/testfiles/global-overlays.xml',
+        ...           'local_list': here + '/tests/testfiles/overlays.xml',
         ...           'make_conf' : write2,
         ...           'nocheck'    : 'yes',
         ...           'storage'   : tmpdir}
