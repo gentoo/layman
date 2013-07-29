@@ -80,7 +80,7 @@ class BareConfig(object):
 
         >>> a = BareConfig()
         >>> a['overlays']
-        'http://www.gentoo.org/proj/en/overlays/repositories.xml'
+        'https://api.gentoo.org/overlays/repositories.xml'
         >>> sorted(a.keys())
         ['bzr_addopts', 'bzr_command', 'bzr_postsync', 'bzr_syncopts', 'cache', 'config', 'configdir', 'custom_news_func', 'custom_news_pkg', 'cvs_addopts', 'cvs_command', 'cvs_postsync', 'cvs_syncopts', 'darcs_addopts', 'darcs_command', 'darcs_postsync', 'darcs_syncopts', 'g-common_command', 'g-common_generateopts', 'g-common_postsync', 'g-common_syncopts', 'git_addopts', 'git_command', 'git_email', 'git_postsync', 'git_syncopts', 'git_user', 'installed', 'local_list', 'make_conf', 'mercurial_addopts', 'mercurial_command', 'mercurial_postsync', 'mercurial_syncopts', 'news_reporter', 'nocheck', 'nocolor', 'output', 'overlay_defs', 'overlays', 'proxy', 'quiet', 'quietness', 'rsync_command', 'rsync_postsync', 'rsync_syncopts', 'stderr', 'stdin', 'stdout', 'storage', 'svn_addopts', 'svn_command', 'svn_postsync', 'svn_syncopts', 't/f_options', 'tar_command', 'tar_postsync', 'umask', 'verbose', 'width']
         >>> a.get_option('nocheck')
@@ -105,10 +105,10 @@ class BareConfig(object):
                     'umask'     : '0022',
                     'news_reporter': 'portage',
                     'custom_news_pkg': '',
-                    'gpg_detached_lists': '',
+                    'gpg_detached_lists': 'https://api.gentoo.org/overlays/repositories.xml https://api.gentoo.org/overlays/repositories.xml.asc',
                     'gpg_signed_lists': '',
                     'overlays'  :
-                    'http://www.gentoo.org/proj/en/overlays/repositories.xml',
+                    'https://api.gentoo.org/overlays/repositories.xml',
                     'overlay_defs': '%(configdir)s/overlays',
                     'bzr_command': path([self.root, EPREFIX,'/usr/bin/bzr']),
                     'cvs_command': path([self.root, EPREFIX,'/usr/bin/cvs']),
