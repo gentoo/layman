@@ -149,6 +149,13 @@ class Main(object):
             " %s" % str(self.config.keys()), 6)
         # blank newline  -- no " *"
         self.output.notice('')
+
+        # check for and handle setup-help option
+        if self.config.get_option('setup_help'):
+            from layman.updater import Main as Updater
+            updater = Updater(config=self.config, output=self.output)
+            updater.print_instructions()
+
         # Make fetching the overlay list a default action
         if not 'nofetch' in self.config.keys():
             # Actions that implicitely call the fetch operation before

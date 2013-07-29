@@ -82,6 +82,12 @@ class ArgsParser(BareConfig):
             usage   = _USAGE,
             version = VERSION)
 
+        self.parser.add_option('-H',
+                        '--setup_help',
+                        action = 'store_true',
+                        help = 'Print the NEW INSTALL help messages.')
+
+
         #-----------------------------------------------------------------
         # Main Options
 
@@ -282,6 +288,8 @@ class ArgsParser(BareConfig):
             self.defaults['overlay_defs'] = self.options.__dict__['overlay_defs']
             self.output.debug('ARGSPARSER: Got overlay_defs location at ' + \
                 self.defaults['overlay_defs'], 8)
+
+        self._options['setup_help'] = self.options.__dict__['setup_help']
 
         # Now parse the config file
         self.output.debug('ARGSPARSER: Reading config file at ' + \

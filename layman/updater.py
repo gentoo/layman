@@ -36,20 +36,23 @@ def rename_db(config, newname, output):
 
 class Main(object):
 
-    def __init__(self, root=None):
+    def __init__(self, root=None, config=None, output=None):
         self.parser = None
-        self.output = None
-        self.config = None
+        self.output = output
+        self.config = config
         self.args = None
         self.root = root
 
     def args_parser(self):
         self.parser = argparse.ArgumentParser(prog='layman-updater',
             description="Layman's update script")
+        self.parser.add_argument("-H", '--setup_help', action='store_true',
+            help = 'Print the NEW INSTALL help messages.')
         self.parser.add_argument("-c", "--config",
             help='the path to config file')
         self.parser.add_argument('--version', action='version',
             version='%(prog)s ' + VERSION)
+
         self.args = self.parser.parse_args()
 
     def __call__(self):
@@ -64,7 +67,7 @@ class Main(object):
         # fix the config path
         defaults = self.config.get_defaults()
         defaults['config'] = defaults['config'] \
-                % {'configdir': defaults['configdir']}
+            % {'configdir': defaults['configdir']}
         self.config.update_defaults({'config': defaults['config']})
 
         self.config.read_config(defaults)
@@ -73,7 +76,9 @@ class Main(object):
 
         self.output = layman_inst.output
 
-        if not self.check_is_new():
+        if self.args.setup_help:
+            self.print_instructions()
+        elif not self.check_is_new():
             self.rename_check()
 
 
