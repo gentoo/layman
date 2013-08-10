@@ -28,8 +28,28 @@ __version__ = "$Id: db.py 309 2007-04-09 16:23:38Z wrobel $"
 
 import os, os.path
 import sys
-import urllib2
 import hashlib
+
+import requests
+from requests.exceptions import SSLError
+
+VERIFY_SSL = False
+# py3.2
+if sys.hexversion >= 0x30200f0:
+    VERIFY_SSL = True
+else:
+    try: # import and enable SNI support for py2
+        from requests.packages.urllib3.contrib import pyopenssl
+        pyopenssl.inject_into_urllib3()
+        VERIFY_SSL = True
+        VERIFY_MSGS = ["Successfully enabled ssl certificate verification."]
+    except ImportError as e:
+        VERIFY_MSGS = [
+            "Failed to import and inject pyopenssl/SNI support into urllib3",
+            "Disabling certificate verification",
+            "Error was:" + e
+        ]
+        VERIFY_SSL = False
 
 
 GPG_ENABLED = False
@@ -59,18 +79,18 @@ class RemoteDB(DbBase):
 
         self.proxies = {}
 
-        if config['proxy']:
-            self.proxies['http'] = config['proxy']
-        elif os.getenv('http_proxy'):
-            self.proxies['http'] = os.getenv('http_proxy')
-
-        if self.proxies:
-            proxy_handler = urllib2.ProxyHandler(self.proxies)
-            opener = urllib2.build_opener(proxy_handler)
-            urllib2.install_opener(opener)
+        for proxy in ['http_proxy', 'https_proxy']:
+            if config[proxy]:
+                self.proxies[proxy.split('_')[0]] = config[proxy]
+            elif os.getenv(proxy):
+                self.proxies[proxy.split('_')[0]] = os.getenv(proxy)
 
         self.urls  = [i.strip()
             for i in config['overlays'].split('\n') if len(i)]
+
+        if VERIFY_MSGS:
+            for msg in VERIFY_MSGS:
+                self.output.debug(msg, 2)
 
         if GPG_ENABLED:
             self.get_gpg_urls()
@@ -158,8 +178,10 @@ class RemoteDB(DbBase):
                 self.output.debug("RemoteDB.cache() url = %s is a tuple=%s"
                     %(str(url), str(isinstance(url, tuple))),2)
                 filepath, mpath, tpath, sig = self._paths(url)
-
-                if sig:
+                if 'file://' in url:
+                    success, olist, timestamp = self._fetch_file(
+                        url, mpath, tpath)
+                elif sig:
                     success, olist, timestamp = self._fetch_url(
                         url[0], mpath, tpath)
                 else:
@@ -234,64 +256,105 @@ class RemoteDB(DbBase):
         return base + '_' + hashlib.md5(url_encoded).hexdigest()
 
 
-    def _fetch_url(self, url, mpath, tpath=None):
-        self.output.debug('RemoteDB._fetch_url() url = %s' % url, 2)
+    def _fetch_file(self, url, mpath, tpath=None):
+        self.output.debug('RemoteDB._fetch_file() url = %s' % url, 2)
         # check when the cache was last updated
         # and don't re-fetch it unless it has changed
-        request = urllib2.Request(url)
-        opener = urllib2.build_opener()
-        opener.addheaders = [('Accept-Charset', 'utf-8'),
-            ('User-Agent', 'Layman-' + VERSION)]
-        #opener.addheaders[('User-Agent', 'Layman-' + VERSION)]
+
+        filepath = url.replace('file://','')
+        url_timestamp = None
+        timestamp = ''
 
         if tpath and os.path.exists(tpath):
             with fileopen(tpath,'r') as previous:
                 timestamp = previous.read()
-            request.add_header('If-Modified-Since', timestamp)
 
         if not self.check_path([mpath]):
             return (False, '', '')
 
         try:
-            self.output.debug('RemoteDB._fetch_url() connecting to opener', 2)
-            connection = opener.open(request)
+            url_timestamp = os.stat(filepath).st_mtime
+            if url_timestamp != timestamp:
+                self.output.debug('RemoteDB._fetch_file() opening file', 2)
+                # Fetch the remote list
+                with open(filepath) as connection:
+                    olist = connection.read()
+            else:
+                self.output.info('Remote list already up to date: %s'
+                    % url, 4)
+                self.output.info('Last-modified: %s' % timestamp, 4)
+        except IOError, error:
+            self.output.error('RemoteDB._fetch_file(); Failed to update the '
+                'overlay list from: %s\nIOError was:%s\n'
+                % (url, str(error)))
+            return (False, '', '')
+        else:
+            quieter = 1
+            self.output.info('Fetching new list... %s' % url, 4 + quieter)
+            if url_timestamp is not None:
+                self.output.info('Last-modified: %s' % url_timestamp, 4 + quieter)
+            self.output.debug('RemoteDB._fetch_url(), olist type = %s' %str(type(olist)),2)
+
+            return (True, olist, url_timestamp)
+
+
+    def _fetch_url(self, url, mpath, tpath=None):
+        headers = {'Accept-Charset': 'utf-8',
+            'User-Agent': 'Layman-' + VERSION}
+
+        if tpath and os.path.exists(tpath):
+            with fileopen(tpath,'r') as previous:
+                timestamp = previous.read()
+            headers['If-Modified-Since'] = timestamp
+            self.output.info('Current-modified: %s' % timestamp, 4)
+
+        verify = 'https' in url and VERIFY_SSL
+        self.output.debug("Enabled ssl certificate verification: %s, for: %s"
+            %(str(verify), url), 3)
+
+        if not self.check_path([mpath]):
+            return (False, '', '')
+        self.output.debug('RemoteDB._fetch_url(); headers = %s' %str(headers))
+        self.output.debug('RemoteDB._fetch_url(); connecting to opener', 2)
+        try:
+            connection = requests.get(
+                url,
+                headers=headers,
+                verify=verify,
+                proxies=self.proxies,
+                )
+        except SSLError, error:
+            self.output.error('RemoteDB._fetch_url(); Failed to update the '
+                'overlay list from: %s\nSSLError was:%s\n'
+                % (url, str(error)))
+        except Exception as error:
+            self.output.error('RemoteDB._fetch_url(); Failed to update the '
+                'overlay list from: %s\nError was:%s\n'
+                % (url, str(error)))
             # py2, py3 compatibility, since only py2 returns keys as lower()
-            headers = dict((x.lower(), x) for x in connection.headers.keys())
+        headers = dict((x.lower(), x) for x in list(connection.headers))
+        self.output.info('HEADERS = %s' %str(connection.headers), 4)
+        self.output.debug('Status_code = %i' % connection.status_code)
+        if connection.status_code in [304]:
+            self.output.info('Remote list already up to date: %s'
+                % url, 4)
+            self.output.info('Last-modified: %s' % timestamp, 4)
+        elif connection.status_code not in [200]:
+            self.output.error('RemoteDB._fetch_url(); HTTP Status-Code was:\n'
+                'url: %s\n%s'
+                % (url, str(connection.status_code)))
+
+        if connection.status_code in [200]:
+            self.output.info('Remote new list downloaded for: %s'
+                % url, 4)
             if 'last-modified' in headers:
                 timestamp = connection.headers[headers['last-modified']]
             elif 'date' in headers:
                 timestamp = connection.headers[headers['date']]
             else:
                 timestamp = None
-        except urllib2.HTTPError, e:
-            if e.code == 304:
-                self.output.info('Remote list already up to date: %s'
-                    % url, 4)
-                self.output.info('Last-modified: %s' % timestamp, 4)
-            else:
-                self.output.error('RemoteDB.cache(); HTTPError was:\n'
-                    'url: %s\n%s'
-                    % (url, str(e)))
-                return (False, '', '')
-            return (False, '', '')
-        except IOError, error:
-            self.output.error('RemoteDB.cache(); Failed to update the '
-                'overlay list from: %s\nIOError was:%s\n'
-                % (url, str(error)))
-            return (False, '', '')
-        else:
-            if url.startswith('file://'):
-                quieter = 1
-            else:
-                quieter = 0
-            self.output.info('Fetching new list... %s' % url, 4 + quieter)
-            if timestamp is not None:
-                self.output.info('Last-modified: %s' % timestamp, 4 + quieter)
-            # Fetch the remote list
-            olist = connection.read()
-            self.output.debug('RemoteDB._fetch_url(), olist type = %s' %str(type(olist)),2)
-
-            return (True, olist, timestamp)
+            return (True, connection.content, timestamp)
+        return (False, '', '')
 
 
     def check_path(self, paths, hint=True):
