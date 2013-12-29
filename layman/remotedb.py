@@ -234,15 +234,15 @@ class RemoteDB(DbBase):
 
     @staticmethod
     def _create_storage(mpath):
-            # Create our storage directory if it is missing
-            if not os.path.exists(os.path.dirname(mpath)):
-                try:
-                    os.makedirs(os.path.dirname(mpath))
-                except OSError, error:
-                    raise OSError('Failed to create layman storage direct'
-                                  + 'ory ' + os.path.dirname(mpath) + '\n'
-                                  + 'Error was:' + str(error))
-            return
+        # Create our storage directory if it is missing
+        if not os.path.exists(os.path.dirname(mpath)):
+            try:
+                os.makedirs(os.path.dirname(mpath))
+            except OSError, error:
+                raise OSError('Failed to create layman storage directory ' +
+                              os.path.dirname(mpath) + '\n' +
+                              'Error was:' + str(error))
+        return
 
 
     def filepath(self, url):
