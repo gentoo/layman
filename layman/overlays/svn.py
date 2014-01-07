@@ -131,27 +131,19 @@ class SvnOverlay(OverlaySource):
         return
 
     def check_upgrade(self, target):
-        '''Code to check the installed svn version and
-        run "svn upgrade" if needed.'''
+        '''Code to run "svn upgrade" it only takes longer
+        than checking if it does need an upgrade if it is
+        actually needed.
+        '''
         file_to_run = _resolve_command(self.command(), self.output.error)[1]
-        args = file_to_run + ' -q --version'
-        pipe = Popen(args, shell=True, stdout=PIPE)
+        args = " ".join([file_to_run, " upgrade", target])
+        pipe = Popen(args, shell=True, stdout=PIPE, stderr=PIPE)
         if pipe:
-            self.output.debug("SVN: check_upgrade()... have a valid pipe", 4)
-            version = pipe.stdout.readline().strip('\n')
-            self.output.debug("SVN: check_upgrade()... svn version found: %s"
-                % version, 4)
+            self.output.debug("SVN: check_upgrade()... have a valid pipe, "
+                "running upgrade", 4)
+            upgrade_output = pipe.stdout.readline().strip('\n')
+            if upgrade_output:
+                self.output.debug("  output: %s" % upgrade_output, 4)
+            self.output.debug("SVN: check_upgrade()... svn upgrade done", 4)
             pipe.terminate()
-            if version >= '1.7.0':
-                self.output.debug("SVN: check_upgrade()... svn upgrade maybe",
-                    4)
-                _path = path([target,'.svn/wc.db'])
-                if not os.path.exists(_path):
-                    self.output.info("An svn upgrade needs to be run...",
-                        2)
-                    args = ["upgrade"]
-                    return self.run_command(self.command(), args,
-                        cwd=target, cmd="svn upgrade")
-                return
-        else:
-            return
+        return
