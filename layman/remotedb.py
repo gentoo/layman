@@ -95,7 +95,8 @@ class RemoteDB(DbBase):
         if GPG_ENABLED:
             self.get_gpg_urls()
         else:
-            self.output.debug('RemoteDB.__init__(), NOT GPG_ENABLED, bypassing...', 2)
+            self.output.debug('RemoteDB.__init__(), NOT GPG_ENABLED, '
+                'bypassing...', 2)
 
         # add up the lists to load for display, etc.
         # unsigned overlay lists
@@ -105,9 +106,13 @@ class RemoteDB(DbBase):
         # single file signed, compressed, clearsigned
         paths.extend([self.filepath(i) + '.xml' for i in self.signed_urls])
 
-        self.output.debug('RemoteDB.__init__(), url lists= \nself.urls: %s\nself.detached_urls: %s\nself.signed_urls: %s' % (str(self.urls), str(self.detached_urls), str(self.signed_urls)), 2)
+        self.output.debug('RemoteDB.__init__(), url lists= \nself.urls: '
+            '%s\nself.detached_urls: %s\nself.signed_urls: %s'
+            % (str(self.urls), str(self.detached_urls), str(self.signed_urls)),
+            2)
 
-        self.output.debug('RemoteDB.__init__(), paths to load = %s' %str(paths), 2)
+        self.output.debug('RemoteDB.__init__(), paths to load = %s' %str(paths),
+            2)
 
         if config['nocheck']:
             ignore = 2
@@ -167,7 +172,7 @@ class RemoteDB(DbBase):
         url_lists = [self.urls, self.detached_urls, self.signed_urls]
         need_gpg = [False, True, True]
         for index in range(0, 3):
-            self.output.debug("RemoteDB.cache() index = %s" %str(index),2)
+            self.output.debug("RemoteDB.cache() index = %s" %str(index), 2)
             urls = url_lists[index]
             if need_gpg[index] and len(urls) and self.gpg is None:
                 #initialize our gpg instance
@@ -176,7 +181,7 @@ class RemoteDB(DbBase):
             for url in urls:
                 sig = ''
                 self.output.debug("RemoteDB.cache() url = %s is a tuple=%s"
-                    %(str(url), str(isinstance(url, tuple))),2)
+                    %(str(url), str(isinstance(url, tuple))), 2)
                 filepath, mpath, tpath, sig = self._paths(url)
                 if 'file://' in url:
                     success, olist, timestamp = self._fetch_file(
@@ -191,15 +196,17 @@ class RemoteDB(DbBase):
                     #succeeded = False
                     continue
 
-                self.output.debug("RemoteDB.cache() len(olist) = %s" %str(len(olist)),2)
+                self.output.debug("RemoteDB.cache() len(olist) = %s"
+                    % str(len(olist)), 2)
                 # GPG handling
                 if need_gpg[index]:
                     olist, verified = self.verify_gpg(url, sig, olist)
                     if not verified:
                         self.output.debug("RemoteDB.cache() gpg returned "
-                            "verified = %s" %str(verified),2)
+                            "verified = %s" %str(verified), 2)
                         succeeded = False
-                        filename = os.path.join(self.config['storage'], "Failed-to-verify-sig")
+                        filename = os.path.join(self.config['storage'],
+                                                "Failed-to-verify-sig")
                         self.write_cache(olist, filename)
                         continue
 
@@ -214,13 +221,13 @@ class RemoteDB(DbBase):
                 has_updates = max(has_updates,
                     self.write_cache(olist, mpath, tpath, timestamp))
 
-            self.output.debug("RemoteDB.cache() self.urls:  has_updates, succeeded"
-                " %s, %s" % (str(has_updates), str(succeeded)), 4)
+            self.output.debug("RemoteDB.cache() self.urls:  has_updates, "
+                "succeeded %s, %s" % (str(has_updates), str(succeeded)), 4)
         return has_updates, succeeded
 
 
     def _paths(self, url):
-        self.output.debug("RemoteDB._paths(), url is tuple %s" % str(url),2)
+        self.output.debug("RemoteDB._paths(), url is tuple %s" % str(url), 2)
         if isinstance(url, tuple):
             filepath = self.filepath(url[0])
             sig = filepath + '.sig'
@@ -292,8 +299,10 @@ class RemoteDB(DbBase):
             quieter = 1
             self.output.info('Fetching new list... %s' % url, 4 + quieter)
             if url_timestamp is not None:
-                self.output.info('Last-modified: %s' % url_timestamp, 4 + quieter)
-            self.output.debug('RemoteDB._fetch_url(), olist type = %s' %str(type(olist)),2)
+                self.output.info('Last-modified: %s' % url_timestamp,
+                    4 + quieter)
+            self.output.debug('RemoteDB._fetch_url(), olist type = %s'
+                % str(type(olist)),2)
 
             return (True, olist, url_timestamp)
 
@@ -314,7 +323,8 @@ class RemoteDB(DbBase):
 
         if not self.check_path([mpath]):
             return (False, '', '')
-        self.output.debug('RemoteDB._fetch_url(); headers = %s' %str(headers))
+        self.output.debug('RemoteDB._fetch_url(); headers = %s'
+            % str(headers), 2)
         self.output.debug('RemoteDB._fetch_url(); connecting to opener', 2)
         try:
             connection = requests.get(
@@ -334,7 +344,7 @@ class RemoteDB(DbBase):
             # py2, py3 compatibility, since only py2 returns keys as lower()
         headers = dict((x.lower(), x) for x in list(connection.headers))
         self.output.info('HEADERS = %s' %str(connection.headers), 4)
-        self.output.debug('Status_code = %i' % connection.status_code)
+        self.output.debug('Status_code = %i' % connection.status_code, 2)
         if connection.status_code in [304]:
             self.output.info('Remote list already up to date: %s'
                 % url, 4)
@@ -379,8 +389,9 @@ class RemoteDB(DbBase):
         try:
             self.read(olist, origin=url)
         except Exception, error:
-            self.output.debug("RemoteDB._check_download(), url=%s \nolist:\n" % url,2)
-            self.output.debug(olist,2)
+            self.output.debug("RemoteDB._check_download(), url=%s \nolist:\n"
+                % url,2)
+            self.output.debug(olist, 2)
             raise IOError('Failed to parse the overlays list fetched fr'
                           'om ' + url + '\nThis means that the download'
                           'ed file is somehow corrupt or there was a pr'
@@ -434,7 +445,7 @@ class RemoteDB(DbBase):
             olist = gpg_result.output
         # verify and report
         self.output.debug("gpg_result, verified=%s, len(olist)=%s"
-            % (gpg_result.verified[0], str(len(olist))),1)
+            % (gpg_result.verified[0], str(len(olist))), 1)
         if gpg_result.verified[0]:
             self.output.info("GPG verification succeeded for gpg-signed url.", 4)
             self.output.info('\tSignature result:' + str(gpg_result.verified), 4)
@@ -446,7 +457,7 @@ class RemoteDB(DbBase):
 
 
     def dl_sig(self, url, sig):
-        self.output.debug("RemoteDB.dl_sig() url=%s, sig=%s" % (url, sig),2)
+        self.output.debug("RemoteDB.dl_sig() url=%s, sig=%s" % (url, sig), 2)
         success, newsig, timestamp = self._fetch_url(url, sig)
         if success:
             success = self.write_cache(newsig, sig)
@@ -454,13 +465,13 @@ class RemoteDB(DbBase):
 
 
     def init_gpg(self):
-        self.output.debug("RemoteDB.init_gpg(), initializing",2)
+        self.output.debug("RemoteDB.init_gpg(), initializing", 2)
         if not self.gpg_config:
             self.gpg_config = GPGConfig()
 
         if not self.gpg:
             self.gpg = GPG(self.gpg_config)
-        self.output.debug("RemoteDB.init_gpg(), initialized :D",2)
+        self.output.debug("RemoteDB.init_gpg(), initialized :D", 2)
 
     def get_gpg_urls(self):
         '''Extend paths with gpg signed url listings from the config
