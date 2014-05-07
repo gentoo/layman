@@ -228,6 +228,7 @@ class BareConfig(object):
     def _set_quietness(self, value):
             self._options['output'].set_info_level(value)
             self._options['output'].set_warn_level(value)
+            self._options['output'].set_note_level(value)
 
     def __getitem__(self, key):
         return self._get_(key)

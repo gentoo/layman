@@ -12,7 +12,7 @@ __version__ = "0.1"
 
 import sys
 
-from layman.constants import codes, INFO_LEVEL, WARN_LEVEL, DEBUG_LEVEL, OFF
+from layman.constants import codes, INFO_LEVEL, WARN_LEVEL, NOTE_LEVEL, DEBUG_LEVEL, OFF
 from layman.compatibility import encode
 
 
@@ -25,6 +25,7 @@ class MessageBase(object):
                  err = sys.stderr,
                  info_level = INFO_LEVEL,
                  warn_level = WARN_LEVEL,
+                 note_level = NOTE_LEVEL,
                  col = True,
                  error_callback=None
                  ):
@@ -45,6 +46,9 @@ class MessageBase(object):
 
         # The higher the level the more information you will get
         self.info_lev = info_level
+
+        # The higher the level the more information you will get
+        self.note_lev = note_level
 
         # Should the output be colored?
         self.color_func = None
@@ -81,6 +85,10 @@ class MessageBase(object):
         self.warn_lev = warn_level
 
 
+    def set_note_level(self, note_level = NOTE_LEVEL):
+        self.note_lev = note_level
+
+
     def set_debug_level(self, debugging_level = DEBUG_LEVEL):
         self.debug_lev = debugging_level
 
@@ -103,12 +111,13 @@ class Message(MessageBase):
                  err = sys.stderr,
                  info_level = INFO_LEVEL,
                  warn_level = WARN_LEVEL,
+                 note_level = NOTE_LEVEL,
                  col = True,
                  error_callback = None
                 ):
 
         MessageBase.__init__(self, out, err, info_level, warn_level,
-            col, error_callback)
+            note_level, col, error_callback)
 
 
     ## Output Functions
@@ -127,7 +136,11 @@ class Message(MessageBase):
             print  >> self.std_out, self.color_func('yellow', 'DEBUG: ') + i
 
 
-    def notice (self, note):
+    def notice (self, note, level = NOTE_LEVEL):
+
+        if level > self.note_lev:
+            return
+
         print >> self.std_out, note
 
 

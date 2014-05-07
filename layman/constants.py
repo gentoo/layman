@@ -48,6 +48,7 @@ NOT_SUPPORTED_MSG = '*** You are lacking the necessary tools' +\
 OFF = 0
 WARN_LEVEL = 4
 INFO_LEVEL = 4
+NOTE_LEVEL = 4
 DEBUG_LEVEL = 4
 DEBUG_VERBOSITY = 2
 
