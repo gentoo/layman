@@ -199,7 +199,7 @@ def create_overlay_dict(**kwargs):
         'feeds': [],
         'sources': [('','','')],
         'priority': 50,
-        'quality': u'experimental',
+        'quality': 'experimental',
         'status': '',
         'official': False,
         'supported': False,

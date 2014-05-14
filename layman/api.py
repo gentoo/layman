@@ -430,21 +430,21 @@ class LaymanAPI(object):
         >>> b.close()
 
         >>> api.get_available()
-        [u'wrobel', u'wrobel-stable']
-        >>> all = api.get_all_info(u'wrobel')
+        ['wrobel', 'wrobel-stable']
+        >>> all = api.get_all_info('wrobel')
         >>> info = all['wrobel']
         >>> info['status']
-        u'official'
+        'official'
         >>> info['description']
-        u'Test'
+        'Test'
         >>> info['sources']
-        [(u'https://overlays.gentoo.org/svn/dev/wrobel', 'Subversion', None)]
+        [('https://overlays.gentoo.org/svn/dev/wrobel', 'Subversion', None)]
 
-        #{u'wrobel': {'status': u'official',
-        #'owner_name': None, 'description': u'Test',
+        #{'wrobel': {'status': 'official',
+        #'owner_name': None, 'description': 'Test',
         #'src_uris': <generator object source_uris at 0x167c3c0>,
-        #'owner_email': u'nobody@gentoo.org',
-        #'quality': u'experimental', 'name': u'wrobel', 'supported': True,
+        #'owner_email': 'nobody@gentoo.org',
+        #'quality': 'experimental', 'name': 'wrobel', 'supported': True,
         #'src_types': <generator object source_types at 0x167c370>,
         #'official': True,
         #'priority': 10, 'feeds': [], 'irc': None, 'homepage': None}}

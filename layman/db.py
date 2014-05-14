@@ -112,11 +112,11 @@ class DB(DbBase):
         # * Running command "/usr/bin/rsync -rlptDvz --progress --delete --delete-after --timeout=180 --exclude="distfiles/*" --exclude="local/*" --exclude="packages/*" "rsync://gunnarwrobel.de/wrobel-stable/*" "/tmp/file.../wrobel-stable""...
         # >>> c = DbBase([write, ], dict())
         # >>> c.overlays.keys()
-        # [u'wrobel-stable']
+        # ['wrobel-stable']
 
         # >>> m = MakeConf(config, b.overlays)
         # >>> [i.name for i in m.overlays] #doctest: +ELLIPSIS
-        # [u'wrobel-stable']
+        # ['wrobel-stable']
 
         # >>> os.unlink(write)
         >>> os.unlink(write2)
@@ -196,16 +196,16 @@ class DB(DbBase):
         # * Running command "/usr/bin/svn co "https://overlays.gentoo.org/svn/dev/wrobel/" "/tmp/file.../wrobel""...
         # >>> c = DbBase([write, ], dict())
         # >>> c.overlays.keys()
-        # [u'wrobel', u'wrobel-stable']
+        # ['wrobel', 'wrobel-stable']
 
         # >>> b.delete(b.select('wrobel'))
         # >>> c = DbBase([write, ], dict())
         # >>> c.overlays.keys()
-        # [u'wrobel-stable']
+        # ['wrobel-stable']
 
         # >>> m = MakeConf(config, b.overlays)
         # >>> [i.name for i in m.overlays] #doctest: +ELLIPSIS
-        # [u'wrobel-stable']
+        # ['wrobel-stable']
 
         # >>> os.unlink(write)
         >>> os.unlink(write2)

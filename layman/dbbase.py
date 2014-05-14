@@ -39,6 +39,14 @@ from   layman.utils              import indent
 from   layman.compatibility      import fileopen
 from   layman.overlays.overlay   import Overlay
 
+
+#py3.2+
+if sys.hexversion >= 0x30200f0:
+    _UNICODE = 'unicode'
+else:
+    _UNICODE = 'UTF-8'
+
+
 #===============================================================================
 #
 # Class UnknownOverlayException
@@ -151,10 +159,10 @@ class DbBase(object):
         >>> config = {'output': output, 'svn_command': '/usr/bin/svn', 'rsync_command':'/usr/bin/rsync'}
         >>> a = DbBase(config, [here + '/tests/testfiles/global-overlays.xml', ])
         >>> a.overlays.keys()
-        [u'wrobel', u'wrobel-stable']
+        ['wrobel', 'wrobel-stable']
 
         >>> list(a.overlays['wrobel-stable'].source_uris())
-        [u'rsync://gunnarwrobel.de/wrobel-stable']
+        ['rsync://gunnarwrobel.de/wrobel-stable']
         '''
         try:
             document = ET.fromstring(text)
@@ -216,22 +224,19 @@ class DbBase(object):
         >>> b.write(write)
         >>> c = DbBase({"output": Message() }, [write,])
         >>> c.overlays.keys()
-        [u'wrobel-stable']
+        ['wrobel-stable']
 
         >>> os.unlink(write)
         >>> os.rmdir(tmpdir)
         '''
 
-        tree = ET.Element('repositories', version="1.0")
+        tree = ET.Element('repositories', version="1.0", encoding="unicode")
         tree[:] = [e.to_xml() for e in self.overlays.values()]
         indent(tree)
         tree = ET.ElementTree(tree)
         try:
             f = fileopen(path, 'w')
-            f.write("""\
-<?xml version="1.0" encoding="UTF-8"?>
-""")
-            tree.write(f, encoding='utf-8')
+            tree.write(f, encoding=_UNICODE)
             f.close()
         except Exception as error:
             raise Exception('Failed to write to local overlays file: '
@@ -247,7 +252,7 @@ class DbBase(object):
         >>> config = {'output': output, 'svn_command': '/usr/bin/svn', 'rsync_command':'/usr/bin/rsync'}
         >>> a = DbBase(config, [here + '/tests/testfiles/global-overlays.xml', ])
         >>> list(a.select('wrobel-stable').source_uris())
-        [u'rsync://gunnarwrobel.de/wrobel-stable']
+        ['rsync://gunnarwrobel.de/wrobel-stable']
         '''
         self.output.debug("DbBase.select(), overlay = %s" % overlay, 5)
         if not overlay in self.overlays.keys():
