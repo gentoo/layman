@@ -16,6 +16,11 @@ import sys
 from layman.constants import codes, INFO_LEVEL, WARN_LEVEL, NOTE_LEVEL, DEBUG_LEVEL, OFF
 from layman.compatibility import encode
 
+# py3.2
+if sys.hexversion >= 0x30200f0:
+    from io import IOBase as BUILTIN_FILE_TYPE
+else:
+    BUILTIN_FILE_TYPE=file
 
 class MessageBase(object):
     """Base Message class helper functions and variables
@@ -31,13 +36,13 @@ class MessageBase(object):
                  error_callback=None
                  ):
         # Where should the error output go? This can also be a file
-        if isinstance(err, file):
+        if isinstance(err, BUILTIN_FILE_TYPE):
             self.error_out = err
         else:
             raise Exception("MessageBase: input parameter 'err' must be of type: file")
 
         # Where should the normal output go? This can also be a file
-        if isinstance(out, file):
+        if isinstance(out, BUILTIN_FILE_TYPE):
             self.std_out = out
         else:
             raise Exception("MessageBase: input parameter 'out' must be of type: file")
