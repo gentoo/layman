@@ -52,16 +52,16 @@ class MakeConf:
     >>> a.path = write
     >>> a.add(b.overlays['wrobel-stable'])
     >>> [i.name for i in a.overlays]
-    [u'wrobel-stable', u'wrobel-stable']
+    ['wrobel-stable', 'wrobel-stable']
     >>> a.add(b.overlays['wrobel'])
     >>> [i.name for i in a.overlays]
-    [u'wrobel', u'wrobel-stable', u'wrobel-stable']
+    ['wrobel', 'wrobel-stable', 'wrobel-stable']
     >>> a.delete(b.overlays['wrobel-stable'])
     >>> [i.name for i in a.overlays]
-    [u'wrobel']
+    ['wrobel']
     >>> a.add(b.overlays['wrobel-stable'])
     >>> [i.name for i in a.overlays]
-    [u'wrobel', u'wrobel-stable']
+    ['wrobel', 'wrobel-stable']
     >>> a.delete(b.overlays['wrobel'])
     >>> n_md5 = str(hashlib.md5(open(write).read()).hexdigest())
     >>> o_md5 == n_md5
@@ -107,9 +107,9 @@ class MakeConf:
         >>> config['make_conf'] = write
         >>> b = MakeConf(config, c.overlays)
         >>> [i.name for i in b.overlays]
-        [u'wrobel', u'wrobel-stable']
+        ['wrobel', 'wrobel-stable']
         >>> b.extra
-        [u'/usr/local/portage/ebuilds/testing', u'/usr/local/portage/ebuilds/stable', u'/usr/local/portage/kolab2', u'/usr/local/portage/gentoo-webapps-overlay/experimental', u'/usr/local/portage/gentoo-webapps-overlay/production-ready']
+        ['/usr/local/portage/ebuilds/testing', '/usr/local/portage/ebuilds/stable', '/usr/local/portage/kolab2', '/usr/local/portage/gentoo-webapps-overlay/experimental', '/usr/local/portage/gentoo-webapps-overlay/production-ready']
 
         >>> os.unlink(write)
         >>> import shutil
@@ -141,7 +141,7 @@ class MakeConf:
         >>> [i.name for i in b.overlays]
         []
         >>> b.extra
-        [u'/usr/local/portage/ebuilds/testing', u'/usr/local/portage/ebuilds/stable', u'/usr/local/portage/kolab2', u'/usr/local/portage/gentoo-webapps-overlay/experimental', u'/usr/local/portage/gentoo-webapps-overlay/production-ready']
+        ['/usr/local/portage/ebuilds/testing', '/usr/local/portage/ebuilds/stable', '/usr/local/portage/kolab2', '/usr/local/portage/gentoo-webapps-overlay/experimental', '/usr/local/portage/gentoo-webapps-overlay/production-ready']
 
         >>> os.unlink(write)
         >>> import shutil
@@ -166,9 +166,9 @@ class MakeConf:
         >>> c = DB(config)
         >>> a = MakeConf(config, c.overlays)
         >>> [i.name for i in a.overlays]
-        [u'wrobel-stable']
+        ['wrobel-stable']
         >>> a.extra
-        [u'/usr/local/portage/ebuilds/testing', u'/usr/local/portage/ebuilds/stable', u'/usr/local/portage/kolab2', u'/usr/local/portage/gentoo-webapps-overlay/experimental', u'/usr/local/portage/gentoo-webapps-overlay/production-ready']
+        ['/usr/local/portage/ebuilds/testing', '/usr/local/portage/ebuilds/stable', '/usr/local/portage/kolab2', '/usr/local/portage/gentoo-webapps-overlay/experimental', '/usr/local/portage/gentoo-webapps-overlay/production-ready']
         '''
         if os.path.isfile(self.path):
             self.content()
@@ -232,9 +232,9 @@ class MakeConf:
         >>> config['make_conf'] = write
         >>> b = MakeConf(config, c.overlays)
         >>> [i.name for i in b.overlays]
-        [u'wrobel-stable']
+        ['wrobel-stable']
         >>> b.extra
-        [u'/usr/local/portage/ebuilds/testing', u'/usr/local/portage/ebuilds/stable', u'/usr/local/portage/kolab2', u'/usr/local/portage/gentoo-webapps-overlay/experimental', u'/usr/local/portage/gentoo-webapps-overlay/production-ready']
+        ['/usr/local/portage/ebuilds/testing', '/usr/local/portage/ebuilds/stable', '/usr/local/portage/kolab2', '/usr/local/portage/gentoo-webapps-overlay/experimental', '/usr/local/portage/gentoo-webapps-overlay/production-ready']
 
         >>> os.unlink(write)
         >>> import shutil

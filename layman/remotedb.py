@@ -161,7 +161,7 @@ class RemoteDB(DbBase):
         >>> os.unlink(a.filepath(config['overlays'])+'.xml')
 
         >>> a.overlays.keys()
-        [u'wrobel', u'wrobel-stable']
+        ['wrobel', 'wrobel-stable']
 
         >>> import shutil
         >>> shutil.rmtree(tmpdir)
