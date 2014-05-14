@@ -171,7 +171,7 @@ class TarOverlay(OverlaySource):
                     raise Exception('Failed to rename tar subdirectory ' +
                                     source + ' to ' + final_path +
                                     '\nError was:' + str(error))
-                os.chmod(final_path, 0755)
+                os.chmod(final_path, 0o755)
             else:
                 raise Exception('Given subpath "' + source + '" does not exist '
                                 ' in the tar package!')
