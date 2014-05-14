@@ -22,6 +22,7 @@ import codecs
 import re
 
 from layman.utils import path
+from layman.compatibility import cmp_to_key
 
 #===============================================================================
 #
@@ -248,7 +249,7 @@ class MakeConf:
                 return 1
             return 0
 
-        self.overlays.sort(prio_sort)
+        self.overlays.sort(key=cmp_to_key(prio_sort))
 
         paths = []
         for i in self.overlays:
