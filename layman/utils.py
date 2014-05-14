@@ -153,7 +153,7 @@ def path(path_elements):
     '''
     pathname = ''
 
-    if isinstance(path_elements,STR):
+    if isinstance(path_elements, STR):
         path_elements = [path_elements]
 
     # Concatenate elements and seperate with /
