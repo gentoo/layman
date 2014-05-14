@@ -38,6 +38,10 @@ import codecs
 
 from layman.output import Message
 
+if sys.hexversion >= 0x30200f0:
+    STR = str
+else:
+    STR = basestring
 
 #===============================================================================
 #
@@ -149,7 +153,7 @@ def path(path_elements):
     '''
     pathname = ''
 
-    if type(path_elements) in types.StringTypes:
+    if isinstance(path_elements,STR):
         path_elements = [path_elements]
 
     # Concatenate elements and seperate with /
