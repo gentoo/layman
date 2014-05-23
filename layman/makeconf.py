@@ -26,11 +26,11 @@ from layman.compatibility import cmp_to_key
 
 #===============================================================================
 #
-# Helper class MakeConf
+# Helper class ConfigHandler
 #
 #-------------------------------------------------------------------------------
 
-class MakeConf:
+class ConfigHandler:
     '''
     Handles modifications to /var/layman/make.conf
 
@@ -48,7 +48,7 @@ class MakeConf:
     ...           'storage'   : '/var/lib/layman',
     ...           'quietness':3}
     >>> b = DB(config)
-    >>> a = MakeConf(config, b.overlays)
+    >>> a = ConfigHandler(config, b.overlays)
     >>> o_md5 = str(hashlib.md5(open(here + '/tests/testfiles/make.conf').read()).hexdigest())
     >>> a.path = write
     >>> a.add(b.overlays['wrobel-stable'])
@@ -102,11 +102,11 @@ class MakeConf:
         ...           'storage'   : '/var/lib/layman',
         ...           'quietness':3}
         >>> c = DB(config)
-        >>> a = MakeConf(config, c.overlays)
+        >>> a = ConfigHandler(config, c.overlays)
         >>> a.path = write
         >>> a.add(c.select('wrobel'))
         >>> config['make_conf'] = write
-        >>> b = MakeConf(config, c.overlays)
+        >>> b = ConfigHandler(config, c.overlays)
         >>> [i.name for i in b.overlays]
         ['wrobel', 'wrobel-stable']
         >>> b.extra
@@ -134,11 +134,11 @@ class MakeConf:
         ...           'storage'   : '/var/lib/layman',
         ...           'quietness':3}
         >>> c = DB(config)
-        >>> a = MakeConf(config, c.overlays)
+        >>> a = ConfigHandler(config, c.overlays)
         >>> a.path = write
         >>> a.delete(c.select('wrobel-stable'))
         >>> config['make_conf'] = write
-        >>> b = MakeConf(config, c.overlays)
+        >>> b = ConfigHandler(config, c.overlays)
         >>> [i.name for i in b.overlays]
         []
         >>> b.extra
@@ -153,6 +153,12 @@ class MakeConf:
                          if i.name != overlay.name]
         return self.write()
 
+    def update(self, overlay):
+        '''
+        Stub function necessary for RepoConfManager class.
+        '''
+        pass
+
     def read(self, raise_error=False):
         '''
         Read the list of registered overlays from /var/layman/make.conf.
@@ -165,7 +171,7 @@ class MakeConf:
         ...           'storage'   : '/var/lib/layman',
         ...           'quietness':3}
         >>> c = DB(config)
-        >>> a = MakeConf(config, c.overlays)
+        >>> a = ConfigHandler(config, c.overlays)
         >>> [i.name for i in a.overlays]
         ['wrobel-stable']
         >>> a.extra
@@ -177,9 +183,9 @@ class MakeConf:
             overlays = self.my_re.search(self.data)
 
             if not overlays:
-                msg = 'MakeConf: read(); Did not find a ' + \
-                    'PORTDIR_OVERLAY entry in file ' + \
-                    self.path +'! Did you specify the correct file?'
+                msg = 'MakeConf: ConfigHandler.read(); Did not find a '\
+                    'PORTDIR_OVERLAY entry in file '\
+                    '%(path)s! Did you specify the correct file?' % ({'path': self.path})
                 if raise_error:
                     raise Exception(msg)
                 self.output.error(msg)
@@ -227,11 +233,11 @@ class MakeConf:
         ...           'storage'   : '/var/lib/layman',
         ...           'quietness':3}
         >>> c = DB(config)
-        >>> a = MakeConf(config, c.overlays)
+        >>> a = ConfigHandler(config, c.overlays)
         >>> a.path = write
         >>> a.write()
         >>> config['make_conf'] = write
-        >>> b = MakeConf(config, c.overlays)
+        >>> b = ConfigHandler(config, c.overlays)
         >>> [i.name for i in b.overlays]
         ['wrobel-stable']
         >>> b.extra
@@ -264,9 +270,9 @@ class MakeConf:
         content = self.my_re.sub(overlays, self.data)
 
         if not self.my_re.search(content):
-            self.output.error('MakeConf: write(); Oops, failed to set a '
-                'proper PORTDIR_OVERLAY entry in file '
-                 + self.path +'! Did not overwrite the file.')
+            self.output.error('MakeConf: ConfigHandler.write(); Oops, failed to set a '\
+                'proper PORTDIR_OVERLAY entry in file '\
+                '%(path)s! Did not overwrite the file.' % ({'path': self.path}))
             return False
 
         try:
@@ -277,8 +283,8 @@ class MakeConf:
             make_conf.close()
 
         except Exception as error:
-            self.output.error('MakeConf: write(); Failed to write "'
-                + self.path + '".\nError was:\n' + str(error))
+            self.output.error('MakeConf: ConfigHandler.write(); Failed to write "'\
+                '%(path)s".\nError was:\n%(error)s' % ({'path': self.path, 'error': str(error)}))
             return False
         return True
 
@@ -294,6 +300,6 @@ class MakeConf:
             make_conf.close()
 
         except Exception as error:
-            self.output.error('MakeConf: content(); Failed to read "' +
-                self.path + '".\nError was:\n' + str(error))
+            self.output.error('ConfigHandler: content(); Failed to read "'\
+                '%(path)s".\nError was:\n%(error)s' % ({'path': self.path, 'error': str(error)}))
             raise error
