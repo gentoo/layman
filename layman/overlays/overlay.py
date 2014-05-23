@@ -422,6 +422,32 @@ class Overlay(object):
         return res
 
 
+    def update(self, base, available_srcs):
+        res = 1
+        first_src = True
+        result = False
+
+        if isinstance(available_srcs, str):
+            available_srcs = [available_srcs]
+
+        for src in available_srcs:
+            if not first_src:
+                self.output.info("\nTrying next source of listed sources...", 4)
+            try:
+                res = self.sources[0].update(base, src)
+                if res == 0:
+                    # Updating it worked, no need to bother 
+                    # checking other sources.
+                    self.sources[0].src = src
+                    result = True
+                    break
+            except Exception as error:
+                self.output.warn(str(error), 4)
+            first_s = False
+
+        return (self.sources, result)
+
+
     def sync(self, base):
         self.output.debug("overlay.sync(); name = %s" % self.name, 4)
         assert len(self.sources) == 1

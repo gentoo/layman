@@ -95,6 +95,10 @@ class OverlaySource(object):
         os.makedirs(mdir)
         return True
 
+    def update(self, src):
+        '''Updates the overlay source url.'''
+        pass
+
     def sync(self, base):
         '''Sync the overlay.'''
         pass
