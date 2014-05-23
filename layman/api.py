@@ -342,6 +342,49 @@ class LaymanAPI(object):
             return True, msg
         return False, ''
 
+    def _verify_overlay_source(self, odb, ordb)
+        """
+        Verifies the overlay source url against the source url(s)
+        reported by the remote database.
+
+        @param odb: local database of overlay information.
+        @param ordb: remote database of overlay information.
+        @rtype (boolean, msg)
+        """
+        current_src = odb.sources[0].src
+        (available_srcs, valid) = verify_overlay_src(current_src,
+            set(e.src for e in ordb.sources))
+            
+        if ordb and odb and not valid:
+            update_url = True
+            if len(available_srcs) == 1:
+                plural = ''
+                candidates = '  %s' % tuple(available_srcs)[0]
+            else:
+                plural = 's'
+                candidates = '\n'.join(('  %d. %s' % (ovl + 1, v)) \
+                    for ovl, v in enumerate(available_srcs))
+            msg = 'The source of the overlay "%(repo_name)s" seems to have changed.\n'\
+                  'You currently sync from\n'\
+                  '\n'\
+                  '  %(current_src)s\n'
+                  '\n'\
+                  'while the remote lists report\n'\
+                  '\n'\
+                  '%(candidates)s\n'\
+                  '\n'\
+                  'as correct location%(plural)s.\n'\
+                  '\n'\
+                  'Repo: "%(repo_name)s" will be updated...' %\
+                  ({
+                     'repo_name':odb.name,
+                     'current_src':current_src,
+                     'candidates':candidates,
+                     'plural':plural,
+                  })
+            return True, msg
+        return False, ''
+
     def sync(self, repos, output_results=True, update_news=False):
         """syncs the specified repo(s) specified by repos
 
@@ -360,6 +403,7 @@ class LaymanAPI(object):
 
         self.output.debug("API.sync(); starting ovl loop", 5)
         for ovl in repos:
+            update_url = False
             self.output.debug("API.sync(); starting ovl = %s" %ovl, 5)
             try:
                 #self.output.debug("API.sync(); selecting %s, db = %s" % (ovl, str(db)), 5)
@@ -384,39 +428,9 @@ class LaymanAPI(object):
                 warnings.append((ovl, message))
             else:
                 self.output.debug("API.sync(); else: self._get_remote_db().select(ovl)", 5)
-                current_src = odb.sources[0].src
-                (available_srcs, valid) = verify_overlay_src(current_src, 
-                                            set(e.src for e in ordb.sources))
 
                 (diff_type, type_msg) = self._verify_overlay_type(odb, ordb)
-
-                if ordb and odb and not valid:
-                    if len(available_srcs) == 1:
-                        plural = ''
-                        candidates = '  %s' % tuple(available_srcs)[0]
-                    else:
-                        plural = 's'
-                        candidates = '\n'.join(('  %d. %s' % (ovl + 1, v)) \
-                         for ovl, v in enumerate(available_srcs))
-
-                    warnings.append((ovl,
-                        'The source of the overlay "%(repo_name)s" seems to have changed.\n'
-                        'You currently sync from\n'
-                        '\n'
-                        '  %(current_src)s\n'
-                        '\n'
-                        'while the remote lists report\n'
-                        '\n'
-                        '%(candidates)s\n'
-                        '\n'
-                        'as correct location%(plural)s.\n'
-                        'Please consider removing and re-adding the overlay.' %
-                        {
-                            'repo_name':ovl,
-                            'current_src':current_src,
-                            'candidates':candidates,
-                            'plural':plural,
-                            }))
+                (update_url, url_msg) = self._verify_overlay_source(odb, ordb)
 
             try:
                 if diff_type:
@@ -425,6 +439,13 @@ class LaymanAPI(object):
                     self.readd_repos(ovl)
                     success.append((ovl, 'Successfully readded overlay "' + ovl + '".'))
                 else:
+                    if update_url:
+                        self.output.debug("API.sync() starting db.update(ovl)", 5)
+                        warnings.append((ovl, url_msg))
+                        update_success = db.update(ordb, available_srcs)
+                        if not update_success:
+                            self.output.warn('Failed to update repo...readding', 2)
+                            self.readd_repos(ovl)
                     self.output.debug("API.sync(); starting db.sync(ovl)", 5)
                     db.sync(ovl)
                     success.append((ovl,'Successfully synchronized overlay "' + ovl + '".'))
