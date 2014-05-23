@@ -169,6 +169,18 @@ def path(path_elements):
 
     return pathname
 
+def verify_overlay_src(current_src, remote_srcs):
+    '''
+    Verifies that the src-url of the overlay in
+    that database is in the set of reported src_urls
+    by the remote database.
+    '''
+    if current_src not in remote_srcs:
+        # return remote_srcs and boolean
+        # stating that it's not valid.
+        return remote_srcs, False
+    return current_src, True
+
 def delete_empty_directory(mdir, output=None):
     # test for a usable output parameter,
     # and make it usable if not

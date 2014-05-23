@@ -17,13 +17,14 @@ from __future__ import unicode_literals
 
 import os, sys
 
-from layman.config import BareConfig
-from layman.dbbase import UnknownOverlayException, UnknownOverlayMessage
-from layman.db import DB
-from layman.remotedb import RemoteDB
-from layman.overlays.source import require_supported
+from layman.config           import BareConfig
+from  layman.dbbase          import UnknownOverlayException, UnknownOverlayMessage
+from  layman.db              import DB
+from  layman.remotedb        import RemoteDB
+from  layman.overlays.source import require_supported
 #from layman.utils import path, delete_empty_directory
-from layman.compatibility import encode
+from  layman.compatibility   import encode
+from  layman.utils           import verify_overlay_src
 
 if sys.hexversion >= 0x30200f0:
     STR = str
@@ -335,8 +336,10 @@ class LaymanAPI(object):
             else:
                 self.output.debug("API.sync(); else: self._get_remote_db().select(ovl)", 5)
                 current_src = odb.sources[0].src
-                available_srcs = set(e.src for e in ordb.sources)
-                if ordb and odb and not current_src in available_srcs:
+                (available_srcs, valid) = verify_overlay_src(current_src, 
+                                            set(e.src for e in ordb.sources))
+
+                if ordb and odb and not valid:
                     if len(available_srcs) == 1:
                         plural = ''
                         candidates = '  %s' % tuple(available_srcs)[0]
