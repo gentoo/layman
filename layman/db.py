@@ -31,8 +31,7 @@ import os, os.path
 
 from   layman.utils             import path, delete_empty_directory
 from   layman.dbbase            import DbBase
-from   layman.makeconf          import MakeConf
-
+from   layman.repoconfmanager   import RepoConfManager
 
 #===============================================================================
 #
@@ -62,6 +61,8 @@ class DB(DbBase):
                           paths=[config['installed'], ],
                           ignore=ignore,
                           )
+
+        self.repo_conf = RepoConfManager(self.config, self.overlays)
 
         self.output.debug('DB handler initiated', 6)
 
@@ -132,11 +133,8 @@ class DB(DbBase):
                     overlay.set_priority(self.config['priority'])
                 self.overlays[overlay.name] = overlay
                 self.write(self.path)
-                if self.config['make_conf']:
-                    make_conf = MakeConf(self.config, self.overlays)
-                    make_ok = make_conf.add(overlay)
-                    return make_ok
-                return True
+                repo_ok = self.repo_conf.add(overlay)
+                return repo_ok
             else:
                 mdir = path([self.config['storage'], overlay.name])
                 delete_empty_directory(mdir, self.output)
@@ -215,11 +213,10 @@ class DB(DbBase):
         '''
 
         if overlay.name in self.overlays.keys():
-            make_conf = MakeConf(self.config, self.overlays)
             overlay.delete(self.config['storage'])
+            self.repo_conf.delete(overlay)
             del self.overlays[overlay.name]
             self.write(self.path)
-            make_conf.delete(overlay)
         else:
             self.output.error('No local overlay named "' + overlay.name + '"!')
             return False
