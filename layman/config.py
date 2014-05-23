@@ -67,6 +67,25 @@ def read_layman_config(config=None, defaults=None, output=None):
         config.set('MAIN', 'overlays', '\n'.join(overlays))
 
 
+def proxies(config=None, output=None):
+    """
+    Reads the config options to determine the available proxies.
+
+    @param config: config options dict.
+    @rtype dict
+    """
+    proxies = {}
+
+    for proxy in ['http_proxy', 'https_proxy']:
+        if config[proxy]:
+            proxies[proxy.split('_')[0]] = config[proxy]
+        elif os.getenv(proxy):
+            proxies[proxy.split('_')[0]] = os.getenv(proxy)
+    if proxies == {} and output is not None:
+        output.warn("Warning: unable to determine proxies.")        
+
+    return proxies
+
 # establish the eprefix, initially set so eprefixify can
 # set it on install
 EPREFIX = "@GENTOO_PORTAGE_EPREFIX@"

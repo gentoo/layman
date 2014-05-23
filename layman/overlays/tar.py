@@ -33,6 +33,7 @@ import shutil
 
 import xml.etree.ElementTree as ET # Python 2.5
 
+from   layman.config            import proxies
 from   layman.utils             import path
 from   layman.overlays.source   import OverlaySource, require_supported
 from   layman.version           import VERSION
@@ -87,19 +88,11 @@ class TarOverlay(OverlaySource):
 
     def __init__(self, parent, config, _location, ignore = 0):
 
-        self.proxies = {}
-
-        for proxy in ['http_proxy', 'https_proxy']:
-            if config[proxy]:
-                self.proxies[proxy.split('_')[0]] = config[proxy]
-            elif os.getenv(proxy):
-                self.proxies[proxy.split('_')[0]] = os.getenv(proxy)
-
-
         super(TarOverlay, self).__init__(parent,
             config, _location, ignore)
 
         self.output = config['output']
+        self.proxies = proxies(config, self.output)
         self.subpath = None
 
     def __eq__(self, other):

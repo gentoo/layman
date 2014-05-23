@@ -42,6 +42,7 @@ except ImportError:
 
 
 from   layman.utils             import encoder
+from   layman.config            import proxies
 from   layman.dbbase            import DbBase
 from   layman.version           import VERSION
 from   layman.compatibility     import fileopen
@@ -58,15 +59,8 @@ class RemoteDB(DbBase):
         self.output = config['output']
         self.detached_urls = []
         self.signed_urls = []
-
-        self.proxies = {}
-
-        for proxy in ['http_proxy', 'https_proxy']:
-            if config[proxy]:
-                self.proxies[proxy.split('_')[0]] = config[proxy]
-            elif os.getenv(proxy):
-                self.proxies[proxy.split('_')[0]] = os.getenv(proxy)
-
+        self.proxies = proxies(self.config, self.output)
+        
         self.urls  = [i.strip()
             for i in config['overlays'].split('\n') if len(i)]
 
