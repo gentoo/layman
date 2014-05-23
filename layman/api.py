@@ -327,7 +327,8 @@ class LaymanAPI(object):
 
         self.output.debug("API.sync(); starting ovl loop", 5)
         for ovl in repos:
-            diff_type = False
+            diff_type  = False
+            update_url = False
             self.output.debug("API.sync(); starting ovl = %s" %ovl, 5)
             try:
                 #self.output.debug("API.sync(); selecting %s, db = %s" % (ovl, str(db)), 5)
@@ -380,6 +381,8 @@ class LaymanAPI(object):
                         }))
 
                 if ordb and odb and not valid:
+                    update_url = True
+
                     if len(available_srcs) == 1:
                         plural = ''
                         candidates = '  %s' % tuple(available_srcs)[0]
@@ -399,7 +402,8 @@ class LaymanAPI(object):
                         '%(candidates)s\n'
                         '\n'
                         'as correct location%(plural)s.\n'
-                        'Please consider removing and re-adding the overlay.' %
+                        '\n'
+                        'Repo: "%(repo_name)s" will be updated...' %
                         {
                             'repo_name':ovl,
                             'current_src':current_src,
@@ -413,6 +417,12 @@ class LaymanAPI(object):
                     self.readd_repos(ovl)
                     success.append((ovl, 'Successfully readded overlay "' + ovl + '".'))
                 else:
+                    if update_url:
+                        self.output.debug("API.sync() starting db.update(ovl)", 5)
+                        update_success = db.update(ordb, available_srcs)
+                        if not update_success:
+                            self.output.warn('Failed to update repo...readding', 2)
+                            self.readd_repos(ovl)
                     self.output.debug("API.sync(); starting db.sync(ovl)", 5)
                     db.sync(ovl)
                     success.append((ovl,'Successfully synchronized overlay "' + ovl + '".'))
