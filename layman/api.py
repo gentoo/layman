@@ -165,6 +165,22 @@ class LaymanAPI(object):
         return True
 
 
+    def readd_repos(self, repos, update_news=False):
+        """reinstalls any given amount of repos
+        by deleting them and readding them
+
+        @type repos: list of strings or string
+        @param repos: ['repo-id1', ...] or 'repo-id'
+        """
+        success = self.delete_repos(repos)
+        if not success:
+            return success
+        success = self.add_repos(repos)
+        if update_news:
+            self.update_news(repos)
+        return success
+
+
     def get_all_info(self, repos, local=False):
         """retrieves the recorded information about the repo(s)
         specified by repo-id
@@ -311,6 +327,7 @@ class LaymanAPI(object):
 
         self.output.debug("API.sync(); starting ovl loop", 5)
         for ovl in repos:
+            diff_type = False
             self.output.debug("API.sync(); starting ovl = %s" %ovl, 5)
             try:
                 #self.output.debug("API.sync(); selecting %s, db = %s" % (ovl, str(db)), 5)
@@ -338,6 +355,29 @@ class LaymanAPI(object):
                 current_src = odb.sources[0].src
                 (available_srcs, valid) = verify_overlay_src(current_src, 
                                             set(e.src for e in ordb.sources))
+
+                remote_type = ordb.sources[0].type
+                current_type = odb.sources[0].type
+
+                if remote_type not in current_type:
+                    diff_type = True
+
+                    warnings.append((ovl,
+                        'The overlay type of overlay "%(repo_name)s" seems to have changed.\n'
+                        'The current overlay type is:\n'
+                        '\n'
+                        '  %(current_type)s\n'
+                        '\n'
+                        'while the remote overlay is of type:\n'
+                        '\n'
+                        '  %(remote_type)s\n'
+                        '\n'
+                        'the overlay will be readded using %(remote_type)s' %
+                        {
+                            'repo_name':ovl,
+                            'current_type':current_type,
+                            'remote_type':remote_type,
+                        }))
 
                 if ordb and odb and not valid:
                     if len(available_srcs) == 1:
@@ -368,9 +408,14 @@ class LaymanAPI(object):
                             }))
 
             try:
-                self.output.debug("API.sync(); starting db.sync(ovl)", 5)
-                db.sync(ovl)
-                success.append((ovl,'Successfully synchronized overlay "' + ovl + '".'))
+                if diff_type:
+                    self.output.debug("API.sync(); starting API.readd_repos(ovl)", 5)
+                    self.readd_repos(ovl)
+                    success.append((ovl, 'Successfully readded overlay "' + ovl + '".'))
+                else:
+                    self.output.debug("API.sync(); starting db.sync(ovl)", 5)
+                    db.sync(ovl)
+                    success.append((ovl,'Successfully synchronized overlay "' + ovl + '".'))
             except Exception as error:
                 fatals.append((ovl,
                     'Failed to sync overlay "' + ovl + '".\nError was: '
