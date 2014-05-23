@@ -222,6 +222,18 @@ class DB(DbBase):
             return False
         return True
 
+
+    def update(self, overlay, available_srcs):
+        '''Updates the overlay source via the available source(s).'''
+
+        source, result = self.overlays[overlay.name].update(self.config['storage'],
+                                                    available_srcs)
+        self.overlays[overlay.name].sources = source
+        self.repo_conf.update(self.overlays[overlay.name])
+        self.write(self.path)
+
+        return result
+
     def sync(self, overlay_name):
         '''Synchronize the given overlay.'''
 
