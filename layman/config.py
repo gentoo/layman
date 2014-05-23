@@ -66,7 +66,6 @@ def read_layman_config(config=None, defaults=None, output=None):
                 overlays.update(["file://" + _path])
         config.set('MAIN', 'overlays', '\n'.join(overlays))
 
-
 # establish the eprefix, initially set so eprefixify can
 # set it on install
 EPREFIX = "@GENTOO_PORTAGE_EPREFIX@"
@@ -279,6 +278,28 @@ class BareConfig(object):
         True or False
         """
         return option.lower() in ['yes', 'true', 'y', 't']
+
+    @property
+    def proxies(self):
+        """
+        Reads the config options to determine the available proxies.
+
+        @param config: config options dict.
+        @rtype dict
+        """
+        proxies = {}
+
+        for proxy in ['http_proxy', 'https_proxy']:
+            if self.config and self.config.get('MAIN', proxy):
+                proxies[proxy.split('_')[0]] = self.config.get('MAIN', proxy)
+            elif self.get_option(proxy):
+                proxies[proxy.split('_')[0]] = self.get_option(proxy)
+            elif os.getenv(proxy):
+                proxies[proxy.split('_')[0]] = os.getenv(proxy)
+        if self.config and proxies == {}:
+            self.output.debug("Warning: unable to determine proxies.", 6)
+
+        return proxies
 
 
 class OptionConfig(BareConfig):
