@@ -107,6 +107,9 @@ class BareConfig(object):
             'cache'     : '%(storage)s/cache',
             'local_list': '%(storage)s/overlays.xml',
             'installed': '%(storage)s/installed.xml',
+            'auto_sync': 'No',
+            'conf_type': 'make.conf',
+            'require_repoconfig': 'Yes',
             'make_conf' : '%(storage)s/make.conf',
             'repos_conf': '/etc/portage/repos.conf/layman.conf',
             'conf_module': ['make_conf', 'repos_conf'],
@@ -132,7 +135,7 @@ class BareConfig(object):
             'rsync_command': path([self.root, EPREFIX,'/usr/bin/rsync']),
             'svn_command': path([self.root, EPREFIX,'/usr/bin/svn']),
             'tar_command': path([self.root, EPREFIX,'/bin/tar']),
-            't/f_options': ['nocheck'],
+            't/f_options': ['nocheck', 'require_repoconfig'],
             'bzr_addopts' : '',
             'bzr_syncopts' : '',
             'cvs_addopts' : '',
@@ -221,7 +224,7 @@ class BareConfig(object):
 
 
     def set_option(self, option, value):
-        """Sets an option to the value """
+        """Sets an option to the value"""
         self._options[option] = value
         # handle quietness
         if option == 'quiet':
