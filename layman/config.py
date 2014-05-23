@@ -165,6 +165,7 @@ class BareConfig(object):
             'g-sorcery_postsync' : '',
             'git_user': 'layman',
             'git_email': 'layman@localhost',
+            'support_url_updates': ['Bzr', 'cvs', 'Git', 'Mercurial', 'Subversion'],
             }
         self._options = {
             'config': config if config else self._defaults['config'],
