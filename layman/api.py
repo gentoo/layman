@@ -616,6 +616,8 @@ class LaymanAPI(object):
                     # because it may be different than layman's name for it
                     repo_names = []
                     for repo in repos:
+                        if isinstance(repo, bytes):
+                            repo = repo.decode('UTF-8')
                         ovl = self._get_installed_db().select(repo)
                         ovl_path = os.path.join(ovl.config['storage'], repo)
                         name = portdb.getRepositoryName(ovl_path)
