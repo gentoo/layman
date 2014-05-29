@@ -426,25 +426,34 @@ class Overlay(object):
         res = 1
         first_src = True
         result = False
+        supported_types = ['Bzr', 'cvs', 'Git', 'Mercurial', 'Subversion']
 
         if isinstance(available_srcs, str):
             available_srcs = [available_srcs]
 
-        for src in available_srcs:
-            if not first_src:
-                self.output.info("\nTrying next source of listed sources...", 4)
-            try:
-                res = self.sources[0].update(base, src)
-                if res == 0:
-                    # Updating it worked, no need to bother 
-                    # checking other sources.
-                    self.sources[0].src = src
-                    result = True
-                    break
-            except Exception as error:
-                self.output.warn(str(error), 4)
-            first_s = False
-
+        if self.sources[0].type in supported_types:
+            for src in available_srcs:
+                if not first_src:
+                    self.output.info("\nTrying next source of listed sources...", 4)
+                try:
+                    res = self.sources[0].update(base, src)
+                    if res == 0:
+                        # Updating it worked, no need to bother 
+                        # checking other sources.
+                        self.sources[0].src = src
+                        result = True
+                        break
+                except Exception as error:
+                    self.output.warn(str(error), 4)
+                first_s = False
+        else:
+            # Update the overlay source with the remote
+            # source, assuming that it's telling the truth
+            # so it can be written to the installed.xml.
+            self.output.debug("overlay.update(); type: %s does not support"\
+                " source URL updating" % self.sources[0].type, 4)
+            self.sources[0].src = available_srcs.pop()
+            result = True
         return (self.sources, result)
 
 
