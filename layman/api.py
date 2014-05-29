@@ -116,7 +116,7 @@ class LaymanAPI(object):
                 continue
             success = False
             try:
-                self._get_installed_db().delete(
+                success = self._get_installed_db().delete(
                     self._get_installed_db().select(ovl))
             except Exception as e:
                 self._error(
