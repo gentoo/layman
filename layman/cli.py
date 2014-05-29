@@ -134,7 +134,6 @@ class Main(object):
 
     def __init__(self, config):
         self.config = config
-        #print "config.keys()", config.keys()
         self.output = config['output']
         self.api = LaymanAPI(config,
                              report_errors=False,
@@ -145,6 +144,7 @@ class Main(object):
                         ('sync',       'Sync'),
                         ('info',       'Info'),
                         ('sync_all',   'Sync'),
+                        ('readd',      'Readd'),
                         ('delete',     'Delete'),
                         ('list',       'ListRemote'),
                         ('list_local', 'ListLocal'),]
@@ -250,6 +250,22 @@ class Main(object):
         self.output.notice('')
         return result
 
+
+    def Readd(self):
+        '''Readds the selected overlay(s).
+        '''
+        self.output.info('Reinstalling overlay(s),...', 2)
+        selection = decode_selection(self.config['readd'])
+        if ALL_KEYWORD in selection:
+            selection = self.api.get_installed()
+        self.output.debug('Reinstalling selected overlay(s)', 6)
+        result = self.api.readd_repos(selection, update_news=True)
+        if result:
+            self.output.info('Successfully reinstalled overlay(s) ' +
+                ', '.join((x.decode('UTF-8') if isinstance(x, bytes) else x) for x in selection)
+                + '.', 2)
+        self.output.notice('')
+        return result
 
 
     def Sync(self):
