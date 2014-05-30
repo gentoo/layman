@@ -134,7 +134,7 @@ class Message(MessageBase):
             return
 
         for i in info.split('\n'):
-            print  >> self.std_out, self.color_func('yellow', 'DEBUG: ') + i
+            print(self.color_func('yellow', 'DEBUG: ') + i, file=self.std_out)
 
 
     def notice (self, note, level = NOTE_LEVEL):
@@ -142,7 +142,7 @@ class Message(MessageBase):
         if level > self.note_lev:
             return
 
-        print >> self.std_out, note
+        print(note, file=self.std_out)
 
 
     def info (self, info, level = INFO_LEVEL):
@@ -154,7 +154,7 @@ class Message(MessageBase):
             return
 
         for i in info.split('\n'):
-            print  >> self.std_out, " %s %s" % (self.color_func('green', '*'),i)
+            print(" %s %s" % (self.color_func('green', '*'),i), file=self.std_out)
 
 
     def status (self, message, status, info = 'ignored'):
@@ -168,7 +168,7 @@ class Message(MessageBase):
             return
 
         for i in lines[0:-1]:
-            print >> self.std_out, " %s %s" % (self.color_func('green', '*'),i)
+            print(" %s %s" % (self.color_func('green', '*'),i), file=self.std_out)
 
         i = lines[-1]
 
@@ -182,8 +182,8 @@ class Message(MessageBase):
         else:
             result = '[' + self.color_func('yellow', info) + ']'
 
-        print >> " %s %s %s %S" % (self.color_func('green', '*'), i,
-            ('.' * (58 - len(i))), result)
+        print(file=" %s %s %s %S" % (self.color_func('green', '*'), i,
+            ('.' * (58 - len(i))), result))
 
 
     def warn (self, warn, level = WARN_LEVEL):
@@ -195,7 +195,7 @@ class Message(MessageBase):
             return
 
         for i in warn.split('\n'):
-            print >> self.std_out, " %s %s" % (self.color_func('yellow', '*'),i)
+            print(" %s %s" % (self.color_func('yellow', '*'),i), file=self.std_out)
 
 
     def error (self, error):
@@ -209,7 +209,7 @@ class Message(MessageBase):
             # "layman -L |& less".
             self.std_out.flush()
             self.error_out.flush()
-            print >> self.std_out, " %s %s" % (self.color_func('red', '*'), i)
+            print(" %s %s" % (self.color_func('red', '*'), i), file=self.std_out)
             self.std_out.flush()
         self.do_error_callback(error)
 
