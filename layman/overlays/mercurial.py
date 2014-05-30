@@ -27,6 +27,7 @@ __version__ = "$Id: mercurial.py 236 2006-09-05 20:39:37Z wrobel $"
 #
 #-------------------------------------------------------------------------------
 
+import re
 from   layman.utils             import path
 from   layman.overlays.source   import OverlaySource, require_supported
 
@@ -49,6 +50,16 @@ class MercurialOverlay(OverlaySource):
             config, _location, ignore)
         self.subpath = None
 
+    def _fix_mercurial_source(self, source):
+    '''
+    Adds trailing slash to source URL if needed.
+
+    @params source: source URL, string.
+    '''
+        if source.endswith("/"):
+            return source
+        return source + '/'
+
     def add(self, base):
         '''Add overlay.'''
 
@@ -58,10 +69,7 @@ class MercurialOverlay(OverlaySource):
         cfg_opts = self.config["mercurial_addopts"]
         target = path([base, self.parent.name])
 
-        if self.src.endswith("/"):
-            src = self.src
-        else:
-            src = self.src + '/'
+        src = self._fix_mercurial_source(self.src)
 
         # hg clone SOURCE TARGET
         if len(cfg_opts):
@@ -72,6 +80,30 @@ class MercurialOverlay(OverlaySource):
         return self.postsync(
             self.run_command(self.command(), args, cmd=self.type),
             cwd=target)
+
+    def update(self, base, src):
+        '''
+        Updates overlay src-url.
+        
+        @params base: base location where all overlays are installed.
+        @params src: source URL.
+        '''
+
+        if not self.supported():
+            return 1
+
+        target = path([base, self.parent.name])
+        hgrc = ".hg/hgrc"
+
+        old_src = re.sub('/', '\/', self._fix_mercurial_source(self.src))
+        new_src = re.sub('/', '\/', self._fix_mercurial_source(src))
+        expression = "s/" + old_src + "/" + new_src + "/"
+
+        # sed -i 's/oldurl/newurl/' <target>/.hg/hgrc
+        args = ['-i', expression, hgrc]
+
+        # Run sed.
+        return self.run_command('sed', args, cmd='sed', cwd=target)
 
     def sync(self, base):
         '''Sync overlay.'''
