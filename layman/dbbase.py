@@ -117,7 +117,7 @@ class DbBase(object):
 
 
     def __eq__(self, other):
-        for key in set(self.overlays.keys() + other.overlays.keys()):
+        for key in set(self.overlays.keys()) | set(other.overlays.keys()):
             if self.overlays[key] != other.overlays[key]:
                 return False
         return True
