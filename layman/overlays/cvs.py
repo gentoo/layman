@@ -27,6 +27,7 @@ __version__ = "$Id$"
 #-------------------------------------------------------------------------------
 
 import xml.etree.ElementTree as ET # Python 2.5
+import re
 
 from   layman.utils             import path
 from   layman.overlays.source   import OverlaySource, require_supported
@@ -89,6 +90,37 @@ class CvsOverlay(OverlaySource):
             self.run_command(self.command(), args, cwd=base,
                 env=dict(CVSROOT=self.src), cmd=self.type),
             cwd=target)
+
+    def update(self, base, src):
+        '''Updates overlay src-url.'''
+        
+        if not self.supported():
+            return 1
+
+        target = path([base, self.parent.name])
+        
+        # First echo the new repository to CVS/Root
+        args = [src, '>', '/CVS/Root']
+        result = self.run_command('echo', args, cmd='echo', cwd=target)
+
+        if result == 0:
+            location = src.split(':')[3]
+            old_location = self.src.split(':/')[3]
+    
+            # Check if the repository location needs to be updated too.
+            if not location == old_location:
+                location = re.sub('/', '\/', location)
+                old_location = re.sub('/', '\/', old_location)
+                
+                expression = 's/' + old_location + '/' + location + '/'
+
+                # sed -i 's/<old_location>/<new_location>/ <target>/CVS/Repository
+                args = ['-i', expression, '/CVS/Repository']
+
+                return self.run_command('sed', args, cmd='sed', cwd=target)
+
+        return result        
+        
 
     def sync(self, base):
         '''Sync overlay.'''
