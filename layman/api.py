@@ -14,6 +14,7 @@
 #
 
 from __future__ import unicode_literals
+from __future__ import print_function
 
 import os
 
@@ -513,7 +514,7 @@ class LaymanAPI(object):
         self._error_messages.append(message)
         self.output.debug("API._error(); _error_messages = %s" % str(self._error_messages), 4)
         if self.report_errors:
-            print >>self.config['stderr'], message
+            print(message, file=self.config['stderr'])
 
 
     def get_errors(self):
