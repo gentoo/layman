@@ -18,6 +18,7 @@
 
 from __future__ import unicode_literals
 from __future__ import with_statement
+from __future__ import unicode_literals
 
 __version__ = "$Id: db.py 309 2007-04-09 16:23:38Z wrobel $"
 
@@ -31,28 +32,6 @@ import os, os.path
 import sys
 import hashlib
 
-import requests
-from requests.exceptions import SSLError
-
-VERIFY_SSL = False
-# py3.2
-if sys.hexversion >= 0x30200f0:
-    VERIFY_SSL = True
-else:
-    try: # import and enable SNI support for py2
-        from requests.packages.urllib3.contrib import pyopenssl
-        pyopenssl.inject_into_urllib3()
-        VERIFY_SSL = True
-        VERIFY_MSGS = ["Successfully enabled ssl certificate verification."]
-    except ImportError as e:
-        VERIFY_MSGS = [
-            "Failed to import and inject pyopenssl/SNI support into urllib3",
-            "Disabling certificate verification",
-            "Error was:" + e
-        ]
-        VERIFY_SSL = False
-
-
 GPG_ENABLED = False
 try:
     from pygpg.config import GPGConfig
@@ -65,8 +44,10 @@ except ImportError:
 from   layman.utils             import encoder
 from   layman.dbbase            import DbBase
 from   layman.version           import VERSION
-from layman.compatibility       import fileopen
+from   layman.compatibility     import fileopen
+from   sslfetch.connections     import Connector
 
+USERAGENT = "Layman-" + VERSION
 
 class RemoteDB(DbBase):
     '''Handles fetching the remote overlay list.'''
@@ -89,10 +70,6 @@ class RemoteDB(DbBase):
         self.urls  = [i.strip()
             for i in config['overlays'].split('\n') if len(i)]
 
-        if VERIFY_MSGS:
-            for msg in VERIFY_MSGS:
-                self.output.debug(msg, 2)
-
         if GPG_ENABLED:
             self.get_gpg_urls()
         else:
@@ -114,7 +91,6 @@ class RemoteDB(DbBase):
 
         self.output.debug('RemoteDB.__init__(), paths to load = %s' %str(paths),
             2)
-
         if config['nocheck']:
             ignore = 2
         else:
@@ -172,6 +148,15 @@ class RemoteDB(DbBase):
         succeeded = True
         url_lists = [self.urls, self.detached_urls, self.signed_urls]
         need_gpg = [False, True, True]
+        # setup the ssl-fetch output map
+        connector_output = {
+            'info':  self.output.debug,
+            'error': self.output.error,
+            'kwargs-info': {'level': 2},
+            'kwargs-error':{'level': None},
+        }
+        fetcher = Connector(connector_output, self.proxies, USERAGENT)
+
         for index in range(0, 3):
             self.output.debug("RemoteDB.cache() index = %s" %str(index), 2)
             urls = url_lists[index]
@@ -188,11 +173,11 @@ class RemoteDB(DbBase):
                     success, olist, timestamp = self._fetch_file(
                         url, mpath, tpath)
                 elif sig:
-                    success, olist, timestamp = self._fetch_url(
-                        url[0], mpath, tpath)
+                    success, olist, timestamp = fetcher.fetch_content(
+                        url[0], tpath)
                 else:
-                    success, olist, timestamp = self._fetch_url(
-                        url, mpath, tpath)
+                    success, olist, timestamp = fetcher.fetch_content(
+                        url, tpath)
                 if not success:
                     #succeeded = False
                     continue
@@ -263,7 +248,6 @@ class RemoteDB(DbBase):
 
         return base + '_' + hashlib.md5(url_encoded).hexdigest()
 
-
     def _fetch_file(self, url, mpath, tpath=None):
         self.output.debug('RemoteDB._fetch_file() url = %s' % url, 2)
         # check when the cache was last updated
@@ -306,67 +290,6 @@ class RemoteDB(DbBase):
                 % str(type(olist)),2)
 
             return (True, olist, url_timestamp)
-
-
-    def _fetch_url(self, url, mpath, tpath=None):
-        headers = {'Accept-Charset': 'utf-8',
-            'User-Agent': 'Layman-' + VERSION}
-
-        if tpath and os.path.exists(tpath):
-            with fileopen(tpath,'r') as previous:
-                timestamp = previous.read()
-            headers['If-Modified-Since'] = timestamp
-            self.output.info('Current-modified: %s' % timestamp, 4)
-
-        verify = 'https' in url and VERIFY_SSL
-        self.output.debug("Enabled ssl certificate verification: %s, for: %s"
-            %(str(verify), url), 3)
-
-        if not self.check_path([mpath]):
-            return (False, '', '')
-        self.output.debug('RemoteDB._fetch_url(); headers = %s'
-            % str(headers), 2)
-        self.output.debug('RemoteDB._fetch_url(); connecting to opener', 2)
-        try:
-            connection = requests.get(
-                url,
-                headers=headers,
-                verify=verify,
-                proxies=self.proxies,
-                )
-        except SSLError as error:
-            self.output.error('RemoteDB._fetch_url(); Failed to update the '
-                'overlay list from: %s\nSSLError was:%s\n'
-                % (url, str(error)))
-        except Exception as error:
-            self.output.error('RemoteDB._fetch_url(); Failed to update the '
-                'overlay list from: %s\nError was:%s\n'
-                % (url, str(error)))
-            # py2, py3 compatibility, since only py2 returns keys as lower()
-        headers = dict((x.lower(), x) for x in list(connection.headers))
-        self.output.info('HEADERS = %s' %str(connection.headers), 4)
-        self.output.debug('Status_code = %i' % connection.status_code, 2)
-        if connection.status_code in [304]:
-            self.output.info('Remote list already up to date: %s'
-                % url, 4)
-            self.output.info('Last-modified: %s' % timestamp, 4)
-        elif connection.status_code not in [200]:
-            self.output.error('RemoteDB._fetch_url(); HTTP Status-Code was:\n'
-                'url: %s\n%s'
-                % (url, str(connection.status_code)))
-
-        if connection.status_code in [200]:
-            self.output.info('Remote new list downloaded for: %s'
-                % url, 4)
-            if 'last-modified' in headers:
-                timestamp = connection.headers[headers['last-modified']]
-            elif 'date' in headers:
-                timestamp = connection.headers[headers['date']]
-            else:
-                timestamp = None
-            return (True, connection.content, timestamp)
-        return (False, '', '')
-
 
     def check_path(self, paths, hint=True):
         '''Check for sufficient privileges'''

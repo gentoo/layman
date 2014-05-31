@@ -26,12 +26,19 @@ __version__ = "$Id: tar.py 310 2007-04-09 16:30:40Z wrobel $"
 #
 #-------------------------------------------------------------------------------
 
-import os, os.path, sys, urllib2, shutil, tempfile
+import os
+import os.path
+import sys
+import shutil
+
 import xml.etree.ElementTree as ET # Python 2.5
 
 from   layman.utils             import path
-#from   layman.debug             import OUT
 from   layman.overlays.source   import OverlaySource, require_supported
+from   layman.version           import VERSION
+from   sslfetch.connections     import Connector
+
+USERAGENT = "Layman" + VERSION
 
 #===============================================================================
 #
@@ -80,6 +87,15 @@ class TarOverlay(OverlaySource):
 
     def __init__(self, parent, config, _location, ignore = 0):
 
+        self.proxies = {}
+
+        for proxy in ['http_proxy', 'https_proxy']:
+            if config[proxy]:
+                self.proxies[proxy.split('_')[0]] = config[proxy]
+            elif os.getenv(proxy):
+                self.proxies[proxy.split('_')[0]] = os.getenv(proxy)
+
+
         super(TarOverlay, self).__init__(parent,
             config, _location, ignore)
 
@@ -111,11 +127,17 @@ class TarOverlay(OverlaySource):
                 ext = candidate_ext
                 break
 
-        try:
-            tar = urllib2.urlopen(tar_url).read()
-        except Exception as error:
-            raise Exception('Failed to fetch the tar package from: '
-                            + self.src + '\nError was:' + str(error))
+        # setup the ssl-fetch output map
+        connector_output = {
+            'info':  self.output.debug,
+            'error': self.output.error,
+            'args-info': {'level': 2},
+            'args-error':{'level': None},
+        }
+
+        fetcher = Connector(connector_output, self.proxies, USERAGENT)
+
+        success, tar, timestamp = fetcher.fetch_content(tar_url)
 
         pkg = path([base, self.parent.name + ext])
 
