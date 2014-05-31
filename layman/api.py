@@ -16,10 +16,9 @@
 from __future__ import unicode_literals
 from __future__ import print_function
 
-import os
+import os, sys
 
 from layman.config import BareConfig
-
 from layman.dbbase import UnknownOverlayException, UnknownOverlayMessage
 from layman.db import DB
 from layman.remotedb import RemoteDB
@@ -27,10 +26,13 @@ from layman.overlays.source import require_supported
 #from layman.utils import path, delete_empty_directory
 from layman.compatibility import encode
 
+if sys.hexversion >= 0x30200f0:
+    STR = str
+else:
+    STR = basestring
 
 UNKNOWN_REPO_ID = "Repo ID '%s' " + \
         "is not listed in the current available overlays list"
-
 
 class LaymanAPI(object):
     """class to hold and run a layman instance for use by API consumer apps, guis, etc.
@@ -91,7 +93,7 @@ class LaymanAPI(object):
         converting a string to a list[string] if it is not already a list.
         produces and error message if it is any other type
         returns repos as list always"""
-        if isinstance(repos, basestring):
+        if isinstance(repos, STR):
             repos = [repos]
         # else assume it is an iterable, if not it will error
         return [encode(i) for i in repos]
@@ -300,7 +302,7 @@ class LaymanAPI(object):
         @param update_news: bool, defaults to False
         @rtype bool or {'repo-id': bool,...}
         """
-        self.output.debug("API.sync(); repos to sync = %s" % ', '.join(repos), 5)
+        self.output.debug("API.sync(); repos to sync = %s" % ', '.join((x.decode() if isinstance(x, bytes) else x) for x in repos), 5)
         fatals = []
         warnings = []
         success  = []
