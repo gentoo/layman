@@ -30,7 +30,13 @@ __version__ = "0.2"
 
 import sys
 import os
-import ConfigParser
+
+try:
+    # Import for Python3
+    import configparser as ConfigParser
+except:
+    # Import for Python2
+    import ConfigParser
 
 from layman.output import Message
 from layman.utils import path
