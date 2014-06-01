@@ -27,6 +27,12 @@ from __future__ import unicode_literals
 __version__ = "0.2"
 
 
+# establish the eprefix, initially set so eprefixify can
+# set it on install
+EPREFIX = "@GENTOO_PORTAGE_EPREFIX@"
+# check and set it if it wasn't
+if "GENTOO_PORTAGE_EPREFIX" in EPREFIX:
+    EPREFIX = ''
 
 import sys
 import os
@@ -85,14 +91,6 @@ def proxies(config=None, output=None):
         output.warn("Warning: unable to determine proxies.")        
 
     return proxies
-
-# establish the eprefix, initially set so eprefixify can
-# set it on install
-EPREFIX = "@GENTOO_PORTAGE_EPREFIX@"
-
-# check and set it if it wasn't
-if "GENTOO_PORTAGE_EPREFIX" in EPREFIX:
-    EPREFIX = ''
 
 
 class BareConfig(object):
