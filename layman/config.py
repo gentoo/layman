@@ -27,7 +27,6 @@ from __future__ import unicode_literals
 __version__ = "0.2"
 
 
-
 import sys
 import os
 
@@ -40,6 +39,13 @@ except:
 
 from layman.output import Message
 from layman.utils import path
+
+# establish the eprefix, initially set so eprefixify can
+# set it on install
+EPREFIX = "@GENTOO_PORTAGE_EPREFIX@"
+# check and set it if it wasn't
+if "GENTOO_PORTAGE_EPREFIX" in EPREFIX:
+    EPREFIX = ''
 
 def read_layman_config(config=None, defaults=None, output=None):
     """reads the config file defined in defaults['config']
@@ -65,14 +71,6 @@ def read_layman_config(config=None, defaults=None, output=None):
             if os.path.isfile(_path):
                 overlays.update(["file://" + _path])
         config.set('MAIN', 'overlays', '\n'.join(overlays))
-
-# establish the eprefix, initially set so eprefixify can
-# set it on install
-EPREFIX = "@GENTOO_PORTAGE_EPREFIX@"
-
-# check and set it if it wasn't
-if "GENTOO_PORTAGE_EPREFIX" in EPREFIX:
-    EPREFIX = ''
 
 
 class BareConfig(object):
