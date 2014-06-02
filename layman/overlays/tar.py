@@ -111,7 +111,7 @@ class TarOverlay(OverlaySource):
 
         try:
             tar = urllib2.urlopen(tar_url).read()
-        except Exception, error:
+        except Exception as error:
             raise Exception('Failed to fetch the tar package from: '
                             + self.src + '\nError was:' + str(error))
 
@@ -121,7 +121,7 @@ class TarOverlay(OverlaySource):
             out_file = open(pkg, 'w+b')
             out_file.write(tar)
             out_file.close()
-        except Exception, error:
+        except Exception as error:
             raise Exception('Failed to store tar package in '
                             + pkg + '\nError was:' + str(error))
 
@@ -140,7 +140,7 @@ class TarOverlay(OverlaySource):
             try:
                 self.output.info('Deleting directory "%s"' % folder, 2)
                 shutil.rmtree(folder)
-            except Exception, error:
+            except Exception as error:
                 raise Exception('Failed to remove unnecessary tar structure "'
                                 + folder + '"\nError was:' + str(error))
 
@@ -149,7 +149,7 @@ class TarOverlay(OverlaySource):
         try:
             result = self._extract(base=base, tar_url=self.src,
                 dest_dir=temp_path)
-        except Exception, error:
+        except Exception as error:
             try_to_wipe(temp_path)
             raise error
 
@@ -165,7 +165,7 @@ class TarOverlay(OverlaySource):
 
                 try:
                     os.rename(source, final_path)
-                except Exception, error:
+                except Exception as error:
                     raise Exception('Failed to rename tar subdirectory ' +
                                     source + ' to ' + final_path +
                                     '\nError was:' + str(error))

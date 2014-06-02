@@ -173,7 +173,7 @@ class Main(object):
         try:
             new_umask = int(umask, 8)
             old_umask = os.umask(new_umask)
-        except Exception, error:
+        except Exception as error:
             self.output.die('Failed setting to umask "' + umask +
                 '"!\nError was: ' + str(error))
 
