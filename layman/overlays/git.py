@@ -16,6 +16,8 @@
 #             Stefan Schweizer <genstef@gentoo.org>
 ''' Git overlay support.'''
 
+from __future__ import unicode_literals
+
 __version__ = "$Id: git.py 146 2006-05-27 09:52:36Z wrobel $"
 
 #===============================================================================

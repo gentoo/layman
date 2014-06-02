@@ -13,6 +13,8 @@
 # Author(s):
 #             Sebastian Pipping <sebastian@pipping.org>
 
+from __future__ import unicode_literals
+
 import os
 import copy
 import sys
@@ -177,7 +179,7 @@ class OverlaySource(object):
             self.output.warn("Checking for cleanup actions to perform", 4)
             self.cleanup()
             result = 1
-        except Exception, err:
+        except Exception as err:
             self.output.error(
                 'Unknown exception running command: %s' % command_repr)
             self.output.error('Original error was: %s' % str(err))

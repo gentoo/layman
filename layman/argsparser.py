@@ -20,6 +20,7 @@
 #
 '''Defines the configuration options and provides parsing functionality.'''
 
+from __future__ import unicode_literals
 
 __version__ = "$Id: config.py 286 2007-01-09 17:48:23Z wrobel $"
 
@@ -307,9 +308,9 @@ class ArgsParser(BareConfig):
 
         if key == 'overlays':
             overlays = ''
-            if (key in self.options.__dict__.keys()
-                and not self.options.__dict__[key] is None):
-                overlays = '\n'.join(self.options.__dict__[key])
+            if (key in self.options.keys()
+                and not self.options[key] is None):
+                overlays = '\n'.join(self.options[key])
             if self.config.has_option('MAIN', 'overlays'):
                 overlays += '\n' + self.config.get('MAIN', 'overlays')
             if len(overlays):
@@ -317,9 +318,9 @@ class ArgsParser(BareConfig):
 
         self.output.debug('ARGSPARSER: Retrieving options option: %s' % key, 9)
 
-        if (key in self.options.__dict__.keys()
-            and not self.options.__dict__[key] is None):
-            return self.options.__dict__[key]
+        if (key in self.options.keys()
+            and not self.options[key] is False):
+            return self.options[key]
 
         self.output.debug('ARGSPARSER: Retrieving config option: %s' % key, 9)
 
@@ -346,8 +347,9 @@ class ArgsParser(BareConfig):
 
         self.output.debug('ARGSPARSER: Retrieving keys', 9)
 
-        keys = [i for i in self.options.__dict__.keys()
-                if not self.options.__dict__[i] is None]
+        keys = [i for i in self.options
+                if not self.options[i] is False
+                and not self.options[i] is None]
 
         self.output.debug('ARGSPARSER: Retrieving keys 2', 9)
 

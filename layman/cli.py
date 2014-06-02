@@ -19,6 +19,8 @@
 #
 ''' Provides the command line actions that can be performed by layman.'''
 
+from __future__ import unicode_literals
+
 __version__ = "$Id: cli.py 2011-01-15 23:52 PST Brian Dolbec$"
 
 
@@ -30,7 +32,10 @@ from layman.utils import (decode_selection, encoder, get_encoding,
 from layman.constants import (NOT_OFFICIAL_MSG, NOT_SUPPORTED_MSG,
     FAILURE, SUCCEED)
 
-
+if sys.hexversion >= 0x30200f0:
+    ALL_KEYWORD = b'ALL'
+else:
+    ALL_KEYWORD = 'ALL'
 
 class ListPrinter(object):
     def __init__(self, config):
@@ -103,7 +108,7 @@ class ListPrinter(object):
 
     def short_list(self, overlay):
         '''
-        >>> print short_list(overlay)
+        >>> print(short_list(overlay))
         wrobel                    [Subversion] (https://o.g.o/svn/dev/wrobel         )
         '''
         name   = pad(overlay['name'], 25)
@@ -173,7 +178,7 @@ class Main(object):
         try:
             new_umask = int(umask, 8)
             old_umask = os.umask(new_umask)
-        except Exception, error:
+        except Exception as error:
             self.output.die('Failed setting to umask "' + umask +
                 '"!\nError was: ' + str(error))
 
@@ -184,7 +189,6 @@ class Main(object):
         a=act.intersection(k)
         self.output.debug('Actions = %s' % str(a), 4)
         for action in self.actions:
-
             self.output.debug('Checking for action %s' % action[0], 4)
 
             if action[0] in self.config.keys():
@@ -234,13 +238,14 @@ class Main(object):
         '''
         self.output.info("Adding overlay,...", 2)
         selection = decode_selection(self.config['add'])
-        if 'ALL' in selection:
+        if ALL_KEYWORD in selection:
             selection = self.api.get_available()
         self.output.debug('Adding selected overlays', 6)
         result = self.api.add_repos(selection, update_news=True)
         if result:
-            self.output.info('Successfully added overlay(s) '+\
-                ', '.join(selection) +'.', 2)
+            self.output.info('Successfully added overlay(s) ' +
+                ', '.join((x.decode('UTF-8') if isinstance(x, bytes) else x) for x in selection) +
+                '.', 2)
         # blank newline  -- no " *"
         self.output.notice('')
         return result
@@ -253,7 +258,7 @@ class Main(object):
         self.output.info("Syncing selected overlays,...", 2)
         # Note api.sync() defaults to printing results
         selection = decode_selection(self.config['sync'])
-        if self.config['sync_all'] or 'ALL' in selection:
+        if self.config['sync_all'] or ALL_KEYWORD in selection:
             selection = self.api.get_installed()
         self.output.debug('Updating selected overlays', 6)
         result = self.api.sync(selection, update_news=True)
@@ -267,12 +272,13 @@ class Main(object):
         '''
         self.output.info('Deleting selected overlays,...', 2)
         selection = decode_selection(self.config['delete'])
-        if 'ALL' in selection:
+        if ALL_KEYWORD in selection:
             selection = self.api.get_installed()
         result = self.api.delete_repos(selection)
         if result:
-            self.output.info('Successfully deleted overlay(s) ' +\
-                ', '.join(selection) + '.', 2)
+            self.output.info('Successfully deleted overlay(s) ' +
+                ', '.join((x.decode('UTF-8') if isinstance(x, bytes) else x) for x in selection) +
+                '.', 2)
         # blank newline  -- no " *"
         self.output.notice('')
         return result
@@ -282,7 +288,7 @@ class Main(object):
         ''' Print information about the specified overlays.
         '''
         selection = decode_selection(self.config['info'])
-        if 'ALL' in selection:
+        if ALL_KEYWORD in selection:
             selection = self.api.get_available()
 
         list_printer = ListPrinter(self.config)

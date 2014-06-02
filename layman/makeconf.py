@@ -15,11 +15,14 @@
 #             Gunnar Wrobel <wrobel@gentoo.org>
 #
 
+from __future__ import unicode_literals
+
 import os
 import codecs
 import re
 
 from layman.utils import path
+from layman.compatibility import cmp_to_key
 
 #===============================================================================
 #
@@ -50,16 +53,16 @@ class MakeConf:
     >>> a.path = write
     >>> a.add(b.overlays['wrobel-stable'])
     >>> [i.name for i in a.overlays]
-    [u'wrobel-stable', u'wrobel-stable']
+    ['wrobel-stable', 'wrobel-stable']
     >>> a.add(b.overlays['wrobel'])
     >>> [i.name for i in a.overlays]
-    [u'wrobel', u'wrobel-stable', u'wrobel-stable']
+    ['wrobel', 'wrobel-stable', 'wrobel-stable']
     >>> a.delete(b.overlays['wrobel-stable'])
     >>> [i.name for i in a.overlays]
-    [u'wrobel']
+    ['wrobel']
     >>> a.add(b.overlays['wrobel-stable'])
     >>> [i.name for i in a.overlays]
-    [u'wrobel', u'wrobel-stable']
+    ['wrobel', 'wrobel-stable']
     >>> a.delete(b.overlays['wrobel'])
     >>> n_md5 = str(hashlib.md5(open(write).read()).hexdigest())
     >>> o_md5 == n_md5
@@ -105,9 +108,9 @@ class MakeConf:
         >>> config['make_conf'] = write
         >>> b = MakeConf(config, c.overlays)
         >>> [i.name for i in b.overlays]
-        [u'wrobel', u'wrobel-stable']
+        ['wrobel', 'wrobel-stable']
         >>> b.extra
-        [u'/usr/local/portage/ebuilds/testing', u'/usr/local/portage/ebuilds/stable', u'/usr/local/portage/kolab2', u'/usr/local/portage/gentoo-webapps-overlay/experimental', u'/usr/local/portage/gentoo-webapps-overlay/production-ready']
+        ['/usr/local/portage/ebuilds/testing', '/usr/local/portage/ebuilds/stable', '/usr/local/portage/kolab2', '/usr/local/portage/gentoo-webapps-overlay/experimental', '/usr/local/portage/gentoo-webapps-overlay/production-ready']
 
         >>> os.unlink(write)
         >>> import shutil
@@ -139,7 +142,7 @@ class MakeConf:
         >>> [i.name for i in b.overlays]
         []
         >>> b.extra
-        [u'/usr/local/portage/ebuilds/testing', u'/usr/local/portage/ebuilds/stable', u'/usr/local/portage/kolab2', u'/usr/local/portage/gentoo-webapps-overlay/experimental', u'/usr/local/portage/gentoo-webapps-overlay/production-ready']
+        ['/usr/local/portage/ebuilds/testing', '/usr/local/portage/ebuilds/stable', '/usr/local/portage/kolab2', '/usr/local/portage/gentoo-webapps-overlay/experimental', '/usr/local/portage/gentoo-webapps-overlay/production-ready']
 
         >>> os.unlink(write)
         >>> import shutil
@@ -164,9 +167,9 @@ class MakeConf:
         >>> c = DB(config)
         >>> a = MakeConf(config, c.overlays)
         >>> [i.name for i in a.overlays]
-        [u'wrobel-stable']
+        ['wrobel-stable']
         >>> a.extra
-        [u'/usr/local/portage/ebuilds/testing', u'/usr/local/portage/ebuilds/stable', u'/usr/local/portage/kolab2', u'/usr/local/portage/gentoo-webapps-overlay/experimental', u'/usr/local/portage/gentoo-webapps-overlay/production-ready']
+        ['/usr/local/portage/ebuilds/testing', '/usr/local/portage/ebuilds/stable', '/usr/local/portage/kolab2', '/usr/local/portage/gentoo-webapps-overlay/experimental', '/usr/local/portage/gentoo-webapps-overlay/production-ready']
         '''
         if os.path.isfile(self.path):
             self.content()
@@ -230,9 +233,9 @@ class MakeConf:
         >>> config['make_conf'] = write
         >>> b = MakeConf(config, c.overlays)
         >>> [i.name for i in b.overlays]
-        [u'wrobel-stable']
+        ['wrobel-stable']
         >>> b.extra
-        [u'/usr/local/portage/ebuilds/testing', u'/usr/local/portage/ebuilds/stable', u'/usr/local/portage/kolab2', u'/usr/local/portage/gentoo-webapps-overlay/experimental', u'/usr/local/portage/gentoo-webapps-overlay/production-ready']
+        ['/usr/local/portage/ebuilds/testing', '/usr/local/portage/ebuilds/stable', '/usr/local/portage/kolab2', '/usr/local/portage/gentoo-webapps-overlay/experimental', '/usr/local/portage/gentoo-webapps-overlay/production-ready']
 
         >>> os.unlink(write)
         >>> import shutil
@@ -246,7 +249,7 @@ class MakeConf:
                 return 1
             return 0
 
-        self.overlays.sort(prio_sort)
+        self.overlays.sort(key=cmp_to_key(prio_sort))
 
         paths = []
         for i in self.overlays:
@@ -273,7 +276,7 @@ class MakeConf:
 
             make_conf.close()
 
-        except Exception, error:
+        except Exception as error:
             self.output.error('MakeConf: write(); Failed to write "'
                 + self.path + '".\nError was:\n' + str(error))
             return False
@@ -290,7 +293,7 @@ class MakeConf:
 
             make_conf.close()
 
-        except Exception, error:
+        except Exception as error:
             self.output.error('MakeConf: content(); Failed to read "' +
                 self.path + '".\nError was:\n' + str(error))
             raise error
