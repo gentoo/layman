@@ -15,6 +15,8 @@
 #             Gunnar Wrobel <wrobel@gentoo.org>
 #
 
+from __future__ import unicode_literals
+
 import os
 import codecs
 import re

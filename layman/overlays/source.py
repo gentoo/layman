@@ -13,6 +13,8 @@
 # Author(s):
 #             Sebastian Pipping <sebastian@pipping.org>
 
+from __future__ import unicode_literals
+
 import os
 import copy
 import sys

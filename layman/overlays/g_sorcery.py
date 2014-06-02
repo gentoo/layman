@@ -17,6 +17,8 @@
 #
 ''' g-sorcery repository support.'''
 
+from __future__ import unicode_literals
+
 #===============================================================================
 #
 # Dependencies
