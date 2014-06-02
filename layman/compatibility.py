@@ -6,6 +6,7 @@
  Distributed under the terms of the GNU General Public License v2
 """
 
+from __future__ import unicode_literals
 
 def encode(text, enc="UTF-8"):
     """py2, py3 compatibility function"""

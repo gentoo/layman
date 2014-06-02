@@ -6,6 +6,7 @@
  Distributed under the terms of the GNU General Public License v2
 """
 
+from __future__ import unicode_literals
 
 __version__ = "0.1"
 
@@ -15,6 +16,11 @@ import sys
 from layman.constants import codes, INFO_LEVEL, WARN_LEVEL, NOTE_LEVEL, DEBUG_LEVEL, OFF
 from layman.compatibility import encode
 
+# py3.2
+if sys.hexversion >= 0x30200f0:
+    from io import IOBase as BUILTIN_FILE_TYPE
+else:
+    BUILTIN_FILE_TYPE=file
 
 class MessageBase(object):
     """Base Message class helper functions and variables
@@ -30,13 +36,13 @@ class MessageBase(object):
                  error_callback=None
                  ):
         # Where should the error output go? This can also be a file
-        if isinstance(err, file):
+        if isinstance(err, BUILTIN_FILE_TYPE):
             self.error_out = err
         else:
             raise Exception("MessageBase: input parameter 'err' must be of type: file")
 
         # Where should the normal output go? This can also be a file
-        if isinstance(out, file):
+        if isinstance(out, BUILTIN_FILE_TYPE):
             self.std_out = out
         else:
             raise Exception("MessageBase: input parameter 'out' must be of type: file")
@@ -133,7 +139,7 @@ class Message(MessageBase):
             return
 
         for i in info.split('\n'):
-            print  >> self.std_out, self.color_func('yellow', 'DEBUG: ') + i
+            print(self.color_func('yellow', 'DEBUG: ') + i, file=self.std_out)
 
 
     def notice (self, note, level = NOTE_LEVEL):
@@ -141,7 +147,7 @@ class Message(MessageBase):
         if level > self.note_lev:
             return
 
-        print >> self.std_out, note
+        print(note, file=self.std_out)
 
 
     def info (self, info, level = INFO_LEVEL):
@@ -153,7 +159,7 @@ class Message(MessageBase):
             return
 
         for i in info.split('\n'):
-            print  >> self.std_out, " %s %s" % (self.color_func('green', '*'),i)
+            print(" %s %s" % (self.color_func('green', '*'),i), file=self.std_out)
 
 
     def status (self, message, status, info = 'ignored'):
@@ -167,7 +173,7 @@ class Message(MessageBase):
             return
 
         for i in lines[0:-1]:
-            print >> self.std_out, " %s %s" % (self.color_func('green', '*'),i)
+            print(" %s %s" % (self.color_func('green', '*'),i), file=self.std_out)
 
         i = lines[-1]
 
@@ -181,8 +187,8 @@ class Message(MessageBase):
         else:
             result = '[' + self.color_func('yellow', info) + ']'
 
-        print >> " %s %s %s %S" % (self.color_func('green', '*'), i,
-            ('.' * (58 - len(i))), result)
+        print(file=" %s %s %s %S" % (self.color_func('green', '*'), i,
+            ('.' * (58 - len(i))), result))
 
 
     def warn (self, warn, level = WARN_LEVEL):
@@ -194,10 +200,10 @@ class Message(MessageBase):
             return
 
         for i in warn.split('\n'):
-            print >> self.std_out, " %s %s" % (self.color_func('yellow', '*'),i)
+            print(" %s %s" % (self.color_func('yellow', '*'),i), file=self.std_out)
 
 
-    def error (self, error):
+    def error (self, error, level = None):
 
         if type(error) != str:#not in types.StringTypes:
             error = encode(error)
@@ -208,7 +214,7 @@ class Message(MessageBase):
             # "layman -L |& less".
             self.std_out.flush()
             self.error_out.flush()
-            print >> self.std_out, " %s %s" % (self.color_func('red', '*'), i)
+            print(" %s %s" % (self.color_func('red', '*'), i), file=self.std_out)
             self.std_out.flush()
         self.do_error_callback(error)
 

@@ -16,6 +16,8 @@
 #
 ''' Tar overlay support.'''
 
+from __future__ import unicode_literals
+
 __version__ = "$Id: tar.py 310 2007-04-09 16:30:40Z wrobel $"
 
 #===============================================================================
@@ -24,12 +26,20 @@ __version__ = "$Id: tar.py 310 2007-04-09 16:30:40Z wrobel $"
 #
 #-------------------------------------------------------------------------------
 
-import os, os.path, sys, urllib2, shutil, tempfile
+import os
+import os.path
+import sys
+import shutil
+
 import xml.etree.ElementTree as ET # Python 2.5
 
+from   layman.config            import proxies
 from   layman.utils             import path
-#from   layman.debug             import OUT
 from   layman.overlays.source   import OverlaySource, require_supported
+from   layman.version           import VERSION
+from   sslfetch.connections     import Connector
+
+USERAGENT = "Layman" + VERSION
 
 #===============================================================================
 #
@@ -82,6 +92,7 @@ class TarOverlay(OverlaySource):
             config, _location, ignore)
 
         self.output = config['output']
+        self.proxies = proxies(config, self.output)
         self.subpath = None
 
     def __eq__(self, other):
@@ -109,11 +120,17 @@ class TarOverlay(OverlaySource):
                 ext = candidate_ext
                 break
 
-        try:
-            tar = urllib2.urlopen(tar_url).read()
-        except Exception, error:
-            raise Exception('Failed to fetch the tar package from: '
-                            + self.src + '\nError was:' + str(error))
+        # setup the ssl-fetch output map
+        connector_output = {
+            'info':  self.output.debug,
+            'error': self.output.error,
+            'args-info': {'level': 2},
+            'args-error':{'level': None},
+        }
+
+        fetcher = Connector(connector_output, self.proxies, USERAGENT)
+
+        success, tar, timestamp = fetcher.fetch_content(tar_url)
 
         pkg = path([base, self.parent.name + ext])
 
@@ -121,7 +138,7 @@ class TarOverlay(OverlaySource):
             out_file = open(pkg, 'w+b')
             out_file.write(tar)
             out_file.close()
-        except Exception, error:
+        except Exception as error:
             raise Exception('Failed to store tar package in '
                             + pkg + '\nError was:' + str(error))
 
@@ -140,7 +157,7 @@ class TarOverlay(OverlaySource):
             try:
                 self.output.info('Deleting directory "%s"' % folder, 2)
                 shutil.rmtree(folder)
-            except Exception, error:
+            except Exception as error:
                 raise Exception('Failed to remove unnecessary tar structure "'
                                 + folder + '"\nError was:' + str(error))
 
@@ -149,7 +166,7 @@ class TarOverlay(OverlaySource):
         try:
             result = self._extract(base=base, tar_url=self.src,
                 dest_dir=temp_path)
-        except Exception, error:
+        except Exception as error:
             try_to_wipe(temp_path)
             raise error
 
@@ -165,11 +182,11 @@ class TarOverlay(OverlaySource):
 
                 try:
                     os.rename(source, final_path)
-                except Exception, error:
+                except Exception as error:
                     raise Exception('Failed to rename tar subdirectory ' +
                                     source + ' to ' + final_path +
                                     '\nError was:' + str(error))
-                os.chmod(final_path, 0755)
+                os.chmod(final_path, 0o755)
             else:
                 raise Exception('Given subpath "' + source + '" does not exist '
                                 ' in the tar package!')

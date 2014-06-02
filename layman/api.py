@@ -13,21 +13,26 @@
 #              Brian Dolbec <dol-sen@sourceforge.net>
 #
 
-import os
+from __future__ import unicode_literals
 
-from layman.config import BareConfig
+import os, sys
 
-from layman.dbbase import UnknownOverlayException, UnknownOverlayMessage
-from layman.db import DB
-from layman.remotedb import RemoteDB
-from layman.overlays.source import require_supported
+from layman.config           import BareConfig
+from  layman.dbbase          import UnknownOverlayException, UnknownOverlayMessage
+from  layman.db              import DB
+from  layman.remotedb        import RemoteDB
+from  layman.overlays.source import require_supported
 #from layman.utils import path, delete_empty_directory
-from layman.compatibility import encode
+from  layman.compatibility   import encode
+from  layman.utils           import verify_overlay_src
 
+if sys.hexversion >= 0x30200f0:
+    STR = str
+else:
+    STR = basestring
 
 UNKNOWN_REPO_ID = "Repo ID '%s' " + \
         "is not listed in the current available overlays list"
-
 
 class LaymanAPI(object):
     """class to hold and run a layman instance for use by API consumer apps, guis, etc.
@@ -88,7 +93,7 @@ class LaymanAPI(object):
         converting a string to a list[string] if it is not already a list.
         produces and error message if it is any other type
         returns repos as list always"""
-        if isinstance(repos, basestring):
+        if isinstance(repos, STR):
             repos = [repos]
         # else assume it is an iterable, if not it will error
         return [encode(i) for i in repos]
@@ -111,9 +116,9 @@ class LaymanAPI(object):
                 continue
             success = False
             try:
-                self._get_installed_db().delete(
+                success = self._get_installed_db().delete(
                     self._get_installed_db().select(ovl))
-            except Exception, e:
+            except Exception as e:
                 self._error(
                         "Exception caught disabling repository '"+ovl+
                             "':\n"+str(e))
@@ -147,7 +152,7 @@ class LaymanAPI(object):
             try:
                 success = self._get_installed_db().add(
                     self._get_remote_db().select(ovl))
-            except Exception, e:
+            except Exception as e:
                 self._error("Exception caught enabling repository '"+ovl+
                     "' : "+str(e))
             results.append(success)
@@ -158,6 +163,22 @@ class LaymanAPI(object):
         if False in results:
             return False
         return True
+
+
+    def readd_repos(self, repos, update_news=False):
+        """reinstalls any given amount of repos
+        by deleting them and readding them
+
+        @type repos: list of strings or string
+        @param repos: ['repo-id1', ...] or 'repo-id'
+        """
+        success = self.delete_repos(repos)
+        if not success:
+            return success
+        success = self.add_repos(repos)
+        if update_news:
+            self.update_news(repos)
+        return success
 
 
     def get_all_info(self, repos, local=False):
@@ -201,7 +222,7 @@ class LaymanAPI(object):
                 continue
             try:
                 overlay = db.select(ovl)
-            except UnknownOverlayException, error:
+            except UnknownOverlayException as error:
                 self._error(error)
                 result[ovl] = ('', False, False)
             else:
@@ -255,7 +276,7 @@ class LaymanAPI(object):
                 overlay = db.select(ovl)
                 #print "overlay = ", ovl
                 #print "!!!", overlay
-            except UnknownOverlayException, error:
+            except UnknownOverlayException as error:
                 #print "ERRORS", str(error)
                 self._error(error)
                 result[ovl] = ('', False, False)
@@ -297,7 +318,7 @@ class LaymanAPI(object):
         @param update_news: bool, defaults to False
         @rtype bool or {'repo-id': bool,...}
         """
-        self.output.debug("API.sync(); repos to sync = %s" % ', '.join(repos), 5)
+        self.output.debug("API.sync(); repos to sync = %s" % ', '.join((x.decode() if isinstance(x, bytes) else x) for x in repos), 5)
         fatals = []
         warnings = []
         success  = []
@@ -306,12 +327,14 @@ class LaymanAPI(object):
 
         self.output.debug("API.sync(); starting ovl loop", 5)
         for ovl in repos:
+            diff_type  = False
+            update_url = False
             self.output.debug("API.sync(); starting ovl = %s" %ovl, 5)
             try:
                 #self.output.debug("API.sync(); selecting %s, db = %s" % (ovl, str(db)), 5)
                 odb = db.select(ovl)
                 self.output.debug("API.sync(); %s now selected" %ovl, 5)
-            except UnknownOverlayException, error:
+            except UnknownOverlayException as error:
                 #self.output.debug("API.sync(); UnknownOverlayException selecting %s" %ovl, 5)
                 #self._error(str(error))
                 fatals.append((ovl,
@@ -331,8 +354,35 @@ class LaymanAPI(object):
             else:
                 self.output.debug("API.sync(); else: self._get_remote_db().select(ovl)", 5)
                 current_src = odb.sources[0].src
-                available_srcs = set(e.src for e in ordb.sources)
-                if ordb and odb and not current_src in available_srcs:
+                (available_srcs, valid) = verify_overlay_src(current_src, 
+                                            set(e.src for e in ordb.sources))
+
+                remote_type = ordb.sources[0].type
+                current_type = odb.sources[0].type
+
+                if remote_type not in current_type:
+                    diff_type = True
+
+                    warnings.append((ovl,
+                        'The overlay type of overlay "%(repo_name)s" seems to have changed.\n'
+                        'The current overlay type is:\n'
+                        '\n'
+                        '  %(current_type)s\n'
+                        '\n'
+                        'while the remote overlay is of type:\n'
+                        '\n'
+                        '  %(remote_type)s\n'
+                        '\n'
+                        'the overlay will be readded using %(remote_type)s' %
+                        {
+                            'repo_name':ovl,
+                            'current_type':current_type,
+                            'remote_type':remote_type,
+                        }))
+
+                if ordb and odb and not valid:
+                    update_url = True
+
                     if len(available_srcs) == 1:
                         plural = ''
                         candidates = '  %s' % tuple(available_srcs)[0]
@@ -352,7 +402,8 @@ class LaymanAPI(object):
                         '%(candidates)s\n'
                         '\n'
                         'as correct location%(plural)s.\n'
-                        'Please consider removing and re-adding the overlay.' %
+                        '\n'
+                        'Repo: "%(repo_name)s" will be updated...' %
                         {
                             'repo_name':ovl,
                             'current_src':current_src,
@@ -361,10 +412,21 @@ class LaymanAPI(object):
                             }))
 
             try:
-                self.output.debug("API.sync(); starting db.sync(ovl)", 5)
-                db.sync(ovl)
-                success.append((ovl,'Successfully synchronized overlay "' + ovl + '".'))
-            except Exception, error:
+                if diff_type:
+                    self.output.debug("API.sync(); starting API.readd_repos(ovl)", 5)
+                    self.readd_repos(ovl)
+                    success.append((ovl, 'Successfully readded overlay "' + ovl + '".'))
+                else:
+                    if update_url:
+                        self.output.debug("API.sync() starting db.update(ovl)", 5)
+                        update_success = db.update(ordb, available_srcs)
+                        if not update_success:
+                            self.output.warn('Failed to update repo...readding', 2)
+                            self.readd_repos(ovl)
+                    self.output.debug("API.sync(); starting db.sync(ovl)", 5)
+                    db.sync(ovl)
+                    success.append((ovl,'Successfully synchronized overlay "' + ovl + '".'))
+            except Exception as error:
                 fatals.append((ovl,
                     'Failed to sync overlay "' + ovl + '".\nError was: '
                     + str(error)))
@@ -428,21 +490,21 @@ class LaymanAPI(object):
         >>> b.close()
 
         >>> api.get_available()
-        [u'wrobel', u'wrobel-stable']
-        >>> all = api.get_all_info(u'wrobel')
+        ['wrobel', 'wrobel-stable']
+        >>> all = api.get_all_info('wrobel')
         >>> info = all['wrobel']
         >>> info['status']
-        u'official'
+        'official'
         >>> info['description']
-        u'Test'
+        'Test'
         >>> info['sources']
-        [(u'https://overlays.gentoo.org/svn/dev/wrobel', 'Subversion', None)]
+        [('https://overlays.gentoo.org/svn/dev/wrobel', 'Subversion', None)]
 
-        #{u'wrobel': {'status': u'official',
-        #'owner_name': None, 'description': u'Test',
+        #{'wrobel': {'status': 'official',
+        #'owner_name': None, 'description': 'Test',
         #'src_uris': <generator object source_uris at 0x167c3c0>,
-        #'owner_email': u'nobody@gentoo.org',
-        #'quality': u'experimental', 'name': u'wrobel', 'supported': True,
+        #'owner_email': 'nobody@gentoo.org',
+        #'quality': 'experimental', 'name': 'wrobel', 'supported': True,
         #'src_types': <generator object source_types at 0x167c370>,
         #'official': True,
         #'priority': 10, 'feeds': [], 'irc': None, 'homepage': None}}
@@ -457,7 +519,7 @@ class LaymanAPI(object):
             self.output.debug(
                 'LaymanAPI.fetch_remote_list(); cache updated = %s'
                 % str(dbreload),8)
-        except Exception, error:
+        except Exception as error:
             self.output.error('Failed to fetch overlay list!\n Original Error was: '
                     + str(error))
             return False
@@ -511,7 +573,7 @@ class LaymanAPI(object):
         self._error_messages.append(message)
         self.output.debug("API._error(); _error_messages = %s" % str(self._error_messages), 4)
         if self.report_errors:
-            print >>self.config['stderr'], message
+            print(message, file=self.config['stderr'])
 
 
     def get_errors(self):
@@ -554,6 +616,8 @@ class LaymanAPI(object):
                     # because it may be different than layman's name for it
                     repo_names = []
                     for repo in repos:
+                        if isinstance(repo, bytes):
+                            repo = repo.decode('UTF-8')
                         ovl = self._get_installed_db().select(repo)
                         ovl_path = os.path.join(ovl.config['storage'], repo)
                         name = portdb.getRepositoryName(ovl_path)
@@ -585,7 +649,7 @@ class LaymanAPI(object):
             elif self.config['news_reporter'] == 'pkgcore':
                 # pkgcore is not yet capable
                 return
-        except Exception, err:
+        except Exception as err:
             msg = "update_news() failed running %s news reporter function\n" +\
                   "Error was; %s"
             self._error(msg % (self.config['news_reporter'], err))

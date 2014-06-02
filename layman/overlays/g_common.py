@@ -16,6 +16,8 @@
 #
 ''' G-common repository support.'''
 
+from __future__ import unicode_literals
+
 #===============================================================================
 #
 # Dependencies

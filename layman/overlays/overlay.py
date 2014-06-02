@@ -20,6 +20,8 @@
 #
 ''' Basic overlay class.'''
 
+from __future__ import unicode_literals
+
 __version__ = "0.2"
 
 #===============================================================================
@@ -85,15 +87,15 @@ class Overlay(object):
         >>> output = Message()
         >>> a = Overlay({'output': output}, overlays[0])
         >>> a.name
-        u'wrobel'
+        'wrobel'
         >>> a.is_official()
         True
         >>> list(a.source_uris())
-        [u'https://overlays.gentoo.org/svn/dev/wrobel']
+        ['https://overlays.gentoo.org/svn/dev/wrobel']
         >>> a.owner_email
-        u'nobody@gentoo.org'
+        'nobody@gentoo.org'
         >>> a.description
-        u'Test'
+        'Test'
         >>> a.priority
         10
         >>> b = Overlay({'output': output}, overlays[1])
@@ -208,7 +210,7 @@ class Overlay(object):
         else:
             self.status = None
 
-        self.quality = u'experimental'
+        self.quality = 'experimental'
         if 'quality' in xml.attrib:
             if xml.attrib['quality'] in set(QUALITY_LEVELS):
                 self.quality = encode(xml.attrib['quality'])
@@ -304,7 +306,7 @@ class Overlay(object):
         else:
             self.status = None
 
-        self.quality = u'experimental'
+        self.quality = 'experimental'
         if len(overlay['quality']):
             if overlay['quality'] in set(QUALITY_LEVELS):
                 self.quality = encode(overlay['quality'])
@@ -414,10 +416,45 @@ class Overlay(object):
                     # Worked, throw other sources away
                     self.sources = [s]
                     break
-            except Exception, error:
+            except Exception as error:
                 self.output.warn(str(error), 4)
             first_s = False
         return res
+
+
+    def update(self, base, available_srcs):
+        res = 1
+        first_src = True
+        result = False
+        supported_types = ['Bzr', 'cvs', 'Git', 'Mercurial', 'Subversion']
+
+        if isinstance(available_srcs, str):
+            available_srcs = [available_srcs]
+
+        if self.sources[0].type in supported_types:
+            for src in available_srcs:
+                if not first_src:
+                    self.output.info("\nTrying next source of listed sources...", 4)
+                try:
+                    res = self.sources[0].update(base, src)
+                    if res == 0:
+                        # Updating it worked, no need to bother 
+                        # checking other sources.
+                        self.sources[0].src = src
+                        result = True
+                        break
+                except Exception as error:
+                    self.output.warn(str(error), 4)
+                first_s = False
+        else:
+            # Update the overlay source with the remote
+            # source, assuming that it's telling the truth
+            # so it can be written to the installed.xml.
+            self.output.debug("overlay.update(); type: %s does not support"\
+                " source URL updating" % self.sources[0].type, 4)
+            self.sources[0].src = available_srcs.pop()
+            result = True
+        return (self.sources, result)
 
 
     def sync(self, base):
@@ -453,55 +490,55 @@ class Overlay(object):
         <BLANKLINE>
         '''
 
-        result = u''
+        result = ''
 
-        result += self.name + u'\n' + (len(self.name) * u'~')
+        result += self.name + '\n' + (len(self.name) * '~')
 
         if len(self.sources) == 1:
-            result += u'\nSource  : ' + self.sources[0].src
+            result += '\nSource  : ' + self.sources[0].src
         else:
-            result += u'\nSources:'
+            result += '\nSources:'
             for i, v in enumerate(self.sources):
                 result += '\n  %d. %s' % (i + 1, v.src)
             result += '\n'
 
         if self.owner_name != None:
-            result += u'\nContact : %s <%s>' \
+            result += '\nContact : %s <%s>' \
                 % (self.owner_name, self.owner_email)
         else:
-            result += u'\nContact : ' + self.owner_email
+            result += '\nContact : ' + self.owner_email
         if len(self.sources) == 1:
-            result += u'\nType    : ' + self.sources[0].type
+            result += '\nType    : ' + self.sources[0].type
         else:
-            result += u'\nType    : ' + '/'.join(
+            result += '\nType    : ' + '/'.join(
                 sorted(set(e.type for e in self.sources)))
-        result += u'; Priority: ' + str(self.priority) + u'\n'
-        result += u'Quality : ' + self.quality + u'\n'
+        result += '; Priority: ' + str(self.priority) + '\n'
+        result += 'Quality : ' + self.quality + '\n'
 
 
         description = self.description
-        description = re.compile(u' +').sub(u' ', description)
-        description = re.compile(u'\n ').sub(u'\n', description)
-        result += u'\nDescription:'
-        result += u'\n  '.join((u'\n' + description).split(u'\n'))
-        result += u'\n'
+        description = re.compile(' +').sub(' ', description)
+        description = re.compile('\n ').sub('\n', description)
+        result += '\nDescription:'
+        result += '\n  '.join(('\n' + description).split('\n'))
+        result += '\n'
 
         if self.homepage != None:
             link = self.homepage
-            link = re.compile(u' +').sub(u' ', link)
-            link = re.compile(u'\n ').sub(u'\n', link)
-            result += u'\nLink:'
-            result += u'\n  '.join((u'\n' + link).split(u'\n'))
-            result += u'\n'
+            link = re.compile(' +').sub(' ', link)
+            link = re.compile('\n ').sub('\n', link)
+            result += '\nLink:'
+            result += '\n  '.join(('\n' + link).split('\n'))
+            result += '\n'
 
         if self.irc != None:
-            result += u'\nIRC : ' + self.irc + u'\n'
+            result += '\nIRC : ' + self.irc + '\n'
 
         if len(self.feeds):
-            result += u'\n%s:' % ((len(self.feeds) == 1) and "Feed" or "Feeds")
+            result += '\n%s:' % ((len(self.feeds) == 1) and "Feed" or "Feeds")
             for i in self.feeds:
-                result += u'\n  %s' % i
-            result += u'\n'
+                result += '\n  %s' % i
+            result += '\n'
 
         return encoder(result, self._encoding_)
 

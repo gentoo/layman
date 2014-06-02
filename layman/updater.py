@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
+
 from sys import stderr
 import os
 import argparse
@@ -23,7 +25,7 @@ def rename_db(config, newname, output):
                 "name is...: %s" %newname, 2)
             output.notice('')
             return
-        except OSError, err:
+        except OSError as err:
             output.error("  Automatic db rename failed:\n%s" %str(err))
     else:
         output.info("  Automatic db rename, failed access to: %s"

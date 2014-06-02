@@ -21,6 +21,8 @@
 
 '''Utility functions to deal with xml nodes. '''
 
+from __future__ import unicode_literals
+
 __version__ = '$Id: utils.py 236 2006-09-05 20:39:37Z wrobel $'
 
 #===============================================================================
@@ -36,6 +38,10 @@ import codecs
 
 from layman.output import Message
 
+if sys.hexversion >= 0x30200f0:
+    STR = str
+else:
+    STR = basestring
 
 #===============================================================================
 #
@@ -147,7 +153,7 @@ def path(path_elements):
     '''
     pathname = ''
 
-    if type(path_elements) in types.StringTypes:
+    if isinstance(path_elements,STR):
         path_elements = [path_elements]
 
     # Concatenate elements and seperate with /
@@ -163,6 +169,18 @@ def path(path_elements):
 
     return pathname
 
+def verify_overlay_src(current_src, remote_srcs):
+    '''
+    Verifies that the src-url of the overlay in
+    that database is in the set of reported src_urls
+    by the remote database.
+    '''
+    if current_src not in remote_srcs:
+        # return remote_srcs and boolean
+        # stating that it's not valid.
+        return remote_srcs, False
+    return current_src, True
+
 def delete_empty_directory(mdir, output=None):
     # test for a usable output parameter,
     # and make it usable if not
@@ -174,7 +192,7 @@ def delete_empty_directory(mdir, output=None):
             output.info('Deleting _empty_ directory "%s"' % mdir, 2)
             try:
                 os.rmdir(mdir)
-            except OSError, error:
+            except OSError as error:
                 output.warn(str(error))
         else:
             output.warn('Insufficient permissions to delete _empty_ folder "%s".' % mdir)
@@ -197,7 +215,7 @@ def create_overlay_dict(**kwargs):
         'feeds': [],
         'sources': [('','','')],
         'priority': 50,
-        'quality': u'experimental',
+        'quality': 'experimental',
         'status': '',
         'official': False,
         'supported': False,

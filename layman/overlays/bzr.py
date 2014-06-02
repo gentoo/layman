@@ -18,6 +18,8 @@
 '''Should work with any version of Bzr equal to or better than 0.7 --
  caution: tested only with 0.8 and 0.8.2...'''
 
+from __future__ import unicode_literals
+
 __version__ = "$Id: bzr.py 236 2006-09-05 20:39:37Z wrobel $"
 
 #===============================================================================
@@ -47,6 +49,11 @@ class BzrOverlay(OverlaySource):
             config, _location, ignore)
         self.subpath = None
 
+    def _fix_bzr_source(self, source):   
+        if source.endswith("/"):
+            return source
+        return source + '/'
+    
     def add(self, base):
         '''Add overlay.'''
 
@@ -56,10 +63,7 @@ class BzrOverlay(OverlaySource):
         cfg_opts = self.config["bzr_addopts"]
         target = path([base, self.parent.name])
 
-        if self.src.endswith("/"):
-            src = self.src
-        else:
-            src = self.src + '/'
+        src = self._fix_bzr_source(self.src)
 
         # bzr get SOURCE TARGET
         if len(cfg_opts):
@@ -67,6 +71,22 @@ class BzrOverlay(OverlaySource):
                 src, target]
         else:
             args = ['branch', src, target]
+        return self.postsync(
+            self.run_command(self.command(), args, cmd=self.type),
+            cwd=target)
+
+    def update(self, base, src):
+        '''Updates overlay src-url.'''
+
+        if not self.supported():
+            return 1
+
+        target = path([base, self.parent.name])
+
+        # bzr bind SOURCE
+        args = ['bind', self._fix_bzr_source(src)]
+        if self.config['quiet']:
+            args.append('--quiet')
         return self.postsync(
             self.run_command(self.command(), args, cmd=self.type),
             cwd=target)

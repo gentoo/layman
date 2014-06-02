@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
+
 """
  LAYMAN CONFIGURATION
 
@@ -25,10 +27,22 @@
 __version__ = "0.2"
 
 
+# establish the eprefix, initially set so eprefixify can
+# set it on install
+EPREFIX = "@GENTOO_PORTAGE_EPREFIX@"
+# check and set it if it wasn't
+if "GENTOO_PORTAGE_EPREFIX" in EPREFIX:
+    EPREFIX = ''
 
 import sys
 import os
-import ConfigParser
+
+try:
+    # Import for Python3
+    import configparser as ConfigParser
+except:
+    # Import for Python2
+    import ConfigParser
 
 from layman.output import Message
 from layman.utils import path
@@ -59,13 +73,24 @@ def read_layman_config(config=None, defaults=None, output=None):
         config.set('MAIN', 'overlays', '\n'.join(overlays))
 
 
-# establish the eprefix, initially set so eprefixify can
-# set it on install
-EPREFIX = "@GENTOO_PORTAGE_EPREFIX@"
+def proxies(config=None, output=None):
+    """
+    Reads the config options to determine the available proxies.
 
-# check and set it if it wasn't
-if "GENTOO_PORTAGE_EPREFIX" in EPREFIX:
-    EPREFIX = ''
+    @param config: config options dict.
+    @rtype dict
+    """
+    proxies = {}
+
+    for proxy in ['http_proxy', 'https_proxy']:
+        if config[proxy]:
+            proxies[proxy.split('_')[0]] = config[proxy]
+        elif os.getenv(proxy):
+            proxies[proxy.split('_')[0]] = os.getenv(proxy)
+    if proxies == {} and output is not None:
+        output.warn("Warning: unable to determine proxies.")        
+
+    return proxies
 
 
 class BareConfig(object):
@@ -99,6 +124,9 @@ class BareConfig(object):
             'cache'     : '%(storage)s/cache',
             'local_list': '%(storage)s/overlays.xml',
             'installed': '%(storage)s/installed.xml',
+            'auto_sync': 'No',
+            'conf_type': 'make.conf',
+            'require_repoconfig': 'Yes',
             'make_conf' : '%(storage)s/make.conf',
             'repos_conf': '/etc/portage/repos.conf/layman.conf',
             'conf_module': ['make_conf', 'repos_conf'],
@@ -124,7 +152,7 @@ class BareConfig(object):
             'rsync_command': path([self.root, EPREFIX,'/usr/bin/rsync']),
             'svn_command': path([self.root, EPREFIX,'/usr/bin/svn']),
             'tar_command': path([self.root, EPREFIX,'/bin/tar']),
-            't/f_options': ['nocheck'],
+            't/f_options': ['nocheck', 'require_repoconfig'],
             'bzr_addopts' : '',
             'bzr_syncopts' : '',
             'cvs_addopts' : '',
@@ -213,7 +241,7 @@ class BareConfig(object):
 
 
     def set_option(self, option, value):
-        """Sets an option to the value """
+        """Sets an option to the value"""
         self._options[option] = value
         # handle quietness
         if option == 'quiet':

@@ -16,6 +16,8 @@
 #
 ''' Subversion overlay support.'''
 
+from __future__ import unicode_literals
+
 __version__ = "$Id: svn.py 236 2006-09-05 20:39:37Z wrobel $"
 
 
@@ -51,6 +53,13 @@ class SvnOverlay(OverlaySource):
             parent, config, _location, ignore)
         self.subpath = None
 
+    def _fix_svn_source(self, source):
+        if source.endswith("/"):
+            source = source + '@'
+        else:
+            source = source +'/@'
+        return source
+
     def add(self, base):
         '''Add overlay.'''
 
@@ -68,17 +77,27 @@ class SvnOverlay(OverlaySource):
         if len(cfg_opts):
             args.append(cfg_opts)
 
-        if self.src.endswith("/"):
-            src = self.src + '@'
-        else:
-            src = self.src + '/@'
-
+        src = self._fix_svn_source(self.src)
         args.append(src)
         args.append(self.target)
 
         return self.postsync(
             self.run_command(self.command(), args, cmd=self.type),
             cwd=self.target)
+
+    def update(self, base, src):
+        '''Update overlay src-url'''
+
+        self.output.debug("svn.update(); starting...%s" % self.parent.name, 6)
+        target = path([base, self.parent.name])
+
+        # svn switch --relocate <oldurl> <newurl>
+        args = ['switch', '--relocate', self._fix_svn_source(self.src), self._fix_svn_source(src)]
+
+        return self.postsync(
+             self.run_command(self.command(), args, cmd=self.type),
+             cwd=target)
+
 
     def sync(self, base):
         '''Sync overlay.'''

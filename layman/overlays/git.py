@@ -16,6 +16,8 @@
 #             Stefan Schweizer <genstef@gentoo.org>
 ''' Git overlay support.'''
 
+from __future__ import unicode_literals
+
 __version__ = "$Id: git.py 146 2006-05-27 09:52:36Z wrobel $"
 
 #===============================================================================
@@ -44,20 +46,20 @@ class GitOverlay(OverlaySource):
             _location, ignore)
         self.subpath = None
 
+    def _fix_git_source(self, source):
+        # http:// should get trailing slash, other protocols shouldn't
+        if source.split(':')[0] == 'http':
+            if source.endswith('/'):
+                return source
+            else:
+                return source + '/'
+        return source
+
     def add(self, base):
         '''Add overlay.'''
 
         if not self.supported():
             return 1
-
-        def fix_git_source(source):
-            # http:// should get trailing slash, other protocols shouldn't
-            if source.split(':')[0] == 'http':
-                if source.endswith('/'):
-                    return source
-                else:
-                    return source + '/'
-            return source
 
         cfg_opts = self.config["git_addopts"]
         target = path([base, self.parent.name])
@@ -68,7 +70,7 @@ class GitOverlay(OverlaySource):
             args.append('-q')
         if len(cfg_opts):
             args.append(cfg_opts)
-        args.append(fix_git_source(self.src))
+        args.append(self._fix_git_source(self.src))
         args.append(target)
         success = False
         # adding cwd=base due to a new git bug in selinux due to
@@ -91,6 +93,17 @@ class GitOverlay(OverlaySource):
             return failure
         args = ['config', 'user.email', email]
         self.output.debug("set git user info...args=%s" % ' '.join(args), 8)
+        return self.run_command(self.command(), args, cmd=self.type, cwd=target)
+
+    def update(self, base, src):
+        '''Update overlay src-url'''
+        
+        self.output.debug("git.update(); starting...%s" % self.parent.name, 6)
+        target = path([base, self.parent.name])
+
+        # git remote set-url <name> <newurl> <oldurl>
+        args = ['remote', 'set-url', 'origin', self._fix_git_source(src), self._fix_git_source(self.src)]
+
         return self.run_command(self.command(), args, cmd=self.type, cwd=target)
 
     def sync(self, base):

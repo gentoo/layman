@@ -19,10 +19,12 @@
 #             Brian Dolbec <brian.dolbec@gmail.com>
 #
 
+from __future__ import unicode_literals
+
 __version__ = "$Id: version.py 309 2007-04-09 16:23:38Z wrobel $"
 
 
 VERSION = '2.0.0-git'
 
 if __name__ == '__main__':
-    print VERSION
+    print(VERSION)

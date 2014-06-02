@@ -16,6 +16,7 @@
 #
 '''Handles different storage files.'''
 
+from __future__ import unicode_literals
 from __future__ import with_statement
 
 __version__ = "$Id: db.py 309 2007-04-09 16:23:38Z wrobel $"
@@ -30,8 +31,7 @@ import os, os.path
 
 from   layman.utils             import path, delete_empty_directory
 from   layman.dbbase            import DbBase
-from   layman.makeconf          import MakeConf
-
+from   layman.repoconfmanager   import RepoConfManager
 
 #===============================================================================
 #
@@ -61,6 +61,8 @@ class DB(DbBase):
                           paths=[config['installed'], ],
                           ignore=ignore,
                           )
+
+        self.repo_conf = RepoConfManager(self.config, self.overlays)
 
         self.output.debug('DB handler initiated', 6)
 
@@ -111,11 +113,11 @@ class DB(DbBase):
         # * Running command "/usr/bin/rsync -rlptDvz --progress --delete --delete-after --timeout=180 --exclude="distfiles/*" --exclude="local/*" --exclude="packages/*" "rsync://gunnarwrobel.de/wrobel-stable/*" "/tmp/file.../wrobel-stable""...
         # >>> c = DbBase([write, ], dict())
         # >>> c.overlays.keys()
-        # [u'wrobel-stable']
+        # ['wrobel-stable']
 
         # >>> m = MakeConf(config, b.overlays)
         # >>> [i.name for i in m.overlays] #doctest: +ELLIPSIS
-        # [u'wrobel-stable']
+        # ['wrobel-stable']
 
         # >>> os.unlink(write)
         >>> os.unlink(write2)
@@ -131,11 +133,8 @@ class DB(DbBase):
                     overlay.set_priority(self.config['priority'])
                 self.overlays[overlay.name] = overlay
                 self.write(self.path)
-                if self.config['make_conf']:
-                    make_conf = MakeConf(self.config, self.overlays)
-                    make_ok = make_conf.add(overlay)
-                    return make_ok
-                return True
+                repo_ok = self.repo_conf.add(overlay)
+                return repo_ok
             else:
                 mdir = path([self.config['storage'], overlay.name])
                 delete_empty_directory(mdir, self.output)
@@ -195,16 +194,16 @@ class DB(DbBase):
         # * Running command "/usr/bin/svn co "https://overlays.gentoo.org/svn/dev/wrobel/" "/tmp/file.../wrobel""...
         # >>> c = DbBase([write, ], dict())
         # >>> c.overlays.keys()
-        # [u'wrobel', u'wrobel-stable']
+        # ['wrobel', 'wrobel-stable']
 
         # >>> b.delete(b.select('wrobel'))
         # >>> c = DbBase([write, ], dict())
         # >>> c.overlays.keys()
-        # [u'wrobel-stable']
+        # ['wrobel-stable']
 
         # >>> m = MakeConf(config, b.overlays)
         # >>> [i.name for i in m.overlays] #doctest: +ELLIPSIS
-        # [u'wrobel-stable']
+        # ['wrobel-stable']
 
         # >>> os.unlink(write)
         >>> os.unlink(write2)
@@ -214,15 +213,26 @@ class DB(DbBase):
         '''
 
         if overlay.name in self.overlays.keys():
-            make_conf = MakeConf(self.config, self.overlays)
             overlay.delete(self.config['storage'])
+            self.repo_conf.delete(overlay)
             del self.overlays[overlay.name]
             self.write(self.path)
-            make_conf.delete(overlay)
         else:
             self.output.error('No local overlay named "' + overlay.name + '"!')
             return False
         return True
+
+
+    def update(self, overlay, available_srcs):
+        '''Updates the overlay source via the available source(s).'''
+
+        source, result = self.overlays[overlay.name].update(self.config['storage'],
+                                                    available_srcs)
+        self.overlays[overlay.name].sources = source
+        self.repo_conf.update(self.overlays[overlay.name])
+        self.write(self.path)
+
+        return result
 
     def sync(self, overlay_name):
         '''Synchronize the given overlay.'''
