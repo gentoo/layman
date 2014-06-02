@@ -16,6 +16,8 @@
 #
 ''' Tar overlay support.'''
 
+from __future__ import unicode_literals
+
 __version__ = "$Id: tar.py 310 2007-04-09 16:30:40Z wrobel $"
 
 #===============================================================================

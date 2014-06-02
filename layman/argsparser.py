@@ -20,6 +20,7 @@
 #
 '''Defines the configuration options and provides parsing functionality.'''
 
+from __future__ import unicode_literals
 
 __version__ = "$Id: config.py 286 2007-01-09 17:48:23Z wrobel $"
 

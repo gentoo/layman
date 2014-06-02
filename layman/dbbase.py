@@ -20,6 +20,8 @@
 #
 '''Main handler for overlays.'''
 
+from __future__ import unicode_literals
+
 __version__ = "$Id: overlay.py 273 2006-12-30 15:54:50Z wrobel $"
 
 #===============================================================================

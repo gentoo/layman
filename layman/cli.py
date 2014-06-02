@@ -19,6 +19,8 @@
 #
 ''' Provides the command line actions that can be performed by layman.'''
 
+from __future__ import unicode_literals
+
 __version__ = "$Id: cli.py 2011-01-15 23:52 PST Brian Dolbec$"
 
 

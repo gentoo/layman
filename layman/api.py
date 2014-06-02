@@ -13,6 +13,8 @@
 #              Brian Dolbec <dol-sen@sourceforge.net>
 #
 
+from __future__ import unicode_literals
+
 import os
 
 from layman.config import BareConfig

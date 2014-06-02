@@ -5,6 +5,8 @@
 on all gentoo repositories and overlays
 """
 
+from __future__ import unicode_literals
+
 import sys
 
 try:
