@@ -245,7 +245,7 @@ class RemoteDB(DbBase):
         if not os.path.exists(os.path.dirname(mpath)):
             try:
                 os.makedirs(os.path.dirname(mpath))
-            except OSError, error:
+            except OSError as error:
                 raise OSError('Failed to create layman storage directory ' +
                               os.path.dirname(mpath) + '\n' +
                               'Error was:' + str(error))
@@ -290,7 +290,7 @@ class RemoteDB(DbBase):
                 self.output.info('Remote list already up to date: %s'
                     % url, 4)
                 self.output.info('Last-modified: %s' % timestamp, 4)
-        except IOError, error:
+        except IOError as error:
             self.output.error('RemoteDB._fetch_file(); Failed to update the '
                 'overlay list from: %s\nIOError was:%s\n'
                 % (url, str(error)))
@@ -333,7 +333,7 @@ class RemoteDB(DbBase):
                 verify=verify,
                 proxies=self.proxies,
                 )
-        except SSLError, error:
+        except SSLError as error:
             self.output.error('RemoteDB._fetch_url(); Failed to update the '
                 'overlay list from: %s\nSSLError was:%s\n'
                 % (url, str(error)))
@@ -388,7 +388,7 @@ class RemoteDB(DbBase):
 
         try:
             self.read(olist, origin=url)
-        except Exception, error:
+        except Exception as error:
             self.output.debug("RemoteDB._check_download(), url=%s \nolist:\n"
                 % url,2)
             self.output.debug(olist, 2)
@@ -419,7 +419,7 @@ class RemoteDB(DbBase):
 
             has_updates = True
 
-        except Exception, error:
+        except Exception as error:
             raise IOError('Failed to temporarily cache overlays list in'
                           ' ' + mpath + '\nError was:\n' + str(error))
         return has_updates

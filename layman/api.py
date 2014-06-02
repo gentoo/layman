@@ -113,7 +113,7 @@ class LaymanAPI(object):
             try:
                 self._get_installed_db().delete(
                     self._get_installed_db().select(ovl))
-            except Exception, e:
+            except Exception as e:
                 self._error(
                         "Exception caught disabling repository '"+ovl+
                             "':\n"+str(e))
@@ -147,7 +147,7 @@ class LaymanAPI(object):
             try:
                 success = self._get_installed_db().add(
                     self._get_remote_db().select(ovl))
-            except Exception, e:
+            except Exception as e:
                 self._error("Exception caught enabling repository '"+ovl+
                     "' : "+str(e))
             results.append(success)
@@ -201,7 +201,7 @@ class LaymanAPI(object):
                 continue
             try:
                 overlay = db.select(ovl)
-            except UnknownOverlayException, error:
+            except UnknownOverlayException as error:
                 self._error(error)
                 result[ovl] = ('', False, False)
             else:
@@ -255,7 +255,7 @@ class LaymanAPI(object):
                 overlay = db.select(ovl)
                 #print "overlay = ", ovl
                 #print "!!!", overlay
-            except UnknownOverlayException, error:
+            except UnknownOverlayException as error:
                 #print "ERRORS", str(error)
                 self._error(error)
                 result[ovl] = ('', False, False)
@@ -311,7 +311,7 @@ class LaymanAPI(object):
                 #self.output.debug("API.sync(); selecting %s, db = %s" % (ovl, str(db)), 5)
                 odb = db.select(ovl)
                 self.output.debug("API.sync(); %s now selected" %ovl, 5)
-            except UnknownOverlayException, error:
+            except UnknownOverlayException as error:
                 #self.output.debug("API.sync(); UnknownOverlayException selecting %s" %ovl, 5)
                 #self._error(str(error))
                 fatals.append((ovl,
@@ -364,7 +364,7 @@ class LaymanAPI(object):
                 self.output.debug("API.sync(); starting db.sync(ovl)", 5)
                 db.sync(ovl)
                 success.append((ovl,'Successfully synchronized overlay "' + ovl + '".'))
-            except Exception, error:
+            except Exception as error:
                 fatals.append((ovl,
                     'Failed to sync overlay "' + ovl + '".\nError was: '
                     + str(error)))
@@ -457,7 +457,7 @@ class LaymanAPI(object):
             self.output.debug(
                 'LaymanAPI.fetch_remote_list(); cache updated = %s'
                 % str(dbreload),8)
-        except Exception, error:
+        except Exception as error:
             self.output.error('Failed to fetch overlay list!\n Original Error was: '
                     + str(error))
             return False
@@ -585,7 +585,7 @@ class LaymanAPI(object):
             elif self.config['news_reporter'] == 'pkgcore':
                 # pkgcore is not yet capable
                 return
-        except Exception, err:
+        except Exception as err:
             msg = "update_news() failed running %s news reporter function\n" +\
                   "Error was; %s"
             self._error(msg % (self.config['news_reporter'], err))

@@ -273,7 +273,7 @@ class MakeConf:
 
             make_conf.close()
 
-        except Exception, error:
+        except Exception as error:
             self.output.error('MakeConf: write(); Failed to write "'
                 + self.path + '".\nError was:\n' + str(error))
             return False
@@ -290,7 +290,7 @@ class MakeConf:
 
             make_conf.close()
 
-        except Exception, error:
+        except Exception as error:
             self.output.error('MakeConf: content(); Failed to read "' +
                 self.path + '".\nError was:\n' + str(error))
             raise error

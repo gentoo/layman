@@ -23,7 +23,7 @@ def rename_db(config, newname, output):
                 "name is...: %s" %newname, 2)
             output.notice('')
             return
-        except OSError, err:
+        except OSError as err:
             output.error("  Automatic db rename failed:\n%s" %str(err))
     else:
         output.info("  Automatic db rename, failed access to: %s"
