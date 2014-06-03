@@ -204,7 +204,7 @@ class Message(MessageBase):
             print(" %s %s" % (self.color_func('yellow', '*'),i), file=self.std_out)
 
 
-    def error (self, error):
+    def error (self, error, level = None):
 
         if type(error) != str:#not in types.StringTypes:
             error = encode(error)
