@@ -16,15 +16,17 @@
 from __future__ import unicode_literals
 from __future__ import print_function
 
-import os, sys
+import os
+import sys
 
-from layman.config import BareConfig
-from layman.dbbase import UnknownOverlayException, UnknownOverlayMessage
-from layman.db import DB
-from layman.remotedb import RemoteDB
+from layman.config          import BareConfig
+from layman.dbbase          import UnknownOverlayException, UnknownOverlayMessage
+from layman.db              import DB
+from layman.remotedb        import RemoteDB
 from layman.overlays.source import require_supported
 #from layman.utils import path, delete_empty_directory
-from layman.compatibility import encode
+from layman.compatibility   import encode
+from layman.utils           import verify_overlay_src
 
 if sys.hexversion >= 0x30200f0:
     STR = str
@@ -165,6 +167,22 @@ class LaymanAPI(object):
         return True
 
 
+    def readd_repos(self, repos, update_news=False):
+        """reinstalls any given amount of repos
+        by deleting them and readding them
+
+        @type repos: list of strings or string
+        @param repos: ['repo-id1', ...] or 'repo-id'
+        """
+        success = self.delete_repos(repos)
+        if not success:
+            return success
+        success = self.add_repos(repos)
+        if update_news:
+            self.update_news(repos)
+        return success
+
+
     def get_all_info(self, repos, local=False):
         """retrieves the recorded information about the repo(s)
         specified by repo-id
@@ -293,6 +311,37 @@ class LaymanAPI(object):
             return self._get_remote_db().list(verbose=verbose, width=width)
 
 
+    def _verify_overlay_type(self, odb, ordb):
+        """
+        Verifies the overlay type against the type reported by
+        remote database.
+
+        @param odb: local database of overlay information.
+        @param ordb: remote database of overlay information.
+        @rtype (boolean, msg)
+        """
+        remote_type = ordb.sources[0].type
+        current_type = odb.sources[0].type
+
+        if remote_type not in current_type:
+            msg = 'The overlay type of overlay "%(repo_name)s" seems to have changed.\n'\
+                  'The current overlay type is:\n'\
+                  '\n'\
+                  '  %(current_type)s\n'\
+                  '\n'\
+                  'while the remote overlay is of type:\n'\
+                  '\n'\
+                  '  %(remote_type)s\n'\
+                  '\n'\
+                  'the overlay will be readded using %(remote_name)s' %
+                  ({
+                      'repo_name': odb.name,
+                      'current_type': current_type,
+                      'remote_type': remote_type,
+                  })
+            return True, msg
+        return False, ''
+
     def sync(self, repos, output_results=True, update_news=False):
         """syncs the specified repo(s) specified by repos
 
@@ -336,8 +385,12 @@ class LaymanAPI(object):
             else:
                 self.output.debug("API.sync(); else: self._get_remote_db().select(ovl)", 5)
                 current_src = odb.sources[0].src
-                available_srcs = set(e.src for e in ordb.sources)
-                if ordb and odb and not current_src in available_srcs:
+                (available_srcs, valid) = verify_overlay_src(current_src, 
+                                            set(e.src for e in ordb.sources))
+
+                (diff_type, type_msg) = self._verify_overlay_type(odb, ordb)
+
+                if ordb and odb and not valid:
                     if len(available_srcs) == 1:
                         plural = ''
                         candidates = '  %s' % tuple(available_srcs)[0]
@@ -366,9 +419,15 @@ class LaymanAPI(object):
                             }))
 
             try:
-                self.output.debug("API.sync(); starting db.sync(ovl)", 5)
-                db.sync(ovl)
-                success.append((ovl,'Successfully synchronized overlay "' + ovl + '".'))
+                if diff_type:
+                    self.output.debug("API.sync(); starting API.readd_repos(ovl)", 5)
+                    warnings.append((ovl, type_msg))
+                    self.readd_repos(ovl)
+                    success.append((ovl, 'Successfully readded overlay "' + ovl + '".'))
+                else:
+                    self.output.debug("API.sync(); starting db.sync(ovl)", 5)
+                    db.sync(ovl)
+                    success.append((ovl,'Successfully synchronized overlay "' + ovl + '".'))
             except Exception as error:
                 fatals.append((ovl,
                     'Failed to sync overlay "' + ovl + '".\nError was: '

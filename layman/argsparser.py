@@ -40,9 +40,9 @@ from layman.version import VERSION
 
 
 _USAGE = """
-  layman (-a|-d|-s|-i) (OVERLAY|ALL)
+  layman (-a|-d|-r|-s|-i) (OVERLAY|ALL)
   # it also supports multiple actions
-  layman (-a|-d|-s|-i) (OVERLAY|ALL) [ [(-a|-d|-s|-i) (OVERLAY)] ...]
+  layman (-a|-d|-r|-s|-i) (OVERLAY|ALL) [ [(-a|-d|-r|-s|-i) (OVERLAY)] ...]
   layman -f [-o URL]
   layman (-l|-L|-S)"""
 
@@ -143,6 +143,13 @@ class ArgsParser(BareConfig):
                              'ity of the added overlay. This will influence the sort'
                              'ing order of the overlays in the PORTDIR_OVERLAY varia'
                              'ble.')
+
+        actions.add_argument('-r',
+                             '--readd',
+                             action = 'append',
+                             help = 'Remove and re-add the given overlay from the cached'
+                             ' remote list to your locally installed overlays... Specify'
+                             ' "ALL" to re-add all local overlays.')
 
         actions.add_argument('-s',
                              '--sync',
