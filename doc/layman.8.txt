@@ -16,23 +16,25 @@ SYNOPSIS
 
 *layman* (*-d*|*--delete*) (*ALL*|'OVERLAY')
 
-*layman* (*-s*|*--sync*) (*ALL*|'OVERLAY')
+*layman* (*-f*|*--fetch*)
 
 *layman* (*-i*|*--info*) (*ALL*|'OVERLAY')
-
-*layman* (*-S*|*--sync-all*)
 
 *layman* (*-L*|*--list*)
 
 *layman* (*-l*|*--list-local*)
 
-*layman* (*-f*|*--fetch*)
+*layman* (*-r*|*--readd*) (*ALL*|'OVERLAY')
+
+*layman* (*-s*|*--sync*) (*ALL*|'OVERLAY')
+
+*layman* (*-S*|*--sync-all*)
 
 
 DESCRIPTION
 -----------
-*layman* is a script that allows you to add, remove and update
-Gentoo overlays from a variety of sources.
+*layman* is a script that allows you to add, remove, re-add, and 
+update Gentoo overlays from a variety of sources.
 
 WARNING
 ~~~~~~~
@@ -57,12 +59,6 @@ ACTIONS
 ~~~~~~~
 List of possible *layman* actions.
 
-*-f*, *--fetch*::
-    Fetches the remote list of overlays. You will usually NOT need
-to explicitly specify this option. The fetch operation will be
-performed automatically once you run the sync, sync-all, or list action.
-You can prevent this automatic fetching using the *--nofetch* option.
-
 *-a* 'OVERLAY', *--add*='OVERLAY'::
     Add the given overlay from the cached remote list to your
     locally installed overlays. Specify "ALL" to add all overlays
@@ -70,17 +66,16 @@ You can prevent this automatic fetching using the *--nofetch* option.
 
 *-d* 'OVERLAY', *--delete*='OVERLAY'::
     Remove the given overlay from your locally installed overlays.
-    Specify "ALL" to remove all overlays
+    Specify "ALL" to remove all overlays.
 
-*-s* 'OVERLAY', *--sync*='OVERLAY'::
-    Update the specified overlay. Use "ALL" as parameter to
-    synchronize all overlays
+*-f*, *--fetch*::
+    Fetches the remote list of overlays. You will usually NOT need
+    to explicitly specify this option. The fetch operation will be
+    performed automatically once you run the sync, sync-all, or list action.
+    You can prevent this automatic fetching using the *--nofetch* option.
 
 *-i* 'OVERLAY', *--info*='OVERLAY'::
     Display all available information about the specified overlay.
-
-*-S*, *--sync-all*::
-    Update all overlays. Shortcut for *-s ALL*.
 
 *-L*, *--list*::
     List the contents of the remote list.
@@ -88,13 +83,40 @@ You can prevent this automatic fetching using the *--nofetch* option.
 *-l*, *--list-local*::
     List the locally installed overlays.
 
+*-n*, *--nofetch*::
+    Prevents *layman* from automatically fetching the remote lists
+    of overlays. The default behavior for *layman* is to update all
+    remote lists if you run the sync, list or fetch operation.
 
-OTHER OPTIONS
+*-p* 'LEVEL', *--priority*='LEVEL'::
+    Use this option in combination with the *--add*. It will modify
+    the priority of the added overlay and thus influence the order
+    of entries in the make.conf file. The lower the priority,
+    the earlier in the list the entry will be mentioned. Use a
+    value between 0 and 100. The default value is 50.
+
+*-r* 'OVERLAY', *--readd*='OVERLAY'::
+    Remove and re-add the given overlay from the cached
+    remote list to your locally installed overlays. Specify "ALL" to
+    re-add all local overlays.
+
+*-s* 'OVERLAY', *--sync*='OVERLAY'::
+    Update the specified overlay. Use "ALL" as parameter to
+    synchronize all overlays.
+
+*-S*, *--sync-all*::
+    Update all overlays. Shortcut for *-s ALL*.
+
+
+PATH OPTIONS
 ~~~~~~~~~~~~~
-List of other available *layman* options.
+List of available *layman* path options.
 
 *-c* 'PATH', *--config*='PATH'::
     Path to an alternative configuration file.
+
+*-C* 'PATH', *--configdir*='PATH'::
+    Directory path for all layman configuration information.
 
 *-o* 'URL', *--overlays*='URL'::
     Specifies the location of additional overlay lists. You can use
@@ -105,10 +127,19 @@ List of other available *layman* options.
     *layman* run - edit your config file to add a URL permanently.
     So this is useful for testing purposes.
 
-*-n*, *--nofetch*::
-    Prevents *layman* from automatically fetching the remote lists
-    of overlays. The default behavior for *layman* is to update all
-    remote lists if you run the sync, list or fetch operation.
+*-O* 'PATH', *--overlay_defs* 'PATH'::
+    Path to additional overlay.xml files.
+
+
+OUTPUT OPTIONS:
+~~~~~~~~~~~~~~~
+List of *layman* output options.
+
+*--debug-level* 'DEBUG_LEVEL'::
+    Outputs *layman* debugging information. The lower the debug level,
+    the less debugging information you'll get. Use a value between 0
+    and 10. 0 means no debugging information, 10 selects all debugging
+    messages. The default debug level is 4.
 
 *-k*, *--nocheck*::
 -   When listing remote overlays (using *-L* or *--list*) *layman*
@@ -121,6 +152,8 @@ List of other available *layman* options.
     to reject overlays that do not provide a description or a contact
     attribute.
 
+*-N*, *--nocolor*::
+    Remove color codes from the *layman* output.
 
 *-q*, *--quiet*::
     Makes *layman* completely quiet. In quiet mode child processes
@@ -130,24 +163,18 @@ List of other available *layman* options.
     For example this might happen if your overlay resides in Subversion
     and the SSL certificate of the server needs manual acceptance.
 
-*-v*, *--verbose*::
-    Makes *layman* more verbose and you will receive a description of
-    the overlays you can download.
-
-*-N*, *--nocolor*::
-    Remove color codes from the *layman* output.
-
 *-Q* 'LEVEL', *--quietness*='LEVEL'::
     Makes *layman* less verbose. Choose a value between 0 and 4
     with 0 being completely quiet. Once you set this below 3,
     the same warning as given for *--quiet* applies.
 
-*-p* 'LEVEL', *--priority*='LEVEL'::
-    Use this option in combination with the *--add*. It will modify
-    the priority of the added overlay and thus influence the order
-    of entries in the make.conf file. The lower the priority,
-    the earlier in the list the entry will be mentioned. Use a value
-    between 0 and 100. The default value is 50.
+*-v*, *--verbose*::
+    Makes *layman* more verbose and you will receive a description of
+    the overlays you can download.
+
+*-W* 'WIDTH', *--width* 'WIDTH'::
+    Sets the screen width. This setting is usually not required as layman
+    is capable of detecting the available number of columns automatically.
 
 
 CONFIGURATION
@@ -208,7 +235,8 @@ nocheck::
     Set to "yes" if *layman* should stop worrying about overlays
     with missing a contact address or the description.
 
-*NEW* Per repository type Add, Sync options.
+
+Per repository type Add, Sync options.
 
 bzr_addopts::
 bzr_syncopts::
@@ -218,7 +246,7 @@ cvs_syncopts::
     These are command options to include in the commands sent to perform
     the desired action.
 
-*NEW* Per repository type Post Add, Sync hooks.
+Per repository type Post Add, Sync hooks.
 
 bzr_postsync::
 cvs_postsync::
@@ -228,7 +256,25 @@ git_postsync::
     These are commands that are run after each add, sync operation if they
     are defined.
 
+*NEW*Repo Configuration options::
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+*layman* now accepts multiple repository config file options. One being the
+already standard make.conf option and the other being the repos.conf files
+that can be place in /etc/portage/repos.conf/. The below configuration options
+allow you to alter particular things regarding the repository configuration::
+
+-  conf_type::
+        Specifies the repo configuration type you wish to use. This can
+        be *repos.conf*, *make.conf*, or both separated by a comma. The
+        default value is *make.conf*.
+-  require_repoconfig::
+        Specify whether or not you want to have any repo configuration 
+        at all.
+-  repos_conf::
+        Specifies the path to the config file for all repos.conf
+        configuration. The default location is
+        '/etc/portage/repos.conf/layman.conf'.
 
 HANDLING OVERLAYS
 -----------------
@@ -258,9 +304,8 @@ will merge the contents of all lists.
 
 *layman* also allows you to define local files in this list.
 Just make sure you prepend these path names in standard URL notation with 'file://'.
-*New* is the ability to just add an overlay definition to /etc/layman/overlays/
- some-overlay.xml and it will be automatically available for actions such as
-  add, delete, info...  (see below for file format details)
+*layman* also gives you the ability to just add an overlay definition to '/etc/layman/overlays/some-overlay.xml' and it will be automatically available for actions such as 
+add, delete, info...  (see below for file format details)
 
 If you need to use a proxy for access to the Internet, you can use
 the corresponding variable in the *layman* configuration file.
@@ -464,7 +509,7 @@ AUTHORS
 - Gunnar Wrobel <wrobel@gentoo.org> (original, retired)
 - Sebastian Pipping <sping@gentoo.org>
 - Brian Dolbec <brian.dolbec@gmail.com>
-
+- Devan Franchini <twitch153@gentoo.org>
 
 REPORTING BUGS
 --------------
