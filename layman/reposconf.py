@@ -78,6 +78,7 @@ class ConfigHandler:
         @return boolean: reflects a successful/failed write to the config file.
         '''
         self.repo_conf.add_section(overlay.name)
+        self.repo_conf.set(overlay.name, 'priority', overlay.priority)
         self.repo_conf.set(overlay.name, 'location', path((self.storage, overlay.name)))
         self.repo_conf.set(overlay.name, 'sync-uri', overlay.sources[0].src)
         self.repo_conf.set(overlay.name, 'auto-sync', self.config['auto_sync'])
