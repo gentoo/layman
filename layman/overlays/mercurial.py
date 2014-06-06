@@ -51,11 +51,11 @@ class MercurialOverlay(OverlaySource):
         self.subpath = None
 
     def _fix_mercurial_source(self, source):
-    '''
-    Adds trailing slash to source URL if needed.
+        '''
+        Adds trailing slash to source URL if needed.
 
-    @params source: source URL, string.
-    '''
+        @params source: source URL, string.
+        '''
         if source.endswith("/"):
             return source
         return source + '/'
