@@ -47,11 +47,11 @@ class GitOverlay(OverlaySource):
         self.subpath = None
 
     def _fix_git_source(self, source):
-    '''
-    Adds trailing slash to http sources
+        '''
+        Adds trailing slash to http sources
 
-    @param source: source URL, string.
-    '''
+        @param source: source URL, string.
+        '''
         # http:// should get trailing slash, other protocols shouldn't
         if source.split(':')[:1] == 'http':
             if not source.endswith('/'):
