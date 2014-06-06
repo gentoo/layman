@@ -44,12 +44,12 @@ class RepoConfManager:
 
 
     def add(self, overlay):
-    '''
-    Adds overlay information to the specified config type(s).
+        '''
+        Adds overlay information to the specified config type(s).
 
-    @param overlay: layman.overlay.Overlay instance.
-    @return boolean: represents success or failure.
-    '''
+        @param overlay: layman.overlay.Overlay instance.
+        @return boolean: represents success or failure.
+        '''
         if self.config['require_repoconfig']:
             for types in self.conf_types:
                 conf = getattr(self.modules[types][0],
@@ -59,12 +59,12 @@ class RepoConfManager:
         return True
 
     def delete(self, overlay):
-    '''
-    Deletes overlay information from the specified config type(s).
+        '''
+        Deletes overlay information from the specified config type(s).
 
-    @param overlay: layman.overlay.Overlay instance.
-    @return boolean: represents success or failure.
-    '''
+        @param overlay: layman.overlay.Overlay instance.
+        @return boolean: represents success or failure.
+        '''
         if self.config['require_repoconfig']:
             for types in self.conf_types:
                 conf = getattr(self.modules[types][0],
@@ -75,12 +75,12 @@ class RepoConfManager:
 
 
     def update(self, overlay):
-    '''
-    Updates the source URL for the specified config type(s).
+        '''
+        Updates the source URL for the specified config type(s).
     
-    @param overlay: layman.overlay.Overlay instance.
-    @return boolean: represents success or failure.
-    '''
+        @param overlay: layman.overlay.Overlay instance.
+        @return boolean: represents success or failure.
+        '''
         if self.config['require_repoconfig']:
             for types in self.conf_types:
                 conf = getattr(self.modules[types][0],

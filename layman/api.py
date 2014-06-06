@@ -333,7 +333,7 @@ class LaymanAPI(object):
                   '\n'\
                   '  %(remote_type)s\n'\
                   '\n'\
-                  'the overlay will be readded using %(remote_name)s' %
+                  'the overlay will be readded using %(remote_name)s' %\
                   ({
                       'repo_name': odb.name,
                       'current_type': current_type,
@@ -342,7 +342,7 @@ class LaymanAPI(object):
             return True, msg
         return False, ''
 
-    def _verify_overlay_source(self, odb, ordb)
+    def _verify_overlay_source(self, odb, ordb):
         """
         Verifies the overlay source url against the source url(s)
         reported by the remote database.
@@ -367,7 +367,7 @@ class LaymanAPI(object):
             msg = 'The source of the overlay "%(repo_name)s" seems to have changed.\n'\
                   'You currently sync from\n'\
                   '\n'\
-                  '  %(current_src)s\n'
+                  '  %(current_src)s\n'\
                   '\n'\
                   'while the remote lists report\n'\
                   '\n'\

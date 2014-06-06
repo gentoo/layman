@@ -54,11 +54,11 @@ class SvnOverlay(OverlaySource):
         self.subpath = None
 
     def _fix_svn_source(self, source):
-    '''
-    Adds @ to all sources that don't already include it.
+        '''
+        Adds @ to all sources that don't already include it.
 
-    @params source: source URL, string.
-    '''
+        @params source: source URL, string.
+        '''
         if source.endswith("/"):
             source = source + '@'
         else:
