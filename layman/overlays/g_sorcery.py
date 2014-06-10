@@ -47,7 +47,7 @@ class GSorceryOverlay(OverlaySource):
         #split source into backend and repository.
         self.backend=self.src[:self.src.find(' ')]
         self.repository=self.src[self.src.find(' ')+1:]
-        self.subpath = None
+        self.branch = None
 
     def add(self, base):
         '''Add overlay.'''

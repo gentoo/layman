@@ -44,7 +44,8 @@ class GitOverlay(OverlaySource):
     def __init__(self, parent, config, _location, ignore = 0):
         super(GitOverlay, self).__init__(parent, config,
             _location, ignore)
-        self.subpath = None
+        self.branch = None
+
 
     def _fix_git_source(self, source):
         '''

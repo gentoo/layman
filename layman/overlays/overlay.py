@@ -130,6 +130,14 @@ class Overlay(object):
             raise Exception('Overlay from_xml(), "' + self.name + \
                 'is missing a "name" entry!')
 
+        _branch = xml.find('branch')
+        if _branch != None and _branch.text:
+            self.branch = encode(_branch.text.strip())
+        elif 'branch' in xml.attrib:
+            self.branch = encode(xml.attrib['branch'])
+        else:
+            self.branch = ''
+
         _sources = xml.findall('source')
         # new xml format
         if _sources != []:
@@ -157,14 +165,6 @@ class Overlay(object):
                 '" is missing a "source" entry!')
 
         self.sources = [create_overlay_source(e) for e in _sources]
-
-        _subpath = xml.find('subpath')
-        if _subpath != None:
-            self.subpath = encode(_subpath.text.strip())
-        elif 'subpath' in xml.attrib:
-            self.subpath = encode(xml.attrib['subpath'])
-        else:
-            self.subpath = ''
 
         _owner = xml.find('owner')
         if _owner == None:
@@ -331,6 +331,11 @@ class Overlay(object):
         else:
             self.irc = None
 
+        _branch = overlay['branch']
+        if _branch != None:
+            self.branch = encode(_branch)
+        else:
+            self.branch = None
         #xml = self.to_xml()
         # end of from_dict
 
@@ -374,6 +379,10 @@ class Overlay(object):
             homepage = ET.Element('homepage')
             homepage.text = self.homepage
             repo.append(homepage)
+        if self.branch != None:
+            branch = ET.Element('branch')
+            branch.text = self.branch
+            repo.append(branch)
         if self.irc != None:
             irc = ET.Element('irc')
             irc.text = self.irc
