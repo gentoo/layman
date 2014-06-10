@@ -26,6 +26,8 @@ __version__ = "$Id: git.py 146 2006-05-27 09:52:36Z wrobel $"
 #
 #-------------------------------------------------------------------------------
 
+import xml.etree.ElementTree as ET
+
 from   layman.utils             import path
 from   layman.overlays.source   import OverlaySource, require_supported
 
@@ -44,7 +46,7 @@ class GitOverlay(OverlaySource):
     def __init__(self, parent, config, _location, ignore = 0):
         super(GitOverlay, self).__init__(parent, config,
             _location, ignore)
-        self.branch = None
+        self.branch = self.parent.branch
 
 
     def _fix_git_source(self, source):
@@ -76,6 +78,10 @@ class GitOverlay(OverlaySource):
             args.append(cfg_opts)
         args.append(self._fix_git_source(self.src))
         args.append(target)
+
+        if self.branch:
+            args.append('-b')
+            args.append(self.branch)
         success = False
         # adding cwd=base due to a new git bug in selinux due to
         # not having user_home_dir_t and portage_fetch_t permissions
