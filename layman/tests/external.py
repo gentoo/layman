@@ -45,10 +45,11 @@ class Unicode(unittest.TestCase):
         self._overlays_bug(286290)
 
 
-class FormatSubpathCategory(unittest.TestCase):
+class FormatBranchCategory(unittest.TestCase):
     def _run(self, number):
         #config = {'output': Message()}
         config = BareConfig()
+        # Discuss renaming files to "branch-%d.xml"
         filename1 = os.path.join(HERE, 'testfiles',
                 'subpath-%d.xml' % number)
 

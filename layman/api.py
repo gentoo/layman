@@ -236,7 +236,7 @@ class LaymanAPI(object):
                     'irc': overlay.irc,
                     'description': overlay.description,
                     'feeds': overlay.feeds,
-                    'sources': [(e.src, e.type, e.subpath) \
+                    'sources': [(e.src, e.type, e.branch) \
                         for e in overlay.sources],
                     #'src_uris': [e.src for e in overlay.sources],
                     'src_uris': overlay.source_uris(),

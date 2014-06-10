@@ -63,9 +63,9 @@ class TarOverlay(OverlaySource):
     >>> source = ET.Element('source', type='tar')
     >>> here = os.path.dirname(os.path.realpath(__file__))
     >>> source.text = 'file://' + here + '/../tests/testfiles/layman-test.tar.bz2'
-    >>> subpath = ET.Element('subpath')
-    >>> subpath.text = 'layman-test'
-    >>> repo[:] = [repo_name, desc, owner, source, subpath]
+    >>> branch = ET.Element('branch')
+    >>> branch.text = 'layman-test'
+    >>> repo[:] = [repo_name, desc, owner, source, branch]
     >>> from layman.config import BareConfig
     >>> config = BareConfig()
     >>> import tempfile
@@ -92,23 +92,8 @@ class TarOverlay(OverlaySource):
 
         self.output = config['output']
         self.proxies = config.proxies
-        self.subpath = None
+        self.branch = None
 
-    def __eq__(self, other):
-        res = super(TarOverlay, self).__eq__(other) \
-            and self.subpath == other.subpath
-        return res
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
-    # overrider
-    def to_xml_hook(self, repo_elem):
-        if self.subpath:
-            _subpath = ET.Element('subpath')
-            _subpath.text = self.subpath
-            repo_elem.append(_subpath)
-            del _subpath
 
     def _extract(self, base, tar_url, dest_dir):
         ext = '.tar.noidea'
@@ -170,8 +155,8 @@ class TarOverlay(OverlaySource):
             raise error
 
         if result == 0:
-            if self.subpath:
-                source = temp_path + '/' + self.subpath
+            if self.branch:
+                source = temp_path + '/' + self.branch
             else:
                 source = temp_path
 
@@ -187,8 +172,8 @@ class TarOverlay(OverlaySource):
                                     '\nError was:' + str(error))
                 os.chmod(final_path, 0o755)
             else:
-                raise Exception('Given subpath "' + source + '" does not exist '
-                                ' in the tar package!')
+                raise Exception('The given path (branch setting in the xml)\n' + \
+                    '"%(source)s" does not exist in the tar package!' % ({'source': source}))
 
         try_to_wipe(temp_path)
         return result

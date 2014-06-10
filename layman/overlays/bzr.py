@@ -47,7 +47,7 @@ class BzrOverlay(OverlaySource):
 
         super(BzrOverlay, self).__init__(parent,
             config, _location, ignore)
-        self.subpath = None
+        self.branch = None
 
     def _fix_bzr_source(self, source):
         '''

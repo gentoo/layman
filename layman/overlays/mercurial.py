@@ -48,7 +48,7 @@ class MercurialOverlay(OverlaySource):
 
         super(MercurialOverlay, self).__init__(parent,
             config, _location, ignore)
-        self.subpath = None
+        self.branch = None
 
     def _fix_mercurial_source(self, source):
         '''

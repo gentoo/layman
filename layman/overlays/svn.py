@@ -51,7 +51,7 @@ class SvnOverlay(OverlaySource):
 
         super(SvnOverlay, self).__init__(
             parent, config, _location, ignore)
-        self.subpath = None
+        self.branch = None
 
     def _fix_svn_source(self, source):
         '''
