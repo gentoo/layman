@@ -46,7 +46,7 @@ class DarcsOverlay(OverlaySource):
 
         super(DarcsOverlay, self).__init__(parent, config,
             _location, ignore)
-        self.subpath = None
+        self.branch = None
 
     def add(self, base):
         '''Add overlay.'''

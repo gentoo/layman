@@ -46,7 +46,7 @@ class RsyncOverlay(OverlaySource):
 
         super(RsyncOverlay, self).__init__(parent, config,
             _location, ignore)
-        self.subpath = None
+        self.branch = None
 
     def add(self, base):
         '''Add overlay.'''

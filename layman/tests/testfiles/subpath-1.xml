@@ -5,7 +5,7 @@
       contact="b_owner@example.org"
       type="tar"
       src="http://example.org/b.tar.gz"
-      subpath="b_path">
+      branch="b_path">
     <description>b_desc</description>
   </overlay>
   <overlay
@@ -13,7 +13,7 @@
       contact="c_owner@example.org"
       type="cvs"
       src=":pserver:username@example.org:/usr/local/cvs-repository"
-      subpath="c_path">
+      branch="c_path">
     <description>c_desc</description>
   </overlay>
 </layman>
