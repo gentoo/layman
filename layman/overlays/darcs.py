@@ -27,6 +27,8 @@ __version__ = "$Id: darcs.py 236 2006-09-05 20:39:37Z wrobel $"
 #
 #-------------------------------------------------------------------------------
 
+import xml.etree.ElementTree as ET
+
 from   layman.utils             import path
 from   layman.overlays.source   import OverlaySource, require_supported
 
@@ -46,7 +48,8 @@ class DarcsOverlay(OverlaySource):
 
         super(DarcsOverlay, self).__init__(parent, config,
             _location, ignore)
-        self.branch = None
+        self.branch = self.parent.branch
+
 
     def add(self, base):
         '''Add overlay.'''
@@ -62,6 +65,8 @@ class DarcsOverlay(OverlaySource):
         else:
             src = self.src + '/'
 
+        if self.branch:
+            src += ':' + self.branch
         # darcs get --partial SOURCE TARGET
         if len(cfg_opts):
             args = ['get', '--partial', cfg_opts,
@@ -82,6 +87,9 @@ class DarcsOverlay(OverlaySource):
 
         cfg_opts = self.config["darcs_addopts"]
         target = path([base, self.parent.name])
+
+        if self.branch:
+            self.src += ':' + self.branch
 
         # darcs pull --all SOURCE
         if len(cfg_opts):
