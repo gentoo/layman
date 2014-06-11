@@ -92,7 +92,7 @@ class TarOverlay(OverlaySource):
 
         self.output = config['output']
         self.proxies = config.proxies
-        self.branch = None
+        self.branch = self.parent.branch
 
 
     def _extract(self, base, tar_url, dest_dir):

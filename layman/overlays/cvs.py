@@ -47,7 +47,7 @@ class CvsOverlay(OverlaySource):
     def __init__(self, parent, config, _location, ignore = 0):
 
         super(CvsOverlay, self).__init__(parent, config, _location, ignore)
-        self.branch = None
+        self.branch = self.parent.branch
 
 
     def add(self, base):
