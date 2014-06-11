@@ -28,6 +28,8 @@ __version__ = "$Id: mercurial.py 236 2006-09-05 20:39:37Z wrobel $"
 #-------------------------------------------------------------------------------
 
 import re
+import xml.etree.ElementTree as ET
+
 from   layman.utils             import path
 from   layman.overlays.source   import OverlaySource, require_supported
 
@@ -48,7 +50,8 @@ class MercurialOverlay(OverlaySource):
 
         super(MercurialOverlay, self).__init__(parent,
             config, _location, ignore)
-        self.branch = None
+        self.branch = self.parent.branch
+
 
     def _fix_mercurial_source(self, source):
         '''
@@ -76,6 +79,10 @@ class MercurialOverlay(OverlaySource):
             args = ['clone', cfg_opts, src, target]
         else:
             args = ['clone', src, target]
+
+        if self.branch:
+            args.append('-r')
+            args.append(self.branch)
 
         return self.postsync(
             self.run_command(self.command(), args, cmd=self.type),
