@@ -99,6 +99,7 @@ class TarOverlay(OverlaySource):
 
     def _extract(self, base, tar_url, dest_dir):
         ext = '.tar.noidea'
+        clean_tar = True
         for i in [('tar.%s' % e) for e in ('bz2', 'gz', 'lzma', 'xz', 'Z')] \
                 + ['tgz', 'tbz', 'taz', 'tlz', 'txz']:
             candidate_ext = '.%s' % i
@@ -106,33 +107,38 @@ class TarOverlay(OverlaySource):
                 ext = candidate_ext
                 break
 
-        # setup the ssl-fetch output map
-        connector_output = {
-            'info':  self.output.debug,
-            'error': self.output.error,
-            'kwargs-info': {'level': 2},
-            'kwargs-error':{'level': None},
-        }
+        if 'file://' not in tar_url:
+            # setup the ssl-fetch output map
+            connector_output = {
+                'info':  self.output.debug,
+                'error': self.output.error,
+                'kwargs-info': {'level': 2},
+                'kwargs-error':{'level': None},
+            }
 
-        fetcher = Connector(connector_output, self.proxies, USERAGENT)
+            fetcher = Connector(connector_output, self.proxies, USERAGENT)
 
-        success, tar, timestamp = fetcher.fetch_content(tar_url)
+            success, tar, timestamp = fetcher.fetch_content(tar_url)
 
-        pkg = path([base, self.parent.name + ext])
+            pkg = path([base, self.parent.name + ext])
 
-        try:
-            with fileopen(pkg, 'w+b') as out_file:
-                out_file.write(tar)
+            try:
+                with fileopen(pkg, 'w+b') as out_file:
+                    out_file.write(tar)
 
-        except Exception as error:
-            raise Exception('Failed to store tar package in '
-                            + pkg + '\nError was:' + str(error))
+            except Exception as error:
+                raise Exception('Failed to store tar package in '
+                                + pkg + '\nError was:' + str(error))
+        else:
+            clean_tar = False
+            pkg = tar_url.replace('file://', '')
 
         # tar -v -x -f SOURCE -C TARGET
         args = ['-v', '-x', '-f', pkg, '-C', dest_dir]
         result = self.run_command(self.command(), args, cmd=self.type)
 
-        os.unlink(pkg)
+        if clean_tar:
+            os.unlink(pkg)
         return result
 
     def _add_unchecked(self, base):
