@@ -17,7 +17,6 @@
 '''Handles different storage files.'''
 
 from __future__ import unicode_literals
-from __future__ import with_statement
 
 __version__ = "$Id: db.py 309 2007-04-09 16:23:38Z wrobel $"
 
@@ -261,8 +260,9 @@ class RemoteDB(DbBase):
             if url_timestamp != timestamp:
                 self.output.debug('RemoteDB._fetch_file() opening file', 2)
                 # Fetch the remote list
-                with open(filepath) as connection:
+                with fileopen(filepath) as connection:
                     olist = connection.read()
+
             else:
                 self.output.info('Remote list already up to date: %s'
                     % url, 4)
@@ -324,14 +324,12 @@ class RemoteDB(DbBase):
     def write_cache(olist, mpath, tpath=None, timestamp=None):
         has_updates = False
         try:
-            out_file = fileopen(mpath, 'w')
-            out_file.write(olist)
-            out_file.close()
+            with fileopen(mpath, 'w') as out_file:
+                out_file.write(olist)
 
             if timestamp is not None and tpath is not None:
-                out_file = fileopen(tpath, 'w')
-                out_file.write(str(timestamp))
-                out_file.close()
+                with fileopen(tpath, 'w') as out_file:
+                    out_file.write(str(timestamp))
 
             has_updates = True
 

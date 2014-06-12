@@ -24,7 +24,8 @@ except:
     # Import for Python2
     import ConfigParser
 
-from layman.utils import path 
+from   layman.compatibility  import fileopen
+from   layman.utils          import path
 
 class ConfigHandler:
 
@@ -117,8 +118,9 @@ class ConfigHandler:
         @return boolean: represents a successful write.
         '''
         try:
-            with open(self.path, 'w') as laymanconf:
+            with fileopen(self.path, 'w') as laymanconf:
                 self.repo_conf.write(laymanconf)
+
             return True
         except IOError as error:
             self.output.error('ReposConf: ConfigHandler.write(); Failed to write "'\

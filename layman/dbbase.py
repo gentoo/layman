@@ -131,8 +131,8 @@ class DbBase(object):
         '''Read the overlay definition file.'''
 
         try:
-            df = fileopen(path, 'r')
-            document = df.read()
+            with fileopen(path, 'r') as df:
+                document = df.read()
 
         except Exception as error:
             if not self.ignore_init_read_errors:
@@ -235,9 +235,9 @@ class DbBase(object):
         indent(tree)
         tree = ET.ElementTree(tree)
         try:
-            f = fileopen(path, 'w')
-            tree.write(f, encoding=_UNICODE)
-            f.close()
+            with fileopen(path, 'w') as f:
+                 tree.write(f, encoding=_UNICODE)
+
         except Exception as error:
             raise Exception('Failed to write to local overlays file: '
                             + path + '\nError was:\n' + str(error))
