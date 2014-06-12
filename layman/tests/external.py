@@ -99,9 +99,8 @@ class TarAddRemoveSync(unittest.TestCase):
 """ % {     'temp_tarball_url':urllib.pathname2url(temp_tarball_path),
             'repo_name':repo_name}
         (fd, temp_collection_path) = tempfile.mkstemp()
-        f = os.fdopen(fd, 'w')
-        f.write(xml_text)
-        f.close()
+        with os.fdopen(fd, 'w') as f:
+            f.write(xml_text)
 
         # Make playground directory
         temp_dir_path = tempfile.mkdtemp()

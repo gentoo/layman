@@ -22,7 +22,7 @@ import codecs
 import re
 
 from layman.utils import path
-from layman.compatibility import cmp_to_key
+from layman.compatibility import cmp_to_key, fileopen
 
 #===============================================================================
 #
@@ -276,11 +276,8 @@ class ConfigHandler:
             return False
 
         try:
-            make_conf = codecs.open(self.path, 'w', 'utf-8')
-
-            make_conf.write(content)
-
-            make_conf.close()
+             with fileopen(self.path, 'w') as make_conf:
+                make_conf.write(content)
 
         except Exception as error:
             self.output.error('MakeConf: ConfigHandler.write(); Failed to write "'\
@@ -293,11 +290,8 @@ class ConfigHandler:
         Returns the content of the /var/lib/layman/make.conf file.
         '''
         try:
-            make_conf = codecs.open(self.path, 'r', 'utf-8')
-
-            self.data = make_conf.read()
-
-            make_conf.close()
+            with fileopen(self.path, 'r') as make_conf:
+                self.data = make_conf.read()
 
         except Exception as error:
             self.output.error('ConfigHandler: content(); Failed to read "'\

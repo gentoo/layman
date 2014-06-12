@@ -34,8 +34,9 @@ import tempfile
 
 import xml.etree.ElementTree as ET # Python 2.5
 
-from   layman.utils             import path
+from   layman.compatibility     import fileopen
 from   layman.overlays.source   import OverlaySource, require_supported
+from   layman.utils             import path
 from   layman.version           import VERSION
 from   sslfetch.connections     import Connector
 
@@ -120,9 +121,9 @@ class TarOverlay(OverlaySource):
         pkg = path([base, self.parent.name + ext])
 
         try:
-            out_file = open(pkg, 'w+b')
-            out_file.write(tar)
-            out_file.close()
+            with fileopen(pkg, 'w+b') as out_file:
+                out_file.write(tar)
+
         except Exception as error:
             raise Exception('Failed to store tar package in '
                             + pkg + '\nError was:' + str(error))
