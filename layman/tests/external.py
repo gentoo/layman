@@ -15,11 +15,15 @@
 #
 '''Runs external (non-doctest) test cases.'''
 
-import unittest
 import os
-import tempfile
 import shutil
-import urllib
+import tempfile
+import unittest
+#Py3
+try:
+    import urllib.request as urllib
+except ImportError:
+    import urllib
 from layman.dbbase import DbBase
 from layman.output import Message
 from layman.config import BareConfig
@@ -35,8 +39,8 @@ class Unicode(unittest.TestCase):
         o = DbBase(config, [filename])
         for verbose in (True, False):
             for t in o.list(verbose=verbose):
-                print t[0]
-                print
+                print(t[0].decode('utf-8'))
+                print()
 
     def test_184449(self):
         self._overlays_bug(184449)
