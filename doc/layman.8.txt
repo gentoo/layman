@@ -240,6 +240,12 @@ nocheck::
     Set to "yes" if *layman* should stop worrying about overlays
     with missing a contact address or the description.
 
+clean_tar::
+    Set to "yes" if *layman* will delete tar files downloaded
+    when installing tar overlays. 'Note':: This option is only
+    applicable to remote tar overlays. *layman* will leave the
+    reponsibility of deleting local tar files up to the user.
+    By default, *layman* will delete downloaded tar files.
 
 Per repository type Add, Sync options.
 
