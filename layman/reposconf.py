@@ -24,6 +24,12 @@ except:
     # Import for Python2
     import ConfigParser
 
+try:
+    from portage.sync.modules import layman_
+    sync_type = "layman"
+except ImportError:
+    sync_type = "None"
+
 from   layman.compatibility  import fileopen
 from   layman.utils          import path
 
@@ -81,6 +87,7 @@ class ConfigHandler:
         self.repo_conf.add_section(overlay.name)
         self.repo_conf.set(overlay.name, 'priority', str(overlay.priority))
         self.repo_conf.set(overlay.name, 'location', path((self.storage, overlay.name)))
+        self.repo_conf.set(overlay.name, 'sync-type', sync_type)
         self.repo_conf.set(overlay.name, 'sync-uri', overlay.sources[0].src)
         self.repo_conf.set(overlay.name, 'auto-sync', self.config['auto_sync'])
 
