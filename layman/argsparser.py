@@ -196,6 +196,13 @@ class ArgsParser(BareConfig):
                                help = 'Path to aditional overlay.xml files [default: '
                                '%s].' % (self.defaults['overlay_defs'] %self.defaults))
 
+        path_opts.add_argument('-z',
+                               '--storage',
+                               action = 'store',
+                               default = self.defaults['storage'],
+                               help = 'Directory path to user for layman overlay inst'
+                               'allation location [default: /var/lib/layman].')
+
         #-----------------------------------------------------------------
         # Output Options
 

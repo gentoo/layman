@@ -55,8 +55,12 @@ class Layman(SyncBase):
         self.logger(self.xterm_titles, msg)
         writemsg_level(msg + '\n')
 
+        location = self.repo.location.replace(self.repo.name, '')
+
         args.append('layman -n')
         self._get_optargs(args)
+        args.append('--storage')
+        args.append(location)
         args.append('-a')
         args.append(self.repo.name)
 
@@ -86,8 +90,12 @@ class Layman(SyncBase):
         self.logger(self.xterm_titles, msg)
         writemsg_level(msg + '\n')
 
+        location = self.repo.location.replace(self.repo.name, '')
+
         args.append('layman -n')
         self._get_optargs(args)
+        args.append('--storage')
+        args.append(location)
         args.append('-s')
         args.append(self.repo.name)
 
