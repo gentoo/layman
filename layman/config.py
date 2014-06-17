@@ -302,7 +302,7 @@ class BareConfig(object):
 
 
 class OptionConfig(BareConfig):
-    """This subclasses BareCongig adding functions to make overriding
+    """This subclasses BareConfig adding functions to make overriding
     or resetting defaults and/or setting options much easier
     by using dictionaries.
     """
@@ -340,7 +340,7 @@ class OptionConfig(BareConfig):
             if 'quiet' in keys:
                 self.set_option('quiet', options['quiet'])
                 options.pop('quiet')
-            if 'quietness' in keys and not options['quiet']:
+            elif 'quietness' in keys:
                 self._set_quietness(options['quietness'])
                 options.pop('quietness')
             self._options.update(options)
