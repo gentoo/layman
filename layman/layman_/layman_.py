@@ -131,17 +131,25 @@ class PyLayman(SyncBase):
         SyncBase.__init__(self, 'layman', 'app-portage/layman')
 
         self._layman = None
+        self.storage = ''
+        self.current_storage = ''
 
 
     def _get_layman_api(self):
 
         # Make it so that we aren't initializing the
-        # LaymanAPI instance if it already exists.
-        if self._layman:
+        # LaymanAPI instance if it already exists and
+        # if the current storage location hasn't been
+        # changed for the new repository.
+        self.storage = self.repo.location.replace(self.repo.name, '')
+
+        if self._layman and self.storage in self.current_storage:
             return self._layman
 
         config = BareConfig()
+
         self.message = Message(out=sys.stdout, err=sys.stderr)
+        self.current_storage = self.storage
         options = {
             'config': config.get_option('config'),
             'quiet': self.settings.get('PORTAGE_QUIET'),
@@ -149,6 +157,7 @@ class PyLayman(SyncBase):
             'output': self.message,
             'nocolor': self.settings.get('NOCOLOR'),
             'root': self.settings.get('EROOT'),
+            'storage': self.current_storage,
             'verbose': self.settings.get('PORTAGE_VERBOSE'),
             'width': self.settings.get('COLUMNWIDTH'),
 
