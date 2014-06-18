@@ -56,3 +56,13 @@ DEBUG_VERBOSITY = 2
 
 FAILURE = 1
 SUCCEED = 0
+
+#################################################################################
+##
+## Overlay components
+##
+#################################################################################
+
+COMPONENT_DEFAULTS  = ['name', 'description', 'owner', 'type', 'sources']
+POSSIBLE_COMPONENTS = ['name', 'description', 'homepage', 'owner', 'quality',
+                       'priority', 'sources', 'branch', 'irc', 'feeds']
