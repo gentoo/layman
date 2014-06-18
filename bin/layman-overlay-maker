@@ -1,0 +1,41 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+################################################################################
+# LAYMAN - A UTILITY CREATE OVERLAY DEFINITIONS
+################################################################################
+# Distributed under the terms of the GNU General Public License v2
+#
+# Copyright:
+#             (c) 2014 Devan Franchini
+#             Distributed under the terms of the GNU General Public License v2
+#
+# Author(s):
+#             Devan Franchini <twitch153@gentoo.org>
+#
+
+__version__ = "0.1"
+
+#===============================================================================
+#
+# Dependencies
+#
+#-------------------------------------------------------------------------------
+
+from layman.config import OptionConfig
+from layman.maker  import Interactive
+
+import sys
+
+#===============================================================================
+#
+# MAIN
+#
+#-------------------------------------------------------------------------------
+config = OptionConfig
+main = Interactive(config=config)
+try:
+    main()
+except KeyboardInterrupt:
+    print('\nProgram terminated successfully.\nGoodbye...')
+    sys.exit()
