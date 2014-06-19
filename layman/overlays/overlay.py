@@ -150,13 +150,21 @@ class Overlay(object):
             del s
 
         def create_overlay_source(source_elem):
+            _branch = ''
             _type = source_elem.attrib['type']
+            if 'branch' in source_elem.attrib:
+                _branch = source_elem.attrib['branch']
+                
             try:
                 _class = OVERLAY_TYPES[_type]
             except KeyError:
                 raise Exception('Overlay from_xml(), "' + self.name + \
                     'Unknown overlay type "%s"!' % _type)
+
             _location = encode(strip_text(source_elem))
+
+            self.branch = _branch
+
             return _class(parent=self, config=self.config,
                 _location=_location, ignore=ignore)
 
@@ -240,9 +248,9 @@ class Overlay(object):
 
 
     def from_dict(self, overlay, ignore):
-        """Process an xml overlay definition
+        """Process an overlay dictionary definition
         """
-        self.output.debug("Overlay from_dict(); overlay" + str(overlay))
+        self.output.debug("Overlay from_dict(); overlay" + str(overlay), 6)
         _name = overlay['name']
         if _name != None:
             self.name = encode(_name)
@@ -264,19 +272,25 @@ class Overlay(object):
                 raise Exception('Overlay from_dict(), "' + self.name +
                     'Unknown overlay type "%s"!' % _type)
             _location = encode(_src)
+            if _sub:
+                self.branch = encode(_sub)
+            else:
+                self.branch = None
+
             return _class(parent=self, config=self.config,
                 _location=_location, ignore=ignore)
 
         self.sources = [create_dict_overlay_source(e) for e in _sources]
 
-        _owner = overlay['owner_name']
-        if _owner == None:
-            self.owner_name = None
-            _email = None
-        else:
+        if 'owner_name' in overlay:
+            _owner = overlay['owner_name']
             self.owner_name = encode(_owner)
             _email = overlay['owner_email']
-        if _email != None:
+        else:
+            self.owner_name = None
+
+        if 'owner_email' in overlay:
+            _email = overlay['owner_email']
             self.owner_email = encode(_email)
         else:
             self.owner_email = None
@@ -287,8 +301,8 @@ class Overlay(object):
                 self.output.warn('Overlay from_dict(), "' + self.name +
                     '" is missing an "owner.email" entry!', 4)
 
-        _desc = overlay['description']
-        if _desc != None:
+        if 'description' in overlay:
+            _desc = overlay['description']
             d = WHITESPACE_REGEX.sub(' ', _desc)
             self.description = encode(d)
             del d
@@ -301,39 +315,39 @@ class Overlay(object):
                 self.output.warn('Overlay from_dict(), "' + self.name +
                     '" is missing a "description" entry!', 4)
 
-        if overlay['status']:
+        if 'status' in overlay:
             self.status = encode(overlay['status'])
         else:
             self.status = None
 
         self.quality = 'experimental'
-        if len(overlay['quality']):
+        if 'quality' in overlay:
             if overlay['quality'] in set(QUALITY_LEVELS):
                 self.quality = encode(overlay['quality'])
 
-        if overlay['priority']:
+        if 'priority' in overlay:
             self.priority = int(overlay['priority'])
         else:
             self.priority = 50
 
-        h = overlay['homepage']
-        if h != None:
-            self.homepage = encode(h)
+        if 'homepage' in overlay:
+            self.homepage = encode(overlay['homepage'])
         else:
             self.homepage = None
 
-        self.feeds = [encode(e) \
-            for e in overlay['feeds']]
+        if 'feed' in overlay:
+            self.feeds = [encode(e) \
+                for e in overlay['feeds']]
+        else:
+            self.feeds = None
 
-        _irc = overlay['irc']
-        if _irc != None:
-            self.irc = encode(_irc)
+        if 'irc' in overlay:
+            self.irc = encode(overlay['irc'])
         else:
             self.irc = None
 
-        _branch = overlay['branch']
-        if _branch != None:
-            self.branch = encode(_branch)
+        if 'branch' in overlay:
+            self.branch = encode(overlay['branch'])
         else:
             self.branch = None
         #xml = self.to_xml()
@@ -405,11 +419,12 @@ class Overlay(object):
             # NOTE: Two loops on purpose so the
             # hooks are called with all sources in
             i.to_xml_hook(repo)
-        for i in self.feeds:
-            feed = ET.Element('feed')
-            feed.text = i
-            repo.append(feed)
-            del feed
+        if self.feeds != None:
+            for i in self.feeds:
+                feed = ET.Element('feed')
+                feed.text = i
+                repo.append(feed)
+                del feed
         return repo
 
 

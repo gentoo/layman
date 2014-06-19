@@ -242,9 +242,9 @@ nocheck::
 
 clean_tar::
     Set to "yes" if *layman* will delete tar files downloaded
-    when installing tar overlays. 'Note':: This option is only
-    applicable to remote tar overlays. *layman* will leave the
-    reponsibility of deleting local tar files up to the user.
+    when installing tar overlays. This option is only applicable
+    to remote tar overlays. *layman* will leave the reponsibility
+    of deleting local tar files up to the user.
     By default, *layman* will delete downloaded tar files.
 
 Per repository type Add, Sync options.
@@ -469,6 +469,7 @@ Example 2. An example overlays.xml file with a branch
     <feed>http://git.overlays.gentoo.org/gitweb/?p=proj/hardened-dev.git;a=atom</feed>
 </repo>
 </repositories>
+--------------------------------------------
 
 Users can specify a branch for an overlay, given one actually exists.
 This logic is applicable to CVS overlays as well and the branch variable
