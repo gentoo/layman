@@ -88,7 +88,8 @@ class Layman(SyncBase):
         emerge_config = self.options.get('emerge_config', None)
         portdb = self.options.get('portdb', None)
         args = []
-        msg = '>>> Starting to add new layman overlay %(repo)s' % ({'repo': self.repo.name})
+        msg = '>>> Starting to add new layman overlay %(repo)s'\
+            % ({'repo': self.repo.name})
         self.logger(self.xterm_titles, msg)
         writemsg_level(msg + '\n')
 
@@ -107,11 +108,13 @@ class Layman(SyncBase):
             ({'command': command}),
             **portage._native_kwargs(self.spawn_kwargs))
         if exitcode != os.EX_OK:
-            msg = "!!! layman add error in %(repo)s" % ({'repo': self.repo.name})
+            msg = "!!! layman add error in %(repo)s"\
+                % ({'repo': self.repo.name})
             self.logger(self.xterm_titles, msg)
             writemsg_level(msg + "\n", level=logging.ERROR, noiselevel=-1)
             return (exitcode, False)
-        msg = ">>> Addition of layman repo succeeded: %(repo)s" % ({'repo': self.repo.name})
+        msg = ">>> Addition of layman repo succeeded: %(repo)s"\
+            % ({'repo': self.repo.name})
         self.logger(self.xterm_titles, msg)
         writemsg_level(msg + "\n")
 
@@ -123,7 +126,8 @@ class Layman(SyncBase):
         emerge_config = self.options.get('emerge_config', None)
         portdb = self.options.get('portdb', None)
         args = []
-        msg = '>>> Starting layman sync for %(repo)s...' % ({'repo': self.repo.name})
+        msg = '>>> Starting layman sync for %(repo)s...'\
+            % ({'repo': self.repo.name})
         self.logger(self.xterm_titles, msg)
         writemsg_level(msg + '\n')
 
@@ -141,12 +145,14 @@ class Layman(SyncBase):
             ({'command': command}),
             **portage._native_kwargs(self.spawn_kwargs))
         if exitcode != os.EX_OK:
-            msg = "!!! layman sync error in %(repo)s" % ({'repo': self.repo.name})
+            msg = "!!! layman sync error in %(repo)s"\
+                % ({'repo': self.repo.name})
             self.logger(self.xterm_titles, msg)
             writemsg_level(msg + "\n", level=logging.ERROR, noiselevel=-1)
             overlay = create_overlay(repo=self.repo, logger=self.logger, xterm_titles=self.xterm_titles)
             return (exitcode, False)
-        msg = ">>> layman sync succeeded: %(repo)s" % ({'repo': self.repo.name})
+        msg = ">>> layman sync succeeded: %(repo)s"\
+            % ({'repo': self.repo.name})
         self.logger(self.xterm_titles, msg)
         writemsg_level(msg + "\n")
 
@@ -219,17 +225,20 @@ class PyLayman(SyncBase):
         emerge_config = self.options.get('emerge_config', None)
         portdb = self.options.get('portdb', None)
 
-        msg = '>>> Starting to add new layman overlay %(repo)s' % ({'repo': self.repo.name})
+        msg = '>>> Starting to add new layman overlay %(repo)s'\
+            % ({'repo': self.repo.name})
         self.logger(self.xterm_titles, msg)
         writemsg_level(msg + '\n')
 
         exitcode = layman_inst.add_repos(self.repo.name)
         if exitcode != os.EX_OK:
-            msg = "!!! layman add error in %(repo)s" % ({'repo': self.repo.name})
+            msg = "!!! layman add error in %(repo)s"\
+                % ({'repo': self.repo.name})
             self.logger(self.xterm_titles, msg)
             writemsg_level(msg + "\n", level=logging.ERROR, noiselevel=-1)
             return (exitcode, False)
-        msg = ">>> Addition of layman repo succeeded: %(repo)s" % ({'repo': self.repo.name})
+        msg = ">>> Addition of layman repo succeeded: %(repo)s"\
+            % ({'repo': self.repo.name})
         self.logger(self.xterm_titles, msg)
         writemsg_level(msg + '\n')
 
@@ -242,18 +251,21 @@ class PyLayman(SyncBase):
         emerge_config = self.options.get('emerge_config', None)
         portdb = self.options.get('portdb', None)
 
-        msg = '>>> Starting layman sync for %(repo)s...' % ({'repo': self.repo.name})
+        msg = '>>> Starting layman sync for %(repo)s...'\
+            % ({'repo': self.repo.name})
         self.logger(self.xterm_titles, msg)
         writemsg_level(msg + '\n')
 
         exitcode = layman_inst.sync(self.repo.name)
         if exitcode != os.EX_OK:
-            msg = "!!! layman sync error in %(repo)s" % ({'repo': self.repo.name})
+            msg = "!!! layman sync error in %(repo)s"\
+                % ({'repo': self.repo.name})
             self.logger(self.xterm_titles, msg)
             writemsg_level(msg + "\n", level=logging.ERROR, noiselevel=-1)
             overlay = create_overlay(repo=self.repo, logger=self.logger, xterm_titles=self.xterm_titles)
             return (exitcode, False)
-        msg = ">>> layman sync succeeded: %(repo)s" % ({'repo': self.repo.name})
+        msg = ">>> layman sync succeeded: %(repo)s"\
+            % ({'repo': self.repo.name})
         self.logger(self.xterm_titles, msg)
         writemsg_level(msg + "\n")
 
