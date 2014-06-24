@@ -237,6 +237,20 @@ class PyLayman(SyncBase):
         return layman_api
 
 
+    def _eval_exitcode(self, exitcode):
+        '''
+        Evaluates the boolean returned by layman's API
+        when performing a task and returns the proper exitcode.
+
+        @params exitcode: boolean value reflecting the successful
+                          execution of a task.
+        @rtype int
+        '''
+        if exitcode == True:
+            return 0
+        return 1
+
+
     def new(self, **kwargs):
         '''Do the initial download and install of the repository'''
         layman_inst = self._get_layman_api()
@@ -249,7 +263,9 @@ class PyLayman(SyncBase):
         self.logger(self.xterm_titles, msg)
         writemsg_level(msg + '\n')
 
-        exitcode = layman_inst.add_repos(self.repo.name)
+        results = layman_inst.add_repos(self.repo.name)
+        exitcode = self._eval_exitcode(results)
+
         if exitcode != os.EX_OK:
             msg = "!!! layman add error in %(repo)s"\
                 % ({'repo': self.repo.name})
@@ -275,7 +291,9 @@ class PyLayman(SyncBase):
         self.logger(self.xterm_titles, msg)
         writemsg_level(msg + '\n')
 
-        exitcode = layman_inst.sync(self.repo.name)
+        results = layman_inst.sync(self.repo.name)
+        exitcode = self._eval_exitcode(results)
+
         if exitcode != os.EX_OK:
             msg = "!!! layman sync error in %(repo)s"\
                 % ({'repo': self.repo.name})
