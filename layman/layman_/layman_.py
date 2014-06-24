@@ -66,6 +66,11 @@ class Layman(SyncBase):
 
     @staticmethod
     def name():
+        '''
+        Returns sync plugin name.
+
+        @rtype str
+        '''
         return "Layman"
 
 
@@ -74,7 +79,12 @@ class Layman(SyncBase):
 
 
     def _get_optargs(self, args):
-         if self.settings:
+        '''
+        Gets optional layman arguments.
+
+        @params args: dict of current subprocess args.
+        '''
+        if self.settings:
             if self.settings.get('NOCOLOR'):
                 args.append('-N')
             if self.settings.get('PORTAGE_QUIET'):
@@ -169,6 +179,11 @@ class PyLayman(SyncBase):
 
     @staticmethod
     def name():
+        '''
+        Returns sync plugin name.
+
+        @rtype str
+        '''
         return "Layman"
 
     def __init__(self):
@@ -180,7 +195,11 @@ class PyLayman(SyncBase):
 
 
     def _get_layman_api(self):
+        '''
+        Initializes layman api.
 
+        @rtype layman.api.LaymanAPI instance
+        '''
         # Make it so that we aren't initializing the
         # LaymanAPI instance if it already exists and
         # if the current storage location hasn't been
