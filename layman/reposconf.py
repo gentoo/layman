@@ -88,7 +88,10 @@ class ConfigHandler:
         self.repo_conf.set(overlay.name, 'priority', str(overlay.priority))
         self.repo_conf.set(overlay.name, 'location', path((self.storage, overlay.name)))
         self.repo_conf.set(overlay.name, 'sync-type', sync_type)
+        self.repo_conf.set(overlay.name, 'layman-type', overlay.sources[0].type_key)
         self.repo_conf.set(overlay.name, 'sync-uri', overlay.sources[0].src)
+        if overlay.sources[0].branch:
+            self.repo_conf.set(overlay.name, 'branch', overlay.sources[0].branch)
         self.repo_conf.set(overlay.name, 'auto-sync', self.config['auto_sync'])
 
         return self.write()
