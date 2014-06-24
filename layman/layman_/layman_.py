@@ -4,6 +4,8 @@
 
 import logging
 
+import layman.overlays.overlay as Overlay
+
 from layman.api import LaymanAPI
 from layman.config import BareConfig, OptionConfig
 from layman.output import Message
@@ -18,6 +20,41 @@ warn = create_color_func("WARN")
 from portage.sync.syncbase import SyncBase
 
 import sys
+
+def create_overlay(config=None, repo=None, logger=None, xterm_titles=None):
+    '''
+    Creates a layman overlay object
+    from the given repos.conf repo info.
+
+    @params config: layman.config class object
+    @params repo: portage.repo class object
+    @rtype layman.overlay object or None
+    '''
+    if repo:
+        overlay = {'sources': []}
+        desc = 'Defined and created from info in %(repo)s config file...'\
+                % ({'repo': repo.name})
+        if not config:
+            config = BareConfig()
+        if not repo.branch:
+            repo.branch = ''
+
+        overlay['name'] = repo.name
+        overlay['description'] = desc
+        overlay['owner_name'] = 'repos.conf'
+        overlay['owner_email'] = '127.0.0.1'
+        overlay['sources'].append([repo.sync_uri, repo.layman_type, repo.branch])
+        overlay['priority'] = repo.priority
+
+        ovl = Overlay.Overlay(config=config, ovl_dict=overlay, ignore=1)
+        return ovl
+    
+    msg = '!!! layman.plugin.create_overlay(), Error: repo not found.'
+    if logger and xterm_titles:
+        logger(xterm_titles, msg)
+    writemsg_level(msg + '\n', level=logging.ERROR, noiselevel=-1)
+    return None
+
 
 class Layman(SyncBase):
     '''
@@ -107,6 +144,7 @@ class Layman(SyncBase):
             msg = "!!! layman sync error in %(repo)s" % ({'repo': self.repo.name})
             self.logger(self.xterm_titles, msg)
             writemsg_level(msg + "\n", level=logging.ERROR, noiselevel=-1)
+            overlay = create_overlay(repo=self.repo, logger=self.logger, xterm_titles=self.xterm_titles)
             return (exitcode, False)
         msg = ">>> layman sync succeeded: %(repo)s" % ({'repo': self.repo.name})
         self.logger(self.xterm_titles, msg)
@@ -213,6 +251,7 @@ class PyLayman(SyncBase):
             msg = "!!! layman sync error in %(repo)s" % ({'repo': self.repo.name})
             self.logger(self.xterm_titles, msg)
             writemsg_level(msg + "\n", level=logging.ERROR, noiselevel=-1)
+            overlay = create_overlay(repo=self.repo, logger=self.logger, xterm_titles=self.xterm_titles)
             return (exitcode, False)
         msg = ">>> layman sync succeeded: %(repo)s" % ({'repo': self.repo.name})
         self.logger(self.xterm_titles, msg)
