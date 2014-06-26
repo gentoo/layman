@@ -324,6 +324,11 @@ class OptionConfig(BareConfig):
         """
         BareConfig.__init__(self, root=root)
 
+        if options and 'output' in options:
+            self.output = options['output']
+        else:
+            self.output = Message()
+
         self.update_defaults(defaults)
 
         self.update(options)
