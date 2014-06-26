@@ -8,6 +8,7 @@ import layman.overlays.overlay as Overlay
 
 from layman.api import LaymanAPI
 from layman.config import BareConfig, OptionConfig
+from layman.maker import Interactive
 from layman.output import Message
 from layman.utils import reload_config
 
@@ -22,14 +23,14 @@ from portage.sync.syncbase import SyncBase
 
 import sys
 
-def create_overlay(config=None, repo=None, logger=None, xterm_titles=None):
+def create_overlay_package(config=None, repo=None, logger=None, xterm_titles=None):
     '''
     Creates a layman overlay object
     from the given repos.conf repo info.
 
     @params config: layman.config class object
     @params repo: portage.repo class object
-    @rtype layman.overlay object or None
+    @rtype tuple: overlay name and layman.overlay object or None
     '''
     if repo:
         overlay = {'sources': []}
@@ -48,8 +49,8 @@ def create_overlay(config=None, repo=None, logger=None, xterm_titles=None):
         overlay['priority'] = repo.priority
 
         ovl = Overlay.Overlay(config=config, ovl_dict=overlay, ignore=1)
-        return ovl
-    
+        return (repo.name, ovl)
+
     msg = '!!! layman.plugin.create_overlay(), Error: repo not found.'
     if logger and xterm_titles:
         logger(xterm_titles, msg)
@@ -211,13 +212,15 @@ class PyLayman(SyncBase):
             return self._layman
 
         config = BareConfig()
+        configdir = {'configdir': config.get_option('configdir')}
 
         self.message = Message(out=sys.stdout, err=sys.stderr)
         self.current_storage = self.storage
         options = {
-            'config': config.get_option('config'),
+            'config': config.get_option('config') % (configdir),
             'quiet': self.settings.get('PORTAGE_QUIET'),
             'quietness': config.get_option('quietness'),
+            'overlay_defs': config.get_option('overlay_defs') % (configdir),
             'output': self.message,
             'nocolor': self.settings.get('NOCOLOR'),
             'root': self.settings.get('EROOT'),
@@ -226,7 +229,7 @@ class PyLayman(SyncBase):
             'width': self.settings.get('COLUMNWIDTH'),
 
         }
-        self.config = OptionConfig(options=options)
+        self.config = OptionConfig(options=options, root=options['root'])
 
         # Reloads config to read custom overlay
         # xml files.
@@ -259,7 +262,7 @@ class PyLayman(SyncBase):
     def new(self, **kwargs):
         '''Do the initial download and install of the repository'''
         layman_inst = self._get_layman_api()
-
+        available_overlays = layman_inst.get_available(dbreload=True)
         emerge_config = self.options.get('emerge_config', None)
         portdb = self.options.get('portdb', None)
 
@@ -267,6 +270,23 @@ class PyLayman(SyncBase):
             % ({'repo': self.repo.name})
         self.logger(self.xterm_titles, msg)
         writemsg_level(msg + '\n')
+
+        if self.repo.name not in available_overlays:
+            overlay_package = create_overlay_package(repo=self.repo,\
+                                logger=self.logger,\
+                                xterm_titles=self.xter_titles)
+            create_overlay_xml = Interactive(config=self.config)
+            path = self.config.get_option('overlay_defs') + '/reposconf.xml'
+            result = create_overlay_xml(overlay_package=overlay_package,
+                        path=path)
+
+            if not result:
+                msg = '!!! layman add error in %(repo)s: Failed to add'\
+                      '%(repo)s to %(path)s' % ({'repo': self.repo.name,
+                                                  'path': path})
+                self.logger(self.xterm_titles, msg)
+                writemsg_level(msg + '\n', level=logging.ERROR, noiselevel=-1)
+                return (exitcode, False)
 
         results = layman_inst.add_repos(self.repo.name)
         exitcode = self._eval_exitcode(results)
@@ -300,12 +320,16 @@ class PyLayman(SyncBase):
         exitcode = self._eval_exitcode(results)
 
         if exitcode != os.EX_OK:
-            msg = "!!! layman sync error in %(repo)s"\
-                % ({'repo': self.repo.name})
-            self.logger(self.xterm_titles, msg)
-            writemsg_level(msg + "\n", level=logging.ERROR, noiselevel=-1)
-            overlay = create_overlay(repo=self.repo, logger=self.logger, xterm_titles=self.xterm_titles)
-            return (exitcode, False)
+            exitcode = self.new()[0]
+            if exitcode != os.EX_OK:
+                msg = "!!! layman sync error in %(repo)s"\
+                    % ({'repo': self.repo.name})
+                self.logger(self.xterm_titles, msg)
+                writemsg_level(msg + "\n", level=logging.ERROR, noiselevel=-1)
+                return (exitcode, False)
+            else:
+                return (exitcode, True)
+
         msg = ">>> layman sync succeeded: %(repo)s"\
             % ({'repo': self.repo.name})
         self.logger(self.xterm_titles, msg)
