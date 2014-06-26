@@ -9,6 +9,7 @@ import layman.overlays.overlay as Overlay
 from layman.api import LaymanAPI
 from layman.config import BareConfig, OptionConfig
 from layman.output import Message
+from layman.utils import reload_config
 
 import portage
 from portage import os
@@ -226,6 +227,10 @@ class PyLayman(SyncBase):
 
         }
         self.config = OptionConfig(options=options)
+
+        # Reloads config to read custom overlay
+        # xml files.
+        reload_config(self.config)
 
         layman_api = LaymanAPI(self.config,
                                report_errors=True,

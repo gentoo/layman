@@ -169,6 +169,18 @@ def path(path_elements):
 
     return pathname
 
+def reload_config(config):
+    '''
+    Rereads the layman config.
+
+    @params config: layman.config object.
+    '''
+    defaults = config.get_defaults()
+    defaults['config'] = defaults['config'] \
+                             % {'configdir': defaults['configdir']}
+    config.update_defaults({'config': defaults['config']})
+    config.read_config(defaults)
+
 def verify_overlay_src(current_src, remote_srcs):
     '''
     Verifies that the src-url of the overlay in
