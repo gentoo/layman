@@ -107,7 +107,7 @@ class Layman(SyncBase):
 
         location = self.repo.location.replace(self.repo.name, '')
 
-        args.append('layman -n')
+        args.append('layman')
         self._get_optargs(args)
         args.append('--storage')
         args.append(location)
@@ -145,7 +145,7 @@ class Layman(SyncBase):
 
         location = self.repo.location.replace(self.repo.name, '')
 
-        args.append('layman -n')
+        args.append('layman')
         self._get_optargs(args)
         args.append('--storage')
         args.append(location)
@@ -262,6 +262,8 @@ class PyLayman(SyncBase):
     def new(self, **kwargs):
         '''Do the initial download and install of the repository'''
         layman_inst = self._get_layman_api()
+        # Update the remote list before adding anything.
+        layman_inst.fetch_remote_list()
         available_overlays = layman_inst.get_available(dbreload=True)
         emerge_config = self.options.get('emerge_config', None)
         portdb = self.options.get('portdb', None)
