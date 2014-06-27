@@ -24,6 +24,7 @@ import xml.etree.ElementTree   as ET
 
 import copy
 import os
+import re
 import sys
 
 from   layman.api            import LaymanAPI
@@ -37,6 +38,70 @@ if sys.hexversion >= 0x30200f0:
     _UNICODE = 'unicode'
 else:
     _UNICODE = 'UTF-8'
+
+AUTOCOMPLETE_TEMPLATE = {
+    'bitbucket': {'feeds': (
+                            'http://bitbucket.org/%(tail)s/atom',
+                            'http://bitbucket.org/%(tail)s/rss'
+                           ),
+                  'homepage': 'https://bitbucket.org/%(tail)s',
+                  'sources': (
+                 ('https://bitbucket.org/%(tail)s', 'mercurial', '%(branch)s'),
+                 ('ssh://hg@bitbucket.org/%(tail)s', 'mercurial', '%(branch)s')
+                 )
+                 },
+    'gentoo': {'feeds': (
+                         'https://git.overlays.gentoo.org/gitweb/'\
+                         '?p=%(tail)s;a=atom',
+                         'https://git.overlays.gentoo.org/gitweb/'\
+                         '?p=%(tail)s;a=rss'
+                        ),
+               'homepage': 'https://git.overlays.gentoo.org/gitweb/'\
+                           '?p=%(tail)s;a=summary',
+               'sources': (
+              ('https://git.overlays.gentoo.org/gitroot/%(tail)s', 'git', ''),
+              ('git://git.overlays.gentoo.org/%(tail)s', 'git', ''),
+              ('git+ssh://git@git.overlays.gentoo.org/%(tail)s', 'git', '')
+              )
+              },
+    'gentoo-branch': {'feeds': (
+                                'https://git.overlays.gentoo.org/gitweb/?p='\
+                                '%(tail)s;a=atom;h=refs/heads/%(branch)s',
+                                'https://git.overlays.gentoo.org/gitweb/?p='\
+                                '%(tail)s;a=rss;h=refs/heads/%(branch)s'
+                               ),
+                      'homepage': 'https://git.overlays.gentoo.org/gitweb/?p='\
+                                  '%(tail)s;a=shortlog;h=refs/heads/'\
+                                  '%(branch)s',
+                      'sources': (
+                     ('https://git.overlays.gentoo.org/gitroot/%(tail)s', 'git', 
+                      '%(branch)s'),
+                     ('git://git.overlays.gentoo.org/%(tail)s', 'git', 
+                      '%(branch)s'),
+                     ('git+ssh://git@git.overlays.gentoo.org/%(tail)s', 'git',
+                      '%(branch)s')
+                     )
+                     },
+    'github': {'feeds': ('https://github.com/%(info)s/commits/master.atom',),
+               'homepage': 'https://github.com/%(info)s',
+               'sources': (
+              ('https://github.com/%(tail)s', 'git', ''),
+              ('git://github.com/%(tail)s', 'git', ''),
+              ('git@github.com:%(tail)s', 'git', ''),
+              ('https://github.com/%(tail)s', 'svn', '')
+              )
+              },
+    'github-branch': {'feeds': ('https://github.com/%(info)s/commits/'\
+                               '%(branch)s.atom'),
+                     'homepage': 'https://github.com/%(info)s/tree/%(branch)s',
+                     'sources': (
+                     ('https://github.com/%(tail)s', 'git', '%(branch)s'),
+                     ('git://github.com/%(tail)s', 'git', '%(branch)s'),
+                     ('git@github.com:%(tail)s', 'git', '%(branch)s'),
+                     ('https://github.com/%(tail)s', 'svn', '%(branch)s')
+                     )
+                     }
+    }
 
 class Interactive(object):
 
@@ -53,10 +118,15 @@ class Interactive(object):
 
         if not overlay_package:
             for x in range(1, int(self.get_input("How many overlays would you like to create?: "))+1):
+                self.info_available = False
                 print('')
                 print('Overlay #%(x)s: ' % ({'x': str(x)}))
                 print('~~~~~~~~~~~~~')
 
+                self.info_available = self.get_ans('Is the mirror for this '\
+                    'overlay either github.com,\ngit.overlays.gentoo.org, or'\
+                    'bitbucket.org? [y/n]: ')
+                print('')
                 self.update_required()
                 print('')
                 self.get_overlay_components()
@@ -156,8 +226,13 @@ class Interactive(object):
 
         for possible in POSSIBLE_COMPONENTS:
             if possible not in self.required:
-                available = self.get_ans("Include %(comp)s for this overlay? [y/n]: " \
-                    % ({'comp': possible}))
+                msg = 'Include %(comp)s for this overlay? [y/n]: '\
+                        % ({'comp': possible})
+                if ((possible in 'homepage' or possible in 'feeds') and
+                   self.info_available):
+                    available = False
+                else:
+                    available = self.get_ans(msg)
                 if available:
                     self.required.append(possible)
 
@@ -218,8 +293,12 @@ class Interactive(object):
         being created.
         '''
         ovl_type = None
-        source_amount = int(self.get_input('How many different sources,'\
-                ' protocols, or mirrors exist for this overlay?: '))
+
+        if self.info_available:
+            source_amount = 1
+        else:
+            source_amount = int(self.get_input('How many different sources,'\
+                    ' protocols, or mirrors exist for this overlay?: '))
 
         self.overlay['sources'] = []
 
@@ -261,8 +340,12 @@ class Interactive(object):
                     sources.append(self.get_input('Define source branch (if applicable): '))
                 else:
                     sources.append('')
-
-            self.overlay['sources'].append(sources)
+            if self.info_available:
+                sources = self._set_additional_info(sources)
+                for source in sources:
+                    self.overlay['sources'].append(source)
+            else:
+                self.overlay['sources'].append(sources)
         print('')
 
 
@@ -323,6 +406,73 @@ class Interactive(object):
             ovl_name = overlay.find('name')
             ovl = Overlay.Overlay(config=self.config, xml=overlay, ignore=1)
             self.overlays.append((ovl_name.text, ovl))
+
+
+    def _set_additional_info(self, source):
+        '''
+        Sets additional possible overlay information.
+
+        @params source: list of the source URL, type, and branch.
+        '''
+        feeds = []
+        sources = []
+        url = self._split_source_url(source[0])
+        attrs = {'branch': source[2], 'tail': '/'.join(url[3:])}
+        mirror = url[2].split('.')
+
+        for i in AUTOCOMPLETE_TEMPLATE.keys():
+            if i in mirror:
+                if i not in ('gentoo'):
+                    attrs['info'] = attrs['tail'].replace('.git', '')
+
+                if attrs['branch']:
+                    try:
+                        TEMPLATE = AUTOCOMPLETE_TEMPLATE[i+'-branch']
+                    except KeyError:
+                        TEMPLATE = AUTOCOMPLETE_TEMPLATE[i]
+                else:
+                    TEMPLATE = AUTOCOMPLETE_TEMPLATE[i]
+ 
+                self.overlay['homepage'] = TEMPLATE['homepage'] % attrs
+
+                if i in ('bitbucket') and 'git' in (source[1]):
+                    return [source]
+
+                for s in TEMPLATE['sources']:
+                    source = (s[0] % attrs, s[1], s[2] % attrs)
+                    sources.append(source)
+                for f in TEMPLATE['feeds']:
+                    feed = (f % attrs)
+                    feeds.append(feed)
+                self.overlay['feeds'] = feeds
+
+        if sources:
+            return sources
+
+        return [source]
+
+
+    def _split_source_url(self, source_url):
+        '''
+        Splits the given source URL based on
+        the source URL type.
+
+        @params source_url: str, represents the URL for the repo.
+        @rtype str: The newly split url components.
+        '''
+        url = None
+        if re.search("^(git://)|(http://)|(https://)|(ssh://)", source_url):
+            url = source_url.split('/')
+        if re.search('^git\+ssh://', source_url):
+            url = source_url.replace('+ssh', '')
+            url = url.replace('git@', '').split('/')
+        if re.search('^git@', source_url):
+            url = source_url.replace('@', '//')
+            url = url.replace(':', '/')
+            url = url.replace('//', '://').split('/')
+        if url:
+            return url
+        print('Interactive._split_source_url(); error: Unable to split URL.')
 
 
     def _sort_to_tree(self):
