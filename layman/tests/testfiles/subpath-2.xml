@@ -7,8 +7,7 @@
     <owner>
       <email>b_owner@example.org</email>
     </owner>
-    <source type="tar">http://example.org/b.tar.gz</source>
-    <branch>b_path</branch>
+    <source type="tar" branch="b_path">http://example.org/b.tar.gz</source>
   </repo>
   <repo>
     <name>c_name</name>
@@ -16,7 +15,6 @@
     <owner>
       <email>c_owner@example.org</email>
     </owner>
-    <source type="cvs">:pserver:username@example.org:/usr/local/cvs-repository</source>
-    <branch>c_path</branch>
+    <source type="cvs" branch="c_path">:pserver:username@example.org:/usr/local/cvs-repository</source>
   </repo>
 </repositories>
