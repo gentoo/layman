@@ -29,7 +29,7 @@ __version__ = "$Id: db.py 309 2007-04-09 16:23:38Z wrobel $"
 
 import os, os.path
 
-from   layman.utils             import path, delete_empty_directory
+from   layman.utils             import path, delete_empty_directory, get_ans
 from   layman.dbbase            import DbBase
 from   layman.repoconfmanager   import RepoConfManager
 
@@ -76,6 +76,32 @@ class DB(DbBase):
     # overrider
     def _broken_catalog_hint(self):
         return ''
+
+
+    def _check_official(self, overlay):
+        '''
+        Prompt user to see if they want to install unofficial overlays.
+
+        @params overlay: layman.overlays.Overlay object.
+        @rtype bool: reflect the user's decision to install overlay.
+        '''
+        if self.config['check_official'] and not overlay.status == 'official':
+            msg = 'Overlay "%(repo)s" is not an official. Continue install?'\
+                  ' [y/n]: ' % {'repo': overlay.name}
+            if not get_ans(msg, color='green'):
+                msg = 'layman will not add "%(repo)s", due to user\'s'\
+                      ' decision\nto not install unofficial overlays.'\
+                      % {'repo': overlay.name}
+                hint = 'Hint: To remove this check, set "check_official"'\
+                       ' to "No"\nin your layman.cfg.'
+                self.output.warn(msg)
+                self.output.notice('')
+                self.output.warn(hint)
+                return False
+            else:
+                return True
+        return True
+
 
     def add(self, overlay):
         '''
@@ -127,6 +153,8 @@ class DB(DbBase):
         '''
 
         if overlay.name not in self.overlays.keys():
+            if not self._check_official(overlay):
+                return False
             result = overlay.add(self.config['storage'])
             if result == 0:
                 if 'priority' in self.config.keys():
@@ -238,6 +266,7 @@ class DB(DbBase):
         self.write(self.path)
 
         return result
+
 
     def sync(self, overlay_name):
         '''Synchronize the given overlay.'''
