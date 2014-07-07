@@ -36,7 +36,7 @@ import sys
 import locale
 import codecs
 
-from layman.output import Message
+from  layman.output         import Message
 
 if sys.hexversion >= 0x30200f0:
     STR = str
@@ -80,6 +80,40 @@ def get_encoding(output):
             # Python does not know the encoding, so use utf-8.
             encoding = 'utf_8'
         return encoding
+
+
+def get_ans(msg, color='green'):
+    '''
+    Handles yes/no input
+
+    @params msg: message prompt for user
+    @rtype boolean: reflects whether the user answered yes or no.
+    '''
+    ans = get_input(msg, color=color).lower()
+
+    while ans not in ('y', 'yes', 'n', 'no'):
+        ans = get_input('Please respond with [y/n]: ', color='yellow').lower()
+
+    return ans in ('y', 'yes')
+
+
+def get_input(msg, color='green', output=None):
+    '''
+    py2, py3 compatibility function
+    to obtain user input.
+
+    @params msg: message prompt for user
+    @rtype str: input from user
+    '''
+    if not output:
+        output = Message()
+
+    try:
+        value = raw_input(' %s %s' % (output.color_func(color, '*'), msg))
+    except NameError:
+        value = input(' %s %s' % (output.color_func(color, '*'), msg))
+
+    return value
 
 
 def pad(string, length):
