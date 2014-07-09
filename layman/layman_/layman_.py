@@ -42,7 +42,7 @@ def create_overlay_package(config=None, repo=None, logger=None, xterm_titles=Non
             repo.branch = ''
 
         overlay['name'] = repo.name
-        overlay['description'] = desc
+        overlay['descriptions'] = [desc]
         overlay['owner_name'] = 'repos.conf'
         overlay['owner_email'] = '127.0.0.1'
         overlay['sources'].append([repo.sync_uri, repo.layman_type, repo.branch])
