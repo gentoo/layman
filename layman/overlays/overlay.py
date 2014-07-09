@@ -199,13 +199,14 @@ class Overlay(object):
                 self.output.warn('Overlay "' + self.name + '" is missing a '
                          '"owner.email" entry!', 4)
 
-        _desc = xml.find('description')
+        _desc = xml.findall('description')
         if _desc != None:
-            d = WHITESPACE_REGEX.sub(' ', strip_text(_desc))
-            self.description = encode(d)
-            del d
+            self.descriptions = []
+            for d in _desc:
+                d = WHITESPACE_REGEX.sub(' ', strip_text(d))
+                self.descriptions.append(encode(d))
         else:
-            self.description = ''
+            self.descriptions = ['']
             if not ignore:
                 raise Exception('Overlay  from_xml(), "' + self.name + \
                     '" is missing a description" entry!')
@@ -285,7 +286,6 @@ class Overlay(object):
         if 'owner_name' in overlay:
             _owner = overlay['owner_name']
             self.owner_name = encode(_owner)
-            _email = overlay['owner_email']
         else:
             self.owner_name = None
 
@@ -301,13 +301,14 @@ class Overlay(object):
                 self.output.warn('Overlay from_dict(), "' + self.name +
                     '" is missing an "owner.email" entry!', 4)
 
-        if 'description' in overlay:
-            _desc = overlay['description']
-            d = WHITESPACE_REGEX.sub(' ', _desc)
-            self.description = encode(d)
-            del d
+        if 'descriptions' in overlay:
+            self.descriptions = []
+            _descs = overlay['descriptions']
+            for d in _descs:
+                d = WHITESPACE_REGEX.sub(' ', d)
+                self.descriptions.append(encode(d))
         else:
-            self.description = ''
+            self.descriptions = ['']
             if not ignore:
                 raise Exception('Overlay from_dict(), "' + self.name +
                     '" is missing a "description" entry!')
@@ -355,7 +356,7 @@ class Overlay(object):
 
 
     def __eq__(self, other):
-        for i in ('description', 'homepage', 'name', 'owner_email',
+        for i in ('descriptions', 'homepage', 'name', 'owner_email',
                 'owner_name', 'priority', 'status'):
             if getattr(self, i) != getattr(other, i):
                 return False
@@ -386,9 +387,11 @@ class Overlay(object):
         name = ET.Element('name')
         name.text = self.name
         repo.append(name)
-        desc = ET.Element('description')
-        desc.text = self.description
-        repo.append(desc)
+        for i in self.descriptions:
+            desc = ET.Element('description')
+            desc.text = i
+            repo.append(desc)
+            del desc
         if self.homepage != None:
             homepage = ET.Element('homepage')
             homepage.text = self.homepage
@@ -539,12 +542,12 @@ class Overlay(object):
         result += 'Quality : ' + self.quality + '\n'
 
 
-        description = self.description
-        description = re.compile(' +').sub(' ', description)
-        description = re.compile('\n ').sub('\n', description)
-        result += '\nDescription:'
-        result += '\n  '.join(('\n' + description).split('\n'))
-        result += '\n'
+        for description in self.descriptions:
+            description = re.compile(' +').sub(' ', description)
+            description = re.compile('\n ').sub('\n', description)
+            result += '\nDescription:'
+            result += '\n  '.join(('\n' + description).split('\n'))
+            result += '\n'
 
         if self.homepage != None:
             link = self.homepage

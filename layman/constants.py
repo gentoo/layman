@@ -63,6 +63,6 @@ SUCCEED = 0
 ##
 #################################################################################
 
-COMPONENT_DEFAULTS  = ['name', 'description', 'owner', 'type', 'sources']
-POSSIBLE_COMPONENTS = ['name', 'description', 'homepage', 'owner', 'quality',
+COMPONENT_DEFAULTS  = ['name', 'descriptions', 'owner', 'type', 'sources']
+POSSIBLE_COMPONENTS = ['name', 'descriptions', 'homepage', 'owner', 'quality',
                        'priority', 'sources', 'branch', 'irc', 'feeds']

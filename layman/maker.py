@@ -162,6 +162,21 @@ class Interactive(object):
                     self.required.append(possible)
 
 
+    def get_descriptions(self):
+        '''
+        Prompts user for an overlay's description(s)
+        and updates overlay dict with value(s).
+        '''
+        #TODO: Currently a "stub" function. Add multiple description
+        # field support later down the road.
+        descriptions = []
+
+        desc = self.get_input('Define overlay\'s description: ')
+        descriptions.append(desc)
+
+        self.overlay['descriptions'] = descriptions
+
+
     def get_feeds(self):
         '''
         Prompts user for any overlay RSS feeds
@@ -271,7 +286,7 @@ class Interactive(object):
         @params msg: (str) prompt message for component
         '''
         if component not in ('branch', 'type'):
-            if component in ('feeds', 'name', 'owner', 'sources'):
+            if component in ('descriptions', 'feeds', 'name', 'owner', 'sources'):
                 getattr(self, 'get_%(comp)s' % ({'comp': component}))()
             else:
                 self.overlay[component] = getattr(self, 'get_input')(msg)
