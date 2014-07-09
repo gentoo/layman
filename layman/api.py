@@ -234,7 +234,7 @@ class LaymanAPI(object):
                     'owner_email': overlay.owner_email,
                     'homepage': overlay.homepage,
                     'irc': overlay.irc,
-                    'description': overlay.description,
+                    'description': [e for e in overlay.descriptions],
                     'feeds': overlay.feeds,
                     'sources': [(e.src, e.type, e.branch) \
                         for e in overlay.sources],
