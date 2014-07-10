@@ -162,7 +162,9 @@ class DB(DbBase):
                 self.overlays[overlay.name] = overlay
                 self.write(self.path)
                 repo_ok = self.repo_conf.add(overlay)
-                return repo_ok
+                if False in repo_ok:
+                    return False
+                return True
             else:
                 mdir = path([self.config['storage'], overlay.name])
                 delete_empty_directory(mdir, self.output)
@@ -242,11 +244,13 @@ class DB(DbBase):
 
         if overlay.name in self.overlays.keys():
             overlay.delete(self.config['storage'])
-            self.repo_conf.delete(overlay)
+            repo_ok = self.repo_conf.delete(overlay)
             del self.overlays[overlay.name]
             self.write(self.path)
         else:
             self.output.error('No local overlay named "' + overlay.name + '"!')
+            return False
+        if False in repo_ok:
             return False
         return True
 
@@ -265,7 +269,9 @@ class DB(DbBase):
         self.repo_conf.update(self.overlays[overlay.name])
         self.write(self.path)
 
-        return result
+        if False in result:
+            return False
+        return True
 
 
     def sync(self, overlay_name):
