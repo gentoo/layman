@@ -255,6 +255,36 @@ class DB(DbBase):
         return True
 
 
+    def disable(self, overlay):
+        if overlay.name in self.overlays.keys():
+            result = self.repo_conf.disable(overlay)
+        else:
+            self.output.error('No local overlay named "%(repo)s"!'\
+                % ({'repo': overlay.name}))
+            return False
+        msg = 'Overlay %(repo)s has been disabled.\n'\
+              'All ebuilds in this overlay will not be recognized by portage.'\
+              % ({'repo': overlay.name})
+        if result:
+            self.output.warn(msg)
+        return result
+
+
+    def enable(self, overlay):
+        if overlay.name in self.overlays.keys():
+            result = self.repo_conf.enable(overlay)
+        else:
+            self.output.error('No local overlay named "%(repo)s"!'\
+                % ({'repo': overlay.name}))
+            return False
+        msg = 'Overlay %(repo)s has been enabled.\n'\
+              'All ebuilds in this overlay will now be recognized by portage.'\
+              % ({'repo': overlay.name})
+        if result:
+            self.output.info(msg)
+        return result
+
+
     def update(self, overlay, available_srcs):
         '''
         Updates the overlay source via the available source(s).
@@ -272,6 +302,7 @@ class DB(DbBase):
         if False in result:
             return False
         return True
+
 
 
     def sync(self, overlay_name):
