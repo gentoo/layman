@@ -67,6 +67,7 @@ class RepoConfManager:
         return [True]
 
 
+
     def delete(self, overlay):
         '''
         Deletes overlay information from the specified config type(s).
@@ -85,6 +86,40 @@ class RepoConfManager:
         return [True]
 
 
+    def disable(self, overlay):
+        '''
+        Allows an overlay to become no longer accessible to portage
+        without deleting the overlay.
+
+        @param overlay: layman.overlay.Overlay instance.
+        @return boolean: represents success or failure.
+        '''
+        if self.config['require_repoconfig']:
+            for types in self.conf_types:
+                conf = getattr(self.modules[types][0],
+                    self.modules[types][1])(self.config, self.overlays)
+                conf_ok = conf.disable(overlay)
+            return conf_ok
+        return True
+                                                                                                                                                
+
+    def enable(self, overlay):
+        '''
+        Allows an overlay to become accessible to portage
+        after overlay was "forgotten".
+
+        @param overlay: layman.overlay.Overlay instance.
+        @return boolean: represents success or failure.
+        '''
+        if self.config['require_repoconfig']:
+            for types in self.conf_types:
+                conf = getattr(self.modules[types][0],
+                    self.modules[types][1])(self.config, self.overlays)
+                conf_ok = conf.enable(overlay)
+            return conf_ok
+        return True
+
+    
     def update(self, overlay):
         '''
         Updates the source URL for the specified config type(s).
