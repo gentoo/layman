@@ -122,7 +122,7 @@ class LaymanAPI(object):
                     self._get_installed_db().select(ovl))
             except Exception as e:
                 self._error(
-                        "Exception caught disabling repository '"+ovl+
+                        "Exception caught removing repository '"+ovl+
                             "':\n"+str(e))
             results.append(success)
             self.get_installed(dbreload=True)
@@ -155,7 +155,7 @@ class LaymanAPI(object):
                 success = self._get_installed_db().add(
                     self._get_remote_db().select(ovl))
             except Exception as e:
-                self._error("Exception caught enabling repository '"+ovl+
+                self._error("Exception caught installing repository '"+ovl+
                     "' : "+str(e))
             results.append(success)
             self.get_installed(dbreload=True)
@@ -181,6 +181,56 @@ class LaymanAPI(object):
         if update_news:
             self.update_news(repos)
         return success
+
+
+    def disable_repos(self, repos, update_news=False):
+        repos = self._check_repo_type(repos, "disable_repo")
+        results = []
+        for ovl in repos:
+            if not self.is_repo(ovl):
+                self.output.error(UnknownOverlayMessage(ovl))
+                result.append(False)
+                continue
+            success = False
+            try:
+                success = self._get_installed_db().disable(
+                    self._get_installed_db().select(ovl))
+            except Exception as e:
+                self._error('Exception caught disabling repository "%(repo)s"'\
+                    ': %(err)s' % ({'repo': ovl, 'err': e}))
+            results.append(success)
+            self.get_installed(dbreload=True)
+        if (True in results) and update_news:
+            self.update_news(repos)
+
+        if False in results:
+            return False
+        return True
+
+
+    def enable_repos(self, repos, update_news=False):
+        repos = self._check_repo_type(repos, "enable_repo")
+        results = []
+        for ovl in repos:
+            if not self.is_repo(ovl):
+                self.output.error(UnknownOverlayMessage(ovl))
+                result.append(False)
+                continue
+            success = False
+            try:
+                success = self._get_installed_db().enable(
+                    self._get_installed_db().select(ovl))
+            except Exception as e:
+                self._error('Exception caught enabling repository "%(repo)s"'\
+                    ': %(err)s' % ({'repo': ovl, 'err': e}))
+            results.append(success)
+            self.get_installed(dbreload=True)
+        if (True in results) and update_news:
+            self.update_news(repos)
+
+        if False in results:
+            return False
+        return True
 
 
     def get_all_info(self, repos, local=False):
