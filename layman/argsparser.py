@@ -95,6 +95,18 @@ class ArgsParser(BareConfig):
                              help = 'Remove the given overlay from your locally inst'
                              'alled overlays. Specify "ALL" to remove all overlays.')
 
+        actions.add_argument('-D',
+                             '--disable',
+                             nargs = '+',
+                             help = 'Disable the given overlay from portage. Specify'
+                             ' "ALL" to disable all installed overlay.')
+
+        actions.add_argument('-E',
+                             '--enable',
+                             nargs = '+',
+                             help = 'Re-enable a previously disabled overlay. Specif'
+                             'y "ALL" to enable all installed overlays.')
+
         actions.add_argument('-f',
                              '--fetch',
                              action = 'store_true',
