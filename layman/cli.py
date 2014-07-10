@@ -146,6 +146,8 @@ class Main(object):
                         ('sync_all',   'Sync'),
                         ('readd',      'Readd'),
                         ('delete',     'Delete'),
+                        ('disable',    'Disable'),
+                        ('enable',     'Enable'),
                         ('list',       'ListRemote'),
                         ('list_local', 'ListLocal'),]
 
@@ -296,6 +298,44 @@ class Main(object):
                 ', '.join((x.decode('UTF-8') if isinstance(x, bytes) else x) for x in selection) +
                 '.', 2)
         # blank newline  -- no " *"
+        self.output.notice('')
+        return result
+
+
+    def Disable(self):
+        '''
+        Disable the selected overlay(s).
+
+        @rtype bool
+        '''
+        self.output.info('Disabling selected overlay(s),...', 2)
+        selection = decode_selection(self.config['disable'])
+        if ALL_KEYWORD in selection:
+            selection = self.api.get_installed()
+        result = self.api.disable_repos(selection)
+        if result:
+            self.output.info('Successfully disabled overlay(s) ' +
+                ', '.join((x.decode('UTF-8') if isinstance(x, bytes) else x) for x in selection) +
+                '.', 2)
+        self.output.notice('')
+        return result
+
+
+    def Enable(self):
+        '''
+        Enable the selected overlay(s).
+
+        @rtype bool
+        '''
+        self.output.info('Enabling the selected overlay(s),...', 2)
+        selection = decode_selection(self.config['enable'])
+        if ALL_KEYWORD in selection:
+            selection = self.api.get_installed()
+        result = self.api.enable_repos(selection)
+        if result:
+            self.output.info('Successfully enable overlay(s) ' +
+                ', '.join((x.decode('UTF-8') if isinstance(x, bytes) else x) for x in selection) +
+                '.', 2)
         self.output.notice('')
         return result
 
