@@ -59,11 +59,11 @@ class ListPrinter(object):
         for ovl in overlays:
             overlay = info[ovl]
             #print "overlay =", overlay
-            summary, supported, official = overlay
+            summary, official, supported = overlay
             self.print_overlay(summary, supported, official, complain)
 
     def print_shortlist(self, info, complain):
-        for summary, supported, official in info:
+        for summary, official, supported in info:
             self.print_overlay(summary, supported, official, complain)
 
 
