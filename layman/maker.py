@@ -398,7 +398,7 @@ class Interactive(object):
         except xml.etree.ElementTree.ParseError as error:
             msg = 'Interactive.read(); encountered error: %(error)s'\
                 % ({'error': error})
-            print(msg)
+            raise Exception(msg)
 
         overlays = document.findall('overlay') + document.findall('repo')
 
@@ -472,7 +472,8 @@ class Interactive(object):
             url = url.replace('//', '://').split('/')
         if url:
             return url
-        print('Interactive._split_source_url(); error: Unable to split URL.')
+        raise Exception('Interactive._split_source_url(); error: Unable '\
+                        'to split URL.')
 
 
     def _sort_to_tree(self):
@@ -521,6 +522,4 @@ class Interactive(object):
             return True
 
         except IOError as e:
-            print("Writing XML failed: %(error)s" % ({'error': e}))
-
-        return False
+            raise Exception("Writing XML failed: %(error)s" % ({'error': e}))
