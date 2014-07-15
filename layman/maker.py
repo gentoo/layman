@@ -109,6 +109,7 @@ class Interactive(object):
         self.config = OptionConfig()
         reload_config(self.config)
         self.layman_inst = LaymanAPI(config=self.config)
+        self.output = self.config.get_option('output')
         self.overlay = {}
         self.overlays = []
         self.overlays_available = self.layman_inst.get_available()
@@ -117,18 +118,20 @@ class Interactive(object):
     def __call__(self, overlay_package=None, path=None):
 
         if not overlay_package:
-            for x in range(1, int(self.get_input("How many overlays would you like to create?: "))+1):
+            msg = 'How many overlays would you like to create?: '
+            for x in range(1, int(self.get_input(msg))+1):
                 self.info_available = False
-                print('')
-                print('Overlay #%(x)s: ' % ({'x': str(x)}))
-                print('~~~~~~~~~~~~~')
+                self.output.notice('')
+                self.output.info('Overlay #%(x)s: ' % ({'x': str(x)}))
+                self.output.info('~~~~~~~~~~~~~')
 
-                self.info_available = self.get_ans('Is the mirror for this '\
-                    'overlay either github.com,\ngit.overlays.gentoo.org, or'\
-                    'bitbucket.org? [y/n]: ')
-                print('')
+                msg = 'Is the mirror for this overlay either github.com,'
+                self.output.info(msg)
+                msg = 'git.overlays.gentoo.org, or bitbucket.org? [y/n]: '
+                self.info_available = self.get_ans(msg)
+                self.output.notice('')
                 self.update_required()
-                print('')
+                self.output.notice('')
                 self.get_overlay_components()
                 ovl = Overlay.Overlay(config=self.config, ovl_dict=self.overlay, ignore=1)
                 self.overlays.append((self.overlay['name'], ovl))
@@ -180,9 +183,11 @@ class Interactive(object):
         '''
         if ovl_type.lower() in self.supported_types:
             return ovl_type.lower()
-        print('Specified type "%(type)s" not valid.' % ({'type': ovl_type}))
-        print('Supported types include: %(types)s.'\
-            % ({'types': ', '.join(self.supported_types)}))
+        msg = '!!! Specified type "%(type)s" not valid.' % ({'type': ovl_type})
+        self.output.warn(msg)
+        msg = 'Supported types include: %(types)s.'\
+              % ({'types': ', '.join(self.supported_types)})
+        self.output.warn(msg)
         return None
 
 
@@ -257,18 +262,19 @@ class Interactive(object):
         Prompts user for any overlay RSS feeds
         and updates overlay dict with values.
         '''
-        feed_amount = int(self.get_input('How many RSS feeds exist for this overlay?: '))
+        msg = 'How many RSS feeds exist for this overlay?: '
+        feed_amount = int(self.get_input(msg))
         feeds = []
 
         for i in range(1, feed_amount + 1):
             if feed_amount > 1:
-                feeds.append(self.get_input('Define overlay feed[%(i)s]: '\
-                    % ({'i': str(i)})))
+                msg = 'Define overlay feed[%(i)s]: ' % ({'i': str(i)})
+                feeds.append(self.get_input(msg))
             else:
                 feeds.append(self.get_input('Define overlay feed: '))
 
         self.overlay['feeds'] = feeds
-        print('')
+        self.output.notice('')
 
 
     def get_name(self):
@@ -279,8 +285,11 @@ class Interactive(object):
         name = self.get_input('Define overlay name: ')
 
         while name in self.overlays_available:
-            print('!!! Overlay name already defined in list of installed overlays.')
-            name = self.get_input('Please specify a different overlay name: ')
+            msg = '!!! Overlay name already defined in list of installed'\
+                  ' overlays.'
+            self.output.warn(msg)
+            msg = 'Please specify a different overlay name: '
+            name = self.get_input(msg)
 
         self.overlay['name'] = name
 
@@ -297,47 +306,51 @@ class Interactive(object):
         if self.info_available:
             source_amount = 1
         else:
-            source_amount = int(self.get_input('How many different sources,'\
-                    ' protocols, or mirrors exist for this overlay?: '))
+            msg = 'How many different sources, protocols, or mirrors exist '\
+                  'for this overlay?: '
+            source_amount = int(self.get_input(msg))
 
         self.overlay['sources'] = []
 
         for i in range(1, source_amount + 1):
             sources = []
             if source_amount > 1:
-                sources.append(self.get_input('Define source[%(i)s] URL: '\
-                    % ({'i': str(i)})))
+                msg = 'Define source[%(i)s]\'s URL: ' % ({'i': str(i)})
+                sources.append(self.get_input(msg))
 
                 ovl_type = self.guess_overlay_type(sources[0])
-                correct = self.get_ans('Is %(type)s the correct overlay'\
-                                ' type?: ' % ({'type': ovl_type}))
+                msg = 'Is %(type)s the correct overlay type?: '\
+                    % ({'type': ovl_type})
+                correct = self.get_ans(msg)
                 while not ovl_type or not correct:
-                    ovl_type = self.check_overlay_type(\
-                                self.get_input('Please provide overlay'\
-                                ' type: '))
+                    msg = 'Please provide overlay type: '
+                    ovl_type = self.check_overlay_type(self.get_input(msg))
                     correct = True
 
                 sources.append(ovl_type)
                 if 'branch' in self.required:
-                    sources.append(self.get_input('Define source[%(i)s]\'s '\
-                        'branch (if applicable): ' % ({'i': str(i)})))
+                    msg = 'Define source[%(i)s]\'s branch (if applicable): '\
+                          % ({'i': str(i)})
+                    sources.append(self.get_input(msg))
                 else:
                     sources.append('')
             else:
                 sources.append(self.get_input('Define source URL: '))
 
                 ovl_type = self.guess_overlay_type(sources[0])
-                correct = self.get_ans('Is %(type)s the correct overlay'\
-                                ' type?: ' % ({'type': ovl_type}))
+                msg = 'Is %(type)s the correct overlay type?: '\
+                       % ({'type': ovl_type})                                                      
+                correct = self.get_ans(msg)
                 while not ovl_type or not correct:
+                    msg = 'Please provide overlay type: '
                     ovl_type = self.check_overlay_type(\
-                                   self.get_input('Please provide overlay'\
-                                   ' type: '))
+                                   self.get_input(msg))
                     correct = True
 
                 sources.append(ovl_type)
                 if 'branch' in self.required:
-                    sources.append(self.get_input('Define source branch (if applicable): '))
+                    msg = 'Define source branch (if applicable): '
+                    sources.append(self.get_input(msg))
                 else:
                     sources.append('')
             if self.info_available:
@@ -346,7 +359,7 @@ class Interactive(object):
                     self.overlay['sources'].append(source)
             else:
                 self.overlay['sources'].append(sources)
-        print('')
+        self.output.notice('')
 
 
     def get_owner(self):
@@ -355,10 +368,10 @@ class Interactive(object):
         then appends the values to the overlay
         being created.
         '''
-        print('')
+        self.output.notice('')
         self.overlay['owner_name'] = self.get_input('Define owner name: ')
         self.overlay['owner_email'] = self.get_input('Define owner email: ')
-        print('')
+        self.output.notice('')
 
 
     def get_component(self, component, msg):
@@ -518,7 +531,9 @@ class Interactive(object):
         try:
             with fileopen(destination, 'w') as xml:
                 self.tree.write(xml, encoding=_UNICODE)
-            print('Successfully wrote to: %(path)s' % ({'path': destination}))
+            msg = 'Successfully wrote repo(s) to: %(path)s'\
+                  % ({'path': destination})
+            self.output.info(msg)
             return True
 
         except IOError as e:
