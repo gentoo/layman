@@ -124,6 +124,57 @@ class AddDeleteEnableDisableFromDB(unittest.TestCase):
         self.assertTrue(success)
 
 
+class CreateConfig(unittest.TestCase):
+
+    def make_BareConfig(self):
+        a = BareConfig()
+
+        # Test components of the BareConfig class:
+        self.test_url = 'https://api.gentoo.org/overlays/repositories.xml'
+        assertEqual(a['overlay'], self.test_url)
+        self.test_keys =  ['bzr_addopts', 'bzr_command', 'bzr_postsync',
+                      'bzr_syncopts', 'cache', 'config', 'configdir',
+                      'custom_news_func', 'custom_news_pkg', 'cvs_addopts',
+                      'cvs_command', 'cvs_postsync', 'cvs_syncopts',
+                      'darcs_addopts', 'darcs_command', 'darcs_postsync',
+                      'darcs_syncopts', 'g-common_command',
+                      'g-common_generateopts', 'g-common_postsync',
+                      'g-common_syncopts', 'git_addopts', 'git_command',
+                      'git_email', 'git_postsync', 'git_syncopts', 'git_user',
+                      'installed', 'local_list', 'make_conf',
+                      'mercurial_addopts', 'mercurial_command',
+                      'mercurial_postsync', 'mercurial_syncopts',
+                      'news_reporter', 'nocheck', 'nocolor', 'output',
+                      'overlay_defs', 'overlays', 'proxy', 'quiet',
+                      'quietness', 'rsync_command', 'rsync_postsync',
+                      'rsync_syncopts', 'stderr', 'stdin', 'stdout', 'storage',
+                      'svn_addopts', 'svn_command', 'svn_postsync',
+                      'svn_syncopts', 't/f_options', 'tar_command',
+                      'tar_postsync', 'umask', 'verbose', 'width']
+        assertEqual(sorted(a), self.test_keys)
+        assertEqual(a.get_option('nocheck'), True)
+
+
+    def make_OptionConfig(self):
+        my_opts = {
+                   'overlays':
+                   ["http://www.gentoo-overlays.org/repositories.xml"]
+                  }
+        new_defaults = {'configdir': '/etc/test-dir'}
+
+        a = OptionConfig(options=my_opts, defaults=new_defaults)
+
+        # Test components of the OptionConfig class:
+        assertEqual(a['overlays'], self.test_url)
+        assertEqual(a['configdir'], my_opts['configdir'])
+        assertEqual(sorted(a), self.test_keys)
+
+
+    def test(self):
+        for i in ['BareConfig', 'OptionConfig']:
+            getattr(self, 'make_%s' % i)
+
+
 class FetchRemoteList(unittest.TestCase):
 
     def test(self):

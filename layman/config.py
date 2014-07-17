@@ -82,14 +82,6 @@ class BareConfig(object):
         ):
         '''
         Creates a bare config with defaults and a few output options.
-
-        >>> a = BareConfig()
-        >>> a['overlays']
-        'https://api.gentoo.org/overlays/repositories.xml'
-        >>> sorted(a.keys())
-        ['bzr_addopts', 'bzr_command', 'bzr_postsync', 'bzr_syncopts', 'cache', 'config', 'configdir', 'custom_news_func', 'custom_news_pkg', 'cvs_addopts', 'cvs_command', 'cvs_postsync', 'cvs_syncopts', 'darcs_addopts', 'darcs_command', 'darcs_postsync', 'darcs_syncopts', 'g-common_command', 'g-common_generateopts', 'g-common_postsync', 'g-common_syncopts', 'git_addopts', 'git_command', 'git_email', 'git_postsync', 'git_syncopts', 'git_user', 'installed', 'local_list', 'make_conf', 'mercurial_addopts', 'mercurial_command', 'mercurial_postsync', 'mercurial_syncopts', 'news_reporter', 'nocheck', 'nocolor', 'output', 'overlay_defs', 'overlays', 'proxy', 'quiet', 'quietness', 'rsync_command', 'rsync_postsync', 'rsync_syncopts', 'stderr', 'stdin', 'stdout', 'storage', 'svn_addopts', 'svn_command', 'svn_postsync', 'svn_syncopts', 't/f_options', 'tar_command', 'tar_postsync', 'umask', 'verbose', 'width']
-        >>> a.get_option('nocheck')
-        True
         '''
 
         if root is None:
@@ -311,16 +303,6 @@ class OptionConfig(BareConfig):
         """
         @param options: dictionary of {'option': value, ...}
         @rtype OptionConfig class instance.
-
-        >>> options = {"overlays": ["http://www.gentoo-overlays.org/repositories.xml"]}
-        >>> new_defaults = {"configdir": "/etc/test-dir"}
-        >>> a = OptionConfig(options=options, defaults=new_defaults)
-        >>> a['overlays']
-        'http://www.gentoo-overlays.org/repositories.xml'
-        >>> a["configdir"]
-        '/etc/test-dir'
-        >>> sorted(a.keys())
-        ['bzr_addopts', 'bzr_command', 'bzr_postsync', 'bzr_syncopts', 'cache', 'config', 'configdir', 'custom_news_func', 'custom_news_pkg', 'cvs_addopts', 'cvs_command', 'cvs_postsync', 'cvs_syncopts', 'darcs_addopts', 'darcs_command', 'darcs_postsync', 'darcs_syncopts', 'g-common_command', 'g-common_generateopts', 'g-common_postsync', 'g-common_syncopts', 'git_addopts', 'git_command', 'git_email', 'git_postsync', 'git_syncopts', 'git_user', 'installed', 'local_list', 'make_conf', 'mercurial_addopts', 'mercurial_command', 'mercurial_postsync', 'mercurial_syncopts', 'news_reporter', 'nocheck', 'nocolor', 'output', 'overlay_defs', 'overlays', 'proxy', 'quiet', 'quietness', 'rsync_command', 'rsync_postsync', 'rsync_syncopts', 'stderr', 'stdin', 'stdout', 'storage', 'svn_addopts', 'svn_command', 'svn_postsync', 'svn_syncopts', 't/f_options', 'tar_command', 'tar_postsync', 'umask', 'verbose', 'width']
         """
         BareConfig.__init__(self, root=root)
 
