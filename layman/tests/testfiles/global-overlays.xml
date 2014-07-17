@@ -1,6 +1,5 @@
 <?xml version="1.0" ?>
 <layman>
-
   <overlay
       type = "svn"
       src  = "https://overlays.gentoo.org/svn/dev/wrobel"
@@ -8,23 +7,17 @@
       name = "wrobel"
       status = "official"
       priority = "10">
-
     <description>
       Test
     </description>
-
   </overlay>
-
   <overlay
       type = "rsync"
       src  = "rsync://gunnarwrobel.de/wrobel-stable"
       contact = "nobody@gentoo.org"
       name = "wrobel-stable">
-
     <description>
       A collection of ebuilds from Gunnar Wrobel [wrobel@gentoo.org].
     </description>
-
   </overlay>
-
 </layman>
