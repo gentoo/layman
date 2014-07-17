@@ -24,12 +24,99 @@ try:
     import urllib.request as urllib
 except ImportError:
     import urllib
-from layman.dbbase import DbBase
-from layman.output import Message
-from layman.config import BareConfig
-from warnings import filterwarnings, resetwarnings
+
+from  layman.db               import DB
+from  layman.dbbase           import DbBase
+from  layman.compatibility    import fileopen
+from  layman.config           import BareConfig, OptionConfig
+from  layman.output           import Message
+from  layman.overlays.overlay import Overlay
+from  layman.repoconfmanager  import RepoConfManager
+from  warnings import filterwarnings, resetwarnings
 
 HERE = os.path.dirname(os.path.realpath(__file__))
+
+class AddDeleteEnableDisableFromDB(unittest.TestCase):
+
+    def test(self):
+        tmpdir = tempfile.mkdtemp(prefix='laymantmp_')
+        makeconf = os.path.join(tmpdir, 'make.conf')
+        reposconf = os.path.join(tmpdir, 'repos.conf')
+
+        make_txt =\
+        'PORTDIR_OVERLAY="\n'\
+        '$PORTDIR_OVERLAY"'
+
+        # Create the .conf files so layman doesn't
+        # complain.
+        with fileopen(makeconf, 'w') as f:
+            f.write(make_txt)
+
+        with fileopen(reposconf, 'w') as f:
+            f.write('')
+
+        my_opts = {
+                   'installed' :
+                   HERE + '/testfiles/global-overlays.xml',
+                   'make_conf' : makeconf,
+                   'nocheck'    : 'yes',
+                   'storage'   : tmpdir,
+                   'repos_conf' : reposconf,
+                   'conf_type' : ['make.conf', 'repos.conf'],
+                   }
+
+        config = OptionConfig(my_opts)
+        config.set_option('quietness', 3)
+
+        a = DB(config)
+        config['output'].set_colorize(False)
+
+        conf = RepoConfManager(config, a.overlays)
+
+        # Set up our success tracker.
+        success = []
+
+        # Add all the overlays in global_overlays.xml.
+        for overlay in a.overlays.keys():
+            conf_success = conf.add(a.overlays[overlay])
+            if False in conf_success:
+                success.append(False)
+            else:
+                success.append(True)
+
+        # Disable one overlay.
+        conf_success = conf.disable(a.overlays['wrobel'])
+        if False in conf_success:
+            success.append(False)
+        else:
+            success.append(True)
+
+        # Enable disabled overlay.
+        conf_success = conf.enable(a.overlays['wrobel'])
+        if False in conf_success:
+            success.append(False)
+        else:
+            success.append(True)
+        # Delete all the overlays in global_overlays.xml.
+        for overlay in a.overlays.keys():
+            conf_success = conf.delete(a.overlays[overlay])
+            if False in conf_success:
+                success.append(False)
+            else:
+                success.append(True)
+
+        # Clean up.
+        os.unlink(makeconf)
+        os.unlink(reposconf)
+
+        shutil.rmtree(tmpdir)
+
+        if False in success:
+            success = False
+        else:
+            success = True
+
+        self.assertTrue(success)
 
 
 class Unicode(unittest.TestCase):
