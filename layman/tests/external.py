@@ -321,7 +321,8 @@ class PathUtil(unittest.TestCase):
 class Unicode(unittest.TestCase):
     def _overlays_bug(self, number):
         config = BareConfig()
-        filename = os.path.join(HERE, 'testfiles', 'overlays_bug_%d.xml' % number)
+        filename = os.path.join(HERE, 'testfiles', 'overlays_bug_%d.xml'\
+                                                    % number)
         o = DbBase(config, [filename])
         for verbose in (True, False):
             for t in o.list(verbose=verbose):
@@ -333,6 +334,88 @@ class Unicode(unittest.TestCase):
 
     def test_286290(self):
         self._overlays_bug(286290)
+
+
+class ReadWriteSelectListDbBase(unittest.TestCase):
+
+    def list_db(self):
+        output = Message()
+        config = {
+                  'output': output,
+                  'svn_command': '/usr/bin/svn',
+                  'rsync_command':'/usr/bin/rsync'
+                 }
+        db = DbBase(config, [HERE + '/testfiles/global-overlays.xml', ])
+
+        test_info = ('wrobel\n~~~~~~\nSource  : '\
+                     'https://overlays.gentoo.org/svn/dev/wrobel\nContact : '\
+                     'nobody@gentoo.org\nType    : Subversion; Priority: 10\n'\
+                     'Quality : experimental\n\nDescription:\n  Test\n',
+                     'wrobel-stable\n~~~~~~~~~~~~~\nSource  : '\
+                     'rsync://gunnarwrobel.de/wrobel-stable\nContact : '\
+                     'nobody@gentoo.org\nType    : Rsync; Priority: 50\n'\
+                     'Quality : experimental\n\nDescription:\n  A collection '\
+                     'of ebuilds from Gunnar Wrobel [wrobel@gentoo.org].\n')
+
+        info = db.list(verbose=True)
+
+        for i in range(0, len(info)):
+            self.assertEqual(info[i][0].decode('utf-8'), test_info[i])
+            print(info[i][0].decode('utf-8'))
+
+        test_info = ('wrobel                    [Subversion] '\
+                     '(https://o.g.o/svn/dev/wrobel         )',
+                     'wrobel-stable             [Rsync     ] '\
+                     '(rsync://gunnarwrobel.de/wrobel-stable)')
+
+        info = db.list(verbose=False, width=80)
+        for i in range(0, len(info)):
+            self.assertEqual(info[i][0].decode('utf-8'), test_info[i])
+            print(info[i][0].decode('utf-8'))
+
+    def read_db(self):
+        output = Message()
+        config = {'output': output}
+        db = DbBase(config, [HERE + '/testfiles/global-overlays.xml', ])
+        keys = sorted(db.overlays)
+        self.assertEqual(keys, ['wrobel', 'wrobel-stable'])
+
+        url = ['rsync://gunnarwrobel.de/wrobel-stable']
+        self.assertEqual(list(db.overlays['wrobel-stable'].source_uris()), url)
+
+
+    def select_db(self):
+        output = Message()
+        config = {'output': output}
+        db = DbBase(config, [HERE + '/testfiles/global-overlays.xml', ])
+        url = ['rsync://gunnarwrobel.de/wrobel-stable']
+        self.assertEqual(list(db.select('wrobel-stable').source_uris()), url)
+
+
+    def write_db(self):
+        tmpdir = tempfile.mkdtemp(prefix='laymantmp_')
+        test_xml = os.path.join(tmpdir, 'test.xml')
+        config = BareConfig()
+        a = DbBase(config, [HERE + '/testfiles/global-overlays.xml', ])
+        b = DbBase({'output': Message()}, [test_xml,])
+
+        b.overlays['wrobel-stable'] = a.overlays['wrobel-stable']
+        b.write(test_xml)
+
+        c = DbBase({'output': Message()}, [test_xml,])
+        keys = sorted(c.overlays)
+        self.assertEqual(keys, ['wrobel-stable'])
+
+        # Clean up:
+        os.unlink(test_xml)
+        shutil.rmtree(tmpdir)
+
+
+    def test(self):
+        self.list_db()
+        self.read_db()
+        self.select_db()
+        self.write_db()
 
 
 # http://bugs.gentoo.org/show_bug.cgi?id=304547
