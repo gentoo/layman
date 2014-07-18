@@ -275,23 +275,6 @@ class FetchRemoteList(unittest.TestCase):
         shutil.rmtree(tmpdir)
 
 
-class Unicode(unittest.TestCase):
-    def _overlays_bug(self, number):
-        config = BareConfig()
-        filename = os.path.join(HERE, 'testfiles', 'overlays_bug_%d.xml' % number)
-        o = DbBase(config, [filename])
-        for verbose in (True, False):
-            for t in o.list(verbose=verbose):
-                print(t[0].decode('utf-8'))
-                print()
-
-    def test_184449(self):
-        self._overlays_bug(184449)
-
-    def test_286290(self):
-        self._overlays_bug(286290)
-
-
 class FormatBranchCategory(unittest.TestCase):
     def _run(self, number):
         #config = {'output': Message()}
@@ -318,6 +301,23 @@ class FormatBranchCategory(unittest.TestCase):
         # Same content from old/layman-global.txt
         #   and new/repositories.xml format?
         self.assertTrue(os1 == os2)
+
+
+class Unicode(unittest.TestCase):
+    def _overlays_bug(self, number):
+        config = BareConfig()
+        filename = os.path.join(HERE, 'testfiles', 'overlays_bug_%d.xml' % number)
+        o = DbBase(config, [filename])
+        for verbose in (True, False):
+            for t in o.list(verbose=verbose):
+                print(t[0].decode('utf-8'))
+                print()
+
+    def test_184449(self):
+        self._overlays_bug(184449)
+
+    def test_286290(self):
+        self._overlays_bug(286290)
 
 
 # http://bugs.gentoo.org/show_bug.cgi?id=304547
