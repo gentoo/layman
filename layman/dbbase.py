@@ -152,17 +152,6 @@ class DbBase(object):
     def read(self, text, origin):
         '''
         Read an xml list of overlays (adding to and potentially overwriting existing entries)
-
-        >>> here = os.path.dirname(os.path.realpath(__file__))
-        >>> from layman.output import Message
-        >>> output = Message()
-        >>> config = {'output': output, 'svn_command': '/usr/bin/svn', 'rsync_command':'/usr/bin/rsync'}
-        >>> a = DbBase(config, [here + '/tests/testfiles/global-overlays.xml', ])
-        >>> a.overlays.keys()
-        ['wrobel', 'wrobel-stable']
-
-        >>> list(a.overlays['wrobel-stable'].source_uris())
-        ['rsync://gunnarwrobel.de/wrobel-stable']
         '''
         try:
             document = ET.fromstring(text)
@@ -210,24 +199,6 @@ class DbBase(object):
     def write(self, path):
         '''
         Write the list of overlays to a file.
-
-        >>> import tempfile
-        >>> tmpdir = tempfile.mkdtemp(prefix="laymantmp_")
-        >>> write = os.path.join(tmpdir, 'test.xml')
-        >>> here = os.path.dirname(os.path.realpath(__file__))
-        >>> from layman.config import BareConfig
-        >>> config = BareConfig()
-        >>> a = DbBase(config, [here + '/tests/testfiles/global-overlays.xml', ])
-        >>> from layman.output import Message
-        >>> b = DbBase({"output": Message() }, [write,])
-        >>> b.overlays['wrobel-stable'] = a.overlays['wrobel-stable']
-        >>> b.write(write)
-        >>> c = DbBase({"output": Message() }, [write,])
-        >>> c.overlays.keys()
-        ['wrobel-stable']
-
-        >>> os.unlink(write)
-        >>> os.rmdir(tmpdir)
         '''
 
         tree = ET.Element('repositories', version="1.0", encoding=_UNICODE)
@@ -245,14 +216,6 @@ class DbBase(object):
     def select(self, overlay):
         '''
         Select an overlay from the list.
-
-        >>> here = os.path.dirname(os.path.realpath(__file__))
-        >>> from layman.output import Message
-        >>> output = Message()
-        >>> config = {'output': output, 'svn_command': '/usr/bin/svn', 'rsync_command':'/usr/bin/rsync'}
-        >>> a = DbBase(config, [here + '/tests/testfiles/global-overlays.xml', ])
-        >>> list(a.select('wrobel-stable').source_uris())
-        ['rsync://gunnarwrobel.de/wrobel-stable']
         '''
         self.output.debug("DbBase.select(), overlay = %s" % overlay, 5)
         if not overlay in self.overlays.keys():
@@ -266,39 +229,6 @@ class DbBase(object):
     def list(self, repos=None, verbose = False, width = 0):
         '''
         List all overlays.
-
-        >>> here = os.path.dirname(os.path.realpath(__file__))
-        >>> from layman.output import Message
-        >>> output = Message()
-        >>> config = {'output': output, 'svn_command': '/usr/bin/svn', 'rsync_command':'/usr/bin/rsync'}
-        >>> a = DbBase(config, [here + '/tests/testfiles/global-overlays.xml', ])
-        >>> for i in a.list(verbose=True):
-        ...     print i[0]
-        wrobel
-        ~~~~~~
-        Source  : https://overlays.gentoo.org/svn/dev/wrobel
-        Contact : nobody@gentoo.org
-        Type    : Subversion; Priority: 10
-        Quality : experimental
-        <BLANKLINE>
-        Description:
-          Test
-        <BLANKLINE>
-        wrobel-stable
-        ~~~~~~~~~~~~~
-        Source  : rsync://gunnarwrobel.de/wrobel-stable
-        Contact : nobody@gentoo.org
-        Type    : Rsync; Priority: 50
-        Quality : experimental
-        <BLANKLINE>
-        Description:
-          A collection of ebuilds from Gunnar Wrobel [wrobel@gentoo.org].
-        <BLANKLINE>
-
-        >>> for i in a.list(verbose=False, width=80):
-        ...     print i[0]
-        wrobel                    [Subversion] (https://o.g.o/svn/dev/wrobel         )
-        wrobel-stable             [Rsync     ] (rsync://gunnarwrobel.de/wrobel-stable)
         '''
         result = []
 
