@@ -78,30 +78,6 @@ class Overlay(object):
 
     def __init__(self, config, xml=None, ovl_dict=None,
         ignore = 0):
-        '''
-        >>> here = os.path.dirname(os.path.realpath(__file__))
-        >>> import xml.etree.ElementTree as ET # Python 2.5
-        >>> document =ET.parse(here + '/../tests/testfiles/global-overlays.xml')
-        >>> overlays = document.findall('overlay') + document.findall('repo')
-        >>> from layman.output import Message
-        >>> output = Message()
-        >>> a = Overlay({'output': output}, overlays[0])
-        >>> a.name
-        'wrobel'
-        >>> a.is_official()
-        True
-        >>> list(a.source_uris())
-        ['https://overlays.gentoo.org/svn/dev/wrobel']
-        >>> a.owner_email
-        'nobody@gentoo.org'
-        >>> a.description
-        'Test'
-        >>> a.priority
-        10
-        >>> b = Overlay({'output': output}, overlays[1])
-        >>> b.is_official()
-        False
-        '''
         self.config = config
         self.output = config['output']
         self._encoding_ = get_encoding(self.output)
@@ -493,24 +469,9 @@ class Overlay(object):
 
     def get_infostr(self):
         '''
-        >>> here = os.path.dirname(os.path.realpath(__file__))
-        >>> import xml.etree.ElementTree as ET # Python 2.5
-        >>> document =ET.parse(here + '/../tests/testfiles/global-overlays.xml')
-        >>> overlays = document.findall('overlay') + document.findall('repo')
-        >>> from layman.output import Message
-        >>> output = Message()
-        >>> a = Overlay({'output': output}, overlays[0])
-        >>> print a.get_infostr()
-        wrobel
-        ~~~~~~
-        Source  : https://overlays.gentoo.org/svn/dev/wrobel
-        Contact : nobody@gentoo.org
-        Type    : Subversion; Priority: 10
-        Quality : experimental
-        <BLANKLINE>
-        Description:
-          Test
-        <BLANKLINE>
+        Gives more detailed string of overlay information.
+
+        @rtype str: encoded overlay information.
         '''
 
         result = ''
@@ -568,15 +529,10 @@ class Overlay(object):
 
     def short_list(self, width = 0):
         '''
-        >>> here = os.path.dirname(os.path.realpath(__file__))
-        >>> import xml.etree.ElementTree as ET # Python 2.5
-        >>> document =ET.parse(here + '/../tests/testfiles/global-overlays.xml')
-        >>> overlays = document.findall('repo') + document.findall('overlay')
-        >>> from layman.output import Message
-        >>> output = Message()
-        >>> a = Overlay({'output': output}, overlays[0])
-        >>> print a.short_list(80)
-        wrobel                    [Subversion] (https://o.g.o/svn/dev/wrobel         )
+        Return a shortened list of overlay information.
+
+        @params width: int specifying terminal width.
+        @rtype str: string of overlay information.
         '''
         if len(self.name) > 25:
             name = self.name + "   ###\n"

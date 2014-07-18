@@ -23,6 +23,7 @@ import sys
 import shutil
 import tempfile
 import unittest
+import xml.etree.ElementTree as ET # Python 2.5
 #Py3
 try:
     import urllib.request as urllib
@@ -302,6 +303,58 @@ class FormatBranchCategory(unittest.TestCase):
         # Same content from old/layman-global.txt
         #   and new/repositories.xml format?
         self.assertTrue(os1 == os2)
+
+
+class OverlayObjTest(unittest.TestCase):
+
+    def objattribs(self):
+        document = ET.parse(HERE + '/testfiles/global-overlays.xml')
+        overlays = document.findall('overlay') + document.findall('repo')
+        output = Message()
+
+        ovl_a = Overlay({'output': output}, overlays[0])
+        self.assertEqual(ovl_a.name, 'wrobel')
+        self.assertEqual(ovl_a.is_official(), True)
+        url = ['https://overlays.gentoo.org/svn/dev/wrobel']
+        self.assertEqual(list(ovl_a.source_uris()), url)
+        self.assertEqual(ovl_a.owner_email, 'nobody@gentoo.org')
+        self.assertEqual(ovl_a.descriptions, ['Test'])
+        self.assertEqual(ovl_a.priority, 10)
+
+        ovl_b = Overlay({'output': output}, overlays[1])
+        self.assertEqual(ovl_b.is_official(), False)
+
+
+    def getinfostr(self):
+        document = ET.parse(HERE + '/testfiles/global-overlays.xml')
+        overlays = document.findall('overlay') + document.findall('repo')
+        output = Message()
+
+        ovl = Overlay({'output': output}, overlays[0])
+        test_infostr = 'wrobel\n~~~~~~\nSource  : '\
+                       'https://overlays.gentoo.org/svn/dev/wrobel\nContact '\
+                       ': nobody@gentoo.org\nType    : Subversion; Priority: '\
+                       '10\nQuality : experimental\n\nDescription:\n  Test\n'
+        self.assertEqual(ovl.get_infostr().decode('utf-8'), test_infostr)
+        print(ovl.get_infostr().decode('utf-8'))
+
+
+    def getshortlist(self):
+        document = ET.parse(HERE + '/testfiles/global-overlays.xml')
+        overlays = document.findall('overlay') + document.findall('repo')
+        output = Message()
+
+        ovl = Overlay({'output': output}, overlays[0])
+        test_short_list = 'wrobel                    [Subversion] '\
+                          '(https://o.g.o/svn/dev/wrobel         )'
+        self.assertEqual(ovl.short_list(80).decode('utf-8'), test_short_list)
+        print(ovl.short_list(80).decode('utf-8'))
+
+
+    def test(self):
+        self.objattribs()
+        self.getinfostr()
+        self.getshortlist()
 
 
 class PathUtil(unittest.TestCase):
