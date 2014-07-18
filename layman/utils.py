@@ -131,25 +131,6 @@ def indent(elem, level=0):
 def path(path_elements):
     '''
     Concatenate a path from several elements.
-
-    >>> path([])
-    ''
-    >>> path(['a'])
-    'a'
-    >>> path(['a','b'])
-    'a/b'
-    >>> path(['a/','b'])
-    'a/b'
-    >>> path(['/a/','b'])
-    '/a/b'
-    >>> path(['/a/','b/'])
-    '/a/b'
-    >>> path(['/a/','b/'])
-    '/a/b'
-    >>> path(['/a/','/b/'])
-    '/a/b'
-    >>> path(['/a/','/b','c/'])
-    '/a/b/c'
     '''
     pathname = ''
 
