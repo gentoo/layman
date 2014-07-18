@@ -38,6 +38,7 @@ from  layman.config           import BareConfig, OptionConfig
 from  layman.output           import Message
 from  layman.overlays.overlay import Overlay
 from  layman.repoconfmanager  import RepoConfManager
+from  layman.utils            import path
 from  warnings import filterwarnings, resetwarnings
 
 HERE = os.path.dirname(os.path.realpath(__file__))
@@ -301,6 +302,20 @@ class FormatBranchCategory(unittest.TestCase):
         # Same content from old/layman-global.txt
         #   and new/repositories.xml format?
         self.assertTrue(os1 == os2)
+
+
+class PathUtil(unittest.TestCase):
+
+    def test(self):
+        self.assertEqual(path([]), '')
+        self.assertEqual(path(['a']), 'a')
+        self.assertEqual(path(['a', 'b']), 'a/b')
+        self.assertEqual(path(['a/', 'b']), 'a/b')
+        self.assertEqual(path(['/a/', 'b']), '/a/b')
+        self.assertEqual(path(['/a', '/b/']), '/a/b')
+        self.assertEqual(path(['/a/', 'b/']), '/a/b')
+        self.assertEqual(path(['/a/','/b/']), '/a/b')
+        self.assertEqual(path(['/a/','/b','c/']), '/a/b/c')
 
 
 class Unicode(unittest.TestCase):
