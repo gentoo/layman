@@ -105,33 +105,8 @@ class RemoteDB(DbBase):
         '''
         Copy the remote overlay list to the local cache.
 
-        >>> import tempfile
-        >>> here = os.path.dirname(os.path.realpath(__file__))
-        >>> tmpdir = tempfile.mkdtemp(prefix="laymantmp_")
-        >>> cache = os.path.join(tmpdir, 'cache')
-        >>> myoptions = {'overlays' :
-        ...           ['file://' + here + '/tests/testfiles/global-overlays.xml'],
-        ...           'cache' : cache,
-        ...           'nocheck'    : 'yes',
-        ...           'proxy' : None}
-        >>> from layman.config import OptionConfig
-        >>> config = OptionConfig(myoptions)
-        >>> config.set_option('quietness', 3)
-        >>> a = RemoteDB(config)
-        >>> a.cache()
-        (True, True)
-        >>> b = fileopen(a.filepath(config['overlays'])+'.xml')
-        >>> b.readlines()[24]
-        '      A collection of ebuilds from Gunnar Wrobel [wrobel@gentoo.org].\\n'
-
-        >>> b.close()
-        >>> os.unlink(a.filepath(config['overlays'])+'.xml')
-
-        >>> a.overlays.keys()
-        ['wrobel', 'wrobel-stable']
-
-        >>> import shutil
-        >>> shutil.rmtree(tmpdir)
+        @rtype tuple: reflects whether the cache has updates and whether or not
+        the cache retrieval was successful.
         '''
         has_updates = False
         self._create_storage(self.config['storage'])
