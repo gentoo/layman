@@ -29,6 +29,7 @@ try:
 except ImportError:
     import urllib
 
+from  layman.argsparser       import ArgsParser
 from  layman.api              import LaymanAPI
 from  layman.db               import DB
 from  layman.dbbase           import DbBase
@@ -122,6 +123,46 @@ class AddDeleteEnableDisableFromDB(unittest.TestCase):
             success = True
 
         self.assertTrue(success)
+
+
+class CLIArgs(unittest.TestCase):
+
+    def test(self):
+        # Append cli args to sys.argv with correspoding options:
+        sys.argv.append('--config')
+        sys.argv.append(HERE + '/../../etc/layman.cfg')
+
+        sys.argv.append('--overlay_defs')
+        sys.argv.append('')
+
+        # Test the passed in cli opts on the ArgsParser class:
+        a = ArgsParser()
+        test_url = '\n\nhttps://api.gentoo.org/overlays/repositories.xml'
+        self.assertEqual(a['overlays'], test_url)
+        test_keys = ['auto_sync', 'bzr_addopts', 'bzr_command', 'bzr_postsync',
+                     'bzr_syncopts', 'cache', 'clean_tar', 'conf_module',
+                     'conf_type', 'config', 'configdir', 'custom_news_pkg',
+                     'cvs_addopts', 'cvs_command', 'cvs_postsync',
+                     'cvs_syncopts', 'darcs_addopts', 'darcs_command',
+                     'darcs_postsync', 'darcs_syncopts', 'g-common_command',
+                     'g-common_generateopts', 'g-common_postsync',
+                     'g-common_syncopts', 'g-sorcery_command',
+                     'g-sorcery_generateopts', 'g-sorcery_postsync',
+                     'g-sorcery_syncopts', 'git_addopts', 'git_command',
+                     'git_email', 'git_postsync', 'git_syncopts',
+                     'git_user', 'gpg_detached_lists', 'gpg_signed_lists',
+                     'http_proxy', 'https_proxy', 'installed', 'local_list',
+                     'make_conf', 'mercurial_addopts', 'mercurial_command',
+                     'mercurial_postsync', 'mercurial_syncopts',
+                     'news_reporter', 'nocheck', 'overlay_defs', 'overlays',
+                     'quietness', 'repos_conf', 'require_repoconfig',
+                     'rsync_command', 'rsync_postsync', 'rsync_syncopts',
+                     'storage', 'support_url_updates', 'svn_addopts',
+                     'svn_command', 'svn_postsync', 'svn_syncopts',
+                     't/f_options', 'tar_command', 'tar_postsync', 'umask',
+                     'width']
+        # Due to this not being a dict object, the keys() invocation is needed.
+        self.assertEqual(sorted(a.keys()), test_keys)
 
 
 class CreateConfig(unittest.TestCase):
