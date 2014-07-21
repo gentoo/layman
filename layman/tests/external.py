@@ -38,6 +38,7 @@ from  layman.compatibility    import fileopen
 from  layman.config           import BareConfig, OptionConfig
 from  layman.output           import Message
 from  layman.overlays.overlay import Overlay
+from  layman.remotedb         import RemoteDB
 from  layman.repoconfmanager  import RepoConfManager
 from  layman.utils            import path
 from  warnings import filterwarnings, resetwarnings
@@ -469,6 +470,37 @@ class ReadWriteSelectListDbBase(unittest.TestCase):
         self.read_db()
         self.select_db()
         self.write_db()
+
+
+class RemoteDBCache(unittest.TestCase):
+    def test(self):
+        tmpdir = tempfile.mkdtemp(prefix='laymantmp_')
+        cache = os.path.join(tmpdir, 'cache')
+        my_opts = {
+                   'overlays' :
+                   ['file://' + HERE + '/testfiles/global-overlays.xml'],
+                   'cache' : cache,
+                   'nocheck'    : 'yes',
+                   'proxy' : None
+                  }
+        config = OptionConfig(my_opts)
+        db = RemoteDB(config)
+        self.assertEquals(db.cache(), (True, True))
+
+        db_xml = fileopen(db.filepath(config['overlays']) + '.xml')
+
+        test_line = '      A collection of ebuilds from Gunnar Wrobel '\
+                    '[wrobel@gentoo.org].\n'
+        self.assertEqual(db_xml.readlines()[19], test_line)
+
+        for line in db_xml.readlines():
+            print(line, end='')
+
+        db_xml.close()
+        keys = sorted(db.overlays)
+        self.assertEqual(keys, ['wrobel', 'wrobel-stable'])
+
+        shutil.rmtree(tmpdir)
 
 
 # http://bugs.gentoo.org/show_bug.cgi?id=304547
