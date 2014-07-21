@@ -483,59 +483,10 @@ class LaymanAPI(object):
 
 
     def fetch_remote_list(self):
-        """Fetches the latest remote overlay list
+        """
+        Fetches the latest remote overlay list.
 
-
-        >>> import os
-        >>> here = os.path.dirname(os.path.realpath(__file__))
-        >>> import tempfile
-        >>> tmpdir = tempfile.mkdtemp(prefix="laymantmp_")
-        >>> cache = os.path.join(tmpdir, 'cache')
-        >>> from layman.config import OptionConfig
-        >>> opts = {'overlays' :
-        ...           ['file://' + here + '/tests/testfiles/global-overlays.xml'],
-        ...           'cache' : cache,
-        ...           'nocheck'    : 'yes',
-        ...           'proxy' : None,
-        ...           'svn_command':'/usr/bin/svn',
-        ...           'rsync_command':'/usr/bin/rsync'}
-        >>> config = OptionConfig(opts)
-        >>> config.set_option('quietness', 3)
-        >>> api = LaymanAPI(config)
-        >>> api.fetch_remote_list()
-        True
-        >>> api.get_errors()
-        []
-        >>> filename = api._get_remote_db().filepath(config['overlays'])+'.xml'
-        >>> b = fileopen(filename, 'r')
-        >>> b.readlines()[24]
-        '      A collection of ebuilds from Gunnar Wrobel [wrobel@gentoo.org].\\n'
-
-        >>> b.close()
-
-        >>> api.get_available()
-        ['wrobel', 'wrobel-stable']
-        >>> all = api.get_all_info('wrobel')
-        >>> info = all['wrobel']
-        >>> info['status']
-        'official'
-        >>> info['description']
-        'Test'
-        >>> info['sources']
-        [('https://overlays.gentoo.org/svn/dev/wrobel', 'Subversion', None)]
-
-        #{'wrobel': {'status': 'official',
-        #'owner_name': None, 'description': 'Test',
-        #'src_uris': <generator object source_uris at 0x167c3c0>,
-        #'owner_email': 'nobody@gentoo.org',
-        #'quality': 'experimental', 'name': 'wrobel', 'supported': True,
-        #'src_types': <generator object source_types at 0x167c370>,
-        #'official': True,
-        #'priority': 10, 'feeds': [], 'irc': None, 'homepage': None}}
-
-        >>> os.unlink(filename)
-        >>> import shutil
-        >>> shutil.rmtree(tmpdir)
+        @rtype bool: reflects success/failure to fetch remote list.
         """
 
         try:

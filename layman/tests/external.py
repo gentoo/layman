@@ -13,9 +13,13 @@
 # Author(s):
 #             Sebastian Pipping <sebastian@pipping.org>
 #
+
+from __future__ import print_function
+
 '''Runs external (non-doctest) test cases.'''
 
 import os
+import sys
 import shutil
 import tempfile
 import unittest
@@ -25,6 +29,7 @@ try:
 except ImportError:
     import urllib
 
+from  layman.api              import LaymanAPI
 from  layman.db               import DB
 from  layman.dbbase           import DbBase
 from  layman.compatibility    import fileopen
@@ -117,6 +122,65 @@ class AddDeleteEnableDisableFromDB(unittest.TestCase):
             success = True
 
         self.assertTrue(success)
+
+
+class FetchRemoteList(unittest.TestCase):
+
+    def test(self):
+        tmpdir = tempfile.mkdtemp(prefix='laymantmp_')
+        cache = os.path.join(tmpdir, 'cache')
+
+        my_opts = {
+                   'overlays': ['file://'\
+                                + HERE + '/testfiles/global-overlays.xml'],
+                   'cache': cache,
+                   'nocheck': 'yes',
+                   'proxy': None,
+                   'quietness': 3
+                  }
+
+        config = OptionConfig(my_opts)
+
+        api = LaymanAPI(config)
+        self.assertTrue(api.fetch_remote_list())
+
+        filename = api._get_remote_db().filepath(config['overlays']) + '.xml'
+
+        with fileopen(filename, 'r') as b:
+            self.assertEqual(b.readlines()[19], '      A collection of ebuilds from Gunnar Wrobel [wrobel@gentoo.org].\n')
+            for line in b.readlines():
+                print(line, end='')
+
+        # Check if we get available overlays.
+        available = api.get_available()
+        self.assertEqual(available, ['wrobel', 'wrobel-stable'])
+
+        # Test the info of an overlay.
+        all_info = api.get_all_info('wrobel')
+
+        test_info = {'status': 'official', 'owner_name': None,
+                     'description': ['Test'], 'src_uris':
+                     ['https://overlays.gentoo.org/svn/dev/wrobel'],
+                     'owner_email': 'nobody@gentoo.org', 'sources':
+                     [('https://overlays.gentoo.org/svn/dev/wrobel',
+                     'Subversion', None)], 'quality': 'experimental', 'name':
+                     'wrobel', 'supported': True, 'src_types': ['Subversion'],
+                     'official': True, 'priority': 10, 'feeds': [],
+                     'irc': None, 'homepage': None}
+        info = all_info['wrobel']
+        info['src_uris'] = [e for e in info['src_uris']]
+        info['src_types'] = [e for e in info['src_types']]
+        
+        self.assertEqual(info, test_info)
+
+        self.assertEqual(info['status'], 'official')
+        self.assertEqual(info['description'], ['Test'])
+        sources = [('https://overlays.gentoo.org/svn/dev/wrobel', 'Subversion',
+                    None)]
+        self.assertEqual(info['sources'], sources)
+
+        os.unlink(filename)
+        shutil.rmtree(tmpdir)
 
 
 class Unicode(unittest.TestCase):
