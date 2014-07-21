@@ -56,20 +56,7 @@ class ArgsParser(BareConfig):
         '''
         Creates and describes all possible polymeraZe options and creates
         a Message object.
-
-        >>> import os.path
-        >>> here = os.path.dirname(os.path.realpath(__file__))
-        >>> sys.argv.append('--config')
-        >>> sys.argv.append(here + '/../etc/layman.cfg')
-        >>> sys.argv.append('--overlay_defs')
-        >>> sys.argv.append('')
-        >>> a = ArgsParser()
-        >>> a['overlays']
-        '\\nhttp://www.gentoo.org/proj/en/overlays/repositories.xml'
-        >>> sorted(a.keys())
-        ['bzr_addopts', 'bzr_command', 'bzr_postsync', 'bzr_syncopts', 'cache', 'config', 'configdir', 'custom_news_pkg', 'cvs_addopts', 'cvs_command', 'cvs_postsync', 'cvs_syncopts', 'darcs_addopts', 'darcs_command', 'darcs_postsync', 'darcs_syncopts', 'g-common_command', 'g-common_generateopts', 'g-common_postsync', 'g-common_syncopts', 'git_addopts', 'git_command', 'git_email', 'git_postsync', 'git_syncopts', 'git_user', 'installed', 'local_list', 'make_conf', 'mercurial_addopts', 'mercurial_command', 'mercurial_postsync', 'mercurial_syncopts', 'news_reporter', 'nocheck', 'overlay_defs', 'overlays', 'proxy', 'quietness', 'rsync_command', 'rsync_postsync', 'rsync_syncopts', 'storage', 'svn_addopts', 'svn_command', 'svn_postsync', 'svn_syncopts', 't/f_options', 'tar_command', 'tar_postsync', 'umask', 'width']
-                '''
-
+        '''
         BareConfig.__init__(self, stdout=stdout, stderr=stderr,
                             stdin=stdin, root=root)
 
