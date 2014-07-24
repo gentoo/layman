@@ -1,6 +1,22 @@
 CHANGES
 -------
 
+Version 2.1.0 - Released 2014-07-23
+===================================
+ - man page updates
+ - python 2.7 and python 3.x compatibility
+ - migrate from optparse to argparse
+ - Support for repos.conf configuration files
+ - RepoConfManager to handle all repo configuration types
+ - URL updating for outdated source URLs
+ - Command line option to re-add an overlay
+ - Overlay type checking to ensure the overlay type of an
+   installed overlay is the same as the overlay type reported
+   by the remote database
+ - IRC and branch tag support for overlay xmls
+ - clean_tar config option to clean up local tar overlay files
+
+
 Version 2.0.0 final - Released 2012-12-16
 =========================================
  - re-released rc5 as 2.0.0 final
