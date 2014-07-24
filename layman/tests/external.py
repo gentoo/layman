@@ -36,6 +36,7 @@ from  layman.db               import DB
 from  layman.dbbase           import DbBase
 from  layman.compatibility    import fileopen
 from  layman.config           import BareConfig, OptionConfig
+from  layman.maker            import Interactive
 from  layman.output           import Message
 from  layman.overlays.overlay import Overlay
 from  layman.remotedb         import RemoteDB
@@ -304,6 +305,49 @@ class FormatBranchCategory(unittest.TestCase):
         # Same content from old/layman-global.txt
         #   and new/repositories.xml format?
         self.assertTrue(os1 == os2)
+
+
+class MakeOverlayXML(unittest.TestCase):
+
+    def test(self):
+        temp_dir_path = tempfile.mkdtemp()
+        my_opts = {
+                   'overlays': ['file://'\
+                        + HERE + '/testfiles/global-overlays.xml'],
+                   'nocheck': 'yes',
+                   'proxy': None,
+                   'quietness': 3,
+                  }
+
+        config = OptionConfig(my_opts)
+
+        ovl_dict = {
+                    'name': 'wrobel',
+                    'descriptions': ['Test'],
+                    'owner_name': 'nobody',
+                    'owner_email': 'nobody@gentoo.org',
+                    'status': 'official',
+                    'sources': [['https://overlays.gentoo.org/svn/dev/wrobel',
+                                 'svn', '']],
+                    'priority': '10',
+                   }
+
+        a = Overlay(config=config, ovl_dict=ovl_dict, ignore=config['ignore'])
+        ovl = (ovl_dict['name'], a)
+        path = temp_dir_path + '/overlay.xml'
+        create_overlay_xml = Interactive(config=config)
+
+        create_overlay_xml(overlay_package=ovl, path=path)
+        self.assertTrue(os.path.exists(path))
+
+        with fileopen(path, 'r') as xml:
+            test_line = '    <source type="svn">'\
+                        'https://overlays.gentoo.org/svn/dev/wrobel</source>\n'
+            self.assertEqual(xml.readlines()[9], test_line)
+            for line in xml.readlines():
+                print(line, end='')
+
+        shutil.rmtree(temp_dir_path)
 
 
 class OverlayObjTest(unittest.TestCase):
