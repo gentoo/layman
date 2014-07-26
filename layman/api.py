@@ -426,6 +426,7 @@ class LaymanAPI(object):
                 message = 'Overlay "%s" could not be found in the remote lists.\n' \
                         'Please check if it has been renamed and re-add if necessary.' % ovl
                 warnings.append((ovl, message))
+                (diff_type, update_url) = (False, False)
             else:
                 self.output.debug("API.sync(); else: self._get_remote_db().select(ovl)", 5)
 
