@@ -409,9 +409,8 @@ class LaymanAPI(object):
         current_src = odb.sources[0].src
         (available_srcs, valid) = verify_overlay_src(current_src,
             set(e.src for e in ordb.sources))
-            
+
         if ordb and odb and not valid:
-            update_url = True
             if len(available_srcs) == 1:
                 plural = ''
                 candidates = '  %s' % tuple(available_srcs)[0]
@@ -437,8 +436,8 @@ class LaymanAPI(object):
                      'candidates':candidates,
                      'plural':plural,
                   })
-            return True, msg
-        return False, ''
+            return True, msg, available_srcs
+        return False, '', available_srcs
 
     def sync(self, repos, output_results=True, update_news=False):
         """syncs the specified repo(s) specified by repos
@@ -486,22 +485,29 @@ class LaymanAPI(object):
                 self.output.debug("API.sync(); else: self._get_remote_db().select(ovl)", 5)
 
                 (diff_type, type_msg) = self._verify_overlay_type(odb, ordb)
-                (update_url, url_msg) = self._verify_overlay_source(odb, ordb)
+                (update_url, url_msg, available_srcs) = self._verify_overlay_source(odb, ordb)
+
+                try:
+                    if diff_type:
+                        self.output.debug("API.sync(); starting API.readd_repos(ovl)", 5)
+                        warnings.append((ovl, type_msg))
+                        self.readd_repos(ovl)
+                        success.append((ovl, 'Successfully readded overlay "' + ovl + '".'))
+                    else:
+                        if update_url:
+                            self.output.debug("API.sync() starting db.update(ovl)", 5)
+                            warnings.append((ovl, url_msg))
+                            update_success = db.update(ordb, available_srcs)
+                            if not update_success:
+                                self.output.warn('Failed to update repo...readding', 2)
+                                self.readd_repos(ovl)
+                except Exception as error:
+                    self.output.warn('Failed to perform overlay type or url updates', 2)
+                    self.output.warn('    for Overlay: %s' % ovl, 2)
+                    self.output.warn('    Error was: %s' % str(error))
+                continue
 
             try:
-                if diff_type:
-                    self.output.debug("API.sync(); starting API.readd_repos(ovl)", 5)
-                    warnings.append((ovl, type_msg))
-                    self.readd_repos(ovl)
-                    success.append((ovl, 'Successfully readded overlay "' + ovl + '".'))
-                else:
-                    if update_url:
-                        self.output.debug("API.sync() starting db.update(ovl)", 5)
-                        warnings.append((ovl, url_msg))
-                        update_success = db.update(ordb, available_srcs)
-                        if not update_success:
-                            self.output.warn('Failed to update repo...readding', 2)
-                            self.readd_repos(ovl)
                     self.output.debug("API.sync(); starting db.sync(ovl)", 5)
                     db.sync(ovl)
                     success.append((ovl,'Successfully synchronized overlay "' + ovl + '".'))
