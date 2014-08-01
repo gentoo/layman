@@ -107,8 +107,7 @@ class Overlay(object):
             try:
                 _class = self.module_controller.get_class(_type)
             except InvalidModuleName:
-                raise Exception('Overlay from_xml(), "' + self.name + \
-                    '" Unknown overlay type "%s"!' % _type)
+                _class = self.module_controller.get_class('stub')
 
             _location = encode(strip_text(source_elem))
 
@@ -219,8 +218,8 @@ class Overlay(object):
             try:
                 _class = self.module_controller.get_class(_type)
             except InvalidModuleName:
-                raise Exception('Overlay from_dict(), "' + self.name +
-                    '" Unknown overlay type "%s"!' % _type)
+                _class = self.module_controller.get_class('stub')
+
             _location = encode(_src)
             if _sub:
                 self.branch = encode(_sub)
