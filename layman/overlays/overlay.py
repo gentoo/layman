@@ -101,6 +101,7 @@ class Overlay(object):
         def create_overlay_source(source_elem):
             _branch = ''
             _type = source_elem.attrib['type']
+            self.ovl_type = _type
             if 'branch' in source_elem.attrib:
                 _branch = source_elem.attrib['branch']
 
@@ -215,6 +216,7 @@ class Overlay(object):
 
         def create_dict_overlay_source(source_):
             _src, _type, _sub = source_
+            self.ovl_type = _type
             try:
                 _class = self.module_controller.get_class(_type)
             except InvalidModuleName:
