@@ -624,12 +624,25 @@ class LaymanAPI(object):
     def supported_types(self):
         """returns a dictionary of all repository types,
         with boolean values"""
+        here = os.path.dirname(os.path.realpath(__file__))
+        modpath = os.path.join('overlays', 'modules')
+        modules = os.path.listdir(os.path.join(here, modpath))
+
         cmds = [x for x in self.config.keys() if '_command' in x]
         supported = {}
         for cmd in cmds:
             type_key = cmd.split('_')[0]
-            supported[type_key] = require_supported(
-                [(self.config[cmd],type_key, '')], self.output.warn)
+            # The module dir might be named differently from the type_key.
+            # ex.) g-common and g-sorcery are named g_common and g_sorcery.
+            module = type_key.replace('-', '_')
+
+            # Don't bother executing require_supported() if the user didn't
+            # bring in support for the overlay type in the first place.
+            if module in modules:
+                supported[type_key] = require_supported(
+                    [(self.config[cmd],type_key, '')], self.output.warn)
+            else:
+                supported[type_key] = False
         return supported
 
 
