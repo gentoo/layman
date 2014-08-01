@@ -35,38 +35,16 @@ import codecs
 import locale
 import xml.etree.ElementTree as ET # Python 2.5
 
-from layman.utils import pad, terminal_width, get_encoding, encoder
-from layman.compatibility import encode
-
-from   layman.overlays.bzr       import BzrOverlay
-from   layman.overlays.darcs     import DarcsOverlay
-from   layman.overlays.git       import GitOverlay
-from   layman.overlays.g_common  import GCommonOverlay
-from   layman.overlays.g_sorcery import GSorceryOverlay
-from   layman.overlays.mercurial import MercurialOverlay
-from   layman.overlays.cvs       import CvsOverlay
-from   layman.overlays.svn       import SvnOverlay
-from   layman.overlays.rsync     import RsyncOverlay
-from   layman.overlays.tar       import TarOverlay
+from  layman.compatibility import encode
+from  layman.module        import Modules, InvalidModuleName
+from  layman.utils         import pad, terminal_width, get_encoding, encoder
 
 #===============================================================================
 #
 # Constants
 #
 #-------------------------------------------------------------------------------
-
-OVERLAY_TYPES = dict((e.type_key, e) for e in (
-    GitOverlay,
-    GCommonOverlay,
-    GSorceryOverlay,
-    CvsOverlay,
-    SvnOverlay,
-    RsyncOverlay,
-    TarOverlay,
-    BzrOverlay,
-    MercurialOverlay,
-    DarcsOverlay
-))
+MOD_PATH = path = os.path.join(os.path.dirname(__file__), 'modules')
 
 QUALITY_LEVELS = 'core|stable|testing|experimental|graveyard'.split('|')
 
@@ -80,6 +58,9 @@ class Overlay(object):
         ignore = 0):
         self.config = config
         self.output = config['output']
+        self.module_controller = Modules(path=MOD_PATH,
+                                         namepath='layman.overlays.modules',
+                                         output=self.output)
         self._encoding_ = get_encoding(self.output)
 
         if xml is not None:
@@ -124,10 +105,10 @@ class Overlay(object):
                 _branch = source_elem.attrib['branch']
 
             try:
-                _class = OVERLAY_TYPES[_type]
-            except KeyError:
+                _class = self.module_controller.get_class(_type)
+            except InvalidModuleName:
                 raise Exception('Overlay from_xml(), "' + self.name + \
-                    'Unknown overlay type "%s"!' % _type)
+                    '" Unknown overlay type "%s"!' % _type)
 
             _location = encode(strip_text(source_elem))
 
@@ -236,10 +217,10 @@ class Overlay(object):
         def create_dict_overlay_source(source_):
             _src, _type, _sub = source_
             try:
-                _class = OVERLAY_TYPES[_type]
-            except KeyError:
+                _class = self.module_controller.get_class(_type)
+            except InvalidModuleName:
                 raise Exception('Overlay from_dict(), "' + self.name +
-                    'Unknown overlay type "%s"!' % _type)
+                    '" Unknown overlay type "%s"!' % _type)
             _location = encode(_src)
             if _sub:
                 self.branch = encode(_sub)
