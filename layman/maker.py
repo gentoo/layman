@@ -22,6 +22,7 @@ from __future__ import unicode_literals
 import layman.overlays.overlay as Overlay
 import xml.etree.ElementTree   as ET
 
+import argparse
 import copy
 import os
 import re
@@ -32,6 +33,7 @@ from   layman.compatibility  import fileopen
 from   layman.constants      import COMPONENT_DEFAULTS, POSSIBLE_COMPONENTS
 from   layman.config         import OptionConfig
 from   layman.utils          import get_ans, get_input, indent, reload_config
+from   layman.version        import VERSION
 
 #py3
 if sys.hexversion >= 0x30200f0:
@@ -105,9 +107,10 @@ AUTOCOMPLETE_TEMPLATE = {
 
 class Interactive(object):
 
-    def __init__(self):
-        self.config = OptionConfig()
-        reload_config(self.config)
+    def __init__(self, config=None):
+        self.config = config
+        if self.config:
+           reload_config(self.config)
         self.layman_inst = LaymanAPI(config=self.config)
         self.output = self.config.get_option('output')
         self.overlay = {}
@@ -115,24 +118,82 @@ class Interactive(object):
         self.overlays_available = self.layman_inst.get_available()
         self.supported_types = self.layman_inst.supported_types().keys()
 
+
+    def args_parser(self):
+        self.parser = argparse.ArgumentParser(prog='layman-overlay-maker',
+            description='Layman\'s utility script to create overlay'\
+                        'definitions.')
+        self.parser.add_argument('-l',
+                                 '--list-autocomplete',
+                                 action='store_true',
+                                 help='Lists all available mirrors supported'\
+                                 ' for information auto-completion'
+                                )
+        self.parser.add_argument('-n',
+                                 '--no-extra',
+                                 action='store_true',
+                                 help='Don\'t add any extra overlay info,'\
+                                 ' just the bare minimum requirements')
+        self.parser.add_argument('-s',
+                                 '--set-autocomplete',
+                                 nargs='+',
+                                 help='Enables auto-completion support for'\
+                                 ' the selected mirror. Specify "ALL" to'\
+                                 ' enable support for all available mirrors')
+        self.parser.add_argument('-S',
+                                 '--sudo',
+                                 action='store_true',
+                                 help='Bypass checks to see if an overlay'\
+                                 ' name being inputted is already being used'\
+                                 ' and choose the installation dir for the'\
+                                 ' XML')
+        self.parser.add_argument('-V',
+                                 '--version',
+                                 action='version',
+                                 version='%(prog)s ' + VERSION)
+
+        self.args = self.parser.parse_args()
+
+
     def __call__(self, overlay_package=None, path=None):
 
         if not overlay_package:
+            self.args_parser()
+            options = {}
+            for key in vars(self.args):
+                options[key] = vars(self.args)[key]
+            self.config = OptionConfig(options=options)
+            reload_config(self.config)
+
+            self.auto_complete = False
+            self.list_info     = self.config.get_option('list_autocomplete')
+            self.no_extra      = self.config.get_option('no_extra')
+            self.sudo          = self.config.get_option('sudo')
+
+            if self.list_info:
+                self.list_templates()
+
+            if self.args.set_autocomplete:
+                if 'ALL' in self.args.set_autocomplete:
+                    self.templates = AUTOCOMPLETE_TEMPLATE.keys()
+                    self.auto_complete = True
+                else:
+                    self.templates = self.args.set_autocomplete
+                    self.auto_complete = True
+
             msg = 'How many overlays would you like to create?: '
             for x in range(1, int(get_input(msg))+1):
-                self.info_available = False
                 self.output.notice('')
                 self.output.info('Overlay #%(x)s: ' % ({'x': str(x)}))
                 self.output.info('~~~~~~~~~~~~~')
 
-                msg = 'Is the mirror for this overlay either github.com,'
-                self.output.info(msg)
-                msg = 'git.overlays.gentoo.org, or bitbucket.org? [y/n]: '
-                self.info_available = get_ans(msg)
+                self.required = copy.deepcopy(COMPONENT_DEFAULTS)
 
-                self.output.notice('')
-                self.update_required()
-                self.output.notice('')
+                if not self.no_extra:
+                    self.output.notice('')
+                    self.update_required()
+                    self.output.notice('')
+                    
                 self.get_overlay_components()
                 ovl = Overlay.Overlay(config=self.config, ovl_dict=self.overlay, ignore=1)
                 self.overlays.append((self.overlay['name'], ovl))
@@ -196,16 +257,12 @@ class Interactive(object):
         Prompts user for optional components and updates
         the required components accordingly.
         '''
-        # Don't assume they want the same
-        # info for the next overlay.
-        self.required = copy.deepcopy(COMPONENT_DEFAULTS)
-
         for possible in POSSIBLE_COMPONENTS:
             if possible not in self.required:
                 msg = 'Include %(comp)s for this overlay? [y/n]: '\
                         % ({'comp': possible})
                 if ((possible in 'homepage' or possible in 'feeds') and
-                   self.info_available):
+                    self.auto_complete):
                     available = False
                 else:
                     available = get_ans(msg)
@@ -255,12 +312,13 @@ class Interactive(object):
         '''
         name = get_input('Define overlay name: ')
 
-        while name in self.overlays_available:
-            msg = '!!! Overlay name already defined in list of installed'\
-                  ' overlays.'
-            self.output.warn(msg)
-            msg = 'Please specify a different overlay name: '
-            name = get_input(msg, color='yellow')
+        if not self.sudo:
+            while name in self.overlays_available:
+                msg = '!!! Overlay name already defined in list of installed'\
+                      ' overlays.'
+                self.output.warn(msg)
+                msg = 'Please specify a different overlay name: '
+                name = get_input(msg, color='yellow')
 
         self.overlay['name'] = name
 
@@ -274,7 +332,7 @@ class Interactive(object):
         '''
         ovl_type = None
 
-        if self.info_available:
+        if self.auto_complete:
             source_amount = 1
         else:
             msg = 'How many different sources, protocols, or mirrors exist '\
@@ -325,7 +383,7 @@ class Interactive(object):
                     sources.append(get_input(msg))
                 else:
                     sources.append('')
-            if self.info_available:
+            if self.auto_complete:
                 sources = self._set_additional_info(sources)
                 for source in sources:
                     self.overlay['sources'].append(source)
@@ -371,6 +429,18 @@ class Interactive(object):
                                 % ({'comp': component}))
 
 
+    def list_templates(self):
+        '''
+        Lists all available mirrors that support information auto-completion
+        and exits.
+        '''
+        self.output.info('Mirrors supported for information auto-completion: ')
+        self.output.info('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+        for i in sorted(AUTOCOMPLETE_TEMPLATE):
+            self.output.info(i)
+        sys.exit()
+
+
     def read(self, path):
         '''
         Reads overlay.xml files and appends the contents
@@ -405,7 +475,7 @@ class Interactive(object):
         attrs = {'branch': source[2], 'tail': '/'.join(url[3:])}
         mirror = url[2].split('.')
 
-        for i in AUTOCOMPLETE_TEMPLATE.keys():
+        for i in self.templates:
             if i in mirror:
                 if i not in ('gentoo'):
                     attrs['info'] = attrs['tail'].replace('.git', '')
@@ -480,8 +550,10 @@ class Interactive(object):
         @rtype bool: reflects success or failure to write xml.
         '''
         if not destination:
-            filename = get_input('Desired overlay file name: ')
             filepath = self.config.get_option('overlay_defs')
+            if self.sudo:
+                filepath = get_input('Desired file destination dir: ')
+            filename = get_input('Desired overlay file name: ')
 
             if not filename.endswith('.xml'):
                 filename += ".xml"
