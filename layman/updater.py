@@ -85,8 +85,13 @@ class Main(object):
 
 
     def check_is_new(self):
-        if not os.access(self.config['make_conf'], os.F_OK):
-            self.create_make_conf()
+        print_instructions = False
+        for i in self.config['conf_type']:
+            conf = i.replace('.', '_')
+            if not os.access(self.config[conf], os.F_OK):
+                getattr(self, 'create_%(conf)s' % {'conf': conf})()
+                print_instructions = True
+        if print_instructions:
             self.print_instructions()
             return True
         return False
@@ -160,4 +165,9 @@ class Main(object):
         maker.write()
 
 
-
+    def create_repos_conf(self):
+        self.output.info("  Creating layman's repos.conf file")
+        # create layman's %(repos_conf)
+        # so layman won't error.
+        with fileopen(self.config['repos_conf'], 'w') as repos_conf:
+            repos_conf.write('')
