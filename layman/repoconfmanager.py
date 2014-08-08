@@ -16,9 +16,15 @@
 #
 
 import re
+import sys
 
 import layman.reposconf as reposconf
 import layman.makeconf  as makeconf
+
+if sys.hexversion >= 0x30200f0:
+    STR = str
+else:
+    STR = basestring
 
 class RepoConfManager:
 
@@ -35,7 +41,7 @@ class RepoConfManager:
         'repos.conf': (reposconf, 'ConfigHandler')
         }
 
-        if isinstance(self.conf_types, str):
+        if isinstance(self.conf_types, STR):
             self.conf_types = re.split(',\s+', self.conf_types)
 
         if not self.conf_types and self.config['require_repoconfig']:
