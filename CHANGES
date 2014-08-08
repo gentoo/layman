@@ -1,6 +1,37 @@
 CHANGES
 -------
 
+Version 2.2.0 - Release 2014-08-13
+==================================
+ - man page updates
+ - Portage sync plug-in to sync layman overlays via portage
+ - layman-overlay-maker utility to create overlay definitions
+ - Multiple description field support
+ - reloading config function to get local overlay definitions
+ - output attribute to OptionConfig
+ - branch and layman-type info to repos.conf configs
+ - sync-type checking for repos.conf configs
+ - New --storage cli option to specify where you want an overlay installed
+ - fixes bug when overlay isn't in the remote list
+ - New --disable and --enable cli option to globally disable a locally
+   installed overlay
+ - Centeralizes archive overlay type code
+ - Changes clean_tar config option to clean_archive
+ - fixes hard-coded defaults and EPREFIXIFIES repos_conf config option
+ - fixes format string in _verify_overlay_type function
+ - renames --setup_help cli option to --setup-help
+ - adds support for multiple cli option args
+ - adds interactive session for unofficial overlay installations
+ - migrates docstring tests to external test-suite
+ - adds layman-mounter utility handle overlay mounting
+ - adds squashfs overlay support
+ - adds squashfs overlay external tests
+ - adds modular plug-in system
+ - makes overlay types modular plug-ins
+ - makes repo config types modular plug-ins
+ - removes g-common overlay support
+
+
 Version 2.1.0 - Released 2014-07-23
 ===================================
  - man page updates
