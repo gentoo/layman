@@ -224,7 +224,7 @@ class Main(object):
     def Fetch(self):
         ''' Fetches the overlay listing.
         '''
-        self.output.info("Fetching remote list,...", 2)
+        self.output.info("Fetching remote list...", 2)
         result = self.api.fetch_remote_list()
         if result:
             self.output.info('Fetch Ok', 2)
@@ -234,13 +234,13 @@ class Main(object):
 
 
     def Add(self):
-        ''' Adds the selected overlays.
+        ''' Adds the selected overlay(s).
         '''
-        self.output.info("Adding overlay,...", 2)
+        self.output.info("Adding overlay...", 2)
         selection = decode_selection(self.config['add'])
         if ALL_KEYWORD in selection:
             selection = self.api.get_available()
-        self.output.debug('Adding selected overlays', 6)
+        self.output.debug('Adding selected overlay(s)', 6)
         result = self.api.add_repos(selection, update_news=True)
         if result:
             self.output.info('Successfully added overlay(s) ' +
@@ -254,7 +254,7 @@ class Main(object):
     def Readd(self):
         '''Readds the selected overlay(s).
         '''
-        self.output.info('Reinstalling overlay(s),...', 2)
+        self.output.info('Reinstalling overlay(s)...', 2)
         selection = decode_selection(self.config['readd'])
         if ALL_KEYWORD in selection:
             selection = self.api.get_installed()
@@ -269,14 +269,14 @@ class Main(object):
 
 
     def Sync(self):
-        ''' Syncs the selected overlays.
+        ''' Syncs the selected overlay(s).
         '''
-        self.output.info("Syncing selected overlays,...", 2)
+        self.output.info("Syncing selected overlay(s)...", 2)
         # Note api.sync() defaults to printing results
         selection = decode_selection(self.config['sync'])
         if self.config['sync_all'] or ALL_KEYWORD in selection:
             selection = self.api.get_installed()
-        self.output.debug('Updating selected overlays', 6)
+        self.output.debug('Updating selected overlay(s)', 6)
         result = self.api.sync(selection, update_news=True)
         # blank newline  -- no " *"
         self.output.notice('')
@@ -284,9 +284,9 @@ class Main(object):
 
 
     def Delete(self):
-        ''' Deletes the selected overlays.
+        ''' Deletes the selected overlay(s).
         '''
-        self.output.info('Deleting selected overlays,...', 2)
+        self.output.info('Deleting selected overlay(s)...', 2)
         selection = decode_selection(self.config['delete'])
         if ALL_KEYWORD in selection:
             selection = self.api.get_installed()
@@ -301,7 +301,7 @@ class Main(object):
 
 
     def Info(self):
-        ''' Print information about the specified overlays.
+        ''' Print information about the specified overlay(s).
         '''
         selection = decode_selection(self.config['info'])
         if ALL_KEYWORD in selection:
