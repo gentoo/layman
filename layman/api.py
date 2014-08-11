@@ -27,6 +27,7 @@ from layman.overlays.source import require_supported
 #from layman.utils import path, delete_empty_directory
 from layman.compatibility   import encode
 from layman.utils           import verify_overlay_src
+from layman.mounter         import Mounter
 
 if sys.hexversion >= 0x30200f0:
     STR = str
@@ -67,6 +68,10 @@ class LaymanAPI(object):
         self._available_ids = None
         self._error_messages = []
         self.sync_results = []
+
+        self.config.set_option('mounts', Mounter(self._get_installed_db,
+                                                 self.get_installed,
+                                                 config=self.config))
 
 
     def is_repo(self, ovl):
