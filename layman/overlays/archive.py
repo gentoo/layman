@@ -98,6 +98,11 @@ class ArchiveOverlay(OverlaySource):
                 temp_path = final_path
                 if not os.path.exists(temp_path):
                     os.mkdir(temp_path)
+                else:
+                    if os.path.ismount(temp_path):
+                      self.config['mounts'].umount([self.parent.name],
+                                                   dest=temp_path,
+                                                   sync=True)
             pkg = self._fetch(base=base, archive_url=self.src,
                 dest_dir=temp_path)
             result = self.post_fetch(pkg, temp_path)
