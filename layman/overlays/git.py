@@ -28,7 +28,7 @@ __version__ = "$Id: git.py 146 2006-05-27 09:52:36Z wrobel $"
 
 import xml.etree.ElementTree as ET
 
-from   layman.utils             import path
+from   layman.utils             import path, run_command
 from   layman.overlays.source   import OverlaySource, require_supported
 
 #===============================================================================
@@ -86,7 +86,8 @@ class GitOverlay(OverlaySource):
         # adding cwd=base due to a new git bug in selinux due to
         # not having user_home_dir_t and portage_fetch_t permissions
         # but changing dir works around it.
-        success = self.run_command(self.command(), args, cmd=self.type, cwd=base)
+        success = run_command(self.config, self.command(), args,cmd=self.type,
+                              cwd=base)
         self.output.debug("cloned git repo...success=%s" % str(success), 8)
         success = self.set_user(target)
         return self.postsync(success, cwd=target)
@@ -97,13 +98,14 @@ class GitOverlay(OverlaySource):
         email = '"%s"' % self.config['git_email']
         args = ['config', 'user.name', user]
         self.output.debug("set git user info...args=%s" % ' '.join(args), 8)
-        failure = self.run_command(self.command(), args, cmd=self.type, cwd=target)
+        failure = run_command(self.config, self.command(), args, cmd=self.type, cwd=target)
         if failure:
             self.output.debug("set git user info...failure setting name")
             return failure
         args = ['config', 'user.email', email]
         self.output.debug("set git user info...args=%s" % ' '.join(args), 8)
-        return self.run_command(self.command(), args, cmd=self.type, cwd=target)
+        return run_command(self.config, self.command(), args, cmd=self.type,
+                           cwd=target)
 
     def update(self, base, src):
         '''
@@ -118,7 +120,8 @@ class GitOverlay(OverlaySource):
         # git remote set-url <name> <newurl> <oldurl>
         args = ['remote', 'set-url', 'origin', self._fix_git_source(src), self._fix_git_source(self.src)]
 
-        return self.run_command(self.command(), args, cmd=self.type, cwd=target)
+        return run_command(self.config, self.command(), args, cmd=self.type,
+                           cwd=target)
 
     def sync(self, base):
         '''Sync overlay.'''
@@ -137,7 +140,8 @@ class GitOverlay(OverlaySource):
             args.append(cfg_opts)
 
         return self.postsync(
-            self.run_command(self.command(), args, cwd=target, cmd=self.type),
+            run_command(self.config, self.command(), args, cwd=target,
+                        cmd=self.type),
             cwd=target)
 
     def supported(self):

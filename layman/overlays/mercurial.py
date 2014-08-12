@@ -30,7 +30,7 @@ __version__ = "$Id: mercurial.py 236 2006-09-05 20:39:37Z wrobel $"
 import re
 import xml.etree.ElementTree as ET
 
-from   layman.utils             import path
+from   layman.utils             import path, run_command
 from   layman.overlays.source   import OverlaySource, require_supported
 
 #===============================================================================
@@ -85,7 +85,7 @@ class MercurialOverlay(OverlaySource):
             args.append(self.branch)
 
         return self.postsync(
-            self.run_command(self.command(), args, cmd=self.type),
+            run_command(self.config, self.command(), args, cmd=self.type),
             cwd=target)
 
     def update(self, base, src):
@@ -110,7 +110,7 @@ class MercurialOverlay(OverlaySource):
         args = ['-i', expression, hgrc]
 
         # Run sed.
-        return self.run_command('sed', args, cmd='sed', cwd=target)
+        return run_command(self.config, 'sed', args, cmd='sed', cwd=target)
 
     def sync(self, base):
         '''Sync overlay.'''
@@ -128,7 +128,8 @@ class MercurialOverlay(OverlaySource):
             args = ['pull', '-u', self.src]
 
         return self.postsync(
-            self.run_command(self.command(), args, cwd=target, cmd=self.type),
+            run_command(self.config, self.command(), args, cwd=target,
+                        cmd=self.type),
             cwd=target)
 
     def supported(self):

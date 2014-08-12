@@ -27,7 +27,7 @@ __version__ = "$Id: darcs.py 236 2006-09-05 20:39:37Z wrobel $"
 #
 #-------------------------------------------------------------------------------
 
-from   layman.utils             import path
+from   layman.utils             import path, run_command
 from   layman.overlays.source   import OverlaySource, require_supported
 
 #===============================================================================
@@ -71,7 +71,7 @@ class DarcsOverlay(OverlaySource):
                 src, target]
 
         return self.postsync(
-            self.run_command(self.command(), args, cmd=self.type),
+            run_command(self.config, self.command(), args, cmd=self.type),
             cwd=target)
 
     def sync(self, base):
@@ -89,7 +89,8 @@ class DarcsOverlay(OverlaySource):
         else:
             args = ['pull', '--all', self.src]
         return self.postsync(
-            self.run_command(self.command(), args, cwd=target, cmd=self.type),
+            run_command(self.config, self.command(), args, cwd=target,
+                        cmd=self.type),
             cwd=target)
 
     def supported(self):
