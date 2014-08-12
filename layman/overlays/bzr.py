@@ -28,7 +28,7 @@ __version__ = "$Id: bzr.py 236 2006-09-05 20:39:37Z wrobel $"
 #
 #-------------------------------------------------------------------------------
 
-from   layman.utils             import path
+from   layman.utils             import path, run_command
 from   layman.overlays.source   import OverlaySource, require_supported
 
 #===============================================================================
@@ -77,7 +77,7 @@ class BzrOverlay(OverlaySource):
         else:
             args = ['branch', src, target]
         return self.postsync(
-            self.run_command(self.command(), args, cmd=self.type),
+            run_command(self.config, self.command(), args, cmd=self.type),
             cwd=target)
 
     def update(self, base, src):
@@ -98,7 +98,7 @@ class BzrOverlay(OverlaySource):
         if self.config['quiet']:
             args.append('--quiet')
         return self.postsync(
-            self.run_command(self.command(), args, cmd=self.type),
+            run_command(self.config, self.command(), args, cmd=self.type),
             cwd=target)
 
     def sync(self, base):
@@ -116,7 +116,8 @@ class BzrOverlay(OverlaySource):
         else:
             args = ['pull', '--overwrite', self.src]
         return self.postsync(
-            self.run_command(self.command(), args, cwd=target, cmd=self.type),
+            run_command(self.config, self.command(), args, cwd=target,
+                        cmd=self.type),
             cwd=target)
 
     def supported(self):

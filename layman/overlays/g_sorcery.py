@@ -26,7 +26,7 @@ from __future__ import unicode_literals
 #-------------------------------------------------------------------------------
 
 import os
-from   layman.utils             import path
+from   layman.utils             import path, run_command
 from   layman.overlays.source   import OverlaySource, require_supported
 
 #===============================================================================
@@ -70,12 +70,14 @@ class GSorceryOverlay(OverlaySource):
         target = path([base, self.parent.name])
 
         args = [self.backend, '-o', target, '-r', self.repository, 'sync']
-        returncode = self.run_command(self.command(), args, cwd=target)
+        returncode = run_command(self.config, self.command(), args,
+                                 cwd=target)
         if returncode:
             return returncode
         args = [self.backend, '-o', target, 'generate-tree']
         return self.postsync(
-            self.run_command(self.command(), args, cwd=target, cmd=self.type),
+            run_command(self.config, self.command(), args, cwd=target,
+                        cmd=self.type),
             cwd=target)
 
     def supported(self):

@@ -31,6 +31,7 @@ import sys
 from   layman.constants         import FILE_EXTENSIONS
 from   layman.overlays.archive  import ArchiveOverlay
 from   layman.overlays.source   import require_supported
+from   layman.utils             import run_command
 
 #===============================================================================
 #
@@ -78,7 +79,7 @@ class TarOverlay(ArchiveOverlay):
         '''
         # tar -v -x -f SOURCE -C TARGET
         args = ['-v', '-x', '-f', pkg, '-C', dest_dir]
-        result = self.run_command(self.command(), args, cmd=self.type)
+        result = run_command(self.config, self.command(), args, cmd=self.type)
 
         return result
 

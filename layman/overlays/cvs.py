@@ -29,7 +29,7 @@ __version__ = "$Id$"
 import xml.etree.ElementTree as ET # Python 2.5
 import re
 
-from   layman.utils             import path
+from   layman.utils             import path, run_command
 from   layman.overlays.source   import OverlaySource, require_supported
 
 #===============================================================================
@@ -71,7 +71,7 @@ class CvsOverlay(OverlaySource):
         args.append(self.branch)
 
         return self.postsync(
-            self.run_command(self.command(), args, cwd=base,
+            run_command(self.config, self.command(), args, cwd=base,
                 env=dict(CVSROOT=self.src), cmd=self.type),
             cwd=target)
 
@@ -90,7 +90,8 @@ class CvsOverlay(OverlaySource):
         
         # First echo the new repository to CVS/Root
         args = [src, '>', '/CVS/Root']
-        result = self.run_command('echo', args, cmd='echo', cwd=target)
+        result = run_command(self.config, 'echo', args, cmd='echo',
+                             cwd=target)
 
         if result == 0:
             location = src.split(':')[3]
@@ -106,7 +107,8 @@ class CvsOverlay(OverlaySource):
                 # sed -i 's/<old_location>/<new_location>/ <target>/CVS/Repository
                 args = ['-i', expression, '/CVS/Repository']
 
-                return self.run_command('sed', args, cmd='sed', cwd=target)
+                return run_command(self.config, 'sed', args, cmd='sed',
+                                   cwd=target)
 
         return result        
         
@@ -129,7 +131,8 @@ class CvsOverlay(OverlaySource):
         if len(cfg_opts):
             args.append(cfg_opts)
         return self.postsync(
-            self.run_command(self.command(), args, cwd=target, cmd=self.type),
+            run_command(self.config, self.command(), args, cwd=target,
+                        cmd=self.type),
             cwd=target)
 
     def supported(self):

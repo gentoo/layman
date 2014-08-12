@@ -31,10 +31,14 @@ __version__ = '$Id: utils.py 236 2006-09-05 20:39:37Z wrobel $'
 #
 #-------------------------------------------------------------------------------
 
-import types, re, os
-import sys
-import locale
 import codecs
+import copy
+import locale
+import os
+import re
+import subprocess
+import sys
+import types
 
 from  layman.output         import Message
 
@@ -184,6 +188,7 @@ def path(path_elements):
 
     return pathname
 
+
 def reload_config(config):
     '''
     Rereads the layman config.
@@ -195,6 +200,93 @@ def reload_config(config):
                              % {'configdir': defaults['configdir']}
     config.update_defaults({'config': defaults['config']})
     config.read_config(defaults)
+
+
+def resolve_command(command, output):
+    if os.path.isabs(command):
+        if not os.path.exists(command):
+            output('Program "%s" not found' % command)
+            return ('File', None)
+        return ('File', command)
+    else:
+        kind = 'Command'
+        env_path = os.environ['PATH']
+        for d in env_path.split(os.pathsep):
+            f = os.path.join(d, command)
+            if os.path.exists(f):
+                return ('Command', f)
+        output('Cound not resolve command ' +\
+            '"%s" based on PATH "%s"' % (command, env_path))
+        return ('Command', None)
+
+
+def run_command(config, command, args, **kwargs):
+    output = config['output']
+    output.debug("Utils.run_command(): " + command, 6)
+
+    file_to_run = resolve_command(command, output.error)[1]
+    args = [file_to_run] + args
+    assert('pwd' not in kwargs)  # Bug detector
+
+    output.debug("OverlaySource.run_command(): cleared 'assert'", 7)
+    cwd = kwargs.get('cwd', None)
+    env = None
+    env_updates = None
+    if 'env' in kwargs:
+        # Build actual env from surrounding plus updates
+        env_updates = kwargs['env']
+        env = copy.copy(os.environ)
+        env.update(env_updates)
+
+    command_repr = ' '.join(args)
+    if env_updates is not None:
+        command_repr = '%s %s' % (' '.join('%s=%s' % (k, v) for (k, v)
+            in sorted(env_updates.items())), command_repr)
+    if cwd is not None:
+        command_repr = '( cd %s  && %s )' % (cwd, command_repr)
+
+    cmd = kwargs.get('cmd', '')
+    output.info('Running %s... # %s' % (cmd, command_repr), 2)
+
+    if config['quiet']:
+
+        input_source = subprocess.PIPE
+        output_target = open('/dev/null', 'w')
+    else:
+        # Re-use parent file descriptors
+        input_source = None
+        output_target = None
+
+    proc = subprocess.Popen(args,
+        stdin=input_source,
+        stdout=output_target,
+        stderr=config['stderr'],
+        cwd=cwd,
+        env=env)
+
+    if config['quiet']:
+        # Make child non-interactive
+        proc.stdin.close()
+
+    try:
+        result = proc.wait()
+    except KeyboardInterrupt:
+        output.info('Interrupted manually', 2)
+        result = 1
+    except Exception as err:
+        output.error(
+            'Unknown exception running command: %s' % command_repr)
+        output.error('Original error was: %s' % str(err))
+        result = 1
+
+    if config['quiet']:
+        output_target.close()
+
+    if result:
+        output.info('Failure result returned from %s' % cmd , 2)
+
+    return result
+
 
 def verify_overlay_src(current_src, remote_srcs):
     '''

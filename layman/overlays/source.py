@@ -20,7 +20,7 @@ import copy
 import sys
 import shutil
 import subprocess
-from layman.utils import path
+from layman.utils import path, resolve_command, run_command
 
 supported_cache = {}
 
@@ -33,27 +33,10 @@ def _supported(key, check_supported=None):
         supported_cache[key] = check_supported()
     return supported_cache[key]
 
-def _resolve_command(command, _output):
-    if os.path.isabs(command):
-        if not os.path.exists(command):
-            _output('Program "%s" not found' % command)
-            return ('File', None)
-        return ('File', command)
-    else:
-        kind = 'Command'
-        env_path = os.environ['PATH']
-        for d in env_path.split(os.pathsep):
-            f = os.path.join(d, command)
-            if os.path.exists(f):
-                return ('Command', f)
-        _output('Cound not resolve command ' +\
-            '"%s" based on PATH "%s"' % (command, env_path))
-        return ('Command', None)
-
 
 def require_supported(binaries, _output):
     for command, mtype, package in binaries:
-        kind, path = _resolve_command(command, _output)
+        kind, path = resolve_command(command, _output)
         if not path:
             if _output:
                 _output(kind + ' ' + command + ' seems to be missing!'
@@ -134,73 +117,6 @@ class OverlaySource(object):
     def command(self):
         return self.config['%s_command' % self.__class__.type_key]
 
-    def run_command(self, command, args, **kwargs):
-        self.output.debug("OverlaySource.run_command(): " + command, 6)
-        file_to_run = _resolve_command(command, self.output.error)[1]
-        args = [file_to_run] + args
-        assert('pwd' not in kwargs)  # Bug detector
-
-        self.output.debug("OverlaySource.run_command(): cleared 'assert'", 7)
-        cwd = kwargs.get('cwd', None)
-        env = None
-        env_updates = None
-        if 'env' in kwargs:
-            # Build actual env from surrounding plus updates
-            env_updates = kwargs['env']
-            env = copy.copy(os.environ)
-            env.update(env_updates)
-
-        command_repr = ' '.join(args)
-        if env_updates is not None:
-            command_repr = '%s %s' % (' '.join('%s=%s' % (k, v) for (k, v)
-                in sorted(env_updates.items())), command_repr)
-        if cwd is not None:
-            command_repr = '( cd %s  && %s )' % (cwd, command_repr)
-
-        cmd = kwargs.get('cmd', '')
-        self.output.info('Running %s... # %s' % (cmd, command_repr), 2)
-
-        if self.config['quiet']:
-
-            input_source = subprocess.PIPE
-            output_target = open('/dev/null', 'w')
-        else:
-            # Re-use parent file descriptors
-            input_source = None
-            output_target = None
-
-        proc = subprocess.Popen(args,
-            stdin=input_source,
-            stdout=output_target,
-            stderr=self.config['stderr'],
-            cwd=cwd,
-            env=env)
-
-        if self.config['quiet']:
-            # Make child non-interactive
-            proc.stdin.close()
-
-        try:
-            result = proc.wait()
-        except KeyboardInterrupt:
-            self.output.info('Interrupted manually', 2)
-            self.output.warn("Checking for cleanup actions to perform", 4)
-            self.cleanup()
-            result = 1
-        except Exception as err:
-            self.output.error(
-                'Unknown exception running command: %s' % command_repr)
-            self.output.error('Original error was: %s' % str(err))
-            result = 1
-
-        if self.config['quiet']:
-            output_target.close()
-
-        if result:
-            self.output.info('Failure result returned from %s' % cmd , 2)
-
-        return result
-
     def postsync(self, failed_sync, **kwargs):
         """Runs any repo specific postsync operations
         """
@@ -215,14 +131,9 @@ class OverlaySource(object):
                 kwargs.get('cwd', '')).split()
             command = _opt[0]
             args = _opt[1:]
-            return self.run_command(command, args,
+            return run_command(self.config, command, args,
                 cmd='%s_postsync' % self.__class__.type_key)
         return failed_sync
 
     def to_xml_hook(self, repo_elem):
-        pass
-
-    def cleanup(self):
-        '''cleanup a failed/interrupted process
-        overridden in subclass if it is needed.'''
         pass
