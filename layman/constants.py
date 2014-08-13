@@ -73,8 +73,9 @@ POSSIBLE_COMPONENTS = ['name', 'descriptions', 'homepage', 'owner', 'quality',
 ##
 ###############################################################################
 
-FILE_EXTENSIONS = {'Tar': ('bz2', 'gz', 'lzma', 'xz', 'Z', 'tgz', 'tbz', 'taz',
-                           'tlz', 'txz')
+FILE_EXTENSIONS = {'Squashfs': ('.squashfs', '.squash', '.sqfs', '.sfs'),
+                   'Tar': ('bz2', 'gz', 'lzma', 'xz', 'Z', 'tgz', 'tbz', 'taz',
+                           'tlz', 'txz'),
                   }
 
 ###################################################################################
@@ -83,4 +84,4 @@ FILE_EXTENSIONS = {'Tar': ('bz2', 'gz', 'lzma', 'xz', 'Z', 'tgz', 'tbz', 'taz',
 ##
 ####################################################################################
 
-MOUNT_TYPES = []
+MOUNT_TYPES = ['Squashfs']
