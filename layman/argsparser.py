@@ -165,9 +165,10 @@ class ArgsParser(BareConfig):
         path_opts.add_argument('-C',
                                '--configdir',
                                action = 'store',
-                               default = '/etc/layman',
-                               help = 'Directory path to user for all layman configu'
-                               'ration information [default: /etc/layman].')
+                               default = self.defaults['configdir'],
+                               help = 'Directory path to user for all layman '
+                               'configuration information [default:'\
+                               + self.defaults['configdir'] + '].')
 
         path_opts.add_argument('-o',
                                '--overlays',
