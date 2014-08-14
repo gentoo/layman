@@ -16,9 +16,15 @@
 #
 
 import re
+import sys
 
 import layman.reposconf as reposconf
 import layman.makeconf  as makeconf
+
+if sys.hexversion >= 0x30200f0:
+    STR = str
+else:
+    STR = basestring
 
 class RepoConfManager:
 
@@ -35,7 +41,7 @@ class RepoConfManager:
         'repos.conf': (reposconf, 'ConfigHandler')
         }
 
-        if isinstance(self.conf_types, str):
+        if isinstance(self.conf_types, STR):
             self.conf_types = re.split(',\s+', self.conf_types)
 
         if not self.conf_types and self.config['require_repoconfig']:
@@ -51,12 +57,15 @@ class RepoConfManager:
         @return boolean: represents success or failure.
         '''
         if self.config['require_repoconfig']:
+            results = []
             for types in self.conf_types:
                 conf = getattr(self.modules[types][0],
                     self.modules[types][1])(self.config, self.overlays)
                 conf_ok = conf.add(overlay)
-            return conf_ok
-        return True
+                results.append(conf_ok)
+            return results
+        return [True]
+
 
     def delete(self, overlay):
         '''
@@ -66,12 +75,14 @@ class RepoConfManager:
         @return boolean: represents success or failure.
         '''
         if self.config['require_repoconfig']:
+            results = []
             for types in self.conf_types:
                 conf = getattr(self.modules[types][0],
                     self.modules[types][1])(self.config, self.overlays)
                 conf_ok = conf.delete(overlay)
-            return conf_ok
-        return True
+                results.append(conf_ok)
+            return results
+        return [True]
 
 
     def update(self, overlay):
@@ -82,9 +93,11 @@ class RepoConfManager:
         @return boolean: represents success or failure.
         '''
         if self.config['require_repoconfig']:
+            results = []
             for types in self.conf_types:
                 conf = getattr(self.modules[types][0],
                     self.modules[types][1])(self.config, self.overlays)
                 conf_ok = conf.update(overlay)
-            return conf_ok
-        return True
+                results.append(conf_ok)
+            return results
+        return [True]

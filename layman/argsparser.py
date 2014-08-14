@@ -68,7 +68,7 @@ class ArgsParser(BareConfig):
             usage   = _USAGE)
 
         self.parser.add_argument('-H',
-                        '--setup_help',
+                        '--setup-help',
                         action = 'store_true',
                         help = 'Print the NEW INSTALL help messages.')
 
@@ -84,14 +84,14 @@ class ArgsParser(BareConfig):
 
         actions.add_argument('-a',
                              '--add',
-                             action = 'append',
+                             nargs = '+',
                              help = 'Add the given overlay from the cached remote li'
                              'st to your locally installed overlays.. Specify "ALL" '
                              'to add all overlays from the remote list.')
 
         actions.add_argument('-d',
                              '--delete',
-                             action = 'append',
+                             nargs = '+',
                              help = 'Remove the given overlay from your locally inst'
                              'alled overlays. Specify "ALL" to remove all overlays.')
 
@@ -104,7 +104,7 @@ class ArgsParser(BareConfig):
 
         actions.add_argument('-i',
                              '--info',
-                             action = 'append',
+                             nargs = '+',
                              help = 'Display information about the specified overlay'
                              '.')
 
@@ -133,14 +133,14 @@ class ArgsParser(BareConfig):
 
         actions.add_argument('-r',
                              '--readd',
-                             action = 'append',
+                             nargs = '+',
                              help = 'Remove and re-add the given overlay from the cached'
                              ' remote list to your locally installed overlays... Specify'
                              ' "ALL" to re-add all local overlays.')
 
         actions.add_argument('-s',
                              '--sync',
-                             action = 'append',
+                             nargs = '+',
                              help = 'Update the specified overlay. Use "ALL" as para'
                             'meter to synchronize all overlays.')
 
@@ -165,13 +165,14 @@ class ArgsParser(BareConfig):
         path_opts.add_argument('-C',
                                '--configdir',
                                action = 'store',
-                               default = '/etc/layman',
-                               help = 'Directory path to user for all layman configu'
-                               'ration information [default: /etc/layman].')
+                               default = self.defaults['configdir'],
+                               help = 'Directory path to user for all layman '
+                               'configuration information [default:'\
+                               + self.defaults['configdir'] + '].')
 
         path_opts.add_argument('-o',
                                '--overlays',
-                               action = 'append',
+                               nargs = '+',
                                help = 'The list of overlays [default: ' \
                                + self.defaults['overlays'] + '].')
 

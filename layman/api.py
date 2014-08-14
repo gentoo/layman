@@ -333,7 +333,7 @@ class LaymanAPI(object):
                   '\n'\
                   '  %(remote_type)s\n'\
                   '\n'\
-                  'the overlay will be readded using %(remote_name)s' %\
+                  'the overlay will be readded using %(remote_type)s' %\
                   ({
                       'repo_name': odb.name,
                       'current_type': current_type,
