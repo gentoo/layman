@@ -66,3 +66,22 @@ SUCCEED = 0
 COMPONENT_DEFAULTS  = ['name', 'descriptions', 'owner', 'type', 'sources']
 POSSIBLE_COMPONENTS = ['name', 'descriptions', 'homepage', 'owner', 'quality',
                        'priority', 'sources', 'branch', 'irc', 'feeds']
+
+###############################################################################
+##
+## Archive overlay possible file extensions
+##
+###############################################################################
+
+FILE_EXTENSIONS = {'Squashfs': ('.squashfs', '.squash', '.sqfs', '.sfs'),
+                   'Tar': ('bz2', 'gz', 'lzma', 'xz', 'Z', 'tgz', 'tbz', 'taz',
+                           'tlz', 'txz'),
+                  }
+
+###################################################################################
+##
+## Overlay types mountable by script
+##
+####################################################################################
+
+MOUNT_TYPES = ['Squashfs']

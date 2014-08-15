@@ -30,7 +30,7 @@ from subprocess import PIPE, Popen
 #
 #------------------------------------------------------------------------------
 
-from layman.utils           import path
+from layman.utils           import path, run_command
 from layman.overlays.source import (OverlaySource, require_supported,
     _resolve_command)
 
@@ -87,7 +87,7 @@ class SvnOverlay(OverlaySource):
         args.append(self.target)
 
         return self.postsync(
-            self.run_command(self.command(), args, cmd=self.type),
+            run_command(self.config, self.command(), args, cmd=self.type),
             cwd=self.target)
 
     def update(self, base, src):
@@ -105,7 +105,7 @@ class SvnOverlay(OverlaySource):
         args = ['switch', '--relocate', self._fix_svn_source(self.src), self._fix_svn_source(src)]
 
         return self.postsync(
-             self.run_command(self.command(), args, cmd=self.type),
+             run_command(self.config, self.command(), args, cmd=self.type),
              cwd=target)
 
 
@@ -139,7 +139,7 @@ class SvnOverlay(OverlaySource):
         args.append(self.target)
 
         return self.postsync(
-            self.run_command(self.command(), args, cmd=self.type),
+            run_command(self.config, self.command(), args, cmd=self.type),
             cwd=self.target)
 
     def supported(self):
@@ -156,7 +156,8 @@ class SvnOverlay(OverlaySource):
         self.output.warn("SVN: preparing to run cleanup()", 2)
         args = ["cleanup"]
         args.append(self.target)
-        cleanup = self.run_command(self.command(), args, cmd="svn cleanup")
+        cleanup = run_command(self.config, self.command(), args,
+                              cmd="svn cleanup")
         return
 
     def check_upgrade(self, target):

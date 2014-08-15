@@ -129,6 +129,113 @@ class AddDeleteEnableDisableFromDB(unittest.TestCase):
         self.assertTrue(success)
 
 
+# Tests archive overlay types (squashfs, tar)
+# http://bugs.gentoo.org/show_bug.cgi?id=304547
+class ArchiveAddRemoveSync(unittest.TestCase):
+
+    def _create_squashfs_overlay(self):
+        repo_name = 'squashfs-test-overlay'
+        squashfs_source_path = os.path.join(HERE, 'testfiles', 'layman-test.squashfs')
+
+        # Duplicate test squashfs (so we can delete it after testing)
+        (_, temp_squashfs_path) = tempfile.mkstemp()
+        shutil.copyfile(squashfs_source_path, temp_squashfs_path)
+
+        # Write overlay collection XML
+        xml_text = '''\
+<?xml version="1.0" encoding="UTF-8"?>
+<repositories xmlns="" version="1.0">
+  <repo quality="experimental" status="unofficial">
+    <name>%(repo_name)s</name>
+    <description>XXXXXXXXXXX</description>
+    <owner>
+      <email>foo@example.org</email>
+    </owner>
+    <source type="squashfs">file://%(temp_squashfs_url)s</source>
+  </repo>
+</repositories>
+        '''\
+        % {
+            'temp_squashfs_url': urllib.pathname2url(temp_squashfs_path),
+            'repo_name': repo_name
+          }
+        print(xml_text)
+        return xml_text, repo_name, temp_squashfs_path
+
+
+    def _create_tar_overlay(self):
+        repo_name = 'tar-test-overlay'
+        tar_source_path = os.path.join(HERE, 'testfiles', 'layman-test.tar.bz2')
+
+        # Duplicate test tarball (so we can delete it after testing)
+        (_, temp_tarball_path) = tempfile.mkstemp()
+        shutil.copyfile(tar_source_path, temp_tarball_path)
+
+        # Write overlay collection XML
+        xml_text = '''\
+<?xml version="1.0" encoding="UTF-8"?>
+<repositories xmlns="" version="1.0">
+  <repo quality="experimental" status="unofficial">
+    <name>%(repo_name)s</name>
+    <description>XXXXXXXXXXX</description>
+    <owner>
+      <email>foo@example.org</email>
+    </owner>
+    <source type="tar">file://%(temp_tarball_url)s</source>
+  </repo>
+</repositories>
+        '''\
+        % {
+            'temp_tarball_url': urllib.pathname2url(temp_tarball_path),
+            'repo_name': repo_name
+          }
+        print(xml_text)
+        return xml_text, repo_name, temp_tarball_path
+
+
+    def test(self):
+        for archive in ('squashfs', 'tar'):
+            xml_text, repo_name, temp_archive_path = getattr(self,
+                                            "_create_%(archive)s_overlay" %
+                                            {'archive': archive})()
+
+            (fd, temp_collection_path) = tempfile.mkstemp()
+            with os.fdopen(fd, 'w') as f:
+                f.write(xml_text)
+
+            # Make playground directory
+            temp_dir_path = tempfile.mkdtemp()
+
+            # Make DB from it
+            config = BareConfig()
+            # Necessary for all mountable overlay types
+            layman_inst = LaymanAPI(config=config)
+            db = DbBase(config, [temp_collection_path])
+
+            specific_overlay_path = os.path.join(temp_dir_path, repo_name)
+            o = db.select(repo_name)
+
+            # Actual testcase
+            o.add(temp_dir_path)
+            self.assertTrue(os.path.exists(specific_overlay_path))
+            # (1/2) Sync with source available
+            o.sync(temp_dir_path)
+            self.assertTrue(os.path.exists(specific_overlay_path))
+            os.unlink(temp_archive_path)
+            try:
+                # (2/2) Sync with source _not_ available
+                o.sync(temp_dir_path)
+            except:
+                pass
+            self.assertTrue(os.path.exists(specific_overlay_path))
+            o.delete(temp_dir_path)
+            self.assertFalse(os.path.exists(specific_overlay_path))
+
+            # Cleanup
+            os.unlink(temp_collection_path)
+            os.rmdir(temp_dir_path)
+
+
 class CLIArgs(unittest.TestCase):
 
     def test(self):
@@ -545,67 +652,6 @@ class RemoteDBCache(unittest.TestCase):
         self.assertEqual(keys, ['wrobel', 'wrobel-stable'])
 
         shutil.rmtree(tmpdir)
-
-
-# http://bugs.gentoo.org/show_bug.cgi?id=304547
-class TarAddRemoveSync(unittest.TestCase):
-    def test(self):
-        repo_name = 'tar-test-overlay'
-        tar_source_path = os.path.join(HERE, 'testfiles', 'layman-test.tar.bz2')
-
-        # Duplicate test tarball (so we have it deletable for later)
-        (_, temp_tarball_path) = tempfile.mkstemp()
-        shutil.copyfile(tar_source_path, temp_tarball_path)
-
-        # Write overlay collection XML
-        xml_text = """\
-<?xml version="1.0" encoding="UTF-8"?>
-<repositories xmlns="" version="1.0">
-  <repo quality="experimental" status="unofficial">
-    <name>%(repo_name)s</name>
-    <description>XXXXXXXXXXX</description>
-    <owner>
-      <email>foo@exmaple.org</email>
-    </owner>
-    <source type="tar">file://%(temp_tarball_url)s</source>
-  </repo>
-</repositories>
-""" % {     'temp_tarball_url':urllib.pathname2url(temp_tarball_path),
-            'repo_name':repo_name}
-        (fd, temp_collection_path) = tempfile.mkstemp()
-        with os.fdopen(fd, 'w') as f:
-            f.write(xml_text)
-
-        # Make playground directory
-        temp_dir_path = tempfile.mkdtemp()
-
-        # Make DB from it
-        #config = {'output': Message(), 'tar_command':'/bin/tar'}
-        config = BareConfig()
-        db = DbBase(config, [temp_collection_path])
-
-        specific_overlay_path = os.path.join(temp_dir_path, repo_name)
-        o = db.select('tar-test-overlay')
-
-        # Actual testcase
-        o.add(temp_dir_path)
-        self.assertTrue(os.path.exists(specific_overlay_path))
-        # (1/2) Sync with source available
-        o.sync(temp_dir_path)
-        self.assertTrue(os.path.exists(specific_overlay_path))
-        os.unlink(temp_tarball_path)
-        try:
-            # (2/2) Sync with source _not_ available
-            o.sync(temp_dir_path)
-        except:
-            pass
-        self.assertTrue(os.path.exists(specific_overlay_path))
-        o.delete(temp_dir_path)
-        self.assertFalse(os.path.exists(specific_overlay_path))
-
-        # Cleanup
-        os.unlink(temp_collection_path)
-        os.rmdir(temp_dir_path)
 
 
 if __name__ == '__main__':

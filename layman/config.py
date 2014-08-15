@@ -100,7 +100,7 @@ class BareConfig(object):
             'check_official': 'Yes',
             'conf_type': 'make.conf',
             'require_repoconfig': 'Yes',
-            'clean_tar': 'yes',
+            'clean_archive': 'yes',
             'make_conf' : '%(storage)s/make.conf',
             'repos_conf': path([self.root, EPREFIX,'/etc/portage/repos.conf/layman.conf']),
             'conf_module': ['make_conf', 'repos_conf'],
