@@ -15,16 +15,18 @@
 #             Devan Franchini <twitch153@gentoo.org>
 #
 
+import os
 import re
 import sys
 
-import layman.reposconf as reposconf
-import layman.makeconf  as makeconf
+from layman.module import Modules, InvalidModuleName
 
 if sys.hexversion >= 0x30200f0:
     STR = str
 else:
     STR = basestring
+
+MOD_PATH = path = os.path.join(os.path.dirname(__file__), 'config_modules')
 
 class RepoConfManager:
 
@@ -35,11 +37,9 @@ class RepoConfManager:
         self.conf_types = config['conf_type']
         self.output = config['output']
         self.overlays = overlays
-
-        self.modules = {
-        'make.conf':  (makeconf,  'ConfigHandler'),
-        'repos.conf': (reposconf, 'ConfigHandler')
-        }
+        self.module_controller = Modules(path=MOD_PATH,
+                                         namepath='layman.config_modules',
+                                         output=self.output)
 
         if isinstance(self.conf_types, STR):
             self.conf_types = re.split(',\s+', self.conf_types)
@@ -59,8 +59,9 @@ class RepoConfManager:
         if self.config['require_repoconfig']:
             results = []
             for types in self.conf_types:
-                conf = getattr(self.modules[types][0],
-                    self.modules[types][1])(self.config, self.overlays)
+                types = types.replace('.', '')
+                conf = self.module_controller.get_class(types)\
+                                  (self.config, self.overlays)
                 conf_ok = conf.add(overlay)
                 results.append(conf_ok)
             return results
@@ -78,8 +79,9 @@ class RepoConfManager:
         if self.config['require_repoconfig']:
             results = []
             for types in self.conf_types:
-                conf = getattr(self.modules[types][0],
-                    self.modules[types][1])(self.config, self.overlays)
+                types = types.replace('.', '')
+                conf = self.module_controller.get_class(types)\
+                                  (self.config, self.overlays)
                 conf_ok = conf.delete(overlay)
                 results.append(conf_ok)
             return results
@@ -96,8 +98,9 @@ class RepoConfManager:
         '''
         if self.config['require_repoconfig']:
             for types in self.conf_types:
-                conf = getattr(self.modules[types][0],
-                    self.modules[types][1])(self.config, self.overlays)
+                types = types.replace('.', '')
+                conf = self.module_controller.get_class(types)\
+                                  (self.config, self.overlays)
                 conf_ok = conf.disable(overlay)
             return conf_ok
         return True
@@ -113,8 +116,9 @@ class RepoConfManager:
         '''
         if self.config['require_repoconfig']:
             for types in self.conf_types:
-                conf = getattr(self.modules[types][0],
-                    self.modules[types][1])(self.config, self.overlays)
+                types = types.replace('.', '')
+                conf = self.module_controller.get_class(types)\
+                                  (self.config, self.overlays)
                 conf_ok = conf.enable(overlay)
             return conf_ok
         return True
@@ -130,8 +134,9 @@ class RepoConfManager:
         if self.config['require_repoconfig']:
             results = []
             for types in self.conf_types:
-                conf = getattr(self.modules[types][0],
-                    self.modules[types][1])(self.config, self.overlays)
+                types = types.replace('.', '')
+                conf = self.module_controller.get_class(types)\
+                                  (self.config, self.overlays)
                 conf_ok = conf.update(overlay)
                 results.append(conf_ok)
             return results
