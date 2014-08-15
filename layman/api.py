@@ -626,7 +626,7 @@ class LaymanAPI(object):
         with boolean values"""
         here = os.path.dirname(os.path.realpath(__file__))
         modpath = os.path.join('overlays', 'modules')
-        modules = os.path.listdir(os.path.join(here, modpath))
+        modules = os.listdir(os.path.join(here, modpath))
 
         cmds = [x for x in self.config.keys() if '_command' in x]
         supported = {}
