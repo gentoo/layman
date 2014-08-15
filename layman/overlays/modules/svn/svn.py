@@ -166,13 +166,13 @@ class SvnOverlay(OverlaySource):
         '''
         file_to_run = resolve_command(self.command(), self.output.error)[1]
         args = " ".join([file_to_run, " upgrade", target])
-        pipe = Popen(args, shell=True, stdout=PIPE, stderr=PIPE)
-        if pipe:
+        stdout, stderr = Popen(args, shell=True, stdout=PIPE, stderr=PIPE).communicate()
+        if stdout:
             self.output.debug("SVN: check_upgrade()... have a valid pipe, "
                 "running upgrade", 4)
-            upgrade_output = pipe.stdout.readline().strip('\n')
+            upgrade_output = stdout.readline().split('\n')
             if upgrade_output:
                 self.output.debug("  output: %s" % upgrade_output, 4)
             self.output.debug("SVN: check_upgrade()... svn upgrade done", 4)
-            pipe.terminate()
+            stdout.terminate()
         return
