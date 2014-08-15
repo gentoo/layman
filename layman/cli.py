@@ -63,7 +63,7 @@ class ListPrinter(object):
             self.print_overlay(summary, supported, official, complain)
 
     def print_shortlist(self, info, complain):
-        for summary, official, supported in info:
+        for summary, supported, official in info:
             self.print_overlay(summary, supported, official, complain)
 
 
