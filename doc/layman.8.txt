@@ -16,6 +16,10 @@ SYNOPSIS
 
 *layman* (*-d*|*--delete*) (*ALL*|'OVERLAY')
 
+*layman* (*-D*|*--disable*) (*ALL*|'OVERLAY')
+
+*layman* (*-E*|*--enable*) (*ALL*|'OVERLAY')
+
 *layman* (*-f*|*--fetch*)
 
 *layman* (*-i*|*--info*) (*ALL*|'OVERLAY')
@@ -33,8 +37,9 @@ SYNOPSIS
 
 DESCRIPTION
 -----------
-*layman* is a script that allows you to add, remove, re-add, and 
-update Gentoo overlays from a variety of sources.
+*layman* is a script that allows you to add, remove, re-add, 
+update, disable, and then re-enable Gentoo overlays from a variety
+of sources.
 
 WARNING
 ~~~~~~~
@@ -67,6 +72,14 @@ List of possible *layman* actions.
 *-d* 'OVERLAY', *--delete*='OVERLAY'::
     Remove the given overlay from your locally installed overlays.
     Specify "ALL" to remove all overlays.
+
+*-D* 'OVERLAY', *--disable*='OVERLAY'::
+    Disable the given overlay from portage. Specify "ALL" to disable
+    all installed overlays.
+
+*-E* 'OVERLAY', *--enable*='OVERLAY'::
+    Re-enable a previously disabled overlay. Specify "ALL" to enable
+    all installed overlays.
 
 *-f*, *--fetch*::
     Fetches the remote list of overlays. You will usually NOT need
@@ -223,9 +236,6 @@ make.conf::
 
     echo 'source /var/lib/layman/make.conf' >> /etc/portage/make.conf
 
-
-
-
 overlays::
     Specifies the URL for the remote list of all available overlays.
     The default is 'http://www.gentoo.org/proj/en/overlays/repositories.xml'.
@@ -240,12 +250,16 @@ nocheck::
     Set to "yes" if *layman* should stop worrying about overlays
     with missing a contact address or the description.
 
-clean_tar::
-    Set to "yes" if *layman* will delete tar files downloaded
-    when installing tar overlays. This option is only applicable
-    to remote tar overlays. *layman* will leave the reponsibility
-    of deleting local tar files up to the user.
-    By default, *layman* will delete downloaded tar files.
+clean_archive::
+    Set to "yes" if *layman* will delete archive files downloaded
+    when installing archive type overlays. This option is only
+    applicable to remote archive overlays. *layman* will leave the
+    reponsibility of deleting local archive files up to the user.
+    By default, *layman* will delete downloaded archive files.
+
+check_official::
+    Set to "no" if you don't want layman to prompt you for consent
+    during the installation of an unofficial overlay.
 
 Per repository type Add, Sync options.
 
@@ -267,8 +281,8 @@ git_postsync::
     These are commands that are run after each add, sync operation if they
     are defined.
 
-*NEW*Repo Configuration options::
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*NEW*Repo Configuration options
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 *layman* now accepts multiple repository config file options. One being the
 already standard make.conf option and the other being the repos.conf files
@@ -286,6 +300,10 @@ allow you to alter particular things regarding the repository configuration::
         Specifies the path to the config file for all repos.conf
         configuration. The default location is
         '/etc/portage/repos.conf/layman.conf'.
+-  auto_sync::
+        "yes" or "no" value that defines whether or not you want your
+        layman overlays automatically synced by the portage sync plug-in
+        (requires repos.conf support).
 
 HANDLING OVERLAYS
 -----------------
@@ -379,6 +397,17 @@ leaving any traces behind.
 In order to update all overlays managed by *layman* you can run
 the script with the *--sync ALL* option or the *--sync-all* flag.
 
+*NEW* DISABLING, AND RE-ENABLING OVERLAYS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+portage will find installed overlays via your repo config files,
+whether it be make.conf or repos.conf. If you wish to hide the
+overlay from portage so that the ebuilds will not be accessible
+then you can do so with the *--disable* 'OVERLAY' option. This
+will then disable the overlay in your repo configurations.
+
+To re-enable them again so that portage can again access the
+ebuilds of that overlay you can simply do so with the
+*--enable* 'OVERLAY' option.
 
 LIST OVERLAYS
 ~~~~~~~~~~~~~
@@ -414,10 +443,11 @@ on 'http://gpo.zugaina.org/'.
 OVERLAY TYPES
 ~~~~~~~~~~~~~
 Currently *layman* supports overlays that are exported via *rsync*,
-*CVS*, *subversion*, *bzr*, *darcs*, *git*, *mercurial* or provided as *tar*
-packages.  It also supports the generated overlay type *g-common* installed
-with the g-cran package (at time of this writing, only available in the science
- overlay).
+*CVS*, *subversion*, *bzr*, *darcs*, *git*, *mercurial*, *tar*
+packages, or *squashfs* images that will be mounted read-only.
+It also supports the generated overlay type *g-sorcery* installed with
+the g-cran package (at time of this writing, only available in the science
+overlay).
 
 
 OVERLAY LISTS
@@ -464,8 +494,7 @@ Example 2. An example overlays.xml file with a branch
     <owner type="project">
        <email>hardened@gentoo.org</email>
     </owner>
-    <source type="git">git://git.overlays.gentoo.org/proj/hardened-dev.git</source>
-    <branch>uclibc</branch>
+    <source type="git" branch="uclibc">git://git.overlays.gentoo.org/proj/hardened-dev.git</source>
     <feed>http://git.overlays.gentoo.org/gitweb/?p=proj/hardened-dev.git;a=atom</feed>
 </repo>
 </repositories>
@@ -477,12 +506,14 @@ is comparable to specifying a subpath for a CVS repository.
 
 VCS types where the use of "branch" is supported is as follows:: 
 -  CVS
+-  Squashfs
 -  Tar
 -  Git
 -  Mercurial
-However, for CVS and Tar overlays, the branch will be treated as a subpath.
-If you use the branch variable with any other overlay types aside from the ones
-listed, it will be ignored.
+However, for CVS, Squashfs, and Tar overlays, the branch will be treated as a
+subpath. If you use the branch variable with any other overlay types aside from
+the ones listed, it will be ignored.
+
 
 ADDING AN OVERLAY LOCALLY
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -532,7 +563,7 @@ This updates all overlays
 PERFORMING SEVERAL ACTIONS AT THE SAME TIME
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -------------------------------------------
-layman -f -a wrobel -a webapps-experimental
+layman -f -a wrobel webapps-experimental
 -------------------------------------------
 
 This fetches the remote list and immediately adds two overlays
@@ -545,7 +576,9 @@ FILES
 '/var/lib/layman/make.conf'::
     Configuration file that layman modifies to
     register the installed overlay(s) with the package manager
-
+'/etc/portage/repos.conf/layman.conf'::
+    Configuration file that layman modifies to
+    register the installed overlay(s) with the package manager
 
 AUTHORS
 -------
