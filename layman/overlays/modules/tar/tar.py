@@ -28,10 +28,10 @@ __version__ = "$Id: tar.py 310 2007-04-09 16:30:40Z wrobel $"
 
 import sys
 
-from   layman.constants         import FILE_EXTENSIONS
-from   layman.overlays.archive  import ArchiveOverlay
-from   layman.overlays.source   import require_supported
-from   layman.utils             import run_command
+from   layman.constants                import FILE_EXTENSIONS
+from   layman.overlays.modules.archive import ArchiveOverlay
+from   layman.overlays.source          import require_supported
+from   layman.utils                    import run_command
 
 #===============================================================================
 #
