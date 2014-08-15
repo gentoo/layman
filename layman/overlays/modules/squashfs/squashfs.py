@@ -28,10 +28,10 @@ import os
 import shutil
 import sys
 
-from   layman.constants        import FILE_EXTENSIONS
-from   layman.overlays.archive import ArchiveOverlay
-from   layman.overlays.source  import require_supported
-from   layman.utils            import path
+from   layman.constants                import FILE_EXTENSIONS
+from   layman.overlays.modules.archive import ArchiveOverlay
+from   layman.overlays.source          import require_supported
+from   layman.utils                    import path
 
 #===============================================================================
 #
