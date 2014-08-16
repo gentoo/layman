@@ -14,7 +14,7 @@ modules = [
     'layman.overlays.modules.cvs',
     'layman.overlays.modules.darcs',
     'layman.overlays.modules.git',
-    'layman.overlays.modules.g_sourcery',
+    'layman.overlays.modules.g_sorcery',
     'layman.overlays.modules.mercurial',
     'layman.overlays.modules.rsync',
     'layman.overlays.modules.squashfs',
