@@ -35,6 +35,7 @@ setup(name          = 'layman',
         'layman.config_modules.makeconf', 'layman.config_modules.reposconf',
         'layman.overlays', 'layman.overlays.modules',
         ] + modules,
-      scripts       = ['bin/layman', 'bin/layman-updater'],
+      scripts       = ['bin/layman', 'bin/layman-overlay-maker',
+                       'bin/layman-mounter', 'bin/layman-updater'],
       license       = 'GPL',
       )
