@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 import sys
 
 from distutils.core import setup
@@ -8,20 +9,16 @@ from distutils.core import setup
 sys.path.insert(0, './')
 from layman.version import VERSION
 
+SELECTABLE = "bzr cvs darcs git g_sorcery mercurial rsync squashfs svn tar"
+# get the USE from the environment, default to all selectable modules
+# split them so we don't get substring matches
+USE = os.environ.get("USE", SELECTABLE).split()
 
-modules = [
-    'layman.overlays.modules.bzr',
-    'layman.overlays.modules.cvs',
-    'layman.overlays.modules.darcs',
-    'layman.overlays.modules.git',
-    'layman.overlays.modules.g_sorcery',
-    'layman.overlays.modules.mercurial',
-    'layman.overlays.modules.rsync',
-    'layman.overlays.modules.squashfs',
-    'layman.overlays.modules.stub',
-    'layman.overlays.modules.svn',
-    'layman.overlays.modules.tar',
-    ]
+modules = ['layman.overlays.modules.stub']
+
+for mod in SELECTABLE.split():
+    if mod in USE:
+        modules.append('layman.overlays.modules.%s' %mod)
 
 
 setup(name          = 'layman',
