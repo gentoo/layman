@@ -10,17 +10,17 @@ from layman.version import VERSION
 
 
 modules = [
-    'layman.overlays.moudules.bzr',
-    'layman.overlays.moudules.cvs',
-    'layman.overlays.moudules.darcs',
-    'layman.overlays.moudules.git',
-    'layman.overlays.moudules.g_sourcery',
-    'layman.overlays.moudules.mercurial',
-    'layman.overlays.moudules.rsync',
-    'layman.overlays.moudules.squashfs',
-    'layman.overlays.moudules.stub',
-    'layman.overlays.moudules.svn',
-    'layman.overlays.moudules.tar',
+    'layman.overlays.modules.bzr',
+    'layman.overlays.modules.cvs',
+    'layman.overlays.modules.darcs',
+    'layman.overlays.modules.git',
+    'layman.overlays.modules.g_sourcery',
+    'layman.overlays.modules.mercurial',
+    'layman.overlays.modules.rsync',
+    'layman.overlays.modules.squashfs',
+    'layman.overlays.modules.stub',
+    'layman.overlays.modules.svn',
+    'layman.overlays.modules.tar',
     ]
 
 
