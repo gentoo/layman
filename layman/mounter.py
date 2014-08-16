@@ -120,7 +120,7 @@ class Mounter(object):
 
         @rtype tuple
         '''
-        if 'ALL' in repo:
+        if 'ALL' in repos:
             repos = sorted(self.mountables)
         elif isinstance(repos, STR):
             repos = [repos]
