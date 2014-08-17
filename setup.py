@@ -9,16 +9,36 @@ from distutils.core import setup
 sys.path.insert(0, './')
 from layman.version import VERSION
 
-SELECTABLE = "bzr cvs darcs git g_sorcery mercurial rsync squashfs svn tar"
+# leave rsync and tar commented out since they are part of system set
+# make them installed by default
+SELECTABLE = {
+    'bazaar': 'bzr',
+    'cvs': 'cvs',
+    'darcs': 'darcs',
+    'git': 'git',
+    'g-sorcery': 'g_sorcery',
+    'mercurial': 'mercurial',
+    #'rsync': 'rsync',
+    'squashfs': 'squashfs',
+    'subversion': 'svn',
+    #'tar': 'tar',
+    }
+
+use_defaults = ' '.join(list(SELECTABLE))
+
 # get the USE from the environment, default to all selectable modules
 # split them so we don't get substring matches
-USE = os.environ.get("USE", SELECTABLE).split()
+USE = os.environ.get("USE", use_defaults).split()
 
-modules = ['layman.overlays.modules.stub']
+modules = [
+    'layman.overlays.modules.rsync',
+    'layman.overlays.modules.stub',
+    'layman.overlays.modules.tar',
+    ]
 
-for mod in SELECTABLE.split():
+for mod in sorted(SELECTABLE):
     if mod in USE:
-        modules.append('layman.overlays.modules.%s' %mod)
+        modules.append('layman.overlays.modules.%s' % SELECTABLE[mod])
 
 
 setup(name          = 'layman',
