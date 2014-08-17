@@ -22,6 +22,7 @@ __version__ = "$Id: svn.py 236 2006-09-05 20:39:37Z wrobel $"
 
 
 import os
+import sys
 from subprocess import PIPE, Popen
 
 #==============================================================================
@@ -166,13 +167,18 @@ class SvnOverlay(OverlaySource):
         '''
         file_to_run = resolve_command(self.command(), self.output.error)[1]
         args = " ".join([file_to_run, " upgrade", target])
-        stdout, stderr = Popen(args, shell=True, stdout=PIPE, stderr=PIPE).communicate()
-        if stdout:
-            self.output.debug("SVN: check_upgrade()... have a valid pipe, "
-                "running upgrade", 4)
-            upgrade_output = stdout.readline().split('\n')
-            if upgrade_output:
-                self.output.debug("  output: %s" % upgrade_output, 4)
-            self.output.debug("SVN: check_upgrade()... svn upgrade done", 4)
-            stdout.terminate()
+        pipe = Popen(args, shell=True, stdout=PIPE, stderr=PIPE)
+        stdout = pipe.stdout.read()
+        self.output.debug("SVN: check_upgrade()... running svn upgrade", 4)
+
+        if sys.hexversion >= 0x3000000:
+            stdout = stdout.decode('UTF-8')
+
+        upgrade_output = stdout.strip('\n')
+        if upgrade_output:
+            self.output.debug("  output: %r" % upgrade_output, 4)
+        self.output.debug("SVN: check_upgrade()... svn upgrade done", 4)
+        pipe.terminate()
+        pipe.stdout.close()
+        pipe.stderr.close()
         return
