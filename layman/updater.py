@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 
 from sys import stderr
 import os
+import sys
 import argparse
 
 from layman.config import OptionConfig
@@ -12,6 +13,10 @@ from layman.api import LaymanAPI
 from layman.version import VERSION
 from layman.compatibility import fileopen
 
+if sys.hexversion >= 0x30200f0:
+    STR = str
+else:
+    STR = basestring
 
 def rename_db(config, newname, output):
     """small upgrade function to handle the name change
@@ -86,6 +91,9 @@ class Main(object):
 
     def check_is_new(self):
         print_instructions = False
+        if isinstance(self.config['conf_type'], STR):
+            self.config.set_option('conf_type',
+                                   self.config['conf_type'].split(', '))
         for i in self.config['conf_type']:
             conf = i.replace('.', '_')
             if not os.access(self.config[conf], os.F_OK):
