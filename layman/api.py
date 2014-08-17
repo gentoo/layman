@@ -505,7 +505,7 @@ class LaymanAPI(object):
                     self.output.warn('Failed to perform overlay type or url updates', 2)
                     self.output.warn('    for Overlay: %s' % ovl, 2)
                     self.output.warn('    Error was: %s' % str(error))
-                pass
+                    continue
 
             try:
                     self.output.debug("API.sync(); starting db.sync(ovl)", 5)
