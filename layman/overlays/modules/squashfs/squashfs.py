@@ -131,10 +131,7 @@ class SquashfsOverlay(ArchiveOverlay):
 
         @rtype bool
         '''
-        return require_supported(
-            [(self.command(),  'squashfs', 'sys-fs/squashfs-tools'), ],
-            self.output.warn)
-
+        return True
 
 if __name__ == '__main__':
     import doctest
