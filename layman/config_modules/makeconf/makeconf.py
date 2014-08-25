@@ -235,20 +235,23 @@ class ConfigHandler:
                                      if i.strip()]
 
             for i in (disabled_overlays, enabled_overlays, overlays):
-                for o in i:
+                for o in (i or []):
                     if o[:len(self.storage)] == self.storage:
                         oname = os.path.basename(o)
                         if  oname in self.db.keys():
                             if i == disabled_overlays:
-                                self.disabled.append(path([self.storage, oname]))
+                                self.disabled.append(path([self.storage,
+                                                           oname]))
                             self.overlays.append(self.db[oname])
                         else:
                             # These are additional overlays that we dont know
-                            # anything about. The user probably added them manually
+                            # know anything about. The user probably added
+                            # them manually.
                             self.extra.append(o)
                     else:
-                        # These are additional overlays that we dont know anything
-                        # about. The user probably added them manually
+                        # These are additional overlays that we dont know
+                        # anything about. The user probably added them
+                        # manually.
                         self.extra.append(o)
 
         else:
@@ -345,6 +348,10 @@ class ConfigHandler:
         overlays += '$PORTDIR_OVERLAY\n'
         overlays += '\n'.join(self.extra)
         overlays += '"'
+
+        if not re.search('ENABLED=', self.data):
+            self.data = '\n'.join((enabled_overlays, disabled_overlays,
+                                   overlays))
 
         enabled_content = self.my_enabled_re.sub(enabled_overlays, self.data)
         disabled_content = self.my_disabled_re.sub(disabled_overlays, enabled_content)
