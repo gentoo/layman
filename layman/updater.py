@@ -168,8 +168,8 @@ class Main(object):
         self.output.info("  Creating layman's make.conf file")
         # create layman's %(storage)s/make.conf
         # so portage won't error
-        from layman.makeconf import MakeConf
-        maker = MakeConf(self.config, None)
+        from layman.config_modules.makeconf.makeconf import ConfigHandler
+        maker = ConfigHandler(self.config, None)
         maker.write()
 
 
