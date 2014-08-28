@@ -109,7 +109,7 @@ class ConfigHandler:
         '''
         self.repo_conf.remove_section(overlay.name)
 
-        return self.write()
+        return self.write(delete=overlay.name)
 
 
     def disable(self, overlay):
@@ -162,7 +162,7 @@ class ConfigHandler:
         return self.write()
 
 
-    def write(self, disable=None):
+    def write(self, delete=None, disable=None):
         '''
         Writes changes from ConfigParser to /etc/portage/repos.conf/layman.conf.
 
@@ -171,6 +171,12 @@ class ConfigHandler:
         '''
         try:
             with fileopen(self.path, 'w') as laymanconf:
+                # If the repos.conf is empty check to see if we can write
+                # all the overlays to the file.
+                if not self.repo_conf.sections():
+                    for i in self.overlays:
+                        if not i == delete:
+                            self.add(self.overlays[i])
                 self.repo_conf.write(laymanconf)
             if disable:
                 # comments out section header of the overlay.
