@@ -288,15 +288,16 @@ class DB(DbBase):
     def update(self, overlay, available_srcs):
         '''
         Updates the overlay source via the available source(s).
-        
+
         @params overlay: layman.overlay.Overlay object.
         @params available_srcs: set of available source URLs.
         '''
 
         source, result = self.overlays[overlay.name].update(self.config['storage'],
                                                     available_srcs)
+        result = [result]
         self.overlays[overlay.name].sources = source
-        self.repo_conf.update(self.overlays[overlay.name])
+        result.extend(self.repo_conf.update(self.overlays[overlay.name]))
         self.write(self.path)
 
         if False in result:

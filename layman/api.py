@@ -429,7 +429,7 @@ class LaymanAPI(object):
                   '\n'\
                   'as correct location%(plural)s.\n'\
                   '\n'\
-                  'Repo: "%(repo_name)s" will be updated...' %\
+                  'Repo: "%(repo_name)s" was automatically updated...' %\
                   ({
                      'repo_name':odb.name,
                      'current_src':current_src,
