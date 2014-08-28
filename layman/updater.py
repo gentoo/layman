@@ -175,7 +175,13 @@ class Main(object):
 
     def create_repos_conf(self):
         self.output.info("  Creating layman's repos.conf file")
-        # create layman's %(repos_conf)
-        # so layman won't error.
-        with fileopen(self.config['repos_conf'], 'w') as repos_conf:
-            repos_conf.write('')
+        layman_inst = LaymanAPI(config=self.config)
+        overlays = {}
+        for ovl in layman_inst.get_installed():
+            overlays[ovl] = layman_inst._get_installed_db().select(ovl)
+        # create layman's %(repos_conf) so layman
+        # can write the overlays to it.
+        open(self.config['repos_conf'], 'w').close()
+        from layman.config_modules.reposconf.reposconf import ConfigHandler
+        repos_conf = ConfigHandler(self.config, overlays)
+        repos_conf.write()
