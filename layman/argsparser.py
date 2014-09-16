@@ -323,6 +323,20 @@ class ArgsParser(BareConfig):
 
     def __getitem__(self, key):
 
+        if key == 'storage':
+            storage = ''
+            if (key in self.options.keys()
+                and not self.options[key] is None):
+                storage = self.options[key]
+            if self.config.has_option('MAIN', 'storage'):
+                storage = self.config.get('MAIN', 'storage')
+            # Set the value to the command line value if and only
+            # if it isn't the same as the default.
+            if self.options[key] != self.defaults[key]:
+                storage = self.options[key]
+            if storage:
+                return storage
+                
         if key == 'overlays':
             overlays = ''
             if (key in self.options.keys()
