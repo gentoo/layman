@@ -277,7 +277,7 @@ class ArgsParser(BareConfig):
         self.options = self.parser.parse_args()
         self.options = vars(self.options)
         # Applying interpolation of values
-        for v in ['configdir', 'config', 'overlay_defs']:
+        for v in ['configdir', 'config']:
             self.options[v] = self.options[v] % self.options
             self.defaults[v] = self.options[v]
 
@@ -302,17 +302,27 @@ class ArgsParser(BareConfig):
             self.defaults['config'] = self.defaults['config'] \
                 % {'configdir': self.defaults['configdir']}
 
-        if self.options['overlay_defs'] is not None:
-            self.defaults['overlay_defs'] = self.options['overlay_defs']
-            self.output.debug('ARGSPARSER: Got overlay_defs location at ' + \
-                self.defaults['overlay_defs'], 8)
-
         self._options['setup_help'] = self.options['setup_help']
 
         # Now parse the config file
         self.output.debug('ARGSPARSER: Reading config file at ' + \
             self.defaults['config'], 8)
         self.read_config(self.defaults)
+
+
+        # Handle the overlay_defs option:
+        if ('%(configdir)s' in self.options['overlay_defs']
+            and self.config.has_option('MAIN', 'overlay_defs')):
+            # If it hasn't been interpolated then it's not being set as a
+            # command line argument. So we first try to set it to the config
+            # value.
+            self.options['overlay_defs'] = self.config.get('MAIN',
+                                                           'overlay_defs')
+        elif self.defaults['overlay_defs'] == self.options['overlay_defs']:
+            # If it isn't a command line argument and no config option then
+            # set it to the default.
+            self.defaults['overlay_defs'] = self.defaults['overlay_defs'] % self.options
+            self.options['overlay_defs'] = self.defaults['overlay_defs']
 
         # handle quietness
         if self.options['quiet']:
