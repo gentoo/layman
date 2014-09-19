@@ -294,7 +294,8 @@ class BareConfig(object):
             elif os.getenv(proxy):
                 proxies[proxy.split('_')[0]] = os.getenv(proxy)
         if self.config and proxies == {}:
-            self.output.debug("Warning: unable to determine proxies.", 6)
+            self._options['output'].debug("Warning: unable to determine prox" +
+                                          "ies.", 6)
 
         return proxies
 
