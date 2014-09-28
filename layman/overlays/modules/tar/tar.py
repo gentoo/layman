@@ -60,7 +60,7 @@ class TarOverlay(ArchiveOverlay):
         @rtype str
         '''
         ext = '.tar.noidea'
-        for i in [('tar.%s' % e) for e in FILE_EXTENSIONS[self.type]:
+        for i in [('tar.%s' % e) for e in FILE_EXTENSIONS[self.type]]:
             candidate_ext = '.%s' % i
             if self.src.endswith(candidate_ext):
                 ext = candidate_ext
