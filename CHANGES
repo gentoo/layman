@@ -1,7 +1,7 @@
 CHANGES
 -------
 
-Version 2.2.0 - Release 2014-08-13
+Version 2.2.0 - Release 2014-09-28
 ==================================
  - man page updates
  - Portage sync plug-in to sync layman overlays via portage
@@ -30,6 +30,13 @@ Version 2.2.0 - Release 2014-08-13
  - makes overlay types modular plug-ins
  - makes repo config types modular plug-ins
  - removes g-common overlay support
+ - fixes output use in proxies()
+ - fixes default command line value overriding of overlay_defs and
+   storage config options
+ - fixes improper tracking of operation results for Overlay.update()
+ - adds use of repos.conf module plug-in when running layman-updater
+ - adds check in repos.conf to write all overlays to a blank file
+ - fixes improper import of make.conf module in updater.py
 
 
 Version 2.1.0 - Released 2014-07-23
