@@ -37,6 +37,7 @@ Version 2.2.0 - Release 2014-09-28
  - adds use of repos.conf module plug-in when running layman-updater
  - adds check in repos.conf to write all overlays to a blank file
  - fixes improper import of make.conf module in updater.py
+ - fixes closing of iterable file extension list in tar.py
 
 
 Version 2.1.0 - Released 2014-07-23
