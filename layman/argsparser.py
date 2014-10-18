@@ -404,14 +404,3 @@ class ArgsParser(BareConfig):
         self.output.debug('ARGSPARSER: Returning keys', 9)
 
         return keys
-
-
-#===============================================================================
-#
-# Testing
-#
-#-------------------------------------------------------------------------------
-
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod(sys.modules[__name__])

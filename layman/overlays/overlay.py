@@ -546,14 +546,3 @@ class Overlay(object):
     def source_types(self):
         for i in self.sources:
             yield i.type
-
-
-#==============================================================================
-#
-# Testing
-#
-#------------------------------------------------------------------------------
-
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod(sys.modules[__name__])

@@ -397,15 +397,3 @@ class Main(object):
         # blank newline  -- no " *"
         self.output.notice('')
         return info != {}
-
-
-if __name__ == '__main__':
-    import doctest
-
-    # Ignore warnings here. We are just testing
-    from warnings     import filterwarnings, resetwarnings
-    filterwarnings('ignore')
-
-    doctest.testmod(sys.modules[__name__])
-
-    resetwarnings()

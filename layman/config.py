@@ -348,13 +348,3 @@ class OptionConfig(BareConfig):
         if new_defaults is not None:
             self._defaults.update(new_defaults)
         return
-
-#===============================================================================
-#
-# Testing
-#
-#-------------------------------------------------------------------------------
-
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod(sys.modules[__name__])

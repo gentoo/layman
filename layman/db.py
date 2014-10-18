@@ -315,21 +315,3 @@ class DB(DbBase):
             raise Exception('Syncing overlay "' + overlay_name +
                             '" returned status ' + str(result) + '!' +
                             '\ndb.sync()')
-
-
-#===============================================================================
-#
-# Testing
-#
-#-------------------------------------------------------------------------------
-
-if __name__ == '__main__':
-    import doctest, sys
-
-    # Ignore warnings here. We are just testing
-    from warnings     import filterwarnings, resetwarnings
-    filterwarnings('ignore')
-
-    doctest.testmod(sys.modules[__name__])
-
-    resetwarnings()

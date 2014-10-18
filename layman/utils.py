@@ -347,14 +347,3 @@ def create_overlay_dict(**kwargs):
     for key in kwargs:
         result[key] = kwargs[key]
     return result
-
-
-#===============================================================================
-#
-# Testing
-#
-#-------------------------------------------------------------------------------
-
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod(sys.modules[__name__])

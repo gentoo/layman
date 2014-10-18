@@ -714,15 +714,3 @@ def create_fd():
     write = os.fdopen(fd_w, 'w')
     read = os.fdopen(fd_r, 'r')
     return (read, write, fd_r, fd_w)
-
-
-if __name__ == '__main__':
-    import doctest, sys
-
-    # Ignore warnings here. We are just testing
-    from warnings     import filterwarnings, resetwarnings
-    filterwarnings('ignore')
-
-    doctest.testmod(sys.modules[__name__])
-
-    resetwarnings()

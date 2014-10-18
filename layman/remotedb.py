@@ -379,15 +379,3 @@ class RemoteDB(DbBase):
 
         self.signed_urls = [i.strip()
             for i in self.config['gpg_signed_lists'].split('\n') if len(i)]
-
-
-if __name__ == '__main__':
-    import doctest
-
-    # Ignore warnings here. We are just testing
-    from warnings     import filterwarnings, resetwarnings
-    filterwarnings('ignore')
-
-    doctest.testmod(sys.modules[__name__])
-
-    resetwarnings()

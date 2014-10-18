@@ -94,14 +94,3 @@ class TarOverlay(ArchiveOverlay):
         return require_supported(
             [(self.command(),  'tar', 'app-arch/tar'), ],
             self.output.warn)
-
-if __name__ == '__main__':
-    import doctest
-
-    # Ignore warnings here. We are just testing
-    from warnings     import filterwarnings, resetwarnings
-    filterwarnings('ignore')
-
-    doctest.testmod(sys.modules[__name__])
-
-    resetwarnings()
