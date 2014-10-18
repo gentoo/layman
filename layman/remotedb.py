@@ -57,7 +57,7 @@ class RemoteDB(DbBase):
         self.detached_urls = []
         self.signed_urls = []
         self.proxies = config.proxies
-        
+
         self.urls  = [i.strip()
             for i in config['overlays'].split('\n') if len(i)]
 
@@ -116,9 +116,11 @@ class RemoteDB(DbBase):
         need_gpg = [False, True, True]
         # setup the ssl-fetch output map
         connector_output = {
-            'info':  self.output.debug,
+            'info':  self.output.info,
+            'debug': self.output.debug,
             'error': self.output.error,
             'kwargs-info': {'level': 2},
+            'kwargs-debug': {'level': 2},
             'kwargs-error':{'level': None},
         }
         fetcher = Connector(connector_output, self.proxies, USERAGENT)
