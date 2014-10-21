@@ -19,8 +19,6 @@
 from __future__ import unicode_literals
 from __future__ import with_statement
 
-__version__ = "$Id: db.py 309 2007-04-09 16:23:38Z wrobel $"
-
 #===============================================================================
 #
 # Dependencies

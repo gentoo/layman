@@ -21,9 +21,6 @@
 
 from __future__ import unicode_literals
 
-__version__ = "$Id: cli.py 2011-01-15 23:52 PST Brian Dolbec$"
-
-
 import os, sys
 
 from layman.api import LaymanAPI

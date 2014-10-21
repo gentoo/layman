@@ -18,8 +18,6 @@
 
 from __future__ import unicode_literals
 
-__version__ = "$Id: db.py 309 2007-04-09 16:23:38Z wrobel $"
-
 #===============================================================================
 #
 # Dependencies

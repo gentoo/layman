@@ -6,8 +6,6 @@
 # Copyright 2005 - 2008 Gunnar Wrobel
 # Distributed under the terms of the GNU General Public License v2
 
-__version__ = "$Id: debug.py 153 2006-06-05 06:03:16Z wrobel $"
-
 #################################################################################
 ##
 ## Dependancies

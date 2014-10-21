@@ -9,9 +9,6 @@
 from __future__ import unicode_literals
 from __future__ import print_function
 
-__version__ = "0.1"
-
-
 import sys
 
 from layman.constants import codes, INFO_LEVEL, WARN_LEVEL, NOTE_LEVEL, DEBUG_LEVEL, OFF

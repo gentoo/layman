@@ -18,9 +18,6 @@
 
 from __future__ import unicode_literals
 
-__version__ = "$Id: svn.py 236 2006-09-05 20:39:37Z wrobel $"
-
-
 import os
 import sys
 from subprocess import PIPE, Popen
