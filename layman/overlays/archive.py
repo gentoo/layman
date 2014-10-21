@@ -12,10 +12,10 @@ from  layman.constants         import MOUNT_TYPES
 from  layman.compatibility     import fileopen
 from  layman.overlays.source   import OverlaySource, require_supported
 from  layman.utils             import path
-from  layman.version           import VERSION
+from  layman.version           import __version__
 from  sslfetch.connections     import Connector
 
-USERAGENT = "Layman-" + VERSION
+USERAGENT = "Layman-" + __version__
 
 class ArchiveOverlay(OverlaySource):
 

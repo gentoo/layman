@@ -24,9 +24,6 @@ from __future__ import unicode_literals
 
 '''Defines the configuration options.'''
 
-__version__ = "0.2"
-
-
 import sys
 import os
 

@@ -10,7 +10,7 @@ import argparse
 
 from layman.config import OptionConfig
 from layman.api import LaymanAPI
-from layman.version import VERSION
+from layman.version import __version__
 from layman.compatibility import fileopen
 
 if sys.hexversion >= 0x30200f0:
@@ -58,7 +58,7 @@ class Main(object):
         self.parser.add_argument("-c", "--config",
             help='the path to config file')
         self.parser.add_argument('--version', action='version',
-            version='%(prog)s ' + VERSION)
+            version='%(prog)s ' + __version__)
 
         self.args = self.parser.parse_args()
 

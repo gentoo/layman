@@ -18,8 +18,6 @@
 
 from __future__ import unicode_literals
 
-__version__ = "$Id: rsync.py 236 2006-09-05 20:39:37Z wrobel $"
-
 #===============================================================================
 #
 # Dependencies

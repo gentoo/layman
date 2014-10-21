@@ -33,7 +33,7 @@ from   layman.compatibility  import fileopen
 from   layman.constants      import COMPONENT_DEFAULTS, POSSIBLE_COMPONENTS
 from   layman.config         import OptionConfig
 from   layman.utils          import get_ans, get_input, indent, reload_config
-from   layman.version        import VERSION
+from   layman.version        import __version__
 
 #py3
 if sys.hexversion >= 0x30200f0:
@@ -150,7 +150,7 @@ class Interactive(object):
         self.parser.add_argument('-V',
                                  '--version',
                                  action='version',
-                                 version='%(prog)s ' + VERSION)
+                                 version='%(prog)s ' + __version__)
 
         self.args = self.parser.parse_args()
 
