@@ -57,7 +57,7 @@ The tests are in layman/tests/.
 
 To run the tests, move into the layman root directory and run
 
- PYTHONPATH="." python layman/tests/external.py
+ PYTHONPATH="." python -m layman.tests.external
 
 The tests should not fail.
 
