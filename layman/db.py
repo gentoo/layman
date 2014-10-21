@@ -60,6 +60,7 @@ class DB(DbBase):
                           config,
                           paths=[config['installed'], ],
                           ignore=ignore,
+                          allow_missing=True,
                           )
 
         self.repo_conf = RepoConfManager(self.config, self.overlays)

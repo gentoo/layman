@@ -90,7 +90,7 @@ class DbBase(object):
     ''' Handle a list of overlays.'''
 
     def __init__(self, config, paths=None, ignore = 0,
-        ignore_init_read_errors=False
+        ignore_init_read_errors=False, allow_missing=False
         ):
 
         self.config = config
@@ -111,7 +111,7 @@ class DbBase(object):
             self.read_file(path)
             path_found = True
 
-        if not path_found:
+        if not path_found and not allow_missing:
             self.output.warn("Warning: an installed db file was not found at: %s"
                 % str(self.paths))
 
