@@ -34,7 +34,7 @@ from argparse import ArgumentParser
 
 from layman.config import BareConfig
 from layman.constants import OFF
-from layman.version import VERSION
+from layman.version import __version__
 
 
 _USAGE = """
@@ -73,7 +73,7 @@ class ArgsParser(BareConfig):
         self.parser.add_argument('-V',
                           '--version',
                           action = 'version',
-                          version = VERSION)
+                          version = __version__)
 
         #-----------------------------------------------------------------
         # Main Options

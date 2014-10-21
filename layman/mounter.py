@@ -31,7 +31,7 @@ import sys
 
 from  layman.constants  import MOUNT_TYPES
 from  layman.utils      import path, run_command
-from  layman.version    import VERSION
+from  layman.version    import __version__
 
 
 if sys.hexversion >= 0x30200f0:
@@ -259,7 +259,7 @@ class Interactive(object):
         self.parser.add_argument('-V',
                                  '--version',
                                  action='version',
-                                 version='%(prog)s ' + VERSION)
+                                 version='%(prog)s ' + __version__)
         self.args = self.parser.parse_args()
 
 

@@ -39,11 +39,11 @@ except ImportError:
 
 from   layman.utils             import encoder
 from   layman.dbbase            import DbBase
-from   layman.version           import VERSION
+from   layman.version           import __version__
 from   layman.compatibility     import fileopen
 from   sslfetch.connections     import Connector
 
-USERAGENT = "Layman-" + VERSION
+USERAGENT = "Layman-" + __version__
 
 class RemoteDB(DbBase):
     '''Handles fetching the remote overlay list.'''
