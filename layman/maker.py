@@ -12,10 +12,10 @@
 #             Devan Franchini <twitch153@gentoo.org>
 #
 
-#===============================================================================              
+#===============================================================================
 #
 # Dependencies
-#                                                   
+#
 #-------------------------------------------------------------------------------
 from __future__ import unicode_literals
 
@@ -76,9 +76,9 @@ AUTOCOMPLETE_TEMPLATE = {
                                   '%(tail)s;a=shortlog;h=refs/heads/'\
                                   '%(branch)s',
                       'sources': (
-                     ('https://git.overlays.gentoo.org/gitroot/%(tail)s', 'git', 
+                     ('https://git.overlays.gentoo.org/gitroot/%(tail)s', 'git',
                       '%(branch)s'),
-                     ('git://git.overlays.gentoo.org/%(tail)s', 'git', 
+                     ('git://git.overlays.gentoo.org/%(tail)s', 'git',
                       '%(branch)s'),
                      ('git+ssh://git@git.overlays.gentoo.org/%(tail)s', 'git',
                       '%(branch)s')
@@ -193,7 +193,7 @@ class Interactive(object):
                     self.output.notice('')
                     self.update_required()
                     self.output.notice('')
-                    
+
                 self.get_overlay_components()
                 ovl = Overlay.Overlay(config=self.config, ovl_dict=self.overlay, ignore=1)
                 self.overlays.append((self.overlay['name'], ovl))
@@ -237,7 +237,7 @@ class Interactive(object):
         if 'tar' in type_checks:
             type_checks.remove(type_checks[type_checks.index('tar')])
             type_checks.insert(len(type_checks), '.tar')
-                
+
         if 'bzr' in type_checks:
             type_checks.remove(self.supported_types[type_checks.index('bzr')])
             type_checks.insert(len(type_checks), 'bazaar')
@@ -369,7 +369,7 @@ class Interactive(object):
 
                 ovl_type = self.guess_overlay_type(sources[0])
                 msg = 'Is %(type)s the correct overlay type?: '\
-                       % ({'type': ovl_type})                                                      
+                       % ({'type': ovl_type})
                 correct = get_ans(msg)
                 while not ovl_type or not correct:
                     msg = 'Please provide overlay type: '
@@ -487,7 +487,7 @@ class Interactive(object):
                         TEMPLATE = AUTOCOMPLETE_TEMPLATE[i]
                 else:
                     TEMPLATE = AUTOCOMPLETE_TEMPLATE[i]
- 
+
                 self.overlay['homepage'] = TEMPLATE['homepage'] % attrs
 
                 if i in ('bitbucket') and 'git' in (source[1]):
@@ -545,7 +545,7 @@ class Interactive(object):
     def write(self, destination):
         '''
         Writes overlay file to desired location.
-        
+
         @params destination: path & file to write xml to.
         @rtype bool: reflects success or failure to write xml.
         '''
