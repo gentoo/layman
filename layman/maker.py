@@ -415,7 +415,7 @@ class Interactive(object):
             if component in ('descriptions', 'feeds', 'name', 'owner', 'sources'):
                 getattr(self, 'get_%(comp)s' % ({'comp': component}))()
             else:
-                self.overlay[component] = getattr('get_input')(msg)
+                self.overlay[component] = get_input(msg)
 
 
     def get_overlay_components(self):
