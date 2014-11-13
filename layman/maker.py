@@ -348,9 +348,10 @@ class Interactive(object):
                 sources.append(get_input(msg))
 
                 ovl_type = self.guess_overlay_type(sources[0])
-                msg = 'Is %(type)s the correct overlay type?: '\
-                    % ({'type': ovl_type})
-                correct = get_ans(msg)
+                if ovl_type:
+                    msg = 'Is "%(type)s" the correct overlay type?: '\
+                        % ({'type': ovl_type})
+                    correct = get_ans(msg)
                 while not ovl_type or not correct:
                     msg = 'Please provide overlay type: '
                     ovl_type = self.check_overlay_type(\
@@ -368,9 +369,10 @@ class Interactive(object):
                 sources.append(get_input('Define source URL: '))
 
                 ovl_type = self.guess_overlay_type(sources[0])
-                msg = 'Is %(type)s the correct overlay type?: '\
-                       % ({'type': ovl_type})
-                correct = get_ans(msg)
+                if ovl_type:
+                    msg = 'Is %(type)s the correct overlay type?: '\
+                           % ({'type': ovl_type})
+                    correct = get_ans(msg)
                 while not ovl_type or not correct:
                     msg = 'Please provide overlay type: '
                     ovl_type = self.check_overlay_type(\
