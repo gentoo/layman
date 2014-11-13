@@ -343,6 +343,7 @@ class Interactive(object):
 
         for i in range(1, source_amount + 1):
             sources = []
+            correct = False
             if source_amount > 1:
                 msg = 'Define source[%(i)s]\'s URL: ' % ({'i': str(i)})
                 sources.append(get_input(msg))
