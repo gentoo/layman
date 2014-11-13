@@ -452,7 +452,7 @@ class Interactive(object):
         '''
         try:
             document = ET.parse(path)
-        except xml.etree.ElementTree.ParseError as error:
+        except ET.ParseError as error:
             msg = 'Interactive.read(); encountered error: %(error)s'\
                 % ({'error': error})
             raise Exception(msg)
