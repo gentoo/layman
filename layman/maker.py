@@ -116,7 +116,7 @@ class Interactive(object):
         self.overlay = {}
         self.overlays = []
         self.overlays_available = self.layman_inst.get_available()
-        self.supported_types = self.layman_inst.supported_types().keys()
+        self.supported_types = list(self.layman_inst.supported_types())
 
 
     def args_parser(self):
