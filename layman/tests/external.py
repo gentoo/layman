@@ -239,8 +239,8 @@ class CLIArgs(unittest.TestCase):
 
         # Test the passed in cli opts on the ArgsParser class:
         a = ArgsParser()
-        test_url = '\n\nhttps://api.gentoo.org/overlays/repositories.xml'
-        self.assertEqual(a['overlays'], test_url)
+        test_url = 'https://api.gentoo.org/overlays/repositories.xml'
+        self.assertTrue(test_url in a['overlays'].split('\n'))
         test_keys = ['auto_sync', 'bzr_addopts', 'bzr_command', 'bzr_postsync',
                      'bzr_syncopts', 'cache', 'clean_tar', 'conf_module',
                      'conf_type', 'config', 'configdir', 'custom_news_pkg',
