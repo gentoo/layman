@@ -89,44 +89,26 @@ class AddDeleteEnableDisableFromDB(unittest.TestCase):
         # Add all the overlays in global_overlays.xml.
         for overlay in a.overlays.keys():
             conf_success = conf.add(a.overlays[overlay])
-            if False in conf_success:
+            if conf_success == False:
                 success.append(False)
             else:
                 success.append(True)
 
         # Disable one overlay.
-        conf_success = conf.disable(a.overlays['wrobel'])
-        if False in conf_success:
-            success.append(False)
-        else:
-            success.append(True)
+        self.assertTrue(conf.disable(a.overlays['wrobel']))
 
         # Enable disabled overlay.
-        conf_success = conf.enable(a.overlays['wrobel'])
-        if False in conf_success:
-            success.append(False)
-        else:
-            success.append(True)
+        self.assertTrue(conf.enable(a.overlays['wrobel']))
+
         # Delete all the overlays in global_overlays.xml.
         for overlay in a.overlays.keys():
-            conf_success = conf.delete(a.overlays[overlay])
-            if False in conf_success:
-                success.append(False)
-            else:
-                success.append(True)
+            self.assertTrue(conf.delete(a.overlays[overlay]))
 
         # Clean up.
         os.unlink(makeconf)
         os.unlink(reposconf)
 
         shutil.rmtree(tmpdir)
-
-        if False in success:
-            success = False
-        else:
-            success = True
-
-        self.assertTrue(success)
 
 
 # Tests archive overlay types (squashfs, tar)
