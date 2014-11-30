@@ -41,7 +41,7 @@ class ConfigHandler:
         
         self.config = config
         self.output = config['output']
-        self.overlay = {}
+        self.overlays = {}
         self.path = config['repos_conf']
         self.storage = config['storage']
 
