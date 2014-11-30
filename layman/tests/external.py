@@ -444,7 +444,7 @@ class MakeOverlayXML(unittest.TestCase):
         with fileopen(path, 'r') as xml:
             test_line = '    <source type="svn">'\
                         'https://overlays.gentoo.org/svn/dev/wrobel</source>\n'
-            self.assertEqual(xml.readlines()[9], test_line)
+            self.assertTrue(test_line in xml.readlines())
             for line in xml.readlines():
                 print(line, end='')
 
