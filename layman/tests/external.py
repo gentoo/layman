@@ -194,7 +194,16 @@ class ArchiveAddRemoveSync(unittest.TestCase):
 
 
     def test(self):
-        for archive in ('squashfs', 'tar'):
+        archives = []
+        try:
+            from layman.overlays.modules.tar.tar import TarOverlay
+            archives.append('tar')
+            from layman.overlays.modules.squashfs.squashfs import SquashfsOverlay
+            archives.append('squashfs')
+        except ImportError:
+            pass
+
+        for archive in archives:
             xml_text, repo_name, temp_archive_path = getattr(self,
                                             "_create_%(archive)s_overlay" %
                                             {'archive': archive})()
