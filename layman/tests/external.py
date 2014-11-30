@@ -645,7 +645,7 @@ class RemoteDBCache(unittest.TestCase):
                   }
         config = OptionConfig(my_opts)
         db = RemoteDB(config)
-        self.assertEquals(db.cache(), (True, True))
+        self.assertEqual(db.cache(), (True, True))
 
         db_xml = fileopen(db.filepath(config['overlays']) + '.xml')
 
