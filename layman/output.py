@@ -133,8 +133,7 @@ class Message(MessageBase):
         """empty debug function, does nothing,
         declared here for compatibility with DebugMessage
         """
-        if type(info) != str:#not in types.StringTypes:
-            info = encode(info)
+        info = encode(info)
 
         if level > self.debug_lev:
             return
@@ -153,8 +152,7 @@ class Message(MessageBase):
 
     def info (self, info, level = INFO_LEVEL):
 
-        if type(info) != str:#not in types.StringTypes:
-            info = encode(info)
+        info = encode(info)
 
         if level > self.info_lev:
             return
@@ -165,8 +163,7 @@ class Message(MessageBase):
 
     def status (self, message, status, info = 'ignored'):
 
-        if type(message) != str:#not in types.StringTypes:
-            message = encode(message)
+        message = encode(message)
 
         lines = message.split('\n')
 
@@ -194,8 +191,7 @@ class Message(MessageBase):
 
     def warn (self, warn, level = WARN_LEVEL):
 
-        if type(warn) != str:#not in types.StringTypes:
-            warn = encode(warn)
+        warn = encode(warn)
 
         if level > self.warn_lev:
             return
@@ -206,8 +202,7 @@ class Message(MessageBase):
 
     def error (self, error, level = None):
 
-        if type(error) != str:#not in types.StringTypes:
-            error = encode(error)
+        error = encode(error)
 
         for i in error.split('\n'):
             # NOTE: Forced flushing ensures that stdout and stderr
@@ -222,8 +217,7 @@ class Message(MessageBase):
 
     def die (self, error):
 
-        if type(error) != str:#not in types.StringTypes:
-            error = encode(error)
+        error = encode(error)
 
         for i in error.split('\n'):
             self.error(self.color_func('red', 'Fatal error: ') + i)
