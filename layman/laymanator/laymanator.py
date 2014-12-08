@@ -51,7 +51,7 @@ def create_overlay_package(config=None, repo=None, logger=None, xterm_titles=Non
         ovl = Overlay.Overlay(config=config, ovl_dict=overlay, ignore=1)
         return (repo.name, ovl)
 
-    msg = '!!! layman.plugin.create_overlay(), Error: repo not found.'
+    msg = '!!! laymanator sez... Error: repo not found.'
     if logger and xterm_titles:
         logger(xterm_titles, msg)
     writemsg_level(msg + '\n', level=logging.ERROR, noiselevel=-1)
@@ -129,6 +129,9 @@ class Layman(SyncBase):
             % ({'repo': self.repo.name})
         self.logger(self.xterm_titles, msg)
         writemsg_level(msg + "\n")
+        msg = '>>> laymanator sez... "Hasta la add ya, baby!"'
+        self.logger(self.xterm_titles, msg)
+        writemsg_level(msg + "\n")
 
         return (exitcode, True)
 
@@ -165,6 +168,9 @@ class Layman(SyncBase):
             return (exitcode, False)
         msg = ">>> layman sync succeeded: %(repo)s"\
             % ({'repo': self.repo.name})
+        self.logger(self.xterm_titles, msg)
+        writemsg_level(msg + "\n")
+        msg = '>>> laymanator sez... "Hasta la sync ya, baby!"'
         self.logger(self.xterm_titles, msg)
         writemsg_level(msg + "\n")
 
@@ -303,6 +309,9 @@ class PyLayman(SyncBase):
             % ({'repo': self.repo.name})
         self.logger(self.xterm_titles, msg)
         writemsg_level(msg + '\n')
+        msg = '>>> laymanator sez... "Hasta la add ya, baby!"'
+        self.logger(self.xterm_titles, msg)
+        writemsg_level(msg + '\n')
 
         return (exitcode, True)
 
@@ -334,6 +343,9 @@ class PyLayman(SyncBase):
 
         msg = ">>> layman sync succeeded: %(repo)s"\
             % ({'repo': self.repo.name})
+        self.logger(self.xterm_titles, msg)
+        writemsg_level(msg + "\n")
+        msg = '>>> laymanator sez... "Hasta la sync ya, baba!"'
         self.logger(self.xterm_titles, msg)
         writemsg_level(msg + "\n")
 
