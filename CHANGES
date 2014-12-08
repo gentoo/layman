@@ -1,6 +1,26 @@
 CHANGES
 -------
 
+Version 2.2.1 - Release ???
+===========================
+ - Renamed portage sync plugin to laymanator
+ - adds portage sync plugin to setup.py for installation
+ - Completely removes doctest remnants
+ - adds fix that quells initial warning if layman does not see an install.xml file
+ - adds spelling correction on external.py header
+ - modifies remotedb.py to reflect ssl-fetch changes
+ - fixes misuse of .keys() in maker.py causing py3.x compat issues
+ - whitespace cleanup in maker.py
+ - adds skipping of protocol verification if protocol guessing fails in maker.py
+ - fixes undefined xml error in maker.py
+ - adds checks for which archive overlay types to test in external test suite
+ - converts all assertEquals calls to assertEqual (assertEquals will be deprecated)
+ - modifies and improves testing method for external test suite
+ - renames self.overlay to self.overlays in reposconf.py
+ - modifies output message encoding to become indiscriminate on type
+ - changes ssl-fetch kwargs-info level to 5 to limit verbosity
+ - modifies checking for sync plugin name to reflect new name in reposconf.py
+
 Version 2.2.0 - Release 2014-09-28
 ==================================
  - man page updates
