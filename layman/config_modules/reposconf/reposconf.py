@@ -27,7 +27,7 @@ except:
     import ConfigParser
 
 try:
-    from portage.sync.modules import layman_
+    from portage.sync.modules import laymanator
     sync_type = "layman"
 except ImportError:
     sync_type = None
