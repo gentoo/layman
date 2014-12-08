@@ -26,6 +26,10 @@ SELECTABLE = {
 
 use_defaults = ' '.join(list(SELECTABLE))
 
+SYNC_PLUGINS = {
+    'sync-plugin-portage': 'layman.laymanator',
+}
+
 # get the USE from the environment, default to all selectable modules
 # split them so we don't get substring matches
 USE = os.environ.get("USE", use_defaults).split()
@@ -40,6 +44,9 @@ for mod in sorted(SELECTABLE):
     if mod in USE:
         modules.append('layman.overlays.modules.%s' % SELECTABLE[mod])
 
+for plugin in sorted(SYNC_PLUGINS):
+    if plugin in USE:
+        modules.append(SYNC_PLUGIN)
 
 setup(name          = 'layman',
       version       = VERSION,
