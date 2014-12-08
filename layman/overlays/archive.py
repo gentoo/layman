@@ -50,7 +50,8 @@ class ArchiveOverlay(OverlaySource):
             connector_output = {
                 'info': self.output.debug,
                 'error': self.output.error,
-                'kwargs-info': {'level': 2},
+                'kwargs-info': {'level': 5},
+                'kwargs-debug': {'level': 2},
                 'kwargs-error': {'level': None},
             }
 
