@@ -141,6 +141,7 @@ class Layman(SyncBase):
         emerge_config = self.options.get('emerge_config', None)
         portdb = self.options.get('portdb', None)
         args = []
+
         msg = '>>> Starting layman sync for %(repo)s...'\
             % ({'repo': self.repo.name})
         self.logger(self.xterm_titles, msg)
@@ -159,13 +160,18 @@ class Layman(SyncBase):
         exitcode = portage.process.spawn_bash("%(command)s" % \
             ({'command': command}),
             **portage._native_kwargs(self.spawn_kwargs))
+
         if exitcode != os.EX_OK:
-            msg = "!!! layman sync error in %(repo)s"\
-                % ({'repo': self.repo.name})
-            self.logger(self.xterm_titles, msg)
-            writemsg_level(msg + "\n", level=logging.ERROR, noiselevel=-1)
-            overlay = create_overlay(repo=self.repo, logger=self.logger, xterm_titles=self.xterm_titles)
-            return (exitcode, False)
+            exitcode = self.new()[0]
+            if exitcode != os.EX_OK:
+                msg = "!!! layman sync error in %(repo)s"\
+                    % ({'repo': self.repo.name})
+                self.logger(self.xterm_titles, msg)
+                writemsg_level(msg + "\n", level=logging.ERROR, noiselevel=-1)
+                return (exitcode, False)
+            else:
+                return (exitcode, True)
+
         msg = ">>> layman sync succeeded: %(repo)s"\
             % ({'repo': self.repo.name})
         self.logger(self.xterm_titles, msg)
