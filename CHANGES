@@ -1,7 +1,7 @@
 CHANGES
 -------
 
-Version 2.2.1 - Release ???
+Version 2.3.0 - Release ???
 ===========================
  - Renamed portage sync plugin to laymanator
  - adds portage sync plugin to setup.py for installation
