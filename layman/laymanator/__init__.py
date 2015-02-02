@@ -10,21 +10,12 @@ import os
 from portage.sync.config_checks import CheckSyncConfig
 
 
-DEFAULT_CLASS = 'Layman'
-AVAILABLE_CLASSES = [ 'Layman',  'PyLayman']
-options = {'1': 'Layman', '2': 'PyLayman'}
-
-
-config_class = DEFAULT_CLASS
 try:
-    test_param = os.environ["TESTIT"]
-    if str(test_param) in options:
-        config_class = options[test_param]
-except KeyError:
-    pass
+    import layman
+    config_class = 'PyLayman'
+except ImportError:
+    config_class = 'Layman'
 
-
-print("Using config class: " + config_class)
 
 module_spec = {
     'name': 'laymanator',
