@@ -28,7 +28,7 @@ except:
 
 try:
     from portage.sync.modules import laymanator
-    sync_type = "layman"
+    sync_type = "laymanator"
 except ImportError:
     sync_type = None
 
