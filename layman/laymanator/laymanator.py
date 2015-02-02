@@ -19,7 +19,7 @@ from portage.output import create_color_func
 good = create_color_func("GOOD")
 bad = create_color_func("BAD")
 warn = create_color_func("WARN")
-from portage.sync.syncbase import SyncBase
+from portage.sync.syncbase import NewBase
 
 import sys
 
@@ -58,7 +58,7 @@ def create_overlay_package(config=None, repo=None, logger=None, xterm_titles=Non
     return None
 
 
-class Layman(SyncBase):
+class Layman(NewBase):
     '''
     Layman sync class which makes use of a subprocess call to
     execute desired layman actions.
@@ -77,7 +77,7 @@ class Layman(SyncBase):
 
 
     def __init__(self):
-        SyncBase.__init__(self, 'layman', 'app-portage/layman')
+        NewBase.__init__(self, 'layman', 'app-portage/layman')
 
 
     def _get_optargs(self, args):
@@ -136,7 +136,7 @@ class Layman(SyncBase):
         return (exitcode, True)
 
 
-    def _sync(self):
+    def update(self):
         ''' Update existing repository'''
         emerge_config = self.options.get('emerge_config', None)
         portdb = self.options.get('portdb', None)
@@ -183,7 +183,7 @@ class Layman(SyncBase):
         return (exitcode, True)
 
 
-class PyLayman(SyncBase):
+class PyLayman(NewBase):
     '''
     Layman sync class which makes use of layman's modules to
     perform desired actions.
@@ -201,7 +201,7 @@ class PyLayman(SyncBase):
         return "Layman"
 
     def __init__(self):
-        SyncBase.__init__(self, 'layman', 'app-portage/layman')
+        NewBase.__init__(self, 'layman', 'app-portage/layman')
 
         self._layman = None
         self.storage = ''
@@ -321,7 +321,7 @@ class PyLayman(SyncBase):
 
         return (exitcode, True)
 
-    def _sync(self):
+    def update(self):
         ''' Update existing repository'''
         layman_inst = self._get_layman_api()
 
