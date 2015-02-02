@@ -27,11 +27,11 @@ except KeyError:
 print("Using config class: " + config_class)
 
 module_spec = {
-    'name': 'layman',
+    'name': 'laymanator',
     'description': __doc__,
     'provides':{
         'layman-module': {
-            'name': 'layman',
+            'name': 'laymanator',
             'class': config_class,
             'description': __doc__,
             'functions': ['sync', 'new', 'exists'],
