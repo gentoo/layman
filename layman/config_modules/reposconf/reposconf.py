@@ -8,7 +8,7 @@
 #             Handles modifications to /etc/portage/repos.conf/layman.conf
 #
 # Copyright:
-#             (c) 2014 Devan Franchini
+#             (c) 2015 Devan Franchini
 #             Distributed under the terms of the GNU General Public License v2
 #
 # Author(s):
@@ -41,7 +41,7 @@ class ConfigHandler:
         
         self.config = config
         self.output = config['output']
-        self.overlays = {}
+        self.overlays = overlays
         self.path = config['repos_conf']
         self.storage = config['storage']
 
