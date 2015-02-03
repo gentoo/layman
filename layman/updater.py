@@ -133,9 +133,6 @@ class Main(object):
 
 
     def print_instructions(self):
-        make_conf = '/etc/portage/make.conf'
-        if not os.access(make_conf, os.F_OK):
-            make_conf = '/etc/make.conf'
         messages = [
             "You are now ready to add overlays into your system.",
             "",
@@ -146,19 +143,23 @@ class Main(object):
             "Select an overlay and add it using",
             "",
             "  layman -a overlay-name",
-            "",
-            "If this is the very first overlay you add with layman,",
-            "you need to append the following statement to your",
-            "%s file:" %make_conf,
-            "",
-            "  source /var/lib/layman/make.conf",
-            "",
-            "If you modify the 'storage' parameter in the layman",
-            "configuration file (/etc/layman/layman.cfg) you will",
-            "need to adapt the path given above to the new storage",
-            "directory.",
-            "",
-        ]
+            "",]
+        if 'make.conf' in self.config['conf_type']:
+            make_conf = '/etc/portage/make.conf'
+            if not os.access(make_conf, os.F_OK):
+                make_conf = '/etc/make.conf'
+            message += [
+                "If this is the very first overlay you add with layman,",
+                "you need to append the following statement to your",
+                "%s file:" % make_conf,
+                "",
+                "  source /var/lib/layman/make.conf",
+                "",
+                "If you modify the 'storage' parameter in the layman",
+                "configuration file (/etc/layman/layman.cfg) you will",
+                "need to adapt the path given above to the new storage",
+                "directory.",
+                "",]
 
         for message in messages:
             self.output.info("  " + message)
