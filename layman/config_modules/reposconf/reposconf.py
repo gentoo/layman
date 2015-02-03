@@ -19,10 +19,10 @@ import os
 import subprocess
 import time
 
-try:
+if sys.hexversion >= 0x3000000:
     # Import for Python3
     import configparser as ConfigParser
-except:
+else:
     # Import for Python2
     import ConfigParser
 

@@ -30,10 +30,10 @@ __version__ = "0.2"
 import sys
 import os
 
-try:
+if sys.hexversion >= 0x3000000:
     # Import for Python3
     import configparser as ConfigParser
-except:
+else:
     # Import for Python2
     import ConfigParser
 
