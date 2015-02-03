@@ -5,6 +5,7 @@ import sys
 
 from distutils.core import setup
 
+
 # this affects the names of all the directories we do stuff with
 sys.path.insert(0, './')
 from layman.version import VERSION
@@ -27,7 +28,7 @@ SELECTABLE = {
 use_defaults = ' '.join(list(SELECTABLE))
 
 SYNC_PLUGINS = {
-    'sync-plugin-portage': 'layman.laymanator',
+    'sync-plugin-portage': 'portage.sync.modules.laymansync',
 }
 
 # get the USE from the environment, default to all selectable modules
