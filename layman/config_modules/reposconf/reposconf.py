@@ -116,46 +116,22 @@ class ConfigHandler:
 
     def disable(self, overlay):
         '''
-        Disables a repos.conf entry.
+        A wrapper for the delete() function to comply with RepoConfManager class.
 
         @param overlay: layman.overlay.Overlay instance.
         @rtype boolean: reflects a successful/failed write to the config file.
         '''
-        if not self.repo_conf.has_section(overlay.name):
-            self.output.error('ReposConf: ConfigHandler.disable(); failed '\
-                              'to disable "%(repo)s". Section does not exist.'\
-                              % ({'repo': overlay.name}))
-            return False
-        self.repo_conf.remove_section(overlay.name)
-        current_date = time.strftime('%x') + ' | ' + time.strftime('%X')
-
-        self.repo_conf.add_section(overlay.name)
-        self.repo_conf.set(overlay.name, '#date disabled', current_date)
-        self.repo_conf.set(overlay.name, '#priority', str(overlay.priority))
-        self.repo_conf.set(overlay.name, '#location', path((self.storage, overlay.name)))
-        self.repo_conf.set(overlay.name, '#layman-type', overlay.sources[0].type_key)
-        if sync_type:
-            self.repo_conf.set(overlay.name, '#sync_type', sync_type)
-            self.repo_conf.set(overlay.name, '#sync-uri', overlay.sources[0].src)
-        if overlay.sources[0].branch:
-            self.repo_conf.set(overlay.name, '#branch', overlay.sources[0].branch)
-        if sync_type:
-            self.repo_conf.set(overlay.name, '#auto-sync', self.config['auto_sync'])
-
-        return self.write(disable=overlay.name)
+        return self.delete(overlay)
 
 
     def enable(self, overlay):
         '''
-        Enables a disabled repos.conf entry.
+        A wrapper for the add() function to comply with RepoConfManager class.
 
         @param overlay: layman.overlay.Overlay instance.
         @rtype boolean: reflects a successful/failed write to the config file.
         '''
-        self.repo_conf.remove_section(overlay.name)
-        success = self.add(overlay)
-
-        return success
+        return self.add(overlay)
 
 
     def update(self, overlay):
@@ -170,11 +146,11 @@ class ConfigHandler:
         return self.write()
 
 
-    def write(self, delete=None, disable=None):
+    def write(self, delete=None):
         '''
         Writes changes from ConfigParser to /etc/portage/repos.conf/layman.conf.
 
-        @params disable: overlay name to be disabled.
+        @params delete: overlay name to be delete from the config.
         @return boolean: represents a successful write.
         '''
         try:
@@ -186,10 +162,6 @@ class ConfigHandler:
                         if not i == delete:
                             self.add(self.overlays[i])
                 self.repo_conf.write(laymanconf)
-            if disable:
-                # comments out section header of the overlay.
-                subprocess.call(['sed', '-i', 's/^\[%(ovl)s\]/#[%(ovl)s]/'\
-                                 % {'ovl': disable}, self.path])
             return True
         except IOError as error:
             self.output.error('ReposConf: ConfigHandler.write(); Failed to write "'\
