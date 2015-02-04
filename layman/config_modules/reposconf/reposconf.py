@@ -95,7 +95,8 @@ class ConfigHandler:
             self.repo_conf.set(overlay.name, 'sync-uri', overlay.sources[0].src)
         if overlay.sources[0].branch:
             self.repo_conf.set(overlay.name, 'branch', overlay.sources[0].branch)
-        self.repo_conf.set(overlay.name, 'auto-sync', self.config['auto_sync'])
+        if sync_type: #To maintain a desired structure, we have to do this check twice.
+            self.repo_conf.set(overlay.name, 'auto-sync', self.config['auto_sync'])
 
         return self.write()
 
@@ -132,7 +133,8 @@ class ConfigHandler:
         self.repo_conf.set(overlay.name, '#priority', str(overlay.priority))
         self.repo_conf.set(overlay.name, '#location', path((self.storage, overlay.name)))
         self.repo_conf.set(overlay.name, '#sync-uri', overlay.sources[0].src)
-        self.repo_conf.set(overlay.name, '#auto-sync', self.config['auto_sync'])
+        if sync_type:
+            self.repo_conf.set(overlay.name, '#auto-sync', self.config['auto_sync'])
 
         return self.write(disable=overlay.name)
 
