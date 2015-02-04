@@ -13,6 +13,7 @@ from portage.sync.config_checks import CheckSyncConfig
 try:
     import layman
     config_class = 'PyLayman'
+    del layman
 except ImportError:
     config_class = 'Layman'
 
