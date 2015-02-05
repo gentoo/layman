@@ -93,10 +93,10 @@ class Main(object):
         print_instructions = False
         if isinstance(self.config['conf_type'], STR):
             self.config.set_option('conf_type',
-                                   self.config['conf_type'].strip('\s').split(','))
+                                   self.config['conf_type'].split(','))
         for i in self.config['conf_type']:
-            conf = i.replace('.', '_')
-            if not os.access(self.config[conf], os.F_OK):
+            conf = i.replace('.', '_').strip()
+            if conf and not os.access(self.config[conf], os.F_OK):
                 getattr(self, 'create_%(conf)s' % {'conf': conf})()
                 print_instructions = True
         if print_instructions:
