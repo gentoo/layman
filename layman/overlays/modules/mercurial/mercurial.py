@@ -28,7 +28,6 @@ __version__ = "$Id: mercurial.py 236 2006-09-05 20:39:37Z wrobel $"
 #-------------------------------------------------------------------------------
 
 import re
-import xml.etree.ElementTree as ET
 
 from   layman.utils             import path, run_command
 from   layman.overlays.source   import OverlaySource, require_supported
@@ -91,7 +90,7 @@ class MercurialOverlay(OverlaySource):
     def update(self, base, src):
         '''
         Updates overlay src-url.
-        
+
         @params base: base location where all overlays are installed.
         @params src: source URL.
         '''

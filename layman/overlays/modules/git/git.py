@@ -26,8 +26,6 @@ __version__ = "$Id: git.py 146 2006-05-27 09:52:36Z wrobel $"
 #
 #-------------------------------------------------------------------------------
 
-import xml.etree.ElementTree as ET
-
 from   layman.utils             import path, run_command
 from   layman.overlays.source   import OverlaySource, require_supported
 
@@ -110,7 +108,7 @@ class GitOverlay(OverlaySource):
     def update(self, base, src):
         '''
         Update overlay src-url
-        
+
         @params base: base location where all overlays are installed.
         @params src:  source URL.
         '''

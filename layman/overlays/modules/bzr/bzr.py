@@ -58,7 +58,7 @@ class BzrOverlay(OverlaySource):
         if source.endswith("/"):
             return source
         return source + '/'
-    
+
     def add(self, base):
         '''Add overlay.'''
 
@@ -82,7 +82,7 @@ class BzrOverlay(OverlaySource):
     def update(self, base, src):
         '''
         Updates overlay src-url.
-        
+
         @params base: base location where all overlays are installed.
         @params src: source URL.
         '''
