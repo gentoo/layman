@@ -29,9 +29,9 @@ else:
 
 try:
     from portage.sync.modules import laymanator
-    sync_type = "laymanator"
+    SYNC_TYPE = "laymanator"
 except ImportError:
-    sync_type = None
+    SYNC_TYPE = None
 
 from   layman.compatibility  import fileopen
 from   layman.utils          import path
@@ -91,12 +91,12 @@ class ConfigHandler:
         self.repo_conf.set(overlay.name, 'priority', str(overlay.priority))
         self.repo_conf.set(overlay.name, 'location', path((self.storage, overlay.name)))
         self.repo_conf.set(overlay.name, 'layman-type', overlay.sources[0].type_key)
-        if sync_type:
-            self.repo_conf.set(overlay.name, 'sync-type', sync_type)
+        if SYNC_TYPE:
+            self.repo_conf.set(overlay.name, 'sync-type', SYNC_TYPE)
             self.repo_conf.set(overlay.name, 'sync-uri', overlay.sources[0].src)
         if overlay.sources[0].branch:
             self.repo_conf.set(overlay.name, 'branch', overlay.sources[0].branch)
-        if sync_type: #To maintain a desired structure, we have to do this check twice.
+        if SYNC_TYPE: #To maintain a desired structure, we have to do this check twice.
             self.repo_conf.set(overlay.name, 'auto-sync', self.config['auto_sync'])
         else:
             self.repo_conf.set(overlay.name, 'auto-sync', 'No')
