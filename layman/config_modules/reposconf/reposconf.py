@@ -98,6 +98,8 @@ class ConfigHandler:
             self.repo_conf.set(overlay.name, 'branch', overlay.sources[0].branch)
         if sync_type: #To maintain a desired structure, we have to do this check twice.
             self.repo_conf.set(overlay.name, 'auto-sync', self.config['auto_sync'])
+        else:
+            self.repo_conf.set(overlay.name, 'auto-sync', 'No')
 
         return self.write()
 
