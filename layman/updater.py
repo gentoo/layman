@@ -93,7 +93,7 @@ class Main(object):
         print_instructions = False
         if isinstance(self.config['conf_type'], STR):
             self.config.set_option('conf_type',
-                                   self.config['conf_type'].split(', '))
+                                   self.config['conf_type'].strip('\s').split(','))
         for i in self.config['conf_type']:
             conf = i.replace('.', '_')
             if not os.access(self.config[conf], os.F_OK):
