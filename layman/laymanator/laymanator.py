@@ -351,7 +351,7 @@ class PyLayman(NewBase):
             % ({'repo': self.repo.name})
         self.logger(self.xterm_titles, msg)
         writemsg_level(msg + "\n")
-        msg = '>>> laymanator sez... "Hasta la sync ya, baba!"'
+        msg = '>>> laymanator sez... "Hasta la sync ya, baby!"'
         self.logger(self.xterm_titles, msg)
         writemsg_level(msg + "\n")
 
