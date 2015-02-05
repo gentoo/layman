@@ -148,7 +148,7 @@ class Main(object):
             make_conf = '/etc/portage/make.conf'
             if not os.access(make_conf, os.F_OK):
                 make_conf = '/etc/make.conf'
-            message += [
+            messages += [
                 "If this is the very first overlay you add with layman,",
                 "you need to append the following statement to your",
                 "%s file:" % make_conf,
