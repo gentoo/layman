@@ -75,7 +75,7 @@ class GitOverlay(OverlaySource):
         if self.config['quiet']:
             args.append('-q')
         if len(cfg_opts):
-            args.append(cfg_opts)
+            args.extend(cfg_opts.split())
         args.append(self._fix_git_source(self.src))
         args.append(target)
 
@@ -137,7 +137,7 @@ class GitOverlay(OverlaySource):
         if self.config['quiet']:
             args.append('-q')
         if len(cfg_opts):
-            args.append(cfg_opts)
+            args.extend(cfg_opts.split())
 
         return self.postsync(
             run_command(self.config, self.command(), args, cwd=target,

@@ -80,7 +80,7 @@ class SvnOverlay(OverlaySource):
         if self.config['quiet']:
             args.append('-q')
         if len(cfg_opts):
-            args.append(cfg_opts)
+            args.extend(cfg_opts.split())
 
         src = self._fix_svn_source(self.src)
         args.append(src)
@@ -135,7 +135,7 @@ class SvnOverlay(OverlaySource):
         if self.config['quiet']:
             args.append('-q')
         if len(cfg_opts):
-            args.append(cfg_opts)
+            args.extend(cfg_opts.split())
         args.append(self.target)
 
         return self.postsync(

@@ -76,7 +76,7 @@ class MercurialOverlay(OverlaySource):
 
         # hg clone SOURCE TARGET
         if len(cfg_opts):
-            args = ['clone', cfg_opts, src, target]
+            args = ['clone'] + cfg_opts.split() + [src, target]
         else:
             args = ['clone', src, target]
 
@@ -123,7 +123,7 @@ class MercurialOverlay(OverlaySource):
 
         # hg pull -u SOURCE
         if len(cfg_opts):
-            args = ['pull', '-u', cfg_opts, self.src]
+            args = ['pull', '-u'] + cfg_opts.split() + [self.src]
         else:
             args = ['pull', '-u', self.src]
 
