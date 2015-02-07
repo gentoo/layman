@@ -55,12 +55,19 @@ setup(name          = 'layman',
       author        = 'Brian Dolbec, Gunnar Wrobel (original author retired)',
       author_email  = 'dolsen@gentoo',
       url           = 'http://layman.sourceforge.net/, ' +\
+setup(
+    name          = 'layman',
+    version       = VERSION,
+    description   = 'Python script for retrieving gentoo overlays',
+    author        = 'Brian Dolbec, Gunnar Wrobel (original author retired)',
+    author_email  = 'dolsen@gentoo',
+    url           = 'http://layman.sourceforge.net/, ' +\
         'http://git.overlays.gentoo.org/gitweb/?p=proj/layman.git;a=summary',
-      packages      = ['layman', 'layman.config_modules',
+    packages      = ['layman', 'layman.config_modules',
         'layman.config_modules.makeconf', 'layman.config_modules.reposconf',
         'layman.overlays', 'layman.overlays.modules',
         ] + modules,
-      scripts       = ['bin/layman', 'bin/layman-overlay-maker',
+    scripts       = ['bin/layman', 'bin/layman-overlay-maker',
                        'bin/layman-mounter', 'bin/layman-updater'],
-      license       = 'GPL',
-      )
+    license       = 'GPL',
+    )
