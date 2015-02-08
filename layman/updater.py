@@ -57,6 +57,8 @@ class Main(object):
             help = 'Print the NEW INSTALL help messages.')
         self.parser.add_argument("-c", "--config",
             help='the path to config file')
+        self.parser.add_argument("-R", "--rebuild", action='store_true',
+            help='rebuild the Pacakge Manager config file')
         self.parser.add_argument('--version', action='version',
             version='%(prog)s ' + VERSION)
 
@@ -85,18 +87,18 @@ class Main(object):
 
         if self.args.setup_help:
             self.print_instructions()
-        elif not self.check_is_new():
+        elif not self.check_is_new(self.args.rebuild):
             self.rename_check()
 
 
-    def check_is_new(self):
+    def check_is_new(self, rebuild=False):
         print_instructions = False
         if isinstance(self.config['conf_type'], STR):
             self.config.set_option('conf_type',
                                    self.config['conf_type'].split(','))
         for i in self.config['conf_type']:
             conf = i.replace('.', '_').strip()
-            if conf and not os.access(self.config[conf], os.F_OK):
+            if conf and (rebuild or not os.access(self.config[conf], os.F_OK)):
                 getattr(self, 'create_%(conf)s' % {'conf': conf})()
                 print_instructions = True
         if print_instructions:
