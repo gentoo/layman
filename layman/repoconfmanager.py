@@ -16,10 +16,9 @@
 #
 
 import os
-import re
 import sys
 
-from layman.module import Modules, InvalidModuleName
+from layman.module import Modules
 
 if sys.hexversion >= 0x30200f0:
     STR = str
@@ -104,7 +103,7 @@ class RepoConfManager:
                 conf_ok = conf.disable(overlay)
             return conf_ok
         return True
-                                                                                                                                                
+
 
     def enable(self, overlay):
         '''
@@ -123,11 +122,11 @@ class RepoConfManager:
             return conf_ok
         return True
 
-    
+
     def update(self, overlay):
         '''
         Updates the source URL for the specified config type(s).
-    
+
         @param overlay: layman.overlay.Overlay instance.
         @return boolean: represents success or failure.
         '''
