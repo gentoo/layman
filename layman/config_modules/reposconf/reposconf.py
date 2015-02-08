@@ -40,7 +40,7 @@ from   layman.utils          import path
 class ConfigHandler:
 
     def __init__(self, config, overlays):
-        
+
         self.config = config
         self.output = config['output']
         self.overlays = overlays
@@ -58,7 +58,7 @@ class ConfigHandler:
         '''
         try:
             read_files = config.read(self.path)
-                
+
             if not read_files:
                 self.output.warn("Warning, not able to parse config file: %(path)s"\
                     % ({'path':self.path}))
@@ -161,7 +161,7 @@ class ConfigHandler:
                 # If the repos.conf is empty check to see if we can write
                 # all the overlays to the file.
                 if not self.repo_conf.sections():
-                    for i in self.overlays:
+                    for i in sorted(self.overlays):
                         if not i == delete:
                             self.add(self.overlays[i])
                 self.repo_conf.write(laymanconf)
