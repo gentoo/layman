@@ -3,7 +3,7 @@ CHANGES
 
 Version 2.3.0 - Release ???
 ===========================
- - Renamed portage sync plugin to laymanator
+ - Renamed portage sync plugin to laymansync
  - adds portage sync plugin to setup.py for installation
  - Completely removes doctest remnants
  - adds fix that quells initial warning if layman does not see an install.xml file
@@ -20,6 +20,8 @@ Version 2.3.0 - Release ???
  - modifies output message encoding to become indiscriminate on type
  - changes ssl-fetch kwargs-info level to 5 to limit verbosity
  - modifies checking for sync plugin name to reflect new name in reposconf.py
+ - layman-updater updates for better repos.conf migration
+
 
 Version 2.2.0 - Release 2014-09-28
 ==================================
