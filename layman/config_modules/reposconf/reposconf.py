@@ -28,8 +28,9 @@ else:
     import ConfigParser
 
 try:
-    from portage.sync.modules import laymanator
-    SYNC_TYPE = "laymanator"
+    from portage.sync.modules import laymansync
+    SYNC_TYPE = "laymansync"
+    del laymansync
 except ImportError:
     SYNC_TYPE = None
 
