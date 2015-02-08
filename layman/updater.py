@@ -169,10 +169,14 @@ class Main(object):
 
     def create_make_conf(self):
         self.output.info("  Creating layman's make.conf file")
+        layman_inst = LaymanAPI(config=self.config)
+        overlays = {}
+        for ovl in layman_inst.get_installed():
+            overlays[ovl] = layman_inst._get_installed_db().select(ovl)
         # create layman's %(storage)s/make.conf
         # so portage won't error
         from layman.config_modules.makeconf.makeconf import ConfigHandler
-        maker = ConfigHandler(self.config, None)
+        maker = ConfigHandler(self.config, overlays)
         maker.write()
 
 
