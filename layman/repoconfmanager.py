@@ -42,7 +42,7 @@ class RepoConfManager:
                                          output=self.output)
 
         if isinstance(self.conf_types, STR):
-            self.conf_types = re.split(',\s+', self.conf_types)
+            self.conf_types = [x.strip() for x in self.conf_types.split(',')]
 
         if not self.conf_types and self.config['require_repoconfig']:
             self.output.error('No Repo configuration type found, but'
