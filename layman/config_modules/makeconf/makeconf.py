@@ -255,7 +255,7 @@ class ConfigHandler:
                         self.extra.append(o)
 
         else:
-            self.overlays = []
+            self.overlays = [self.db[i] for i in self.db]
             self.data     = 'PORTDIR_OVERLAY="\n"\n'
 
         self.extra = [i for i in self.extra
