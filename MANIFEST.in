@@ -12,3 +12,4 @@ include doc/layman.8
 include doc/layman.8.html
 include doc/layman.8.txt
 recursive-include layman/tests *
+recursive-include pm_plugins *

@@ -64,8 +64,7 @@ class DarcsOverlay(OverlaySource):
 
         # darcs get --partial SOURCE TARGET
         if len(cfg_opts):
-            args = ['get', '--partial', cfg_opts,
-                src, target]
+            args = ['get', '--partial'] + cfg_opts.split() + [src, target]
         else:
             args = ['get', '--partial',
                 src, target]
@@ -85,7 +84,7 @@ class DarcsOverlay(OverlaySource):
 
         # darcs pull --all SOURCE
         if len(cfg_opts):
-            args = ['pull', '--all', cfg_opts, self.src]
+            args = ['pull', '--all'] + cfg_opts.split() + [self.src]
         else:
             args = ['pull', '--all', self.src]
         return self.postsync(

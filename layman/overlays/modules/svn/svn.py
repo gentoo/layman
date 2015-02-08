@@ -21,7 +21,6 @@ from __future__ import unicode_literals
 __version__ = "$Id: svn.py 236 2006-09-05 20:39:37Z wrobel $"
 
 
-import os
 import sys
 from subprocess import PIPE, Popen
 
@@ -80,7 +79,7 @@ class SvnOverlay(OverlaySource):
         if self.config['quiet']:
             args.append('-q')
         if len(cfg_opts):
-            args.append(cfg_opts)
+            args.extend(cfg_opts.split())
 
         src = self._fix_svn_source(self.src)
         args.append(src)
@@ -93,7 +92,7 @@ class SvnOverlay(OverlaySource):
     def update(self, base, src):
         '''
         Update overlay src-url
-        
+
         @params base: base location where all overlays are installed.
         @params src: source URL.
         '''
@@ -135,7 +134,7 @@ class SvnOverlay(OverlaySource):
         if self.config['quiet']:
             args.append('-q')
         if len(cfg_opts):
-            args.append(cfg_opts)
+            args.extend(cfg_opts.split())
         args.append(self.target)
 
         return self.postsync(

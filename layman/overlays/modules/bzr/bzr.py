@@ -58,7 +58,7 @@ class BzrOverlay(OverlaySource):
         if source.endswith("/"):
             return source
         return source + '/'
-    
+
     def add(self, base):
         '''Add overlay.'''
 
@@ -72,8 +72,7 @@ class BzrOverlay(OverlaySource):
 
         # bzr get SOURCE TARGET
         if len(cfg_opts):
-            args = ['branch', cfg_opts,
-                src, target]
+            args = ['branch'] + cfg_opts.split() + [src, target]
         else:
             args = ['branch', src, target]
         return self.postsync(
@@ -83,7 +82,7 @@ class BzrOverlay(OverlaySource):
     def update(self, base, src):
         '''
         Updates overlay src-url.
-        
+
         @params base: base location where all overlays are installed.
         @params src: source URL.
         '''
@@ -112,7 +111,7 @@ class BzrOverlay(OverlaySource):
 
         # bzr pull --overwrite SOURCE
         if len(cfg_opts):
-            args = ['pull', cfg_opts, '--overwrite', self.src]
+            args = ['pull'] + cfg_opts.split() + ['--overwrite', self.src]
         else:
             args = ['pull', '--overwrite', self.src]
         return self.postsync(

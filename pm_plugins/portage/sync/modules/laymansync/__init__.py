@@ -19,11 +19,11 @@ except ImportError:
 
 
 module_spec = {
-    'name': 'laymanator',
+    'name': 'laymansync',
     'description': __doc__,
     'provides':{
         'layman-module': {
-            'name': 'laymanator',
+            'name': 'laymansync',
             'class': config_class,
             'description': __doc__,
             'functions': ['sync', 'new', 'exists'],

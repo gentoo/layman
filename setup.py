@@ -3,7 +3,9 @@
 import os
 import sys
 
-from distutils.core import setup
+from distutils.core import setup, Command
+from distutils.dir_util import copy_tree
+
 
 # this affects the names of all the directories we do stuff with
 sys.path.insert(0, './')
@@ -27,7 +29,7 @@ SELECTABLE = {
 use_defaults = ' '.join(list(SELECTABLE))
 
 SYNC_PLUGINS = {
-    'sync-plugin-portage': 'layman.laymanator',
+    'sync-plugin-portage': 'portage.sync.modules.laymansync',
 }
 
 # get the USE from the environment, default to all selectable modules
@@ -46,20 +48,48 @@ for mod in sorted(SELECTABLE):
 
 for plugin in sorted(SYNC_PLUGINS):
     if plugin in USE:
-        modules.append(SYNC_PLUGIN)
+        modules.append(SYNC_PLUGINS[plugin])
 
-setup(name          = 'layman',
-      version       = VERSION,
-      description   = 'Python script for retrieving gentoo overlays',
-      author        = 'Brian Dolbec, Gunnar Wrobel (original author retired)',
-      author_email  = 'dolsen@gentoo',
-      url           = 'http://layman.sourceforge.net/, ' +\
+
+class setup_plugins(Command):
+    """ Perform moves for the plugins into base namespace
+    so they can be installed. """
+
+    user_options = [
+    ]
+
+    def initialize_options(self):
+        self.build_base = None
+
+    def finalize_options(self):
+        self.set_undefined_options('build',
+            ('build_base', 'build_base'))
+
+    def run(self):
+        for plugin in sorted(SYNC_PLUGINS):
+            if plugin in USE:
+                source = os.path.join('pm_plugins',
+                    SYNC_PLUGINS[plugin].split('.')[0])
+                target = SYNC_PLUGINS[plugin].split('.')[0]
+                copy_tree(source, target)
+
+
+setup(
+    name          = 'layman',
+    version       = VERSION,
+    description   = 'Python script for retrieving gentoo overlays',
+    author        = 'Brian Dolbec, Gunnar Wrobel (original author retired)',
+    author_email  = 'dolsen@gentoo',
+    url           = 'http://layman.sourceforge.net/, ' +\
         'http://git.overlays.gentoo.org/gitweb/?p=proj/layman.git;a=summary',
-      packages      = ['layman', 'layman.config_modules',
+    packages      = ['layman', 'layman.config_modules',
         'layman.config_modules.makeconf', 'layman.config_modules.reposconf',
         'layman.overlays', 'layman.overlays.modules',
         ] + modules,
-      scripts       = ['bin/layman', 'bin/layman-overlay-maker',
+    scripts       = ['bin/layman', 'bin/layman-overlay-maker',
                        'bin/layman-mounter', 'bin/layman-updater'],
-      license       = 'GPL',
-      )
+    cmdclass = {
+        'setup_plugins': setup_plugins,
+        },
+    license       = 'GPL',
+    )

@@ -75,7 +75,7 @@ class RsyncOverlay(OverlaySource):
         if self.config['quiet']:
             args.append('-q')
         if len(cfg_opts):
-            args.append(cfg_opts)
+            args.extend(cfg_opts.split())
         args.append(self.src + '/')
         args.append(target)
 

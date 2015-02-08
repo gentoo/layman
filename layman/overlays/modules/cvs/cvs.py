@@ -26,7 +26,6 @@ __version__ = "$Id$"
 #
 #-------------------------------------------------------------------------------
 
-import xml.etree.ElementTree as ET # Python 2.5
 import re
 
 from   layman.utils             import path, run_command
@@ -66,7 +65,7 @@ class CvsOverlay(OverlaySource):
         args.append('co')
         args.append('-d')
         if len(cfg_opts):
-            args.append(cfg_opts)
+            args.extend(cfg_opts.split())
         args.append(self.parent.name)
         args.append(self.branch)
 
@@ -78,16 +77,16 @@ class CvsOverlay(OverlaySource):
     def update(self, base, src):
         '''
         Updates overlay src-url.
-        
+
         @params base: base location where all overlays are installed.
         @params src: source URL.
         '''
-        
+
         if not self.supported():
             return 1
 
         target = path([base, self.parent.name])
-        
+
         # First echo the new repository to CVS/Root
         args = [src, '>', '/CVS/Root']
         result = run_command(self.config, 'echo', args, cmd='echo',
@@ -96,12 +95,12 @@ class CvsOverlay(OverlaySource):
         if result == 0:
             location = src.split(':')[3]
             old_location = self.src.split(':/')[3]
-    
+
             # Check if the repository location needs to be updated too.
             if not location == old_location:
                 location = re.sub('/', '\/', location)
                 old_location = re.sub('/', '\/', old_location)
-                
+
                 expression = 's/' + old_location + '/' + location + '/'
 
                 # sed -i 's/<old_location>/<new_location>/ <target>/CVS/Repository
@@ -110,8 +109,8 @@ class CvsOverlay(OverlaySource):
                 return run_command(self.config, 'sed', args, cmd='sed',
                                    cwd=target)
 
-        return result        
-        
+        return result
+
 
     def sync(self, base):
         '''Sync overlay.'''
@@ -129,7 +128,7 @@ class CvsOverlay(OverlaySource):
         args.append('update')
         args.append('-d')
         if len(cfg_opts):
-            args.append(cfg_opts)
+            args.extend(cfg_opts.split())
         return self.postsync(
             run_command(self.config, self.command(), args, cwd=target,
                         cmd=self.type),

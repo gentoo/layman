@@ -28,7 +28,6 @@ __version__ = "$Id: mercurial.py 236 2006-09-05 20:39:37Z wrobel $"
 #-------------------------------------------------------------------------------
 
 import re
-import xml.etree.ElementTree as ET
 
 from   layman.utils             import path, run_command
 from   layman.overlays.source   import OverlaySource, require_supported
@@ -76,7 +75,7 @@ class MercurialOverlay(OverlaySource):
 
         # hg clone SOURCE TARGET
         if len(cfg_opts):
-            args = ['clone', cfg_opts, src, target]
+            args = ['clone'] + cfg_opts.split() + [src, target]
         else:
             args = ['clone', src, target]
 
@@ -91,7 +90,7 @@ class MercurialOverlay(OverlaySource):
     def update(self, base, src):
         '''
         Updates overlay src-url.
-        
+
         @params base: base location where all overlays are installed.
         @params src: source URL.
         '''
@@ -123,7 +122,7 @@ class MercurialOverlay(OverlaySource):
 
         # hg pull -u SOURCE
         if len(cfg_opts):
-            args = ['pull', '-u', cfg_opts, self.src]
+            args = ['pull', '-u'] + cfg_opts.split() + [self.src]
         else:
             args = ['pull', '-u', self.src]
 
