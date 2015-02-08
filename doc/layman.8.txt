@@ -37,7 +37,7 @@ SYNOPSIS
 
 DESCRIPTION
 -----------
-*layman* is a script that allows you to add, remove, re-add, 
+*layman* is a script that allows you to add, remove, re-add,
 update, disable, and then re-enable Gentoo overlays from a variety
 of sources.
 
@@ -238,7 +238,7 @@ make.conf::
 
 overlays::
     Specifies the URL for the remote list of all available overlays.
-    The default is 'http://www.gentoo.org/proj/en/overlays/repositories.xml'.
+    The default is 'https://api.gentoo.org/overlays/repositories.xml'.
     You can specify several URLs here (one per line). The contents will
     get merged to a single list of overlays. This allows to add a personal
     collection of overlays that are not present in the global list.
@@ -268,7 +268,7 @@ bzr_syncopts::
 cvs_addopts::
 cvs_syncopts::
 ...::
-    These are command options to include in the commands sent to perform
+    These are a space separated list of command options to include in the commands sent to perform
     the desired action.
 
 Per repository type Post Add, Sync hooks.
@@ -278,7 +278,7 @@ cvs_postsync::
 darcs_postsync::
 git_postsync::
 ...::
-    These are commands that are run after each add, sync operation if they
+    These are a space separated list of commands that are run after each add, sync operation if they
     are defined.
 
 *NEW*Repo Configuration options
@@ -292,7 +292,7 @@ allow you to alter particular things regarding the repository configuration::
 -  conf_type::
         Specifies the repo configuration type you wish to use. This can
         be *repos.conf*, *make.conf*, or both separated by a comma. The
-        default value is *make.conf*.
+        default value is *repos.conf*.
 -  require_repoconfig::
         Defines whether a configuration file is needed for the package
         manager or other multi-repository consumer application.
@@ -317,7 +317,7 @@ OVERLAY LISTS
 any configuration files. In order for this to be possible the script
 needs an external list of possible overlay sources. There is a
 centralized list available at
-'http://www.gentoo.org/proj/en/overlays/repositories.xml'
+'https://api.gentoo.org/overlays/repositories.xml'
 but nothing will prevent you from using or publishing your own
 list of overlays. The location of the remote lists can also be
 modified using the *--overlays* option when running *layman*.
@@ -333,7 +333,7 @@ will merge the contents of all lists.
 
 *layman* also allows you to define local files in this list.
 Just make sure you prepend these path names in standard URL notation with 'file://'.
-*layman* also gives you the ability to just add an overlay definition to '/etc/layman/overlays/some-overlay.xml' and it will be automatically available for actions such as 
+*layman* also gives you the ability to just add an overlay definition to '/etc/layman/overlays/some-overlay.xml' and it will be automatically available for actions such as
 add, delete, info...  (see below for file format details)
 
 If you need to use a proxy for access to the Internet, you can use
@@ -411,7 +411,7 @@ ebuilds of that overlay you can simply do so with the
 
 LIST OVERLAYS
 ~~~~~~~~~~~~~
-*layman* provides the *--list* and *--list-local* options to print
+*layman* provides the *-L*, *--list* and *-l*, *--list-local* options to print
 a list of available respectively installed overlays.
 
 Listing will prepend all fully supported overlays with a green
@@ -504,7 +504,7 @@ Users can specify a branch for an overlay, given one actually exists.
 This logic is applicable to CVS overlays as well and the branch variable
 is comparable to specifying a subpath for a CVS repository.
 
-VCS types where the use of "branch" is supported is as follows:: 
+VCS types where the use of "branch" is supported is as follows::
 -  CVS
 -  Squashfs
 -  Tar
@@ -527,7 +527,7 @@ with 'file://'.  *New* is the ability to just add an overlay definition like
 ADDING AN OVERLAY GLOBALLY
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 The global list of overlays used by *layman* lies at
-'http://www.gentoo.org/proj/en/overlays/repositories.xml'.
+'https://api.gentoo.org/overlays/repositories.xml'.
 
 All Gentoo developers have access to this location via CVS and
 can modify the list of overlays.
