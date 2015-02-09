@@ -182,6 +182,16 @@ class Main(object):
 
     def create_repos_conf(self):
         self.output.info("  Creating layman's repos.conf file")
+        conf_dir = os.path.dirname(self.config['repos_conf'])
+
+        if not os.path.isdir(conf_dir):
+            try:
+                os.mkdir(conf_dir)
+            except OSError as e:
+                self.output.error('  create_repos_conf() error creating %s: ' % conf_dir)
+                self.output.error('  "%s"' % e)
+                return None
+
         layman_inst = LaymanAPI(config=self.config)
         overlays = {}
         for ovl in layman_inst.get_installed():
