@@ -16,9 +16,7 @@
 #
 
 import os
-import subprocess
 import sys
-import time
 
 if sys.hexversion >= 0x3000000:
     # Import for Python3
