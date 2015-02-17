@@ -46,6 +46,8 @@ class ConfigHandler:
         self.overlays = overlays
         self.path = config['repos_conf']
         self.storage = config['storage']
+        self.repo_config = None
+        self.rebuild = False
 
         self.read()
 
@@ -73,21 +75,33 @@ class ConfigHandler:
         Reads the repos.conf config file from
         /etc/portage/repos.conf/layman.conf
         '''
+        self.repo_conf = ConfigParser.ConfigParser()
         if os.path.isfile(self.path):
-            self.repo_conf = ConfigParser.ConfigParser()
             self._read_config(self.repo_conf)
         else:
-            self.output.error('ReposConf: ConfigHandler.read(); Failed to read "'\
+            self.output.warn('ReposConf: ConfigHandler.read(); Failed to read "'\
                 '%(path)s".\nFile not found.' % ({'path': self.path}))
+            target_dir = os.path.split(os.path.realpath(self.path))[0]
+            if not os.path.isdir(target_dir):
+                self.output.info("Creating %s" % target_dir)
+                try:
+                    os.mkdir(target_dir,0o0755)
+                    self.rebuild = True
+                except OSError:
+                    raise
 
 
-    def add(self, overlay):
+    def add(self, overlay, no_write=False):
         '''
         Adds overlay information to the specified config file.
 
         @param overlay: layman.overlay.Overlay instance.
+        @param no_write: boolean default=False usedto prevent circular recursion
+            when add() is called from write()
         @return boolean: reflects a successful/failed write to the config file.
         '''
+        if self.repo_conf and self.repo_conf.has_section(overlay.name):
+            return
         self.repo_conf.add_section(overlay.name)
         self.repo_conf.set(overlay.name, 'priority', str(overlay.priority))
         self.repo_conf.set(overlay.name, 'location', path((self.storage, overlay.name)))
@@ -102,7 +116,9 @@ class ConfigHandler:
         else:
             self.repo_conf.set(overlay.name, 'auto-sync', 'No')
 
-        return self.write()
+        if not no_write:
+            return self.write()
+        return
 
 
     def delete(self, overlay):
@@ -160,11 +176,15 @@ class ConfigHandler:
             with fileopen(self.path, 'w') as laymanconf:
                 # If the repos.conf is empty check to see if we can write
                 # all the overlays to the file.
+                if self.rebuild:
+                    # start over with a fresh instance
+                    self.repo_conf = ConfigParser.ConfigParser()
                 if not self.repo_conf.sections():
                     for i in sorted(self.overlays):
                         if not i == delete:
-                            self.add(self.overlays[i])
+                            self.add(self.overlays[i], no_write=True)
                 self.repo_conf.write(laymanconf)
+                self.rebuild = False
             return True
         except IOError as error:
             self.output.error('ReposConf: ConfigHandler.write(); Failed to write "'\
