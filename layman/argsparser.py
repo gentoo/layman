@@ -262,6 +262,18 @@ class ArgsParser(BareConfig):
                               'available number of columns automatically.')
 
         #-----------------------------------------------------------------
+        # Additional Options
+        etc_opts = self.parser.add_argument_group('<Additional options>')
+
+        etc_opts.add_argument('--protocol_order',
+                              nargs = '+',
+                              help = 'Sets the order in which protocols will '
+                              'be handled if they are present. Will only '
+                              'use the provided protocols when installing '
+                              'overlays')
+
+
+        #-----------------------------------------------------------------
         # Debug Options
 
         #self.output.cli_opts(self.parser)
