@@ -98,7 +98,7 @@ class BareConfig(object):
             'installed': '%(storage)s/installed.xml',
             'auto_sync': 'No',
             'check_official': 'Yes',
-            'conf_type': 'make.conf',
+            'conf_type': 'repos.conf',
             'require_repoconfig': 'Yes',
             'clean_archive': 'yes',
             'make_conf' : '%(storage)s/make.conf',
