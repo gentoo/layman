@@ -162,7 +162,7 @@ class ArgsParser(BareConfig):
                              help = 'Update all overlays.')
 
         #-----------------------------------------------------------------
-        # Additional Options
+        # Path Options
 
         path_opts = self.parser.add_argument_group('<Path options>')
 
