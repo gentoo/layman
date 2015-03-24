@@ -21,6 +21,8 @@ def encode(text, enc="UTF-8"):
 def fileopen(path, mode='r', enc="UTF-8"):
     """py2, py3 compatibility function"""
     try:
+        # Can cause run-time when trying to encode.
+        # See https://bugs.gentoo.org/542804
         if 'b' in mode:
             f = open(path, mode)
         else:
