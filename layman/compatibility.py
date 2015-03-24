@@ -21,7 +21,10 @@ def encode(text, enc="UTF-8"):
 def fileopen(path, mode='r', enc="UTF-8"):
     """py2, py3 compatibility function"""
     try:
-        f = open(path, mode, encoding=enc)
+        if 'b' in mode:
+            f = open(path, mode)
+        else:
+            f = open(path, mode, encoding=enc)
     except TypeError:
         f = open(path, mode)
     return f
