@@ -199,9 +199,6 @@ class Main(object):
                                   % conf_dir)
                 self.output.error('  "%s"' % e)
                 return None
-        else:
-            msg = str(conf_dir) + ' is a directory.'
-            self.output.error('  create_repos_conf() error: %s\n' % msg)
 
         layman_inst = LaymanAPI(config=self.config)
         overlays = {}
