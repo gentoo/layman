@@ -35,6 +35,21 @@ except ImportError:
 from   layman.compatibility  import fileopen
 from   layman.utils          import path
 
+def check_conf_path(conf_path):
+    dirname = os.path.dirname(conf_path)
+    msg     = ''
+
+    if not os.path.isdir(dirname):
+        msg = '%s is not a directory when it should be.' % dirname
+    elif not os.path.isfile(conf_path):
+        msg = '%s is not a file when it should be.' % conf_path
+
+    if msg:
+        raise OSError(msg)
+
+    return conf_path
+
+
 class ConfigHandler:
 
     def __init__(self, config, overlays):
@@ -42,7 +57,7 @@ class ConfigHandler:
         self.config = config
         self.output = config['output']
         self.overlays = overlays
-        self.path = config['repos_conf']
+        self.path = check_conf_path(config['repos_conf'])
         self.storage = config['storage']
         self.repo_config = None
         self.rebuild = False
