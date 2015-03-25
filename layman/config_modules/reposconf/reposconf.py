@@ -41,7 +41,8 @@ def check_conf_path(conf_path):
 
     if not os.path.isdir(dirname):
         msg = '%s is not a directory when it should be.' % dirname
-    elif not os.path.isfile(conf_path):
+    elif (os.access(conf_path, os.R_OK | os.W_OK) and
+          not os.path.isfile(conf_path)):
         msg = '%s is not a file when it should be.' % conf_path
 
     if msg:
