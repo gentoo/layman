@@ -367,6 +367,8 @@ class ArgsParser(BareConfig):
             if self.config.has_option('MAIN', 'protocol_order'):
                 protocol_order = self.config.get('MAIN', 'protocol_order')
             if protocol_order:
+                if not isinstance(protocol_order, list):
+                    protocol_order = [e.strip() for e in protocol_order.split(',')]
                 return protocol_order
 
         if key == 'overlays':
