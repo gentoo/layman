@@ -435,7 +435,7 @@ class Overlay(object):
         if not self.sources or not available_srcs:
             msg = 'Overlay.update() error: overlay "%s" does not support the'\
                   'given protocol(s) %s and cannot be updated.'\
-                  % (self.name, str(self.config['protocol_order'])
+                  % (self.name, str(self.config['protocol_order']))
             self.output.error(msg)
             return 1
 
