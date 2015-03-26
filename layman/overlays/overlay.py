@@ -69,6 +69,29 @@ class Overlay(object):
             self.from_dict(ovl_dict, ignore)
 
 
+    def filter_protocols(self, sources, create_source_func):
+        '''
+        Filters any protocols not specified in self.config['protocol_order']
+        from the overlay's sources.
+        '''
+        _sources = []
+        if not 'protocol_order' in self.config.keys():
+            return [create_source_func(e) for e in sources]
+
+        for e in sources:
+            source = create_source_func(e)
+            for protocol in self.config['protocol_order']:
+                protocol = protocol.lower()
+                #re.search considers "\+" as the literal "+".
+                if protocol == 'git+ssh':
+                    protocol = 'git\+ssh'
+                protocol += '://'
+                if re.search('^' + protocol, source.src):
+                    _sources.append(source)
+
+        return _sources
+
+
     def from_xml(self, xml, ignore):
         """Process an xml overlay definition
         """
@@ -121,7 +144,7 @@ class Overlay(object):
             raise Exception('Overlay from_xml(), "' + self.name + \
                 '" is missing a "source" entry!')
 
-        self.sources = [create_overlay_source(e) for e in _sources]
+        self.sources = self.filter_protocols(_sources, create_overlay_source)
 
         _owner = xml.find('owner')
         if _owner == None:
@@ -231,7 +254,7 @@ class Overlay(object):
             return _class(parent=self, config=self.config,
                 _location=_location, ignore=ignore)
 
-        self.sources = [create_dict_overlay_source(e) for e in _sources]
+        self.sources = self.filter_protocols(_sources, create_dict_overlay_source)
 
         if 'owner_name' in overlay:
             _owner = overlay['owner_name']
@@ -379,6 +402,14 @@ class Overlay(object):
     def add(self, base):
         res = 1
         first_s = True
+
+        if 'protocol_order' in self.config.keys() and not self.sources:
+            msg = 'Overlay.add() error: overlay "%s" does not support any of'\
+                  ' the given\nprotocols %s and cannot be installed.'\
+                  % (self.name, str(self.config['protocol_order']))
+            self.output.error(msg)
+            return 1
+
         for s in self.sources:
             if not first_s:
                 self.output.info("\nTrying next source of listed sources...", 4)
