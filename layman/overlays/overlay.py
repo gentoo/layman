@@ -69,17 +69,16 @@ class Overlay(object):
             self.from_dict(ovl_dict, ignore)
 
 
-    def filter_protocols(self, sources, create_source_func):
+    def filter_protocols(self, sources):
         '''
         Filters any protocols not specified in self.config['protocol_order']
         from the overlay's sources.
         '''
         _sources = []
-        if not 'protocol_order' in self.config.keys():
-            return [create_source_func(e) for e in sources]
+        if not self.config['protocol_order']:
+            return sources
 
-        for e in sources:
-            source = create_source_func(e)
+        for source in sources:
             for protocol in self.config['protocol_order']:
                 protocol = protocol.lower()
                 #re.search considers "\+" as the literal "+".
@@ -144,7 +143,7 @@ class Overlay(object):
             raise Exception('Overlay from_xml(), "' + self.name + \
                 '" is missing a "source" entry!')
 
-        self.sources = self.filter_protocols(_sources, create_overlay_source)
+        self.sources = [create_overlay_source(e) for e in _sources]
 
         _owner = xml.find('owner')
         if _owner == None:
@@ -254,7 +253,7 @@ class Overlay(object):
             return _class(parent=self, config=self.config,
                 _location=_location, ignore=ignore)
 
-        self.sources = self.filter_protocols(_sources, create_dict_overlay_source)
+        self.sources = [create_dict_overlay_source(e) for e in _sources]
 
         if 'owner_name' in overlay:
             _owner = overlay['owner_name']
@@ -403,9 +402,10 @@ class Overlay(object):
         res = 1
         first_s = True
 
-        if 'protocol_order' in self.config.keys() and not self.sources:
-            msg = 'Overlay.add() error: overlay "%s" does not support any of'\
-                  ' the given\nprotocols %s and cannot be installed.'\
+        self.sources = filter_protocols(self.sources)
+        if not self.sources:
+            msg = 'Overlay.add() error: overlay "%s" does not support the'\
+                  ' given\nprotocol(s) %s and cannot be installed.'\
                   % (self.name, str(self.config['protocol_order']))
             self.output.error(msg)
             return 1
@@ -429,6 +429,15 @@ class Overlay(object):
         res = 1
         first_src = True
         result = False
+
+        self.sources = filter_protocols(self.sources)
+        available_srcs = filter_protocols(available_srcs)
+        if not self.sources or not available_srcs:
+            msg = 'Overlay.update() error: overlay "%s" does not support the'\
+                  'given protocol(s) %s and cannot be updated.'\
+                  % (self.name, str(self.config['protocol_order'])
+            self.output.error(msg)
+            return 1
 
         if isinstance(available_srcs, str):
             available_srcs = [available_srcs]
