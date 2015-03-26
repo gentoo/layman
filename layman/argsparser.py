@@ -358,7 +358,17 @@ class ArgsParser(BareConfig):
                 storage = self.options[key]
             if storage:
                 return storage
-                
+
+        if key == 'protocol_order':
+            protocol_order = []
+            if (key in self.options.keys()
+                and not self.options[key] is None):
+                protocol_order = self.options[key]
+            if self.config.has_option('MAIN', 'protocol_order'):
+                protocol_order = self.config.get('MAIN', 'protocol_order')
+            if protocol_order:
+                return protocol_order
+
         if key == 'overlays':
             overlays = ''
             if (key in self.options.keys()
