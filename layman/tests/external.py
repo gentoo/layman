@@ -45,6 +45,12 @@ from  layman.repoconfmanager  import RepoConfManager
 from  layman.utils            import path
 from  warnings import filterwarnings, resetwarnings
 
+encoding = sys.getdefaultencoding()
+
+if encoding != 'utf-8':
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
+
 HERE = os.path.dirname(os.path.realpath(__file__))
 
 class AddDeleteEnableDisableFromDB(unittest.TestCase):
