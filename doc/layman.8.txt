@@ -149,8 +149,8 @@ List of available *layman* path options.
     Path to additional overlay.xml files.
 
 
-OUTPUT OPTIONS:
-~~~~~~~~~~~~~~~
+OUTPUT OPTIONS
+~~~~~~~~~~~~~~
 List of *layman* output options.
 
 *--debug-level* 'DEBUG_LEVEL'::
@@ -194,6 +194,12 @@ List of *layman* output options.
     Sets the screen width. This setting is usually not required as layman
     is capable of detecting the available number of columns automatically.
 
+
+ADDITIONAL OPTIONS
+~~~~~~~~~~~~~~~~~~
+*--protocol_filter*::
+    Sets the protocol filter that determines which protocols will be used
+    when adding overlays or updating their source URLs.
 
 CONFIGURATION
 -------------
@@ -281,8 +287,8 @@ git_postsync::
     These are a space separated list of commands that are run after each add, sync operation if they
     are defined.
 
-*NEW*Repo Configuration options
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+REPO CONFIGURATION OPTIONS
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 *layman* now accepts multiple repository config file options. One being the
 already standard make.conf option and the other being the repos.conf files
@@ -339,6 +345,23 @@ add, delete, info...  (see below for file format details)
 If you need to use a proxy for access to the Internet, you can use
 the corresponding variable in the *layman* configuration file.
 *layman* will also respect the *http_proxy* environment variable in case you set it.
+
+
+FILTERING PROTOCOL URLS
+~~~~~~~~~~~~~~~~~~~~~~~
+When adding an overlay or updating its source URL you can specify which
+protocols you wish to use. Examples of this include http://, git://, and
+https://.
+
+To filter these protocols on a system-wide level you may alter the
+protocol_filter variable in your *layman* configuration file.
+
+Otherwise, you may specify which protocols you would prefer to be filtered out
+on a per-run basis using the *--protocol_filter* flag.
+
+Using this filtering will ensure that no other protocols other than the ones
+specified will be used. Meaning that if an overlay does not support any of
+the specified protocols, it will not install.
 
 
 LOCAL CACHE
