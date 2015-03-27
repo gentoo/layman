@@ -258,14 +258,13 @@ class CLIArgs(unittest.TestCase):
                      'make_conf', 'mercurial_addopts', 'mercurial_command',
                      'mercurial_postsync', 'mercurial_syncopts',
                      'news_reporter', 'nocheck', 'overlay_defs', 'overlays',
-                     'quietness', 'repos_conf', 'require_repoconfig',
-                     'rsync_command', 'rsync_postsync', 'rsync_syncopts',
-                     'squashfs_addopts', 'squashfs_command',
-                     'squashfs_postsync', 'squashfs_syncopts',
-                     'storage', 'support_url_updates', 'svn_addopts',
-                     'svn_command', 'svn_postsync', 'svn_syncopts',
-                     't/f_options', 'tar_command', 'tar_postsync', 'umask',
-                     'width']
+                     'protocol_filter', 'quietness', 'repos_conf',
+                     'require_repoconfig', 'rsync_command', 'rsync_postsync',
+                     'rsync_syncopts', 'squashfs_addopts', 'squashfs_command',
+                     'squashfs_postsync', 'squashfs_syncopts', 'storage',
+                     'support_url_updates', 'svn_addopts', 'svn_command',
+                     'svn_postsync', 'svn_syncopts', 't/f_options',
+                     'tar_command', 'tar_postsync', 'umask', 'width']
         # Due to this not being a dict object, the keys() invocation is needed.
         self.assertEqual(sorted(a.keys()), test_keys)
 
