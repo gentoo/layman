@@ -96,7 +96,7 @@ class BareConfig(object):
             'cache'     : '%(storage)s/cache',
             'local_list': '%(storage)s/overlays.xml',
             'installed': '%(storage)s/installed.xml',
-            'protocol_order': [],
+            'protocol_filter': [],
             'auto_sync': 'No',
             'check_official': 'Yes',
             'conf_type': 'repos.conf',

@@ -71,15 +71,15 @@ class Overlay(object):
 
     def filter_protocols(self, sources):
         '''
-        Filters any protocols not specified in self.config['protocol_order']
+        Filters any protocols not specified in self.config['protocol_filter']
         from the overlay's sources.
         '''
         _sources = []
-        if not self.config['protocol_order']:
+        if not self.config['protocol_filter']:
             return sources
 
         for source in sources:
-            for protocol in self.config['protocol_order']:
+            for protocol in self.config['protocol_filter']:
                 protocol = protocol.lower()
                 #re.search considers "\+" as the literal "+".
                 if protocol == 'git+ssh':
@@ -402,11 +402,11 @@ class Overlay(object):
         res = 1
         first_s = True
 
-        self.sources = filter_protocols(self.sources)
+        self.sources = self.filter_protocols(self.sources)
         if not self.sources:
             msg = 'Overlay.add() error: overlay "%s" does not support the'\
                   ' given\nprotocol(s) %s and cannot be installed.'\
-                  % (self.name, str(self.config['protocol_order']))
+                  % (self.name, str(self.config['protocol_filter']))
             self.output.error(msg)
             return 1
 
@@ -430,12 +430,12 @@ class Overlay(object):
         first_src = True
         result = False
 
-        self.sources = filter_protocols(self.sources)
-        available_srcs = filter_protocols(available_srcs)
+        self.sources = self.filter_protocols(self.sources)
+        available_srcs = self.filter_protocols(available_srcs)
         if not self.sources or not available_srcs:
             msg = 'Overlay.update() error: overlay "%s" does not support the'\
                   'given protocol(s) %s and cannot be updated.'\
-                  % (self.name, str(self.config['protocol_order']))
+                  % (self.name, str(self.config['protocol_filter']))
             self.output.error(msg)
             return 1
 

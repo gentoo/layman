@@ -265,13 +265,11 @@ class ArgsParser(BareConfig):
         # Additional Options
         etc_opts = self.parser.add_argument_group('<Additional options>')
 
-        etc_opts.add_argument('--protocol_order',
+        etc_opts.add_argument('--protocol_filter',
                               nargs = '+',
-                              help = 'Sets the order in which protocols will '
-                              'be handled if they are present. Will only '
-                              'use the provided protocols when installing '
-                              'overlays')
-
+                              help = 'Sets the protocol filter that determines '
+                              'which protocols will be used when adding '
+                              'overlays or updating their source URLs.')
 
         #-----------------------------------------------------------------
         # Debug Options
@@ -359,17 +357,17 @@ class ArgsParser(BareConfig):
             if storage:
                 return storage
 
-        if key == 'protocol_order':
-            protocol_order = []
+        if key == 'protocol_filter':
+            protocol_filter = []
             if (key in self.options.keys()
                 and not self.options[key] is None):
-                protocol_order = self.options[key]
-            if self.config.has_option('MAIN', 'protocol_order'):
-                protocol_order = self.config.get('MAIN', 'protocol_order')
-            if protocol_order:
-                if not isinstance(protocol_order, list):
-                    protocol_order = [e.strip() for e in protocol_order.split(',')]
-                return protocol_order
+                protocol_filter = self.options[key]
+            if self.config.has_option('MAIN', 'protocol_filter'):
+                protocol_filter = self.config.get('MAIN', 'protocol_filter')
+            if protocol_filter:
+                if not isinstance(protocol_filter, list):
+                    protocol_filter = [e.strip() for e in protocol_filter.split(',')]
+                return protocol_filter
 
         if key == 'overlays':
             overlays = ''
