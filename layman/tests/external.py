@@ -15,6 +15,7 @@
 #
 
 from __future__ import print_function
+from __future__ import unicode_literals
 
 '''Runs external (non-doctest) test cases.'''
 
