@@ -1,8 +1,22 @@
 CHANGES
 -------
 
-Version 2.3.0 - Release ???
-===========================
+Version 2.3.1 - Release 2015-03-28
+==================================
+ - adds repos.conf dir creation if it doesn't exist
+ - fixes bug #540012
+ - moves Layman class initialization into a layman sub-file
+ - renames layman.py to Layman.py
+ - corrects misspelling of "separate"
+ - changes default conf_type to "repos.conf"
+ - changes arg group "Additions Options" to "Path Options"
+ - adds protocol filtering for Overlay.{add, update}()
+ - adds binary mode aware compatibility to fileopen()
+ - adds sanity checking for repos_conf location
+ - fixes Unicode() external test
+
+Version 2.3.0 - Release 2015-02-08
+==================================
  - Renamed portage sync plugin to laymansync
  - adds portage sync plugin to setup.py for installation
  - Completely removes doctest remnants
