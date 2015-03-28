@@ -197,7 +197,7 @@ List of *layman* output options.
 
 ADDITIONAL OPTIONS
 ~~~~~~~~~~~~~~~~~~
-*--protocol_filter*::
+*--protocol_filter* 'PROTOCOL'::
     Sets the protocol filter that determines which protocols will be used
     when adding overlays or updating their source URLs.
 
