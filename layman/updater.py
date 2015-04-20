@@ -58,7 +58,7 @@ class Main(object):
         self.parser.add_argument("-c", "--config",
             help='the path to config file')
         self.parser.add_argument("-R", "--rebuild", action='store_true',
-            help='rebuild the Pacakge Manager config file')
+            help='rebuild the Package Manager config file')
         self.parser.add_argument('--version', action='version',
             version='%(prog)s ' + VERSION)
 
