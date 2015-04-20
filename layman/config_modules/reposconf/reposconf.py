@@ -194,9 +194,11 @@ class ConfigHandler:
                     # start over with a fresh instance
                     self.repo_conf = ConfigParser.ConfigParser()
                 if not self.repo_conf.sections():
-                    for i in sorted(self.overlays):
-                        if not i == delete:
-                            self.add(self.overlays[i], no_write=True)
+                    if ('disable' in self.config.keys() and not
+                        self.config['disable'][0].lower() == 'all'):
+                        for i in sorted(self.overlays):
+                            if not i == delete:
+                                self.add(self.overlays[i], no_write=True)
                 self.repo_conf.write(laymanconf)
                 self.rebuild = False
             return True
