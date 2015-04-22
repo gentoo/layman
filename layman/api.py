@@ -26,7 +26,7 @@ from layman.remotedb        import RemoteDB
 from layman.overlays.source import require_supported
 #from layman.utils import path, delete_empty_directory
 from layman.compatibility   import encode
-from layman.utils           import verify_overlay_src
+from layman.utils           import get_ans, verify_overlay_src
 from layman.mounter         import Mounter
 
 if sys.hexversion >= 0x30200f0:
@@ -499,8 +499,11 @@ class LaymanAPI(object):
                             warnings.append((ovl, url_msg))
                             update_success = db.update(ordb, available_srcs)
                             if not update_success:
-                                self.output.warn('Failed to update repo...readding', 2)
-                                self.readd_repos(ovl)
+                                msg = 'Failed to update source URL for overlay'\
+                                      '"%(ovl)s". Re-add overlay? [y/n]'\
+                                      % {'ovl': ovl}
+                                if get_ans(msg, color='yellow'):
+                                    self.readd_repos(ovl)
                 except Exception as error:
                     self.output.warn('Failed to perform overlay type or url updates', 2)
                     self.output.warn('    for Overlay: %s' % ovl, 2)
