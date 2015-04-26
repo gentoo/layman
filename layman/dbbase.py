@@ -103,6 +103,7 @@ class DbBase(object):
 
         self.output.debug('Initializing overlay list handler', 8)
 
+        self.files = {}
         path_found = False
         for path in self.paths:
             if not os.path.exists(path):
@@ -127,14 +128,25 @@ class DbBase(object):
         return not self.__eq__(other)
 
 
+    def get_file(self, path, mode):
+        assert(mode in ('r+', 'w+'))
+
+        if path not in self.files:
+            self.files[path] = fileopen(path, mode)
+
+        f = self.files[path]
+        f.seek(0)
+        return f
+
+
     def read_file(self, path):
         '''Read the overlay definition file.'''
 
         try:
-            with fileopen(path, 'r') as df:
-                fcntl.lockf(df.fileno(), fcntl.LOCK_SH)
-                document = df.read()
-                fcntl.lockf(df.fileno(), fcntl.LOCK_UN)
+            df = self.get_file(path, 'r+')
+            fcntl.lockf(df.fileno(), fcntl.LOCK_SH)
+            document = df.read()
+            fcntl.lockf(df.fileno(), fcntl.LOCK_UN)
 
         except Exception as error:
             if not self.ignore_init_read_errors:
@@ -208,11 +220,12 @@ class DbBase(object):
         indent(tree)
         tree = ET.ElementTree(tree)
         try:
-            with fileopen(path, 'w+') as f:
-                fcntl.lockf(f.fileno(), fcntl.LOCK_EX)
-                tree.write(f, encoding=_UNICODE)
-                f.truncate()
-                fcntl.lockf(f.fileno(), fcntl.LOCK_UN)
+            f = self.get_file(path, 'w+')
+            fcntl.lockf(f.fileno(), fcntl.LOCK_EX)
+            tree.write(f, encoding=_UNICODE)
+            f.truncate()
+            f.flush()
+            fcntl.lockf(f.fileno(), fcntl.LOCK_UN)
 
         except Exception as error:
             raise Exception('Failed to write to local overlays file: '
