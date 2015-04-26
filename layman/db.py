@@ -47,6 +47,7 @@ class DB(DbBase):
         self.config = config
         self.output = config['output']
 
+        self.db_mtime = None
         self.path = config['installed']
         self.output.debug("DB.__init__(): config['installed'] = %s" % self.path, 3)
 
@@ -108,9 +109,17 @@ class DB(DbBase):
         return True
 
 
+    def read_file(self, path):
+        '''Read db replacing current entries, if mtime changed.'''
+        mtime = os.fstat(self.get_file(path).fileno()).st_mtime
+        if self.db_mtime != mtime:
+            self.db_mtime = mtime
+            self.overlays = {}
+            DbBase.read_file(self, path)
+
+
     def _reload_db(self):
         '''Reload db if necessary.'''
-        self.overlays = {}
         self.read_file(self.path)
 
 
