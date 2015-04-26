@@ -30,7 +30,7 @@ __version__ = "$Id: overlay.py 273 2006-12-30 15:54:50Z wrobel $"
 #
 #-------------------------------------------------------------------------------
 
-import sys, os, os.path
+import fcntl, sys, os, os.path
 import xml
 import xml.etree.ElementTree as ET # Python 2.5
 
@@ -132,7 +132,9 @@ class DbBase(object):
 
         try:
             with fileopen(path, 'r') as df:
+                fcntl.lockf(df.fileno(), fcntl.LOCK_SH)
                 document = df.read()
+                fcntl.lockf(df.fileno(), fcntl.LOCK_UN)
 
         except Exception as error:
             if not self.ignore_init_read_errors:
@@ -206,8 +208,11 @@ class DbBase(object):
         indent(tree)
         tree = ET.ElementTree(tree)
         try:
-            with fileopen(path, 'w') as f:
-                 tree.write(f, encoding=_UNICODE)
+            with fileopen(path, 'w+') as f:
+                fcntl.lockf(f.fileno(), fcntl.LOCK_EX)
+                tree.write(f, encoding=_UNICODE)
+                f.truncate()
+                fcntl.lockf(f.fileno(), fcntl.LOCK_UN)
 
         except Exception as error:
             raise Exception('Failed to write to local overlays file: '
