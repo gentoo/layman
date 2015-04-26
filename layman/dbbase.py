@@ -82,6 +82,54 @@ class BrokenOverlayCatalog(ValueError):
 
 #===============================================================================
 #
+# Class FileLock
+#
+#-------------------------------------------------------------------------------
+
+class FileLock(object):
+    ''' Handle a file lock as a context manager.'''
+
+    def __init__(self, db, path, exclusive=False):
+        self._db = db
+        self._path = path
+        if exclusive:
+            self._fmode = 'w+'
+            self._lockctl = fcntl.LOCK_EX
+        else:
+            self._fmode = 'r+'
+            self._lockctl = fcntl.LOCK_SH
+
+        self.lock()
+
+
+    def lock(self):
+        '''Lock the file.'''
+        assert(self._path not in self._db.locked)
+
+        self._db.locked.add(self._path)
+
+        fcntl.lockf(self._db.get_file(self._path, self._fmode).fileno(),
+                self._lockctl)
+
+
+    def unlock(self):
+        '''Unlock the file.'''
+        assert(self._path in self._db.locked)
+
+        fcntl.lockf(self._db.get_file(self._path).fileno(), fcntl.LOCK_UN)
+        self._db.locked.discard(self._path)
+
+
+    def __enter__(self):
+        pass
+
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.unlock()
+
+
+#===============================================================================
+#
 # Class DbBase
 #
 #-------------------------------------------------------------------------------
@@ -103,6 +151,7 @@ class DbBase(object):
 
         self.output.debug('Initializing overlay list handler', 8)
 
+        self.locked = set()
         self.files = {}
         path_found = False
         for path in self.paths:
@@ -128,7 +177,7 @@ class DbBase(object):
         return not self.__eq__(other)
 
 
-    def get_file(self, path, mode):
+    def get_file(self, path, mode='r+'):
         assert(mode in ('r+', 'w+'))
 
         if path not in self.files:
@@ -139,6 +188,11 @@ class DbBase(object):
         return f
 
 
+    def lock_file(self, path, exclusive=False):
+        '''Get the lock for file.'''
+        return FileLock(self, path, exclusive)
+
+
     def read_file(self, path):
         '''Read the overlay definition file.'''
 
@@ -146,7 +200,9 @@ class DbBase(object):
             df = self.get_file(path, 'r+')
             fcntl.lockf(df.fileno(), fcntl.LOCK_SH)
             document = df.read()
-            fcntl.lockf(df.fileno(), fcntl.LOCK_UN)
+            # do not unlock if locked externally
+            if path not in self.locked:
+                fcntl.lockf(df.fileno(), fcntl.LOCK_UN)
 
         except Exception as error:
             if not self.ignore_init_read_errors:
@@ -225,7 +281,9 @@ class DbBase(object):
             tree.write(f, encoding=_UNICODE)
             f.truncate()
             f.flush()
-            fcntl.lockf(f.fileno(), fcntl.LOCK_UN)
+            # do not unlock if locked externally
+            if path not in self.locked:
+                fcntl.lockf(f.fileno(), fcntl.LOCK_UN)
 
         except Exception as error:
             raise Exception('Failed to write to local overlays file: '
