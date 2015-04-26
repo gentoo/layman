@@ -69,7 +69,7 @@ class UnknownOverlayException(Exception):
 #-------------------------------------------------------------------------------
 
 class BrokenOverlayCatalog(ValueError):
-    def __init__(self, origin, expat_error, hint=None):
+    def __init__(self, origin, etree_error, hint=None):
         if hint == None:
             hint = ''
         else:
@@ -77,7 +77,7 @@ class BrokenOverlayCatalog(ValueError):
 
         super(BrokenOverlayCatalog, self).__init__(
             'XML parsing failed for "%(origin)s" (line %(line)d, column %(column)d)%(hint)s' % \
-            {'line':expat_error.lineno, 'column':expat_error.offset + 1, 'origin':origin, 'hint':hint})
+            {'line':etree_error.position[0], 'column':etree_error.position[1] + 1, 'origin':origin, 'hint':hint})
 
 
 #===============================================================================
@@ -155,7 +155,7 @@ class DbBase(object):
         '''
         try:
             document = ET.fromstring(text)
-        except xml.parsers.expat.ExpatError as error:
+        except ET.ParseError as error:
             raise BrokenOverlayCatalog(origin, error, self._broken_catalog_hint())
 
         overlays = document.findall('overlay') + \
