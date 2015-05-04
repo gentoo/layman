@@ -5,17 +5,8 @@
 Performs layman sync actions for layman overlays.
 '''
 
-import os
 
 from portage.sync.config_checks import CheckSyncConfig
-
-
-try:
-    import layman
-    config_class = 'PyLayman'
-    del layman
-except ImportError:
-    config_class = 'Layman'
 
 
 module_spec = {
@@ -24,7 +15,7 @@ module_spec = {
     'provides':{
         'layman-module': {
             'name': 'laymansync',
-            'class': config_class,
+            'class': 'CONFIG_CLASS',
             'description': __doc__,
             'functions': ['sync', 'new', 'exists'],
             'func_desc': {
