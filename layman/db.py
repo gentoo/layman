@@ -47,6 +47,7 @@ class DB(DbBase):
         self.config = config
         self.output = config['output']
 
+        self.db_mtime = None
         self.path = config['installed']
         self.output.debug("DB.__init__(): config['installed'] = %s" % self.path, 3)
 
@@ -72,6 +73,10 @@ class DB(DbBase):
             os.access(self.config['local_list'], os.F_OK):
                 self.output.die("Please run layman-updater, "
                     "then run layman again")
+
+        # TODO: handle non-existing files better everywhere
+        if not os.path.exists(self.path):
+            self.write(self.path)
 
 
     # overrider
@@ -102,6 +107,20 @@ class DB(DbBase):
             else:
                 return True
         return True
+
+
+    def read_file(self, path):
+        '''Read db replacing current entries, if mtime changed.'''
+        mtime = os.fstat(self.get_file(path).fileno()).st_mtime
+        if self.db_mtime != mtime:
+            self.db_mtime = mtime
+            self.overlays = {}
+            DbBase.read_file(self, path)
+
+
+    def _reload_db(self):
+        '''Reload db if necessary.'''
+        self.read_file(self.path)
 
 
     def add(self, overlay):
@@ -160,9 +179,11 @@ class DB(DbBase):
             if result == 0:
                 if 'priority' in self.config.keys():
                     overlay.set_priority(self.config['priority'])
-                self.overlays[overlay.name] = overlay
-                self.write(self.path)
-                repo_ok = self.repo_conf.add(overlay)
+                with self.lock_file(self.path, exclusive=True):
+                    self._reload_db()
+                    self.overlays[overlay.name] = overlay
+                    self.write(self.path)
+                    repo_ok = self.repo_conf.add(overlay)
                 if False in repo_ok:
                     return False
                 return True
@@ -245,9 +266,11 @@ class DB(DbBase):
 
         if overlay.name in self.overlays.keys():
             overlay.delete(self.config['storage'])
-            repo_ok = self.repo_conf.delete(overlay)
-            del self.overlays[overlay.name]
-            self.write(self.path)
+            with self.lock_file(self.path, exclusive=True):
+                self._reload_db()
+                repo_ok = self.repo_conf.delete(overlay)
+                del self.overlays[overlay.name]
+                self.write(self.path)
         else:
             self.output.error('No local overlay named "' + overlay.name + '"!')
             return False
@@ -258,7 +281,8 @@ class DB(DbBase):
 
     def disable(self, overlay):
         if overlay.name in self.overlays.keys():
-            result = self.repo_conf.disable(overlay)
+            with self.lock_file(self.path, exclusive=True):
+                result = self.repo_conf.disable(overlay)
         else:
             self.output.error('No local overlay named "%(repo)s"!'\
                 % ({'repo': overlay.name}))
@@ -273,7 +297,8 @@ class DB(DbBase):
 
     def enable(self, overlay):
         if overlay.name in self.overlays.keys():
-            result = self.repo_conf.enable(overlay)
+            with self.lock_file(self.path, exclusive=True):
+                result = self.repo_conf.enable(overlay)
         else:
             self.output.error('No local overlay named "%(repo)s"!'\
                 % ({'repo': overlay.name}))
@@ -294,17 +319,19 @@ class DB(DbBase):
         @params available_srcs: set of available source URLs.
         '''
 
-        source, result = self.overlays[overlay.name].update(self.config['storage'],
-                                                    available_srcs)
-        result = [result]
-        self.overlays[overlay.name].sources = source
-        result.extend(self.repo_conf.update(self.overlays[overlay.name]))
-        self.write(self.path)
+        with self.lock_file(self.path, exclusive=True):
+            self._reload_db()
+
+            source, result = self.overlays[overlay.name].update(self.config['storage'],
+                                                        available_srcs)
+            result = [result]
+            self.overlays[overlay.name].sources = source
+            result.extend(self.repo_conf.update(self.overlays[overlay.name]))
+            self.write(self.path)
 
         if False in result:
             return False
         return True
-
 
 
     def sync(self, overlay_name):

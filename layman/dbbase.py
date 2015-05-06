@@ -30,7 +30,7 @@ __version__ = "$Id: overlay.py 273 2006-12-30 15:54:50Z wrobel $"
 #
 #-------------------------------------------------------------------------------
 
-import sys, os, os.path
+import fcntl, sys, os, os.path
 import xml
 import xml.etree.ElementTree as ET # Python 2.5
 
@@ -69,7 +69,7 @@ class UnknownOverlayException(Exception):
 #-------------------------------------------------------------------------------
 
 class BrokenOverlayCatalog(ValueError):
-    def __init__(self, origin, expat_error, hint=None):
+    def __init__(self, origin, etree_error, hint=None):
         if hint == None:
             hint = ''
         else:
@@ -77,7 +77,55 @@ class BrokenOverlayCatalog(ValueError):
 
         super(BrokenOverlayCatalog, self).__init__(
             'XML parsing failed for "%(origin)s" (line %(line)d, column %(column)d)%(hint)s' % \
-            {'line':expat_error.lineno, 'column':expat_error.offset + 1, 'origin':origin, 'hint':hint})
+            {'line':etree_error.position[0], 'column':etree_error.position[1] + 1, 'origin':origin, 'hint':hint})
+
+
+#===============================================================================
+#
+# Class FileLock
+#
+#-------------------------------------------------------------------------------
+
+class FileLock(object):
+    ''' Handle a file lock as a context manager.'''
+
+    def __init__(self, db, path, exclusive=False):
+        self._db = db
+        self._path = path
+        if exclusive:
+            self._fmode = 'w+'
+            self._lockctl = fcntl.LOCK_EX
+        else:
+            self._fmode = 'r+'
+            self._lockctl = fcntl.LOCK_SH
+
+        self.lock()
+
+
+    def lock(self):
+        '''Lock the file.'''
+        assert(self._path not in self._db.locked)
+
+        self._db.locked.add(self._path)
+
+        fcntl.lockf(self._db.get_file(self._path, self._fmode).fileno(),
+                self._lockctl)
+
+
+    def unlock(self):
+        '''Unlock the file.'''
+        assert(self._path in self._db.locked)
+
+        fcntl.lockf(self._db.get_file(self._path).fileno(), fcntl.LOCK_UN)
+        self._db.locked.discard(self._path)
+
+
+    def __enter__(self):
+        pass
+
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.unlock()
 
 
 #===============================================================================
@@ -103,6 +151,8 @@ class DbBase(object):
 
         self.output.debug('Initializing overlay list handler', 8)
 
+        self.locked = set()
+        self.files = {}
         path_found = False
         for path in self.paths:
             if not os.path.exists(path):
@@ -127,12 +177,32 @@ class DbBase(object):
         return not self.__eq__(other)
 
 
+    def get_file(self, path, mode='r+'):
+        assert(mode in ('r+', 'w+'))
+
+        if path not in self.files:
+            self.files[path] = fileopen(path, mode)
+
+        f = self.files[path]
+        f.seek(0)
+        return f
+
+
+    def lock_file(self, path, exclusive=False):
+        '''Get the lock for file.'''
+        return FileLock(self, path, exclusive)
+
+
     def read_file(self, path):
         '''Read the overlay definition file.'''
 
         try:
-            with fileopen(path, 'r') as df:
-                document = df.read()
+            df = self.get_file(path, 'r+')
+            fcntl.lockf(df.fileno(), fcntl.LOCK_SH)
+            document = df.read()
+            # do not unlock if locked externally
+            if path not in self.locked:
+                fcntl.lockf(df.fileno(), fcntl.LOCK_UN)
 
         except Exception as error:
             if not self.ignore_init_read_errors:
@@ -155,7 +225,7 @@ class DbBase(object):
         '''
         try:
             document = ET.fromstring(text)
-        except xml.parsers.expat.ExpatError as error:
+        except ET.ParseError as error:
             raise BrokenOverlayCatalog(origin, error, self._broken_catalog_hint())
 
         overlays = document.findall('overlay') + \
@@ -206,8 +276,14 @@ class DbBase(object):
         indent(tree)
         tree = ET.ElementTree(tree)
         try:
-            with fileopen(path, 'w') as f:
-                 tree.write(f, encoding=_UNICODE)
+            f = self.get_file(path, 'w+')
+            fcntl.lockf(f.fileno(), fcntl.LOCK_EX)
+            tree.write(f, encoding=_UNICODE)
+            f.truncate()
+            f.flush()
+            # do not unlock if locked externally
+            if path not in self.locked:
+                fcntl.lockf(f.fileno(), fcntl.LOCK_UN)
 
         except Exception as error:
             raise Exception('Failed to write to local overlays file: '
