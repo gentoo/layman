@@ -5,9 +5,9 @@
 
 
 try:
-    from pylayman import PyLayman
+    from portage.sync.modules.laymansync.pylayman import PyLayman
     CONFIG_CLASS = PyLayman
 except ImportError:
-    from subproc import Layman
+    from portage.sync.modules.laymansync.subproc import Layman
     CONFIG_CLASS = Layman
 
