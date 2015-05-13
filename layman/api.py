@@ -126,9 +126,8 @@ class LaymanAPI(object):
                 success = self._get_installed_db().delete(
                     self._get_installed_db().select(ovl))
             except Exception as e:
-                self._error(
-                        "Exception caught removing repository '"+ovl+
-                            "':\n"+str(e))
+                self._error('Exception caught removing repository "%(repo)s":\n'
+                            '%(err)s' % {'repo': ovl, 'err': e})
             results.append(success)
             self.get_installed(dbreload=True)
         if False in results:
@@ -160,8 +159,8 @@ class LaymanAPI(object):
                 success = self._get_installed_db().add(
                     self._get_remote_db().select(ovl))
             except Exception as e:
-                self._error("Exception caught installing repository '"+ovl+
-                    "' : "+str(e))
+                self._error('Exception caught installing repository "%(repo)s":'
+                            '\n%(err)s' % {'repo': ovl, 'err': e})
             results.append(success)
             self.get_installed(dbreload=True)
         if (True in results) and update_news:
@@ -202,7 +201,7 @@ class LaymanAPI(object):
                     self._get_installed_db().select(ovl))
             except Exception as e:
                 self._error('Exception caught disabling repository "%(repo)s"'\
-                    ': %(err)s' % ({'repo': ovl, 'err': e}))
+                            ':\n%(err)s' % {'repo': ovl, 'err': e})
             results.append(success)
             self.get_installed(dbreload=True)
         if (True in results) and update_news:
@@ -227,7 +226,7 @@ class LaymanAPI(object):
                     self._get_installed_db().select(ovl))
             except Exception as e:
                 self._error('Exception caught enabling repository "%(repo)s"'\
-                    ': %(err)s' % ({'repo': ovl, 'err': e}))
+                            ':\n%(err)s' % {'repo': ovl, 'err': e})
             results.append(success)
             self.get_installed(dbreload=True)
         if (True in results) and update_news:
@@ -467,18 +466,20 @@ class LaymanAPI(object):
                 #self.output.debug("API.sync(); UnknownOverlayException selecting %s" %ovl, 5)
                 #self._error(str(error))
                 fatals.append((ovl,
-                    'Failed to select overlay "' + ovl + '".\nError was: '
-                    + str(error)))
+                    'Failed to select overlay "%(repo)s".\nError was: %(error)s'
+                     % {'repo': ovl, 'err': error))
                 self.output.debug("API.sync(); UnknownOverlayException "
-                    "selecting %s.   continuing to next ovl..." %ovl, 5)
+                    "selecting %(repo)s.   continuing to next ovl..."
+                    % {'repo': ovl}, 5)
                 continue
 
             try:
                 self.output.debug("API.sync(); try: self._get_remote_db().select(ovl)", 5)
                 ordb = self._get_remote_db().select(ovl)
             except UnknownOverlayException:
-                message = 'Overlay "%s" could not be found in the remote lists.\n' \
-                        'Please check if it has been renamed and re-add if necessary.' % ovl
+                message = 'Overlay "%(repo)s" could not be found in the remote '\
+                        'lists.\nPlease check if it has been renamed and '\
+                        're-add if necessary.' % {'repo': ovl}
                 warnings.append((ovl, message))
                 (diff_type, update_url) = (False, False)
             else:
@@ -516,8 +517,8 @@ class LaymanAPI(object):
                     success.append((ovl,'Successfully synchronized overlay "' + ovl + '".'))
             except Exception as error:
                 fatals.append((ovl,
-                    'Failed to sync overlay "' + ovl + '".\nError was: '
-                    + str(error)))
+                    'Failed to sync overlay "%(repo)s".\nError was: %(err)s'
+                    % {'repo': ovl, 'err': error}))
 
         if output_results:
             if success:
@@ -559,8 +560,8 @@ class LaymanAPI(object):
                 'LaymanAPI.fetch_remote_list(); cache updated = %s'
                 % str(dbreload),8)
         except Exception as error:
-            self.output.error('Failed to fetch overlay list!\n Original Error was: '
-                    + str(error))
+            self.output.error('Failed to fetch overlay list!\n Original Error'
+                              'was:\n%(err)s' % {'err': error})
             return False
         self.get_available(dbreload)
         return succeeded
