@@ -22,6 +22,17 @@ import fcntl
 
 from layman.compatibility import fileopen
 
+class LockingException(Exception):
+    '''
+    Exception class for relay errors properly
+    '''
+    def __init__(self, msg):
+        self.msg = msg
+
+
+    def __str__(self):
+        return repr(self.msg)
+
 
 class FileLocker(object):
 
@@ -39,7 +50,9 @@ class FileLocker(object):
             file_mode = 'w+'
             lock_mode = fcntl.LOCK_EX
 
-        assert path not in self.locked
+        if path in self.locked:
+            raise LockingException('"%(path)s" is already locked.'
+                                    % {'path': path})
 
         self.locked.add(path)
         fcntl.flock(self.get_file(path, file_mode).fileno(), lock_mode)
@@ -47,7 +60,9 @@ class FileLocker(object):
 
     def unlock_file(self, path):
         '''Unlock the file located at path.'''
-        assert path in self.locked
+        if path not in self.locked:
+            raise LockingException('"%(path)s" is not locked, unlocking failed'
+                                    % {'path': path})
 
         fcntl.flock(self.get_file(path).fileno(), fcntl.LOCK_UN)
         self.locked.discard(path)
