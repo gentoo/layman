@@ -467,7 +467,7 @@ class LaymanAPI(object):
                 #self._error(str(error))
                 fatals.append((ovl,
                     'Failed to select overlay "%(repo)s".\nError was: %(error)s'
-                     % {'repo': ovl, 'err': error))
+                     % {'repo': ovl, 'err': error}))
                 self.output.debug("API.sync(); UnknownOverlayException "
                     "selecting %(repo)s.   continuing to next ovl..."
                     % {'repo': ovl}, 5)
