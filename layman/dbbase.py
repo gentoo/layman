@@ -30,7 +30,9 @@ __version__ = "$Id: overlay.py 273 2006-12-30 15:54:50Z wrobel $"
 #
 #-------------------------------------------------------------------------------
 
-import sys, os, os.path
+import os
+import os.path
+import sys
 import xml
 import xml.etree.ElementTree as ET # Python 2.5
 
