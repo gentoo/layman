@@ -73,7 +73,8 @@ class FileLocker(object):
         if mode not in ('r', 'w+'):
             raise LockingException('Invalid mode %(mode)s' % {'mode': mode})
 
-        if path not in self.files or self.files[path].closed:
+        if (path not in self.files or self.files[path].closed or
+            self.files[path].mode != mode):
             self.files[path] = fileopen(path, mode)
 
         f = self.files[path]
