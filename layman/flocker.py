@@ -70,7 +70,8 @@ class FileLocker(object):
 
     def get_file(self, path, mode='r'):
         '''Obtains file object for given path'''
-        assert mode in ('r', 'w+')
+        if mode not in ('r', 'w+'):
+            raise LockingException('Invalid mode %(mode)s' % {'mode': mode})
 
         if path not in self.files or self.files[path].closed:
             self.files[path] = fileopen(path, mode)
