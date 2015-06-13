@@ -72,7 +72,7 @@ class FileLocker(object):
         '''Obtains file object for given path'''
         assert mode in ('r', 'w+')
 
-        if path not in self.files:
+        if path not in self.files or self.files[path].closed:
             self.files[path] = fileopen(path, mode)
 
         f = self.files[path]
