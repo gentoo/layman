@@ -1,9 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #################################################################################
-# LAYMAN OVERLAY HANDLER
+# LAYMAN DB BASE
 #################################################################################
-# File:       overlay.py
+# File:       dbbase.py
 #
 #             Access to an xml list of overlays
 #
@@ -17,6 +17,7 @@
 #             Gunnar Wrobel <wrobel@gentoo.org>
 #             Sebastian Pipping <sebastian@pipping.org>
 #             Christian Groschupp <christian@groschupp.org>
+#             Devan Franchini <twitch153@gentoo.org>
 #
 '''Main handler for overlays.'''
 
@@ -78,8 +79,10 @@ class BrokenOverlayCatalog(ValueError):
             hint = '\nHint: %s' % hint
 
         super(BrokenOverlayCatalog, self).__init__(
-            'XML parsing failed for "%(origin)s" (line %(line)d, column %(column)d)%(hint)s' % \
-            {'line':expat_error.lineno, 'column':expat_error.offset + 1, 'origin':origin, 'hint':hint})
+            'XML parsing failed for "%(origin)s" (line %(line)d, column'\
+            '%(column)d)%(hint)s' % {'line': expat_error.lineno,
+                                     'column':expat_error.offset + 1,
+                                     'origin':origin, 'hint':hint})
 
 
 #===============================================================================
@@ -89,23 +92,23 @@ class BrokenOverlayCatalog(ValueError):
 #-------------------------------------------------------------------------------
 
 class DbBase(object):
-    ''' Handle a list of overlays.'''
+    '''
+    Handle a list of overlays.
+    '''
 
     def __init__(self, config, paths=None, ignore = 0,
-        ignore_init_read_errors=False, allow_missing=False
-        ):
+        ignore_init_read_errors=False, allow_missing=False):
 
         self.config = config
-        self.paths = paths
         self.ignore = ignore
+        self.paths = paths
         self.output = config['output']
-        self.ignore_init_read_errors = ignore_init_read_errors
-
         self.overlays = {}
+        self.ignore_init_read_errors = ignore_init_read_errors
+        path_found = False
 
         self.output.debug('Initializing overlay list handler', 8)
 
-        path_found = False
         for path in self.paths:
             if not os.path.exists(path):
                 continue
@@ -114,8 +117,8 @@ class DbBase(object):
             path_found = True
 
         if not path_found and not allow_missing:
-            self.output.warn("Warning: an installed db file was not found at: %s"
-                % str(self.paths))
+            msg = "Warning: an installed db file was not found at: %(path)s"
+            self.output.warn(msg % {'path': str(self.paths)})
 
 
     def __eq__(self, other):
@@ -130,8 +133,9 @@ class DbBase(object):
 
 
     def read_file(self, path):
-        '''Read the overlay definition file.'''
-
+        '''
+        Read the overlay definition file.
+        '''
         try:
             with fileopen(path, 'r') as df:
                 document = df.read()
@@ -147,32 +151,33 @@ class DbBase(object):
 
     def _broken_catalog_hint(self):
         this_function_name = sys._getframe().f_code.co_name
-        raise NotImplementedError('Method "%s.%s" not implemented' % \
-                (self.__class__.__name__, this_function_name))
+        msg = 'Method "%(name)s.%(func)s" not implemented'\
+              % {'name': self.__class__.__name__,
+                 'func': this_function_name}
+        raise NotImplementedError(msg)
 
 
     def read(self, text, origin):
         '''
-        Read an xml list of overlays (adding to and potentially overwriting existing entries)
+        Read an xml list of overlays (adding to and potentially overwriting
+        existing entries)
         '''
         try:
             document = ET.fromstring(text)
-        except xml.parsers.expat.ExpatError as error:
-            raise BrokenOverlayCatalog(origin, error, self._broken_catalog_hint())
+        except xml.parsers.expat.ExpatError as err:
+            raise BrokenOverlayCatalog(origin, err, self._broken_catalog_hint())
 
-        overlays = document.findall('overlay') + \
-                document.findall('repo')
+        overlays = document.findall('overlay') + document.findall('repo')
 
         for overlay in overlays:
             self.output.debug('Parsing overlay: %s' % overlay, 9)
-            ovl = Overlay(config=self.config, xml=overlay,
-                    ignore=self.ignore)
+            ovl = Overlay(config=self.config, xml=overlay, ignore=self.ignore)
             self.overlays[ovl.name] = ovl
-        return
 
 
     def add_new(self, xml=None, origin=None, from_dict=None):
-        '''Reads xml text and dictionary definitions and adds
+        '''
+        Reads xml text and dictionary definitions and adds
         them to the db.
         '''
         if xml is not None:
@@ -187,8 +192,9 @@ class DbBase(object):
 
 
     def _add_from_dict(self, overlays=None):
-        """Add a new overlay from a list of dictionary values
-        """
+        '''
+        Add a new overlay from a list of dictionary values
+        '''
         self.output.info("DbBase: add_from_dict()")
         for overlay in overlays:
             self.output.debug('Parsing overlay entry', 8)
@@ -202,7 +208,6 @@ class DbBase(object):
         '''
         Write the list of overlays to a file.
         '''
-
         tree = ET.Element('repositories', version="1.0", encoding=_UNICODE)
         tree[:] = [e.to_xml() for e in self.overlays.values()]
         indent(tree)
@@ -211,20 +216,26 @@ class DbBase(object):
             with fileopen(path, 'w') as f:
                  tree.write(f, encoding=_UNICODE)
 
-        except Exception as error:
-            raise Exception('Failed to write to local overlays file: '
-                            + path + '\nError was:\n' + str(error))
+        except Exception as err:
+            msg = 'Failed to write to local overlays file: %(path)s\nError was'\
+                  ':\n%(err)s' % {'path': path, 'err': err}
+            raise Exception(msg)
+
 
     def select(self, overlay):
         '''
         Select an overlay from the list.
         '''
-        self.output.debug("DbBase.select(), overlay = %s" % overlay, 5)
+        ovl = {'ovl': overlay}
+        msg = 'DbBase.select(), overlay = %(ovl)s' % ovl
+        self.output.debug(msg, 5)
+
         if not overlay in self.overlays.keys():
-            self.output.debug("DbBase.select(), unknown overlay = %s"
-                % overlay, 4)
-            self.output.debug("DbBase.select(), known overlays = %s"
-                % ', '.join(self.overlays.keys()), 4)
+            msg = 'DbBase.select(), unknown overlay = %(ovl)s' % ovl
+            self.output.debug(msg, 4)
+            ovls = {'ovls': ', '.join(self.overlays.keys())}
+            msg = 'DbBase.select(), known overlays = %(ovls)s' % ovls
+            self.output.debug(ovls, 4)
             raise UnknownOverlayException(overlay)
         return self.overlays[overlay]
 
@@ -236,21 +247,23 @@ class DbBase(object):
 
         selection = [overlay for (a, overlay) in self.overlays.items()]
         if repos is not None:
-            selection = [overlay for overlay in selection if overlay.name in repos]
+            selection = [ovl for ovl in selection if ovl.name in repos]
 
         for overlay in selection:
             if verbose:
                 result.append((overlay.get_infostr(), overlay.is_supported(),
                                overlay.is_official()))
             else:
-                result.append((overlay.short_list(width), overlay.is_supported(),
-                               overlay.is_official()))
+                result.append((overlay.short_list(width),
+                               overlay.is_supported(), overlay.is_official()))
 
-        result = sorted(result, key=lambda summary_supported_official: summary_supported_official[0].lower())
+        result = sorted(result, key=lambda summary_supported_official:\
+                                summary_supported_official[0].lower())
 
         return result
 
     def list_ids(self):
-        """returns a list of the overlay names
-        """
+        '''
+        Returns a list of the overlay names
+        '''
         return sorted(self.overlays)
