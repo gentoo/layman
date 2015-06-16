@@ -107,52 +107,7 @@ class DB(DbBase):
     def add(self, overlay):
         '''
         Add an overlay to the local list of overlays.
-
-        >>> import tempfile
-        >>> tmpdir = tempfile.mkdtemp(prefix="laymantmp_")
-        >>> write = os.path.join(tmpdir, 'installed.xml')
-        >>> write2 = os.path.join(tmpdir, 'make.conf')
-        >>> here = os.path.dirname(os.path.realpath(__file__))
-        >>> from layman.config import OptionConfig
-        >>> myoptions = {'installed' :
-        ...           here + '/tests/testfiles/global-overlays.xml',
-        ...           'local_list': here + '/tests/testfiles/overlays.xml',
-        ...           'make_conf' : write2,
-        ...           'nocheck'    : 'yes',
-        ...           'storage'   : tmpdir}
-
-        >>> config = OptionConfig(myoptions)
-        >>> config.set_option('quietness', 3)
-        >>> a = DB(config)
-        >>> config.set_option('installed', write)
-        >>> b = DB(config)
-        >>> config['output'].set_colorize(False)
-
-        >>> m = MakeConf(config, b.overlays)
-        >>> m.path = write2
-        >>> success = m.write()
-        >>> success
-        True
-
-        # Commented out since it needs network access:
-
-        # >>> b.add(a.select('wrobel-stable')) #doctest: +ELLIPSIS
-        # * Running command "/usr/bin/rsync -rlptDvz --progress --delete --delete-after --timeout=180 --exclude="distfiles/*" --exclude="local/*" --exclude="packages/*" "rsync://gunnarwrobel.de/wrobel-stable/*" "/tmp/file.../wrobel-stable""...
-        # >>> c = DbBase([write, ], dict())
-        # >>> c.overlays.keys()
-        # ['wrobel-stable']
-
-        # >>> m = MakeConf(config, b.overlays)
-        # >>> [i.name for i in m.overlays] #doctest: +ELLIPSIS
-        # ['wrobel-stable']
-
-        # >>> os.unlink(write)
-        >>> os.unlink(write2)
-
-        >>> import shutil
-        >>> shutil.rmtree(tmpdir)
         '''
-
         if overlay.name not in self.overlays.keys():
             if not self._check_official(overlay):
                 return False
@@ -188,61 +143,8 @@ class DB(DbBase):
 
     def delete(self, overlay):
         '''
-        Add an overlay to the local list of overlays.
-
-        >>> import tempfile
-        >>> tmpdir = tempfile.mkdtemp(prefix="laymantmp_")
-        >>> write = os.path.join(tmpdir, 'installed.xml')
-        >>> write2 = os.path.join(tmpdir, 'make.conf')
-        >>> here = os.path.dirname(os.path.realpath(__file__))
-        >>> from layman.config import OptionConfig
-        >>> myoptions = {'installed' :
-        ...           here + '/tests/testfiles/global-overlays.xml',
-        ...           'local_list': here + '/tests/testfiles/overlays.xml',
-        ...           'make_conf' : write2,
-        ...           'nocheck'    : 'yes',
-        ...           'storage'   : tmpdir}
-
-        >>> config = OptionConfig(myoptions)
-        >>> config.set_option('quietness', 3)
-        >>> a = DB(config)
-        >>> config.set_option('installed', write)
-        >>> b = DB(config)
-        >>> config['output'].set_colorize(False)
-
-        >>> m = MakeConf(config, b.overlays)
-        >>> m.path = here + '/tests/testfiles/make.conf'
-        >>> m.read()
-        True
-
-        >>> m.path = write2
-        >>> m.write()
-        True
-
-        # >>> b.add(a.select('wrobel-stable')) #doctest: +ELLIPSIS
-        # * Running command "/usr/bin/rsync -rlptDvz --progress --delete --delete-after --timeout=180 --exclude="distfiles/*" --exclude="local/*" --exclude="packages/*" "rsync://gunnarwrobel.de/wrobel-stable/*" "/tmp/file.../wrobel-stable""...
-        # >>> b.add(a.select('wrobel')) #doctest: +ELLIPSIS
-        # * Running command "/usr/bin/svn co "https://overlays.gentoo.org/svn/dev/wrobel/" "/tmp/file.../wrobel""...
-        # >>> c = DbBase([write, ], dict())
-        # >>> c.overlays.keys()
-        # ['wrobel', 'wrobel-stable']
-
-        # >>> b.delete(b.select('wrobel'))
-        # >>> c = DbBase([write, ], dict())
-        # >>> c.overlays.keys()
-        # ['wrobel-stable']
-
-        # >>> m = MakeConf(config, b.overlays)
-        # >>> [i.name for i in m.overlays] #doctest: +ELLIPSIS
-        # ['wrobel-stable']
-
-        # >>> os.unlink(write)
-        >>> os.unlink(write2)
-
-        >>> import shutil
-        >>> shutil.rmtree(tmpdir)
+        Delete an overlay from the local list of overlays.
         '''
-
         if overlay.name in self.overlays.keys():
             overlay.delete(self.config['storage'])
             repo_ok = self.repo_conf.delete(overlay)

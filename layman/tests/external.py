@@ -118,6 +118,96 @@ class AddDeleteEnableDisableFromConf(unittest.TestCase):
         shutil.rmtree(tmpdir)
 
 
+class AddDeleteDB(unittest.TestCase):
+    def test(self):
+        repo_name     = 'tar_test_overlay'
+        temp_dir_path = tempfile.mkdtemp(prefix='laymantmp_')
+        db_file       = os.path.join(temp_dir_path, 'installed.xml')
+        make_conf     = os.path.join(temp_dir_path, 'make.conf')
+        repo_conf     = os.path.join(temp_dir_path, 'repos.conf')
+
+        tar_source_path = os.path.join(HERE, 'testfiles', 'layman-test.tar.bz2')
+
+        (_, temp_tarball_path) = tempfile.mkstemp()
+        shutil.copyfile(tar_source_path, temp_tarball_path)
+
+        # Write overlay collection XML
+        xml_text = '''\
+<?xml version="1.0" encoding="UTF-8"?>
+<repositories xmlns="" version="1.0">
+  <repo quality="experimental" status="unofficial">
+    <name>%(repo_name)s</name>
+    <description>XXXXXXXXXXX</description>
+    <owner>
+      <email>foo@example.org</email>
+    </owner>
+    <source type="tar">file://%(temp_tarball_url)s</source>
+  </repo>
+</repositories>
+        '''\
+        % {
+            'temp_tarball_url': urllib.pathname2url(temp_tarball_path),
+            'repo_name': repo_name
+          }
+
+        (fd, temp_xml_path) = tempfile.mkstemp()
+
+        my_opts = {'installed'     : temp_xml_path,
+                   'conf_type'     : ['make.conf', 'repos.conf'],
+                   'nocheck'       : 'yes',
+                   'make_conf'     : make_conf,
+                   'repos_conf'    : repo_conf,
+                   'storage'       : temp_dir_path,
+                   'check_official': False}
+
+        with os.fdopen(fd, 'w') as f:
+            f.write(xml_text)
+
+        with fileopen(make_conf, 'w') as f:
+            f.write('PORTDIR_OVERLAY="$PORTDIR_OVERLAY"\n')
+
+        with fileopen(repo_conf, 'w') as f:
+            f.write('')
+
+        config = OptionConfig(options=my_opts)
+        config.set_option('quietness', 3)
+
+        a = DB(config)
+        config.set_option('installed', db_file)
+
+        # Add an overlay to a fresh DB file.
+        b = DB(config)
+        b.add(a.select(repo_name))
+
+        # Make sure it's actually installed.
+        specific_overlay_path = os.path.join(temp_dir_path, repo_name)
+        self.assertTrue(os.path.exists(specific_overlay_path))
+
+        # Check the DbBase to ensure that it's reading the installed.xml.
+        c = DbBase(config, paths=[db_file,])
+        self.assertEqual(list(c.overlays), ['tar_test_overlay'])
+
+        # Make sure the configs have been written to correctly.
+        conf = RepoConfManager(config, b.overlays)
+        self.assertEqual(list(conf.overlays), ['tar_test_overlay'])
+
+        # Delete the overlay from the second DB.
+        b.delete(b.select(repo_name))
+        self.assertEqual(b.overlays, {})
+
+        # Ensure the installed.xml has been cleaned properly.
+        c = DbBase(config, paths=[db_file,])
+        self.assertEqual(c.overlays, {})
+
+        conf = RepoConfManager(config, b.overlays)
+        self.assertEqual(conf.overlays, {})
+
+        # Clean up.
+        os.unlink(temp_xml_path)
+        os.unlink(temp_tarball_path)
+        shutil.rmtree(temp_dir_path)
+
+
 # Tests archive overlay types (squashfs, tar)
 # http://bugs.gentoo.org/show_bug.cgi?id=304547
 class ArchiveAddRemoveSync(unittest.TestCase):
