@@ -108,8 +108,7 @@ class ListPrinter(object):
 
     def short_list(self, overlay):
         '''
-        >>> print(short_list(overlay))
-        wrobel                    [Subversion] (https://o.g.o/svn/dev/wrobel         )
+        Returns a list of information regarding the provided overlay parameter.
         '''
         name   = pad(overlay['name'], 25)
 
