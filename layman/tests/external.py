@@ -53,7 +53,7 @@ if encoding != 'utf-8':
 
 HERE = os.path.dirname(os.path.realpath(__file__))
 
-class AddDeleteEnableDisableFromDB(unittest.TestCase):
+class AddDeleteEnableDisableFromConf(unittest.TestCase):
 
     def test(self):
         tmpdir = tempfile.mkdtemp(prefix='laymantmp_')
