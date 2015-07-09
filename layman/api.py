@@ -561,7 +561,7 @@ class LaymanAPI(object):
                 % str(dbreload),8)
         except Exception as error:
             self.output.error('Failed to fetch overlay list!\n Original Error'
-                              'was:\n%(err)s' % {'err': error})
+                              ' was:\n%(err)s' % {'err': error})
             return False
         self.get_available(dbreload)
         return succeeded
