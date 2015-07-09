@@ -167,7 +167,7 @@ class DbBase(object):
         return
 
 
-    def read_db(self, path):
+    def read_db(self, path, text=None):
         '''
         Read the overlay database for installed overlay definitions.
         '''
@@ -178,7 +178,7 @@ class DbBase(object):
                      self.ignore,
                      self.ignore_init_read_errors)
 
-            db_ctl.read_db(path)
+            db_ctl.read_db(path, text=text)
 
 
     def write(self, path):

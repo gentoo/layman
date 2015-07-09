@@ -107,16 +107,19 @@ class DBHandler(object):
         raise NotImplementedError(msg)
 
 
-    def read_db(self, path):
+    def read_db(self, path, text=None):
         '''
         Read the overlay definition file.
         '''
-        try:
-            with fileopen(path, 'r') as df:
-                document = df.read()
-        except Exception as error:
-            if not self.ignore_init_read_errors:
-                msg = 'XML DBHandler - Failed to read the overlay list at'\
+        document = text
+
+        if not document:
+            try:
+                with fileopen(path, 'r') as df:
+                    document = df.read()
+            except Exception as error:
+                if not self.ignore_init_read_errors:
+                    msg = 'XML DBHandler - Failed to read the overlay list at'\
                       '("%(path)s")' % {'path': path}
                 self.output.error(msg)
                 raise error
