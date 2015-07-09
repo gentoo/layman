@@ -345,7 +345,7 @@ class CLIArgs(unittest.TestCase):
                      'custom_news_pkg', 'cvs_addopts', 'cvs_command',
                      'cvs_postsync', 'cvs_syncopts', 'darcs_addopts',
                      'darcs_command', 'darcs_postsync', 'darcs_syncopts',
-                     'g-common_command', 'g-common_generateopts',
+                     'db_type', 'g-common_command', 'g-common_generateopts',
                      'g-common_postsync', 'g-common_syncopts',
                      'g-sorcery_command', 'g-sorcery_generateopts',
                      'g-sorcery_postsync', 'g-sorcery_syncopts', 'git_addopts',
