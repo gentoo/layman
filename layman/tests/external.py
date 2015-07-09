@@ -637,6 +637,7 @@ class ReadWriteSelectListDbBase(unittest.TestCase):
         output = Message()
         config = {
                   'output': output,
+                  'db_type': 'xml',
                   'svn_command': '/usr/bin/svn',
                   'rsync_command':'/usr/bin/rsync'
                  }
@@ -670,7 +671,8 @@ class ReadWriteSelectListDbBase(unittest.TestCase):
 
     def read_db(self):
         output = Message()
-        config = {'output': output}
+        config = {'output': output,
+                  'db_type': 'xml',}
         db = DbBase(config, [HERE + '/testfiles/global-overlays.xml', ])
         keys = sorted(db.overlays)
         self.assertEqual(keys, ['wrobel', 'wrobel-stable'])
@@ -681,7 +683,8 @@ class ReadWriteSelectListDbBase(unittest.TestCase):
 
     def select_db(self):
         output = Message()
-        config = {'output': output}
+        config = {'output': output,
+                  'db_type': 'xml',}
         db = DbBase(config, [HERE + '/testfiles/global-overlays.xml', ])
         url = ['rsync://gunnarwrobel.de/wrobel-stable']
         self.assertEqual(list(db.select('wrobel-stable').source_uris()), url)
@@ -691,13 +694,14 @@ class ReadWriteSelectListDbBase(unittest.TestCase):
         tmpdir = tempfile.mkdtemp(prefix='laymantmp_')
         test_xml = os.path.join(tmpdir, 'test.xml')
         config = BareConfig()
+
         a = DbBase(config, [HERE + '/testfiles/global-overlays.xml', ])
-        b = DbBase({'output': Message()}, [test_xml,])
+        b = DbBase({'output': Message(), 'db_type': 'xml'}, [test_xml,])
 
         b.overlays['wrobel-stable'] = a.overlays['wrobel-stable']
         b.write(test_xml)
 
-        c = DbBase({'output': Message()}, [test_xml,])
+        c = DbBase({'output': Message(), 'db_type': 'xml'}, [test_xml,])
         keys = sorted(c.overlays)
         self.assertEqual(keys, ['wrobel-stable'])
 
