@@ -6,11 +6,11 @@ XML database plug-in module for layman.
 '''
 
 module_spec = {
-    'name': 'xml',
+    'name': 'xml_db',
     'description': __doc__,
     'provides':{
         'xml-module': {
-            'name': 'xml',
+            'name': 'xml_db',
             'class': 'DBHandler',
             'description': __doc__,
             'functions': ['add_new', 'read_db', 'write'],
