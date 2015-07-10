@@ -11,14 +11,16 @@
 #             (c) 2005 - 2009 Gunnar Wrobel
 #             (c) 2009        Sebastian Pipping
 #             (c) 2009        Christian Groschupp
+#             (c) 2015        Devan Franchini
 #             Distributed under the terms of the GNU General Public License v2
 #
 # Author(s):
 #             Gunnar Wrobel <wrobel@gentoo.org>
 #             Sebastian Pipping <sebastian@pipping.org>
 #             Christian Groschupp <christian@groschupp.org>
+#             Devan Franchini <twitch153@gentoo.org>
 #
-''' Basic overlay class.'''
+'''Basic overlay class.'''
 
 from __future__ import unicode_literals
 
@@ -92,8 +94,9 @@ class Overlay(object):
 
 
     def from_xml(self, xml, ignore):
-        """Process an xml overlay definition
-        """
+        '''
+        Process an xml overlay definition
+        '''
         def strip_text(node):
             res = node.text
             if res is None:
@@ -101,15 +104,18 @@ class Overlay(object):
             return res.strip()
 
         _name = xml.find('name')
+
         if _name != None:
             self.name = encode(strip_text(_name))
         elif 'name' in xml.attrib:
             self.name = encode(xml.attrib['name'])
         else:
-            raise Exception('Overlay from_xml(), "' + self.name + \
-                'is missing a "name" entry!')
+            msg = 'Overlay from_xml(), "%(name)s" is missing a "name" entry!'\
+                  % {'name': self.name}
+            raise Exception(msg)
 
         _sources = xml.findall('source')
+
         # new xml format
         if _sources != []:
             _sources = [e for e in _sources if 'type' in e.attrib]
@@ -124,6 +130,7 @@ class Overlay(object):
             _branch = ''
             _type = source_elem.attrib['type']
             self.ovl_type = _type
+
             if 'branch' in source_elem.attrib:
                 _branch = source_elem.attrib['branch']
 
@@ -133,23 +140,25 @@ class Overlay(object):
                 _class = self.module_controller.get_class('stub')
 
             _location = encode(strip_text(source_elem))
-
             self.branch = _branch
 
             return _class(parent=self, config=self.config,
                 _location=_location, ignore=ignore)
 
         if not len(_sources):
-            raise Exception('Overlay from_xml(), "' + self.name + \
-                '" is missing a "source" entry!')
+            msg = 'Overlay from_xml(), "%(name)" is missing a "source" entry!'\
+                  % {'name': self.name}
+            raise Exception(msg)
 
         self.sources = [create_overlay_source(e) for e in _sources]
 
         _owner = xml.find('owner')
+
         if _owner == None:
             _email = None
         else:
             _email = _owner.find('email')
+
         if _owner != None and _email != None:
             self.owner_email = encode(strip_text(_email))
             _name = _owner.find('name')
@@ -163,12 +172,12 @@ class Overlay(object):
         else:
             self.owner_email = ''
             self.owner_name = None
+            msg = 'Overlay from_xml(), "%(name)s" is mising an '\
+                  '"owner.email" entry!' % {'name': self.name}
             if not ignore:
-                raise Exception('Overlay  from_xml(), "' + self.name + \
-                    '" is missing an "owner.email" entry!')
+                raise Exception(msg)
             elif ignore == 1:
-                self.output.warn('Overlay "' + self.name + '" is missing a '
-                         '"owner.email" entry!', 4)
+                self.output.warn(msg, 4)
 
         _desc = xml.findall('description')
         if _desc != None:
@@ -178,12 +187,12 @@ class Overlay(object):
                 self.descriptions.append(encode(d))
         else:
             self.descriptions = ['']
+            msg = 'Overlay from_xml(), "%(name)s is missing a '\
+                  '"description" entry!' % {'name': self.name}
             if not ignore:
-                raise Exception('Overlay  from_xml(), "' + self.name + \
-                    '" is missing a description" entry!')
+                raise Exception(msg)
             elif ignore == 1:
-                self.output.warn('Overlay "' + self.name + '" is missing a '
-                         '"description" entry!', 4)
+                self.output.warn(msg, 4)
 
         if 'status' in xml.attrib:
             self.status = encode(xml.attrib['status'])
@@ -202,6 +211,7 @@ class Overlay(object):
 
         h = xml.find('homepage')
         l = xml.find('link')
+
         if h != None:
             self.homepage = encode(strip_text(h))
         elif l != None:
@@ -209,8 +219,7 @@ class Overlay(object):
         else:
             self.homepage = None
 
-        self.feeds = [encode(strip_text(e)) \
-            for e in xml.findall('feed')]
+        self.feeds = [encode(strip_text(e)) for e in xml.findall('feed')]
 
         _irc = xml.find('irc')
         if _irc != None:
@@ -220,21 +229,26 @@ class Overlay(object):
 
 
     def from_dict(self, overlay, ignore):
-        """Process an overlay dictionary definition
-        """
-        self.output.debug("Overlay from_dict(); overlay" + str(overlay), 6)
+        '''
+        Process an overlay dictionary definition
+        '''
+        msg = 'Overlay from_dict(); overlay %(ovl)s' % {'ovl': str(overlay)}
+        self.output.debug(msg, 6)
+
         _name = overlay['name']
         if _name != None:
             self.name = encode(_name)
         else:
-            raise Exception('Overlay from_dict(), "' + self.name +
-                'is missing a "name" entry!')
+            msg = 'Overlay from dict(), "%(name)s" is missing a "name" entry!'\
+                  % {'name': self.name}
+            raise Exception(msg)
 
         _sources = overlay['sources']
 
         if _sources == None:
-            raise Exception('Overlay from_dict(), "' + self.name +
-                '" is missing a "source" entry!')
+            msg = 'Overlay from_dict(), "%(name)s" is missing a "source"'\
+                  'entry!' % {'name': self.name}
+            raise Exception(msg)
 
         def create_dict_overlay_source(source_):
             _src, _type, _sub = source_
@@ -266,12 +280,12 @@ class Overlay(object):
             self.owner_email = encode(_email)
         else:
             self.owner_email = None
+            msg = 'Overlay from_dict(), "%(name)s" is missing an "owner.email"'\
+                  ' entry!' % {'name': self.name}
             if not ignore:
-                raise Exception('Overlay from_dict(), "' + self.name +
-                    '" is missing an "owner.email" entry!')
+                raise Exception(msg)
             elif ignore == 1:
-                self.output.warn('Overlay from_dict(), "' + self.name +
-                    '" is missing an "owner.email" entry!', 4)
+                self.output.warn(msg, 4)
 
         if 'descriptions' in overlay:
             self.descriptions = []
@@ -341,12 +355,16 @@ class Overlay(object):
 
 
     def set_priority(self, priority):
-        '''Set the priority of this overlay.'''
+        '''
+        Set the priority of this overlay.
+        '''
         self.priority = int(priority)
 
 
     def to_xml(self):
-        '''Convert to xml.'''
+        '''
+        Convert to xml.
+        '''
         repo = ET.Element('repo')
         if self.status != None:
             repo.attrib['status'] = self.status
@@ -404,15 +422,17 @@ class Overlay(object):
 
         self.sources = self.filter_protocols(self.sources)
         if not self.sources:
-            msg = 'Overlay.add() error: overlay "%s" does not support the'\
-                  ' given\nprotocol(s) %s and cannot be installed.'\
-                  % (self.name, str(self.config['protocol_filter']))
+            msg = 'Overlay.add() error: overlay "%(name)s" does not support '\
+                  ' the given\nprotocol(s) %(protocol)s and cannot be '\
+                  'installed.'\
+                  % {'name': self.name,
+                     'protocol': str(self.config['protocol_filter'])}
             self.output.error(msg)
             return 1
 
         for s in self.sources:
             if not first_s:
-                self.output.info("\nTrying next source of listed sources...", 4)
+                self.output.info('\nTrying next source of listed sources...', 4)
             try:
                 res = s.add(base)
                 if res == 0:
@@ -433,9 +453,10 @@ class Overlay(object):
         self.sources = self.filter_protocols(self.sources)
         available_srcs = self.filter_protocols(available_srcs)
         if not self.sources or not available_srcs:
-            msg = 'Overlay.update() error: overlay "%s" does not support the'\
-                  'given protocol(s) %s and cannot be updated.'\
-                  % (self.name, str(self.config['protocol_filter']))
+            msg = 'Overlay.update() error: overlay "%(name)s" does not support'\
+                  ' the given protocol(s) %(protocol)s and cannot be updated.'\
+                  % {'name': self.name,
+                     'protocol': str(self.config['protocol_filter'])}
             self.output.error(msg)
             return 1
 
@@ -445,7 +466,7 @@ class Overlay(object):
         if self.sources[0].type in self.config.get_option('support_url_updates'):
             for src in available_srcs:
                 if not first_src:
-                    self.output.info("\nTrying next source of listed sources...", 4)
+                    self.output.info('\nTrying next source of listed sources...', 4)
                 try:
                     res = self.sources[0].update(base, src)
                     if res == 0:
@@ -461,15 +482,19 @@ class Overlay(object):
             # Update the overlay source with the remote
             # source, assuming that it's telling the truth
             # so it can be written to the installed.xml.
-            self.output.debug("overlay.update(); type: %s does not support"\
-                " source URL updating" % self.sources[0].type, 4)
+            msg = 'Overlay.update(); type: "%(src_type)s does not support '\
+                  'source URL updating' % {'src_type': self.sources[0].type}
+            self.output.debug(msg, 4)
+
             self.sources[0].src = available_srcs.pop()
             result = True
         return (self.sources, result)
 
 
     def sync(self, base):
-        self.output.debug("overlay.sync(); name = %s" % self.name, 4)
+        msg = 'Overlay.sync(); name = %(name)s' % {'name': self.name}
+        self.output.debug(msg, 4)
+
         assert len(self.sources) == 1
         return self.sources[0].sync(base)
 
@@ -570,7 +595,9 @@ class Overlay(object):
 
 
     def is_official(self):
-        '''Is the overlay official?'''
+        '''
+        Is the overlay official?
+        '''
         return self.status == 'official'
 
 
