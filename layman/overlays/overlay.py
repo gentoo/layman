@@ -316,7 +316,7 @@ class Overlay(object):
             elif ignore == 1:
                 self.output.warn(msg, 4)
 
-         if 'description' in overlay:
+        if 'description' in overlay:
             self.descriptions = []
             _descs = overlay['description']
             for d in _descs:
@@ -602,7 +602,10 @@ class Overlay(object):
 
     def source_types(self):
         for i in self.sources:
-            yield i.type    def is_official(self):
+            yield i.type
+
+
+    def is_official(self):
         '''
         Is the overlay official?
         '''
