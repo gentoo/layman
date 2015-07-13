@@ -42,17 +42,17 @@ else:
     _UNICODE = 'UTF-8'
 
 AUTOCOMPLETE_TEMPLATE = {
-    'bitbucket': {'feeds': (
+    'bitbucket': {'feed': (
                             'http://bitbucket.org/%(tail)s/atom',
                             'http://bitbucket.org/%(tail)s/rss'
                            ),
                   'homepage': 'https://bitbucket.org/%(tail)s',
-                  'sources': (
+                  'source': (
                  ('https://bitbucket.org/%(tail)s', 'mercurial', '%(branch)s'),
                  ('ssh://hg@bitbucket.org/%(tail)s', 'mercurial', '%(branch)s')
                  )
                  },
-    'gentoo': {'feeds': (
+    'gentoo': {'feed': (
                          'https://git.overlays.gentoo.org/gitweb/'\
                          '?p=%(tail)s;a=atom',
                          'https://git.overlays.gentoo.org/gitweb/'\
@@ -60,13 +60,13 @@ AUTOCOMPLETE_TEMPLATE = {
                         ),
                'homepage': 'https://git.overlays.gentoo.org/gitweb/'\
                            '?p=%(tail)s;a=summary',
-               'sources': (
+               'source': (
               ('https://git.overlays.gentoo.org/gitroot/%(tail)s', 'git', ''),
               ('git://git.overlays.gentoo.org/%(tail)s', 'git', ''),
               ('git+ssh://git@git.overlays.gentoo.org/%(tail)s', 'git', '')
               )
               },
-    'gentoo-branch': {'feeds': (
+    'gentoo-branch': {'feed': (
                                 'https://git.overlays.gentoo.org/gitweb/?p='\
                                 '%(tail)s;a=atom;h=refs/heads/%(branch)s',
                                 'https://git.overlays.gentoo.org/gitweb/?p='\
@@ -75,7 +75,7 @@ AUTOCOMPLETE_TEMPLATE = {
                       'homepage': 'https://git.overlays.gentoo.org/gitweb/?p='\
                                   '%(tail)s;a=shortlog;h=refs/heads/'\
                                   '%(branch)s',
-                      'sources': (
+                      'source': (
                      ('https://git.overlays.gentoo.org/gitroot/%(tail)s', 'git',
                       '%(branch)s'),
                      ('git://git.overlays.gentoo.org/%(tail)s', 'git',
@@ -84,19 +84,19 @@ AUTOCOMPLETE_TEMPLATE = {
                       '%(branch)s')
                      )
                      },
-    'github': {'feeds': ('https://github.com/%(info)s/commits/master.atom',),
+    'github': {'feed': ('https://github.com/%(info)s/commits/master.atom',),
                'homepage': 'https://github.com/%(info)s',
-               'sources': (
+               'source': (
               ('https://github.com/%(tail)s', 'git', ''),
               ('git://github.com/%(tail)s', 'git', ''),
               ('git@github.com:%(tail)s', 'git', ''),
               ('https://github.com/%(tail)s', 'svn', '')
               )
               },
-    'github-branch': {'feeds': ('https://github.com/%(info)s/commits/'\
+    'github-branch': {'feed': ('https://github.com/%(info)s/commits/'\
                                '%(branch)s.atom'),
                      'homepage': 'https://github.com/%(info)s/tree/%(branch)s',
-                     'sources': (
+                     'source': (
                      ('https://github.com/%(tail)s', 'git', '%(branch)s'),
                      ('git://github.com/%(tail)s', 'git', '%(branch)s'),
                      ('git@github.com:%(tail)s', 'git', '%(branch)s'),
@@ -261,7 +261,7 @@ class Interactive(object):
             if possible not in self.required:
                 msg = 'Include %(comp)s for this overlay? [y/n]: '\
                         % ({'comp': possible})
-                if ((possible in 'homepage' or possible in 'feeds') and
+                if ((possible in 'homepage' or possible in 'feed') and
                     self.auto_complete):
                     available = False
                 else:
@@ -270,7 +270,7 @@ class Interactive(object):
                     self.required.append(possible)
 
 
-    def get_descriptions(self):
+    def get_description(self):
         '''
         Prompts user for an overlay's description(s)
         and updates overlay dict with value(s).
@@ -282,10 +282,10 @@ class Interactive(object):
         desc = get_input('Define overlay\'s description: ')
         descriptions.append(desc)
 
-        self.overlay['descriptions'] = descriptions
+        self.overlay['description'] = descriptions
 
 
-    def get_feeds(self):
+    def get_feed(self):
         '''
         Prompts user for any overlay RSS feeds
         and updates overlay dict with values.
@@ -301,7 +301,7 @@ class Interactive(object):
             else:
                 feeds.append(get_input('Define overlay feed: '))
 
-        self.overlay['feeds'] = feeds
+        self.overlay['feed'] = feeds
         self.output.notice('')
 
 
@@ -323,7 +323,7 @@ class Interactive(object):
         self.overlay['name'] = name
 
 
-    def get_sources(self):
+    def get_source(self):
         '''
         Prompts user for possible overlay source
         information such as type, url, and branch
@@ -339,7 +339,7 @@ class Interactive(object):
                   'for this overlay?: '
             source_amount = int(get_input(msg))
 
-        self.overlay['sources'] = []
+        self.overlay['source'] = []
 
         for i in range(1, source_amount + 1):
             sources = []
@@ -389,9 +389,9 @@ class Interactive(object):
             if self.auto_complete:
                 sources = self._set_additional_info(sources)
                 for source in sources:
-                    self.overlay['sources'].append(source)
+                    self.overlay['source'].append(source)
             else:
-                self.overlay['sources'].append(sources)
+                self.overlay['source'].append(sources)
         self.output.notice('')
 
 
@@ -415,7 +415,7 @@ class Interactive(object):
         @params msg: (str) prompt message for component
         '''
         if component not in ('branch', 'type'):
-            if component in ('descriptions', 'feeds', 'name', 'owner', 'sources'):
+            if component in ('description', 'feed', 'name', 'owner', 'source'):
                 getattr(self, 'get_%(comp)s' % ({'comp': component}))()
             else:
                 self.overlay[component] = get_input(msg)
@@ -496,13 +496,13 @@ class Interactive(object):
                 if i in ('bitbucket') and 'git' in (source[1]):
                     return [source]
 
-                for s in TEMPLATE['sources']:
+                for s in TEMPLATE['source']:
                     source = (s[0] % attrs, s[1], s[2] % attrs)
                     sources.append(source)
-                for f in TEMPLATE['feeds']:
+                for f in TEMPLATE['feed']:
                     feed = (f % attrs)
                     feeds.append(feed)
-                self.overlay['feeds'] = feeds
+                self.overlay['feed'] = feeds
 
         if sources:
             return sources

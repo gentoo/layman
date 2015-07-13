@@ -243,7 +243,7 @@ class Overlay(object):
                   % {'name': self.name}
             raise Exception(msg)
 
-        _sources = overlay['sources']
+        _sources = overlay['source']
 
         if _sources == None:
             msg = 'Overlay from_dict(), "%(name)s" is missing a "source"'\
@@ -287,9 +287,9 @@ class Overlay(object):
             elif ignore == 1:
                 self.output.warn(msg, 4)
 
-        if 'descriptions' in overlay:
+        if 'description' in overlay:
             self.descriptions = []
-            _descs = overlay['descriptions']
+            _descs = overlay['description']
             for d in _descs:
                 d = WHITESPACE_REGEX.sub(' ', d)
                 self.descriptions.append(encode(d))
@@ -322,9 +322,9 @@ class Overlay(object):
         else:
             self.homepage = None
 
-        if 'feeds' in overlay:
+        if 'feed' in overlay:
             self.feeds = [encode(e) \
-                for e in overlay['feeds']]
+                for e in overlay['feed']]
         else:
             self.feeds = None
 
@@ -333,7 +333,6 @@ class Overlay(object):
         else:
             self.irc = None
 
-        #xml = self.to_xml()
         # end of from_dict
 
 
