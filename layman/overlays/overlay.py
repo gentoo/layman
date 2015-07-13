@@ -56,7 +56,7 @@ WHITESPACE_REGEX = re.compile('\s+')
 class Overlay(object):
     ''' Derive the real implementations from this.'''
 
-    def __init__(self, config, xml=None, ovl_dict=None,
+    def __init__(self, config, json=None, ovl_dict=None, xml=None,
         ignore = 0):
         self.config = config
         self.output = config['output']
@@ -69,6 +69,59 @@ class Overlay(object):
             self.from_xml(xml, ignore)
         elif ovl_dict is not None:
             self.from_dict(ovl_dict, ignore)
+        elif json is not None:
+            self.from_json(ovl_dict, ignore)
+
+
+    def __eq__(self, other):
+        for i in ('descriptions', 'homepage', 'name', 'owner_email',
+                'owner_name', 'priority', 'status'):
+            if getattr(self, i) != getattr(other, i):
+                return False
+        for i in self.sources + other.sources:
+            if not i in self.sources:
+                return False
+            if not i in other.sources:
+                return False
+        return True
+
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+
+    def add(self, base):
+        res = 1
+        first_s = True
+
+        self.sources = self.filter_protocols(self.sources)
+        if not self.sources:
+            msg = 'Overlay.add() error: overlay "%(name)s" does not support '\
+                  ' the given\nprotocol(s) %(protocol)s and cannot be '\
+                  'installed.'\
+                  % {'name': self.name,
+                     'protocol': str(self.config['protocol_filter'])}
+            self.output.error(msg)
+            return 1
+
+        for s in self.sources:
+            if not first_s:
+                self.output.info('\nTrying next source of listed sources...', 4)
+            try:
+                res = s.add(base)
+                if res == 0:
+                    # Worked, throw other sources away
+                    self.sources = [s]
+                    break
+            except Exception as error:
+                self.output.warn(str(error), 4)
+            first_s = False
+        return res
+
+
+    def delete(self, base):
+        assert len(self.sources) == 1
+        return self.sources[0].delete(base)
 
 
     def filter_protocols(self, sources):
@@ -91,6 +144,226 @@ class Overlay(object):
                     _sources.append(source)
 
         return _sources
+
+
+    def from_dict(self, overlay, ignore):
+        '''
+        Process an overlay dictionary definition
+        '''
+        msg = 'Overlay from_dict(); overlay %(ovl)s' % {'ovl': str(overlay)}
+        self.output.debug(msg, 6)
+
+        _name = overlay['name']
+        if _name != None:
+            self.name = encode(_name)
+        else:
+            msg = 'Overlay from dict(), "%(name)s" is missing a "name" entry!'\
+                  % {'name': self.name}
+            raise Exception(msg)
+
+        _sources = overlay['source']
+
+        if _sources == None:
+            msg = 'Overlay from_dict(), "%(name)s" is missing a "source"'\
+                  'entry!' % {'name': self.name}
+            raise Exception(msg)
+
+        def create_dict_overlay_source(source_):
+            _src, _type, _sub = source_
+            self.ovl_type = _type
+            try:
+                _class = self.module_controller.get_class(_type)
+            except InvalidModuleName:
+                _class = self.module_controller.get_class('stub')
+
+            _location = encode(_src)
+            if _sub:
+                self.branch = encode(_sub)
+            else:
+                self.branch = None
+
+            return _class(parent=self, config=self.config,
+                _location=_location, ignore=ignore)
+
+        self.sources = [create_dict_overlay_source(e) for e in _sources]
+
+        if 'owner_name' in overlay:
+            _owner = overlay['owner_name']
+            self.owner_name = encode(_owner)
+        else:
+            self.owner_name = None
+
+        if 'owner_email' in overlay:
+            _email = overlay['owner_email']
+            self.owner_email = encode(_email)
+        else:
+            self.owner_email = None
+            msg = 'Overlay from_dict(), "%(name)s" is missing an "owner.email"'\
+                  ' entry!' % {'name': self.name}
+            if not ignore:
+                raise Exception(msg)
+            elif ignore == 1:
+                self.output.warn(msg, 4)
+
+        if 'description' in overlay:
+            self.descriptions = []
+            _descs = overlay['description']
+            for d in _descs:
+                d = WHITESPACE_REGEX.sub(' ', d)
+                self.descriptions.append(encode(d))
+        else:
+            self.descriptions = ['']
+            if not ignore:
+                raise Exception('Overlay from_dict(), "' + self.name +
+                    '" is missing a "description" entry!')
+            elif ignore == 1:
+                self.output.warn('Overlay from_dict(), "' + self.name +
+                    '" is missing a "description" entry!', 4)
+
+        if 'status' in overlay:
+            self.status = encode(overlay['status'])
+        else:
+            self.status = None
+
+        self.quality = 'experimental'
+        if 'quality' in overlay:
+            if overlay['quality'] in set(QUALITY_LEVELS):
+                self.quality = encode(overlay['quality'])
+
+        if 'priority' in overlay:
+            self.priority = int(overlay['priority'])
+        else:
+            self.priority = 50
+
+        if 'homepage' in overlay:
+            self.homepage = encode(overlay['homepage'])
+        else:
+            self.homepage = None
+
+        if 'feed' in overlay:
+            self.feeds = [encode(e) \
+                for e in overlay['feed']]
+        else:
+            self.feeds = None
+
+        if 'irc' in overlay:
+            self.irc = encode(overlay['irc'])
+        else:
+            self.irc = None
+
+        # end of from_dict
+
+
+    def from_json(self, json, ignore):
+        '''
+        Process a json overlay definition
+        '''
+        msg = 'Overlay from_json(); overlay %(ovl)s' % {'ovl': str(overlay)}
+        self.output.debug(msg, 6)
+
+        _name = overlay['name']
+        if _name != None:
+            self.name = encode(_name)
+        else:
+            msg = 'Overlay from_json(), "name" entry missing from json!'
+            raise Exception(msg)
+
+        _sources = overlay['source']
+
+        if _sources == None:
+            msg = 'Overlay from_json(), "%(name)s" is missing a "source"'\
+                  'entry!' % {'name': self.name}
+            raise Exception(msg)
+
+        def create_json_overlay_source(source_):
+            _src = source_['#text']
+            _type = source_['@type']
+            if '@branch' in source_:
+                _sub = source_['@branch']
+            else:
+                _sub = ''
+
+            self.ovl_type = _type
+
+            try:
+                _class = self.module_controller.get_class(_type)
+            except InvalidModuleName:
+                _class = self.module_controller.get_class('stub')
+
+            _location = encode(_src)
+            if _sub:
+                self.branch = encode(_sub)
+            else:
+                self.branch = None
+
+            return _class(parent=self, config=self.config,
+                _location=_location, ignore=ignore)
+
+        self.sources = [create_json_overlay_source(e) for e in _sources]
+
+        if 'name' in overlay['owner']:
+            self.owner_name = encode(overlay['owner']['name'])
+        else:
+            self.owner_name = None
+
+        if 'email' in overlay['owner']:
+            self.owner_email = encode(overlay['owner']['email'])
+        else:
+            self.owner_email = None
+            msg = 'Overlay from_json(), "%(name)s" is missing an "owner.email"'\
+                  'entry!' % {'name': self.name}
+            if not ignore:
+                raise Exception(msg)
+            else ignore == 1:
+                self.output.warn(msg, 4)
+
+         if 'description' in overlay:
+            self.descriptions = []
+            _descs = overlay['description']
+            for d in _descs:
+                d = WHITESPACE_REGEX.sub(' ', d['#text'])
+                self.descriptions.append(encode(d))
+        else:
+            self.descriptions = ['']
+            if not ignore:
+                raise Exception('Overlay from_json(), "' + self.name +
+                    '" is missing a "description" entry!')
+            elif ignore == 1:
+                self.output.warn('Overlay from_json(), "' + self.name +
+                    '" is missing a "description" entry!', 4)
+
+        if '@status' in overlay:
+            self.status = encode(overlay['@status'])
+        else:
+            self.status = None
+
+        self.quality = 'experimental'
+        if '@quality' in overlay:
+            if overlay['@quality'] in set(QUALITY_LEVELS):
+                self.quality = encode(overlay['@quality'])
+
+        if '@priority' in overlay:
+            self.priority = int(overlay['@priority'])
+        else:
+            self.priority = 50
+
+        if 'homepage' in overlay:
+            self.homepage = encode(overlay['homepage'])
+        else:
+            self.homepage = None
+
+        if 'feed' in overlay:
+            self.feeds = [encode(e) \
+                for e in overlay['feed']]
+        else:
+            self.feeds = None
+
+        if 'irc' in overlay:
+            self.irc = encode(overlay['irc'])
+        else:
+            self.irc = None
+
+        # end of from_json()
 
 
     def from_xml(self, xml, ignore):
@@ -228,281 +501,6 @@ class Overlay(object):
             self.irc = None
 
 
-    def from_dict(self, overlay, ignore):
-        '''
-        Process an overlay dictionary definition
-        '''
-        msg = 'Overlay from_dict(); overlay %(ovl)s' % {'ovl': str(overlay)}
-        self.output.debug(msg, 6)
-
-        _name = overlay['name']
-        if _name != None:
-            self.name = encode(_name)
-        else:
-            msg = 'Overlay from dict(), "%(name)s" is missing a "name" entry!'\
-                  % {'name': self.name}
-            raise Exception(msg)
-
-        _sources = overlay['source']
-
-        if _sources == None:
-            msg = 'Overlay from_dict(), "%(name)s" is missing a "source"'\
-                  'entry!' % {'name': self.name}
-            raise Exception(msg)
-
-        def create_dict_overlay_source(source_):
-            _src, _type, _sub = source_
-            self.ovl_type = _type
-            try:
-                _class = self.module_controller.get_class(_type)
-            except InvalidModuleName:
-                _class = self.module_controller.get_class('stub')
-
-            _location = encode(_src)
-            if _sub:
-                self.branch = encode(_sub)
-            else:
-                self.branch = None
-
-            return _class(parent=self, config=self.config,
-                _location=_location, ignore=ignore)
-
-        self.sources = [create_dict_overlay_source(e) for e in _sources]
-
-        if 'owner_name' in overlay:
-            _owner = overlay['owner_name']
-            self.owner_name = encode(_owner)
-        else:
-            self.owner_name = None
-
-        if 'owner_email' in overlay:
-            _email = overlay['owner_email']
-            self.owner_email = encode(_email)
-        else:
-            self.owner_email = None
-            msg = 'Overlay from_dict(), "%(name)s" is missing an "owner.email"'\
-                  ' entry!' % {'name': self.name}
-            if not ignore:
-                raise Exception(msg)
-            elif ignore == 1:
-                self.output.warn(msg, 4)
-
-        if 'description' in overlay:
-            self.descriptions = []
-            _descs = overlay['description']
-            for d in _descs:
-                d = WHITESPACE_REGEX.sub(' ', d)
-                self.descriptions.append(encode(d))
-        else:
-            self.descriptions = ['']
-            if not ignore:
-                raise Exception('Overlay from_dict(), "' + self.name +
-                    '" is missing a "description" entry!')
-            elif ignore == 1:
-                self.output.warn('Overlay from_dict(), "' + self.name +
-                    '" is missing a "description" entry!', 4)
-
-        if 'status' in overlay:
-            self.status = encode(overlay['status'])
-        else:
-            self.status = None
-
-        self.quality = 'experimental'
-        if 'quality' in overlay:
-            if overlay['quality'] in set(QUALITY_LEVELS):
-                self.quality = encode(overlay['quality'])
-
-        if 'priority' in overlay:
-            self.priority = int(overlay['priority'])
-        else:
-            self.priority = 50
-
-        if 'homepage' in overlay:
-            self.homepage = encode(overlay['homepage'])
-        else:
-            self.homepage = None
-
-        if 'feed' in overlay:
-            self.feeds = [encode(e) \
-                for e in overlay['feed']]
-        else:
-            self.feeds = None
-
-        if 'irc' in overlay:
-            self.irc = encode(overlay['irc'])
-        else:
-            self.irc = None
-
-        # end of from_dict
-
-
-    def __eq__(self, other):
-        for i in ('descriptions', 'homepage', 'name', 'owner_email',
-                'owner_name', 'priority', 'status'):
-            if getattr(self, i) != getattr(other, i):
-                return False
-        for i in self.sources + other.sources:
-            if not i in self.sources:
-                return False
-            if not i in other.sources:
-                return False
-        return True
-
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
-
-    def set_priority(self, priority):
-        '''
-        Set the priority of this overlay.
-        '''
-        self.priority = int(priority)
-
-
-    def to_xml(self):
-        '''
-        Convert to xml.
-        '''
-        repo = ET.Element('repo')
-        if self.status != None:
-            repo.attrib['status'] = self.status
-        repo.attrib['quality'] = self.quality
-        repo.attrib['priority'] = str(self.priority)
-        name = ET.Element('name')
-        name.text = self.name
-        repo.append(name)
-        for i in self.descriptions:
-            desc = ET.Element('description')
-            desc.text = i
-            repo.append(desc)
-            del desc
-        if self.homepage != None:
-            homepage = ET.Element('homepage')
-            homepage.text = self.homepage
-            repo.append(homepage)
-        if self.irc != None:
-            irc = ET.Element('irc')
-            irc.text = self.irc
-            repo.append(irc)
-        owner = ET.Element('owner')
-        repo.append(owner)
-        owner_email = ET.Element('email')
-        owner_email.text = self.owner_email
-        owner.append(owner_email)
-        if self.owner_name != None:
-            owner_name = ET.Element('name')
-            owner_name.text = self.owner_name
-            owner.append(owner_name)
-        for i in self.sources:
-            if not i.branch:
-                source = ET.Element('source', type=i.__class__.type_key)
-            else:
-                source = ET.Element('source', type=i.__class__.type_key, branch=i.branch)
-            source.text = i.src
-            repo.append(source)
-            del source
-        for i in self.sources:
-            # NOTE: Two loops on purpose so the
-            # hooks are called with all sources in
-            i.to_xml_hook(repo)
-        if self.feeds != None:
-            for i in self.feeds:
-                feed = ET.Element('feed')
-                feed.text = i
-                repo.append(feed)
-                del feed
-        return repo
-
-
-    def add(self, base):
-        res = 1
-        first_s = True
-
-        self.sources = self.filter_protocols(self.sources)
-        if not self.sources:
-            msg = 'Overlay.add() error: overlay "%(name)s" does not support '\
-                  ' the given\nprotocol(s) %(protocol)s and cannot be '\
-                  'installed.'\
-                  % {'name': self.name,
-                     'protocol': str(self.config['protocol_filter'])}
-            self.output.error(msg)
-            return 1
-
-        for s in self.sources:
-            if not first_s:
-                self.output.info('\nTrying next source of listed sources...', 4)
-            try:
-                res = s.add(base)
-                if res == 0:
-                    # Worked, throw other sources away
-                    self.sources = [s]
-                    break
-            except Exception as error:
-                self.output.warn(str(error), 4)
-            first_s = False
-        return res
-
-
-    def update(self, base, available_srcs):
-        res = 1
-        first_src = True
-        result = False
-
-        self.sources = self.filter_protocols(self.sources)
-        available_srcs = self.filter_protocols(available_srcs)
-        if not self.sources or not available_srcs:
-            msg = 'Overlay.update() error: overlay "%(name)s" does not support'\
-                  ' the given protocol(s) %(protocol)s and cannot be updated.'\
-                  % {'name': self.name,
-                     'protocol': str(self.config['protocol_filter'])}
-            self.output.error(msg)
-            return 1
-
-        if isinstance(available_srcs, str):
-            available_srcs = [available_srcs]
-
-        if self.sources[0].type in self.config.get_option('support_url_updates'):
-            for src in available_srcs:
-                if not first_src:
-                    self.output.info('\nTrying next source of listed sources...', 4)
-                try:
-                    res = self.sources[0].update(base, src)
-                    if res == 0:
-                        # Updating it worked, no need to bother 
-                        # checking other sources.
-                        self.sources[0].src = src
-                        result = True
-                        break
-                except Exception as error:
-                    self.output.warn(str(error), 4)
-                first_s = False
-        else:
-            # Update the overlay source with the remote
-            # source, assuming that it's telling the truth
-            # so it can be written to the installed.xml.
-            msg = 'Overlay.update(); type: "%(src_type)s does not support '\
-                  'source URL updating' % {'src_type': self.sources[0].type}
-            self.output.debug(msg, 4)
-
-            self.sources[0].src = available_srcs.pop()
-            result = True
-        return (self.sources, result)
-
-
-    def sync(self, base):
-        msg = 'Overlay.sync(); name = %(name)s' % {'name': self.name}
-        self.output.debug(msg, 4)
-
-        assert len(self.sources) == 1
-        return self.sources[0].sync(base)
-
-
-    def delete(self, base):
-        assert len(self.sources) == 1
-        return self.sources[0].delete(base)
-
-
     def get_infostr(self):
         '''
         Gives more detailed string of overlay information.
@@ -563,6 +561,17 @@ class Overlay(object):
         return encoder(result, self._encoding_)
 
 
+    def is_supported(self):
+        return any(e.is_supported() for e in self.sources)
+
+
+    def set_priority(self, priority):
+        '''
+        Set the priority of this overlay.
+        '''
+        self.priority = int(priority)
+
+
     def short_list(self, width = 0):
         '''
         Return a shortened list of overlay information.
@@ -593,15 +602,13 @@ class Overlay(object):
         return encoder(name + mtype + source, self._encoding_)
 
 
-    def is_official(self):
+    def source_types(self):
+        for i in self.sources:
+            yield i.type    def is_official(self):
         '''
         Is the overlay official?
         '''
         return self.status == 'official'
-
-
-    def is_supported(self):
-        return any(e.is_supported() for e in self.sources)
 
 
     def source_uris(self):
@@ -609,6 +616,147 @@ class Overlay(object):
             yield i.src
 
 
-    def source_types(self):
+    def sync(self, base):
+        msg = 'Overlay.sync(); name = %(name)s' % {'name': self.name}
+        self.output.debug(msg, 4)
+
+        assert len(self.sources) == 1
+        return self.sources[0].sync(base)
+
+
+    def to_json(self):
+        '''
+        Convert to json.
+        '''
+        repo = {}
+
+        repo['@priority'] = str(self.priority)
+        repo['@quality'] = self.quality
+        if self.status != None:
+            repo['@status'] = self.status
+        repo['name'] = self.name
+        repo['description'] = []
+        for i in self.descriptions:
+            repo['description'].append(i)
+        if self.homepage != None:
+            repo['homepage'] = self.homepage
+        if self.irc != None:
+            repo['irc'] = self.irc
+        repo['owner'] = {}
+        repo['owner']['email'] = self.owner_email
+        if self.owner_name != None:
+            repo['owner']['name'] = self.owner_name
+        repo['source'] = []
         for i in self.sources:
-            yield i.type
+            source = {'@type': i.__class__.type_key}
+            if i.branch:
+                source['@branch'] = i.branch
+            source['#text'] = i.src
+            repo['source'].append(source)
+        if self.feeds != None:
+            repo['feed'] = []
+            for feed in self.feeds:
+                repo['feed'].append(feed)
+
+        return repo
+
+
+    def to_xml(self):
+        '''
+        Convert to xml.
+        '''
+        repo = ET.Element('repo')
+        if self.status != None:
+            repo.attrib['status'] = self.status
+        repo.attrib['quality'] = self.quality
+        repo.attrib['priority'] = str(self.priority)
+        name = ET.Element('name')
+        name.text = self.name
+        repo.append(name)
+        for i in self.descriptions:
+            desc = ET.Element('description')
+            desc.text = i
+            repo.append(desc)
+            del desc
+        if self.homepage != None:
+            homepage = ET.Element('homepage')
+            homepage.text = self.homepage
+            repo.append(homepage)
+        if self.irc != None:
+            irc = ET.Element('irc')
+            irc.text = self.irc
+            repo.append(irc)
+        owner = ET.Element('owner')
+        repo.append(owner)
+        owner_email = ET.Element('email')
+        owner_email.text = self.owner_email
+        owner.append(owner_email)
+        if self.owner_name != None:
+            owner_name = ET.Element('name')
+            owner_name.text = self.owner_name
+            owner.append(owner_name)
+        for i in self.sources:
+            if not i.branch:
+                source = ET.Element('source', type=i.__class__.type_key)
+            else:
+                source = ET.Element('source', type=i.__class__.type_key, branch=i.branch)
+            source.text = i.src
+            repo.append(source)
+            del source
+        for i in self.sources:
+            # NOTE: Two loops on purpose so the
+            # hooks are called with all sources in
+            i.to_xml_hook(repo)
+        if self.feeds != None:
+            for i in self.feeds:
+                feed = ET.Element('feed')
+                feed.text = i
+                repo.append(feed)
+                del feed
+        return repo
+
+
+    def update(self, base, available_srcs):
+        res = 1
+        first_src = True
+        result = False
+
+        self.sources = self.filter_protocols(self.sources)
+        available_srcs = self.filter_protocols(available_srcs)
+        if not self.sources or not available_srcs:
+            msg = 'Overlay.update() error: overlay "%(name)s" does not support'\
+                  ' the given protocol(s) %(protocol)s and cannot be updated.'\
+                  % {'name': self.name,
+                     'protocol': str(self.config['protocol_filter'])}
+            self.output.error(msg)
+            return 1
+
+        if isinstance(available_srcs, str):
+            available_srcs = [available_srcs]
+
+        if self.sources[0].type in self.config.get_option('support_url_updates'):
+            for src in available_srcs:
+                if not first_src:
+                    self.output.info('\nTrying next source of listed sources...', 4)
+                try:
+                    res = self.sources[0].update(base, src)
+                    if res == 0:
+                        # Updating it worked, no need to bother 
+                        # checking other sources.
+                        self.sources[0].src = src
+                        result = True
+                        break
+                except Exception as error:
+                    self.output.warn(str(error), 4)
+                first_s = False
+        else:
+            # Update the overlay source with the remote
+            # source, assuming that it's telling the truth
+            # so it can be written to the installed.xml.
+            msg = 'Overlay.update(); type: "%(src_type)s does not support '\
+                  'source URL updating' % {'src_type': self.sources[0].type}
+            self.output.debug(msg, 4)
+
+            self.sources[0].src = available_srcs.pop()
+            result = True
+        return (self.sources, result)
