@@ -86,17 +86,6 @@ class DBHandler(object):
         self.output.debug('Initializing XML overlay list handler', 8)
 
 
-    def __eq__(self, other):
-        for key in set(self.overlays.keys()) | set(other.overlays.keys()):
-            if self.overlays[key] != other.overlays[key]:
-                return False
-        return True
-
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
-
     def _broken_catalog_hint(self):
         this_function_name = sys._getframe().f_code.co_name
 
