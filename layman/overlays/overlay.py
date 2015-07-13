@@ -70,7 +70,7 @@ class Overlay(object):
         elif ovl_dict is not None:
             self.from_dict(ovl_dict, ignore)
         elif json is not None:
-            self.from_json(ovl_dict, ignore)
+            self.from_json(json, ignore)
 
 
     def __eq__(self, other):
@@ -257,17 +257,17 @@ class Overlay(object):
         '''
         Process a json overlay definition
         '''
-        msg = 'Overlay from_json(); overlay %(ovl)s' % {'ovl': str(overlay)}
+        msg = 'Overlay from_json(); overlay %(ovl)s' % {'ovl': str(json)}
         self.output.debug(msg, 6)
 
-        _name = overlay['name']
+        _name = json['name']
         if _name != None:
             self.name = encode(_name)
         else:
             msg = 'Overlay from_json(), "name" entry missing from json!'
             raise Exception(msg)
 
-        _sources = overlay['source']
+        _sources = json['source']
 
         if _sources == None:
             msg = 'Overlay from_json(), "%(name)s" is missing a "source"'\
@@ -300,13 +300,13 @@ class Overlay(object):
 
         self.sources = [create_json_overlay_source(e) for e in _sources]
 
-        if 'name' in overlay['owner']:
-            self.owner_name = encode(overlay['owner']['name'])
+        if 'name' in json['owner']:
+            self.owner_name = encode(json['owner']['name'])
         else:
             self.owner_name = None
 
-        if 'email' in overlay['owner']:
-            self.owner_email = encode(overlay['owner']['email'])
+        if 'email' in json['owner']:
+            self.owner_email = encode(json['owner']['email'])
         else:
             self.owner_email = None
             msg = 'Overlay from_json(), "%(name)s" is missing an "owner.email"'\
@@ -316,49 +316,49 @@ class Overlay(object):
             elif ignore == 1:
                 self.output.warn(msg, 4)
 
-        if 'description' in overlay:
+        if 'description' in json:
             self.descriptions = []
-            _descs = overlay['description']
+            _descs = json['description']
             for d in _descs:
-                d = WHITESPACE_REGEX.sub(' ', d['#text'])
+                d = WHITESPACE_REGEX.sub(' ', d)
                 self.descriptions.append(encode(d))
         else:
             self.descriptions = ['']
+            msg = 'Overlay from_json() "%(name)s" is missing description'\
+                  'entry!' % {'name': self.name}
             if not ignore:
-                raise Exception('Overlay from_json(), "' + self.name +
-                    '" is missing a "description" entry!')
+                raise Exception(msg)
             elif ignore == 1:
-                self.output.warn('Overlay from_json(), "' + self.name +
-                    '" is missing a "description" entry!', 4)
+                self.output.warn(msg, 4)
 
-        if '@status' in overlay:
-            self.status = encode(overlay['@status'])
+        if '@status' in json:
+            self.status = encode(json['@status'])
         else:
             self.status = None
 
         self.quality = 'experimental'
-        if '@quality' in overlay:
-            if overlay['@quality'] in set(QUALITY_LEVELS):
-                self.quality = encode(overlay['@quality'])
+        if '@quality' in json:
+            if json['@quality'] in set(QUALITY_LEVELS):
+                self.quality = encode(json['@quality'])
 
-        if '@priority' in overlay:
-            self.priority = int(overlay['@priority'])
+        if '@priority' in json:
+            self.priority = int(json['@priority'])
         else:
             self.priority = 50
 
-        if 'homepage' in overlay:
-            self.homepage = encode(overlay['homepage'])
+        if 'homepage' in json:
+            self.homepage = encode(json['homepage'])
         else:
             self.homepage = None
 
-        if 'feed' in overlay:
+        if 'feed' in json:
             self.feeds = [encode(e) \
-                for e in overlay['feed']]
+                for e in json['feed']]
         else:
             self.feeds = None
 
-        if 'irc' in overlay:
-            self.irc = encode(overlay['irc'])
+        if 'irc' in json:
+            self.irc = encode(json['irc'])
         else:
             self.irc = None
 
