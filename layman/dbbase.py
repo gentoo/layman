@@ -167,12 +167,17 @@ class DbBase(object):
         return
 
 
-    def read_db(self, path, text=None):
+    def read_db(self, path, text=None, text_type=None):
         '''
         Read the overlay database for installed overlay definitions.
         '''
-        for types in self.db_types:
-            db_ctl = self.mod_ctl.get_class(types)(self.config,
+        if text and text_type:
+            types = [text_type]
+        else:
+            types = self.db_types
+
+        for t in types:
+            db_ctl = self.mod_ctl.get_class(t)(self.config,
                      self.overlays,
                      self.paths,
                      self.ignore,
