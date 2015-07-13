@@ -82,7 +82,7 @@ class DbBase(object):
            ignore_init_read_errors=False, allow_missing=False):
 
         self.config = config
-        self.db_types = config['db_type']
+        self.db_type = config['db_type']
         self.ignore = ignore
         self.ignore_init_read_errors = ignore_init_read_errors
         self.mod_ctl = Modules(path=MOD_PATH,
@@ -96,8 +96,16 @@ class DbBase(object):
 
         self.output.debug('Initializing overlay list handler', 8)
 
-        if isinstance(self.db_types, STR):
-            self.db_types = [x.strip() for x in self.db_types.split(',')]
+        if isinstance(self.db_type, STR):
+            self.db_type = [x.strip() for x in self.db_type.split(',')]
+
+        if len(self.db_type) > 1:
+            msg = 'DbBase; warning, multiple instances of "db_type" found:'\
+                  ' %(db_types)s.\nDefaulting to: %(db_type)s'\
+                  % {'db_types': self.db_type, 'db_type': self.db_type[0]}
+            self.output.warn(msg)
+
+        self.db_type = self.db_type[0]
 
         for path in self.paths:
             if not os.path.exists(path):
@@ -172,32 +180,34 @@ class DbBase(object):
         Read the overlay database for installed overlay definitions.
         '''
         if text and text_type:
-            types = [text_type]
+            db_type = text_type
         else:
-            types = self.db_types
+            db_type = self.db_type
 
-        for t in types:
-            db_ctl = self.mod_ctl.get_class(t)(self.config,
-                     self.overlays,
-                     self.paths,
-                     self.ignore,
-                     self.ignore_init_read_errors)
+        #Added to keep xml functionality for cached overlay XML definitions
+        if 'cache' in path and '.xml' in path:
+            db_type = 'xml_db'
 
-            db_ctl.read_db(path, text=text)
+        db_ctl = self.mod_ctl.get_class(db_type)(self.config,
+                 self.overlays,
+                 self.paths,
+                 self.ignore,
+                 self.ignore_init_read_errors)
+
+        db_ctl.read_db(path, text=text)
 
 
     def write(self, path):
         '''
         Write the list of overlays to a file.
         '''
-        for types in self.db_types:
-            db_ctl = self.mod_ctl.get_class(types)(self.config,
-                     self.overlays,
-                     self.paths,
-                     self.ignore,
-                     self.ignore_init_read_errors)
+        db_ctl = self.mod_ctl.get_class(self.db_type)(self.config,
+                 self.overlays,
+                 self.paths,
+                 self.ignore,
+                 self.ignore_init_read_errors)
 
-            db_ctl.write(path)
+        db_ctl.write(path)
 
 
     def select(self, overlay):
