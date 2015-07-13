@@ -313,7 +313,7 @@ class Overlay(object):
                   'entry!' % {'name': self.name}
             if not ignore:
                 raise Exception(msg)
-            else ignore == 1:
+            elif ignore == 1:
                 self.output.warn(msg, 4)
 
          if 'description' in overlay:
