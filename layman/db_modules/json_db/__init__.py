@@ -15,9 +15,9 @@ module_spec = {
             'description': __doc__,
             'functions': ['add_new', 'read_db', 'write'],
             'func_desc': {
-                'add_new': 'Adds overlay from provided document text',
+                'add_new': 'Adds overlay(s) from provided database text',
                 'read_db': 'Reads the list of overlays from database file',
-                'write': 'Writes the list of overlays to database file',
+                'write'  : 'Writes the list of overlays to database file',
             },
         }
     }
