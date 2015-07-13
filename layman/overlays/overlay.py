@@ -157,8 +157,7 @@ class Overlay(object):
         if _name != None:
             self.name = encode(_name)
         else:
-            msg = 'Overlay from dict(), "%(name)s" is missing a "name" entry!'\
-                  % {'name': self.name}
+            msg = 'Overlay from_dict(), "name" entry missing from dictionary!'
             raise Exception(msg)
 
         _sources = overlay['source']
@@ -383,8 +382,7 @@ class Overlay(object):
         elif 'name' in xml.attrib:
             self.name = encode(xml.attrib['name'])
         else:
-            msg = 'Overlay from_xml(), "%(name)s" is missing a "name" entry!'\
-                  % {'name': self.name}
+            msg = 'Overlay from_xml(), "name" entry missing from xml!'
             raise Exception(msg)
 
         _sources = xml.findall('source')
