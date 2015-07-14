@@ -522,11 +522,11 @@ class MakeOverlayXML(unittest.TestCase):
 
         ovl_dict = {
                     'name': 'wrobel',
-                    'descriptions': ['Test'],
+                    'description': ['Test'],
                     'owner_name': 'nobody',
                     'owner_email': 'nobody@gentoo.org',
                     'status': 'official',
-                    'sources': [['https://overlays.gentoo.org/svn/dev/wrobel',
+                    'source': [['https://overlays.gentoo.org/svn/dev/wrobel',
                                  'svn', '']],
                     'priority': '10',
                    }
