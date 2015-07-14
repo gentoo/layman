@@ -154,6 +154,7 @@ class AddDeleteDB(unittest.TestCase):
 
         my_opts = {'installed'     : temp_xml_path,
                    'conf_type'     : ['make.conf', 'repos.conf'],
+                   'db_type'       : 'xml_db',
                    'nocheck'       : 'yes',
                    'make_conf'     : make_conf,
                    'repos_conf'    : repo_conf,
@@ -480,6 +481,7 @@ class FormatBranchCategory(unittest.TestCase):
     def _run(self, number):
         #config = {'output': Message()}
         config = BareConfig()
+
         # Discuss renaming files to "branch-%d.xml"
         filename1 = os.path.join(HERE, 'testfiles',
                 'subpath-%d.xml' % number)
@@ -554,7 +556,7 @@ class OverlayObjTest(unittest.TestCase):
         overlays = document.findall('overlay') + document.findall('repo')
         output = Message()
 
-        ovl_a = Overlay({'output': output}, overlays[0])
+        ovl_a = Overlay({'output': output, 'db_type': 'xml_db'}, xml=overlays[0])
         self.assertEqual(ovl_a.name, 'wrobel')
         self.assertEqual(ovl_a.is_official(), True)
         url = ['https://overlays.gentoo.org/svn/dev/wrobel']
@@ -563,7 +565,7 @@ class OverlayObjTest(unittest.TestCase):
         self.assertEqual(ovl_a.descriptions, ['Test'])
         self.assertEqual(ovl_a.priority, 10)
 
-        ovl_b = Overlay({'output': output}, overlays[1])
+        ovl_b = Overlay({'output': output, 'db_type': 'xml_db'}, xml=overlays[1])
         self.assertEqual(ovl_b.is_official(), False)
 
 
@@ -572,7 +574,7 @@ class OverlayObjTest(unittest.TestCase):
         overlays = document.findall('overlay') + document.findall('repo')
         output = Message()
 
-        ovl = Overlay({'output': output}, overlays[0])
+        ovl = Overlay({'output': output, 'db_type': 'xml_db'}, xml=overlays[0])
         test_infostr = 'wrobel\n~~~~~~\nSource  : '\
                        'https://overlays.gentoo.org/svn/dev/wrobel\nContact '\
                        ': nobody@gentoo.org\nType    : Subversion; Priority: '\
@@ -586,7 +588,7 @@ class OverlayObjTest(unittest.TestCase):
         overlays = document.findall('overlay') + document.findall('repo')
         output = Message()
 
-        ovl = Overlay({'output': output}, overlays[0])
+        ovl = Overlay({'output': output, 'db_type': 'xml_db'}, xml=overlays[0])
         test_short_list = 'wrobel                    [Subversion] '\
                           '(https://o.g.o/svn/dev/wrobel         )'
         self.assertEqual(ovl.short_list(80).decode('utf-8'), test_short_list)
