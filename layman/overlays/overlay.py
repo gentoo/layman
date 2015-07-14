@@ -160,10 +160,13 @@ class Overlay(object):
             msg = 'Overlay from_dict(), "name" entry missing from dictionary!'
             raise Exception(msg)
 
-        _sources = overlay['source']
+        if 'source' in overlay:
+            _sources = overlay['source']
+        else:
+            _sources = None
 
         if _sources == None:
-            msg = 'Overlay from_dict(), "%(name)s" is missing a "source"'\
+            msg = 'Overlay from_dict(), "%(name)s" is missing a "source" '\
                   'entry!' % {'name': self.name}
             raise Exception(msg)
 
@@ -267,10 +270,13 @@ class Overlay(object):
             msg = 'Overlay from_json(), "name" entry missing from json!'
             raise Exception(msg)
 
-        _sources = json['source']
+        if 'source' in json:
+            _sources = json['source']
+        else:
+            _sources = None
 
         if _sources == None:
-            msg = 'Overlay from_json(), "%(name)s" is missing a "source"'\
+            msg = 'Overlay from_json(), "%(name)s" is missing a "source" '\
                   'entry!' % {'name': self.name}
             raise Exception(msg)
 
