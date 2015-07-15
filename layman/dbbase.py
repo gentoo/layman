@@ -179,10 +179,10 @@ class DbBase(object):
         '''
         Read the overlay database for installed overlay definitions.
         '''
+        db_type = self.db_type
+
         if text and text_type:
             db_type = text_type
-        else:
-            db_type = self.db_type
 
         #Added to keep xml functionality for cached overlay XML definitions
         if 'cache' in path and '.xml' in path:
@@ -197,11 +197,16 @@ class DbBase(object):
         db_ctl.read_db(path, text=text)
 
 
-    def write(self, path):
+    def write(self, path, migrate_type=None):
         '''
         Write the list of overlays to a file.
         '''
-        db_ctl = self.mod_ctl.get_class(self.db_type)(self.config,
+        db_type = self.db_type
+
+        if migrate_type:
+            db_type = migrate_type
+
+        db_ctl = self.mod_ctl.get_class(db_type)(self.config,
                  self.overlays,
                  self.paths,
                  self.ignore,
