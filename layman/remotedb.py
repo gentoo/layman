@@ -280,7 +280,7 @@ class RemoteDB(DbBase):
     def _check_download(self, olist, url):
 
         try:
-            self.read_db(url, text=olist, text_type="xml_db")
+            self.read_db(url, text=olist, text_type="xml")
         except Exception as error:
             self.output.debug("RemoteDB._check_download(), url=%s \nolist:\n"
                 % url,2)

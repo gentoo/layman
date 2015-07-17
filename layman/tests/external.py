@@ -154,7 +154,7 @@ class AddDeleteDB(unittest.TestCase):
 
         my_opts = {'installed'     : temp_xml_path,
                    'conf_type'     : ['make.conf', 'repos.conf'],
-                   'db_type'       : 'xml_db',
+                   'db_type'       : 'xml',
                    'nocheck'       : 'yes',
                    'make_conf'     : make_conf,
                    'repos_conf'    : repo_conf,
@@ -556,7 +556,7 @@ class OverlayObjTest(unittest.TestCase):
         overlays = document.findall('overlay') + document.findall('repo')
         output = Message()
 
-        ovl_a = Overlay({'output': output, 'db_type': 'xml_db'}, xml=overlays[0])
+        ovl_a = Overlay({'output': output, 'db_type': 'xml'}, xml=overlays[0])
         self.assertEqual(ovl_a.name, 'wrobel')
         self.assertEqual(ovl_a.is_official(), True)
         url = ['https://overlays.gentoo.org/svn/dev/wrobel']
@@ -565,7 +565,7 @@ class OverlayObjTest(unittest.TestCase):
         self.assertEqual(ovl_a.descriptions, ['Test'])
         self.assertEqual(ovl_a.priority, 10)
 
-        ovl_b = Overlay({'output': output, 'db_type': 'xml_db'}, xml=overlays[1])
+        ovl_b = Overlay({'output': output, 'db_type': 'xml'}, xml=overlays[1])
         self.assertEqual(ovl_b.is_official(), False)
 
 
@@ -574,7 +574,7 @@ class OverlayObjTest(unittest.TestCase):
         overlays = document.findall('overlay') + document.findall('repo')
         output = Message()
 
-        ovl = Overlay({'output': output, 'db_type': 'xml_db'}, xml=overlays[0])
+        ovl = Overlay({'output': output, 'db_type': 'xml'}, xml=overlays[0])
         test_infostr = 'wrobel\n~~~~~~\nSource  : '\
                        'https://overlays.gentoo.org/svn/dev/wrobel\nContact '\
                        ': nobody@gentoo.org\nType    : Subversion; Priority: '\
@@ -588,7 +588,7 @@ class OverlayObjTest(unittest.TestCase):
         overlays = document.findall('overlay') + document.findall('repo')
         output = Message()
 
-        ovl = Overlay({'output': output, 'db_type': 'xml_db'}, xml=overlays[0])
+        ovl = Overlay({'output': output, 'db_type': 'xml'}, xml=overlays[0])
         test_short_list = 'wrobel                    [Subversion] '\
                           '(https://o.g.o/svn/dev/wrobel         )'
         self.assertEqual(ovl.short_list(80).decode('utf-8'), test_short_list)
@@ -639,7 +639,7 @@ class ReadWriteSelectListDbBase(unittest.TestCase):
         output = Message()
         config = {
                   'output': output,
-                  'db_type': 'xml_db',
+                  'db_type': 'xml',
                   'svn_command': '/usr/bin/svn',
                   'rsync_command':'/usr/bin/rsync'
                  }
@@ -674,7 +674,7 @@ class ReadWriteSelectListDbBase(unittest.TestCase):
     def read_db(self):
         output = Message()
         config = {'output': output,
-                  'db_type': 'xml_db',}
+                  'db_type': 'xml',}
         db = DbBase(config, [HERE + '/testfiles/global-overlays.xml', ])
         keys = sorted(db.overlays)
         self.assertEqual(keys, ['wrobel', 'wrobel-stable'])
@@ -686,7 +686,7 @@ class ReadWriteSelectListDbBase(unittest.TestCase):
     def select_db(self):
         output = Message()
         config = {'output': output,
-                  'db_type': 'xml_db',}
+                  'db_type': 'xml',}
         db = DbBase(config, [HERE + '/testfiles/global-overlays.xml', ])
         url = ['rsync://gunnarwrobel.de/wrobel-stable']
         self.assertEqual(list(db.select('wrobel-stable').source_uris()), url)
@@ -698,12 +698,12 @@ class ReadWriteSelectListDbBase(unittest.TestCase):
         config = BareConfig()
 
         a = DbBase(config, [HERE + '/testfiles/global-overlays.xml', ])
-        b = DbBase({'output': Message(), 'db_type': 'xml_db'}, [test_xml,])
+        b = DbBase({'output': Message(), 'db_type': 'xml'}, [test_xml,])
 
         b.overlays['wrobel-stable'] = a.overlays['wrobel-stable']
         b.write(test_xml)
 
-        c = DbBase({'output': Message(), 'db_type': 'xml_db'}, [test_xml,])
+        c = DbBase({'output': Message(), 'db_type': 'xml'}, [test_xml,])
         keys = sorted(c.overlays)
         self.assertEqual(keys, ['wrobel-stable'])
 

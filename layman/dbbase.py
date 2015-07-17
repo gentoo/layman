@@ -105,7 +105,7 @@ class DbBase(object):
                   % {'db_types': self.db_type, 'db_type': self.db_type[0]}
             self.output.warn(msg)
 
-        self.db_type = self.db_type[0]
+        self.db_type = self.db_type[0] + '_db'
 
         for path in self.paths:
             if not os.path.exists(path):
@@ -182,7 +182,7 @@ class DbBase(object):
         db_type = self.db_type
 
         if text and text_type:
-            db_type = text_type
+            db_type = text_type + '_db'
 
         #Added to keep xml functionality for cached overlay XML definitions
         if 'cache' in path and '.xml' in path:
@@ -204,7 +204,7 @@ class DbBase(object):
         db_type = self.db_type
 
         if migrate_type:
-            db_type = migrate_type
+            db_type = migrate_type + '_db'
 
         db_ctl = self.mod_ctl.get_class(db_type)(self.config,
                  self.overlays,

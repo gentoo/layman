@@ -100,7 +100,7 @@ class BareConfig(object):
             'auto_sync': 'No',
             'check_official': 'Yes',
             'conf_type': 'repos.conf',
-            'db_type': 'xml_db',
+            'db_type': 'xml',
             'require_repoconfig': 'Yes',
             'clean_archive': 'yes',
             'make_conf' : '%(storage)s/make.conf',
