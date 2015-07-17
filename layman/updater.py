@@ -5,11 +5,14 @@ from __future__ import unicode_literals
 
 import argparse
 import os
+import shutil
 import sys
 
 from layman.api           import LaymanAPI
 from layman.compatibility import fileopen
 from layman.config        import OptionConfig
+from layman.constants     import DB_TYPES
+from layman.db            import DB
 from layman.version       import VERSION
 
 if sys.hexversion >= 0x30200f0:
@@ -56,6 +59,8 @@ class Main(object):
             help = 'Print the NEW INSTALL help messages.')
         self.parser.add_argument("-c", "--config",
             help='the path to config file')
+        self.parser.add_argument("-m", "--migrate_db",
+            help="the database you'd like to migrate to")
         self.parser.add_argument("-R", "--rebuild", action='store_true',
             help='rebuild the Package Manager config file')
         self.parser.add_argument('--version', action='version',
@@ -88,7 +93,8 @@ class Main(object):
             self.print_instructions()
         elif not self.check_is_new(self.args.rebuild):
             self.rename_check()
-
+        if self.args.migrate_db:
+            self.migrate_database(self.args.migrate_db)
 
     def check_is_new(self, rebuild=False):
         print_instructions = False
@@ -104,6 +110,61 @@ class Main(object):
             self.print_instructions()
             return True
         return False
+
+
+
+    def migrate_database(self, migrate_type):
+        if migrate_type not in DB_TYPES:
+            msg = 'migrate_database() error; invalid migration type: '\
+                  '"%(db_type)s"' % {'db_type': migrate_type}
+            self.output.error('  ' + msg)
+            raise Exception(msg)
+
+        db = DB(self.config)
+        installed = self.config['installed']
+        backup_name = installed + '.' + self.config['db_type']
+        old_ext = os.path.splitext(installed)[1]
+        new_name = installed.replace(old_ext, '.db')
+
+        if not os.path.isfile(installed):
+            msg = 'migrate_database() error; database file "%(loc)s" does not '\
+                  'exist!' % {'loc': backup_name}
+            self.output.error('  ' + msg)
+            raise Exception(msg)
+
+        msg = '  Creating backup of "%(db)s" at:\n "%(loc)s"\n'\
+              % {'db': installed, 'loc': backup_name}
+        self.output.info(msg)
+
+        try:
+            shutil.copy(installed, backup_name)
+        except IOError as err:
+            msg = '  migrate_database() error; failed to back up old database '\
+                  'file.\n  Error was: %(err)s' % {'err': err}
+            self.output.error(msg)
+            raise err
+
+        db.write(installed, migrate_type=migrate_type)
+
+        try:
+            os.rename(installed, new_name)
+        except OSError as err:
+            msg = '  migrate_database() error: failed to rename old database '\
+                  ' to "%(name)s".\n  Error was: %(err)s' % {'err': err}
+            self.output.error(msg)
+            raise err
+
+        msg = '  Successfully migrated database from "%(from_type)s" to '\
+              '"%(to_type)s"\n' % {'from_type': self.config['db_type'],
+                                   'to_type': migrate_type}
+        self.output.info(msg)
+
+        self.set_db_type(migrate_type, os.path.basename(installed))
+
+        msg = '  Warning: Please be sure to update your config file via '\
+              'the\n  `dispatch-conf` command or you *will* lose database '\
+              'functionality!\n'
+        self.output.warn(msg)
 
 
     def rename_check(self):
@@ -209,3 +270,45 @@ class Main(object):
         from layman.config_modules.reposconf.reposconf import ConfigHandler
         repos_conf = ConfigHandler(self.config, overlays)
         repos_conf.write()
+
+    def set_db_type(self, migrate_type, installed):
+        if sys.hexversion >= 0x30200f0:
+            import configparser as ConfigParser
+        else:
+            import ConfigParser
+
+        config = ConfigParser.ConfigParser()
+        config_path = self.config['config']\
+                      % {'configdir': self.config['configdir']}
+        new_conf = os.path.dirname(config_path) + '/' + '._cfg0000_' +\
+                   os.path.basename(config_path)
+
+        try:
+            shutil.copy(config_path, new_conf)
+        except IOError as err:
+            msg = '  set_db_type() error; failed to copy "%(old)s" to '\
+                  '"%(new)s\n  Error was: %(err)s"' % {'old': config_path,
+                                                       'new': new_conf,
+                                                       'err': err}
+            self.output.error(msg)
+            raise err
+
+        if not os.path.isfile(new_conf):
+            msg = 'set_db_type() error; failed to read config at "%(path)s".'\
+                  % {'path': new_conf}
+            self.output.error('  ' + msg)
+            raise Exception(msg)
+
+        try:
+            config.read(new_conf)
+        except Exception as err:
+            msg = '  set_db_type() error; failed to read config at "%(path)s".'\
+                  '\n  Error was: "%(err)s"' % {'path': new_conf, 'err': err}
+            self.output.error(msg)
+            raise err
+
+        config.set('MAIN', 'db_type', migrate_type)
+        config.set('MAIN', 'installed', '%(storage)s/'+installed)
+
+        with fileopen(new_conf, 'w') as laymanconf:
+            config.write(laymanconf)
