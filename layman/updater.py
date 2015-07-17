@@ -3,15 +3,14 @@
 
 from __future__ import unicode_literals
 
-from sys import stderr
+import argparse
 import os
 import sys
-import argparse
 
-from layman.config import OptionConfig
-from layman.api import LaymanAPI
-from layman.version import VERSION
+from layman.api           import LaymanAPI
 from layman.compatibility import fileopen
+from layman.config        import OptionConfig
+from layman.version       import VERSION
 
 if sys.hexversion >= 0x30200f0:
     STR = str
