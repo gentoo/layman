@@ -7,6 +7,7 @@ import argparse
 import os
 import shutil
 import sys
+import re
 
 from layman.api           import LaymanAPI
 from layman.compatibility import fileopen
@@ -122,8 +123,10 @@ class Main(object):
 
         db = DB(self.config)
         installed = self.config['installed']
-        backup_name = installed + '.' + self.config['db_type']
         old_ext = os.path.splitext(installed)[1]
+        backup_name = installed + '.' + self.config['db_type']
+        if old_ext == self.config['db_type']:
+            backup_name = installed + '.bak'
         new_name = installed.replace(old_ext, '.db')
 
         if not os.path.isfile(installed):
@@ -271,17 +274,15 @@ class Main(object):
         repos_conf = ConfigHandler(self.config, overlays)
         repos_conf.write()
 
-    def set_db_type(self, migrate_type, installed):
-        if sys.hexversion >= 0x30200f0:
-            import configparser as ConfigParser
-        else:
-            import ConfigParser
 
-        config = ConfigParser.ConfigParser()
+    def set_db_type(self, migrate_type, installed):
         config_path = self.config['config']\
                       % {'configdir': self.config['configdir']}
+        db_type_found = False
+        installed_found = False
         new_conf = os.path.dirname(config_path) + '/' + '._cfg0000_' +\
                    os.path.basename(config_path)
+        new_lines = []
 
         try:
             shutil.copy(config_path, new_conf)
@@ -300,15 +301,28 @@ class Main(object):
             raise Exception(msg)
 
         try:
-            config.read(new_conf)
+            with fileopen(new_conf, 'r') as laymanconf:
+                lines = laymanconf.readlines()
         except Exception as err:
             msg = '  set_db_type() error; failed to read config at "%(path)s".'\
                   '\n  Error was: "%(err)s"' % {'path': new_conf, 'err': err}
             self.output.error(msg)
             raise err
 
-        config.set('MAIN', 'db_type', migrate_type)
-        config.set('MAIN', 'installed', '%(storage)s/'+installed)
+        for line in lines:
+            if re.search('^#*\s*db_type\s*:', line):
+                db_type_found = True
+                line = 'db_type : ' + migrate_type + '\n'
+            if re.search('^#*\s*installed\s*:', line):
+                installed_found = True
+                line = 'installed : %(storage)s/' + installed + '\n'
+            new_lines.append(line)
+
+        if not db_type_found:
+            new_lines.append('db_type : ' + migrate_type + '\n')
+        if not installed_found:
+            new_lines.append('installed : %(storage)s/' + installed + '\n')
 
         with fileopen(new_conf, 'w') as laymanconf:
-            config.write(laymanconf)
+            for line in new_lines:
+                laymanconf.write(line)
