@@ -673,6 +673,7 @@ class ReadWriteSelectListDbBase(unittest.TestCase):
 
     def read_db(self):
         output = Message()
+        # First test if XML databasing works.
         config = {'output': output,
                   'db_type': 'xml',}
         db = DbBase(config, [HERE + '/testfiles/global-overlays.xml', ])
@@ -681,6 +682,15 @@ class ReadWriteSelectListDbBase(unittest.TestCase):
 
         url = ['rsync://gunnarwrobel.de/wrobel-stable']
         self.assertEqual(list(db.overlays['wrobel-stable'].source_uris()), url)
+
+        # Test JSON databasing after.
+        config['db_type'] = 'json'
+        db = DbBase(config, [HERE + '/testfiles/global-overlays.json', ])
+        keys = sorted(db.overlays)
+        self.assertEqual(keys, ['twitch153', 'wrobel-stable'])
+
+        url = ['git://github.com/twitch153/ebuilds.git']
+        self.assertEqual(list(db.overlays['twitch153'].source_uris()), url)
 
 
     def select_db(self):
@@ -691,10 +701,16 @@ class ReadWriteSelectListDbBase(unittest.TestCase):
         url = ['rsync://gunnarwrobel.de/wrobel-stable']
         self.assertEqual(list(db.select('wrobel-stable').source_uris()), url)
 
+        config['db_type'] = 'json'
+        db = DbBase(config, [HERE + '/testfiles/global-overlays.json', ])
+        url = ['git://github.com/twitch153/ebuilds.git']
+        self.assertEqual(list(db.select('twitch153').source_uris()), url)
+
 
     def write_db(self):
         tmpdir = tempfile.mkdtemp(prefix='laymantmp_')
         test_xml = os.path.join(tmpdir, 'test.xml')
+        test_json = os.path.join(tmpdir, 'test.json')
         config = BareConfig()
 
         a = DbBase(config, [HERE + '/testfiles/global-overlays.xml', ])
@@ -707,8 +723,20 @@ class ReadWriteSelectListDbBase(unittest.TestCase):
         keys = sorted(c.overlays)
         self.assertEqual(keys, ['wrobel-stable'])
 
+        config.set_option('db_type', 'json')
+        a = DbBase(config, [HERE + '/testfiles/global-overlays.json', ])
+        b = DbBase({'output': Message(), 'db_type': 'json'}, [test_json,])
+
+        b.overlays['twitch153'] = a.overlays['twitch153']
+        b.write(test_json)
+
+        c = DbBase({'output': Message(), 'db_type': 'json'}, [test_json,])
+        keys = sorted(c.overlays)
+        self.assertEqual(keys, ['twitch153'])
+
         # Clean up:
         os.unlink(test_xml)
+        os.unlink(test_json)
         shutil.rmtree(tmpdir)
 
 

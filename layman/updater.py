@@ -158,7 +158,7 @@ class Main(object):
             raise err
 
         msg = '  Successfully migrated database from "%(from_type)s" to '\
-              '"%(to_type)s"\n' % {'from_type': self.config['db_type'],
+              ' "%(to_type)s"\n' % {'from_type': self.config['db_type'],
                                    'to_type': migrate_type}
         self.output.info(msg)
 

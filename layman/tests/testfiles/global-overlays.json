@@ -1,0 +1,44 @@
+{
+  "@encoding": "unicode",
+  "@version": "1.0",
+  "repo": [
+    {
+      "@priority": "40",
+      "@quality": "experimental",
+      "@status": "unofficial",
+      "description": [
+        "Twitch test"
+      ],
+      "feed": [
+        "https://github.com/twitch153/ebuilds/commits/master.atom"
+      ],
+      "homepage": "https://github.com/twitch153/ebuilds",
+      "name": "twitch153",
+      "owner": {
+        "email": "twitch153@gentoo.org",
+        "name": "Devan Franchini"
+      },
+      "source": [
+        {
+          "#text": "git://github.com/twitch153/ebuilds.git",
+          "@type": "git"
+        }
+      ]
+    },
+    {
+      "description": [
+        "A collection of ebuilds from Gunnar Wrobel [wrobel@gentoo.org]."
+      ],
+      "name": "wrobel-stable",
+      "owner": {
+        "email": "nobody@gentoo.org"
+      },
+      "source": [
+        {
+          "#text": "rsync://gunnarwrobel.de/wrobel-stable",
+          "@type": "rsync"
+        }
+      ]
+    }
+  ]
+}
