@@ -237,6 +237,11 @@ class Overlay(object):
         else:
             self.priority = 50
 
+        if 'license' in overlay:
+            self.license = encode(overlay['license'])
+        else:
+            self.license = None
+
         if 'homepage' in overlay:
             self.homepage = encode(overlay['homepage'])
         else:
@@ -351,6 +356,11 @@ class Overlay(object):
             self.priority = int(json['@priority'])
         else:
             self.priority = 50
+
+        if '@license' in json:
+            self.license = encode(json['@license'])
+        else:
+            self.license = None
 
         if 'homepage' in json:
             self.homepage = encode(json['homepage'])
@@ -485,6 +495,11 @@ class Overlay(object):
             self.priority = int(xml.attrib['priority'])
         else:
             self.priority = 50
+
+        if 'license' in xml.attrib:
+            self.license = encode(xml.attrib['license'])
+        else:
+            self.license = None
 
         h = xml.find('homepage')
         l = xml.find('link')
@@ -641,6 +656,8 @@ class Overlay(object):
         repo['@quality'] = self.quality
         if self.status != None:
             repo['@status'] = self.status
+        if self.license != None:
+            repo['@license'] = self.license
         repo['name'] = self.name
         repo['description'] = []
         for i in self.descriptions:
@@ -677,6 +694,8 @@ class Overlay(object):
             repo.attrib['status'] = self.status
         repo.attrib['quality'] = self.quality
         repo.attrib['priority'] = str(self.priority)
+        if self.license != None:
+            repo.attrib['license'] = self.license
         name = ET.Element('name')
         name.text = self.name
         repo.append(name)
