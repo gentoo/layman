@@ -32,9 +32,12 @@ __version__ = "0.2"
 #
 #-------------------------------------------------------------------------------
 
-import sys, re, os, os.path
 import codecs
 import locale
+import os
+import os.path
+import re
+import sys
 import xml.etree.ElementTree as ET # Python 2.5
 
 from  layman.compatibility import encode
@@ -56,8 +59,7 @@ WHITESPACE_REGEX = re.compile('\s+')
 class Overlay(object):
     ''' Derive the real implementations from this.'''
 
-    def __init__(self, config, json=None, ovl_dict=None, xml=None,
-        ignore = 0):
+    def __init__(self, config, json=None, ovl_dict=None, xml=None, ignore=0):
         self.config = config
         self.output = config['output']
         self.module_controller = Modules(path=MOD_PATH,
