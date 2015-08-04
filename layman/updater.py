@@ -140,7 +140,10 @@ class Main(object):
         self.output.info(msg)
 
         try:
-            shutil.copy(installed, backup_name)
+            if migrate_type in ('json', 'xml'):
+                shutil.copy(installed, backup_name)
+            else:
+                shutil.move(installed, backup_name)
         except IOError as err:
             msg = '  migrate_database() error; failed to back up old database '\
                   'file.\n  Error was: %(err)s' % {'err': err}
