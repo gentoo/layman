@@ -91,4 +91,4 @@ MOUNT_TYPES = ['Squashfs']
 ## Supported database types
 ##
 ################################################################################
-DB_TYPES = ['json', 'xml']
+DB_TYPES = ['json', 'sqlite', 'xml']
