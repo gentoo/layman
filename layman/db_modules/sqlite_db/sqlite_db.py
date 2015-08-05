@@ -148,63 +148,64 @@ class DBHandler(object):
         '''
         Read the overlay definitions from the database and generate overlays.
         '''
-        connection = self.__connect__(path)
-        cursor = connection.cursor()
+        cursor = None
         overlay_id = None
         overlay = {}
 
-        cursor.execute('''SELECT Overlay_ID, Name, Priority, Status, Quality, 
-        Homepage, IRC, License FROM Overlay''')
-        overlays_info = cursor.fetchall()
-        connection.commit()
+        with self.__connect__(path) as connection:
+            cursor = connection.cursor()
+            cursor.execute('''SELECT Overlay_ID, Name, Priority, Status, 
+            Quality, Homepage, IRC, License FROM Overlay''')
+            overlays_info = cursor.fetchall()
+            connection.commit()
 
-        for overlay_info in overlays_info:
-            overlay = {}
-            overlay_id = overlay_info[0]
-            overlay['name'] = overlay_info[1]
+            for overlay_info in overlays_info:
+                overlay = {}
+                overlay_id = overlay_info[0]
+                overlay['name'] = overlay_info[1]
 
-            cursor.execute('''SELECT URL, Type, Branch FROM Overlay_Source 
-            JOIN Overlay USING (Overlay_ID) JOIN Source USING (Source_ID) 
-            WHERE Overlay_ID = ?''', (overlay_id,))
-            overlay['source'] = cursor.fetchall()
+                cursor.execute('''SELECT URL, Type, Branch FROM Overlay_Source 
+                JOIN Overlay USING (Overlay_ID) JOIN Source USING (Source_ID) 
+                WHERE Overlay_ID = ?''', (overlay_id,))
+                overlay['source'] = cursor.fetchall()
 
-            cursor.execute('''SELECT Owner_Name, Owner_Email FROM 
-            Overlay_Owner JOIN Overlay USING (Overlay_ID) JOIN Owner USING 
-            (Owner_ID) WHERE Overlay_ID = ?''', (overlay_id,))
-            owner_info = cursor.fetchall()
+                cursor.execute('''SELECT Owner_Name, Owner_Email FROM 
+                Overlay_Owner JOIN Overlay USING (Overlay_ID) JOIN Owner USING 
+                (Owner_ID) WHERE Overlay_ID = ?''', (overlay_id,))
+                owner_info = cursor.fetchall()
 
-            if len(owner_info):
-                owner_info = owner_info[0]
-                overlay['owner_name'] = owner_info[0]
-                overlay['owner_email'] = owner_info[1]
+                if len(owner_info):
+                    owner_info = owner_info[0]
+                    overlay['owner_name'] = owner_info[0]
+                    overlay['owner_email'] = owner_info[1]
 
-            cursor.execute('''SELECT Description FROM Description JOIN Overlay 
-            USING (Overlay_ID) WHERE Overlay_ID = ?''', (overlay_id,))
-            overlay['description'] = cursor.fetchall()[0]
+                cursor.execute('''SELECT Description FROM Description JOIN 
+                Overlay USING (Overlay_ID) WHERE Overlay_ID = ?''',
+                (overlay_id,))
+                overlay['description'] = cursor.fetchall()[0]
 
-            overlay['status'] = overlay_info[3]
-            overlay['quality'] = overlay_info[4]
-            overlay['priority'] = overlay_info[2]
+                overlay['status'] = overlay_info[3]
+                overlay['quality'] = overlay_info[4]
+                overlay['priority'] = overlay_info[2]
 
-            if overlay_info[7]:
-                overlay['license'] = overlay_info[7]
-            else:
-                overlay['license'] = None
+                if overlay_info[7]:
+                    overlay['license'] = overlay_info[7]
+                else:
+                    overlay['license'] = None
 
-            overlay['homepage'] = overlay_info[5]
-            overlay['IRC'] = overlay_info[6]
+                overlay['homepage'] = overlay_info[5]
+                overlay['IRC'] = overlay_info[6]
 
-            cursor.execute('''SELECT Feed FROM Feed JOIN Overlay USING 
-            (Overlay_ID) WHERE Overlay_ID = ?''', (overlay_id,))
-            overlay['feed'] = cursor.fetchall()
+                cursor.execute('''SELECT Feed FROM Feed JOIN Overlay USING 
+                (Overlay_ID) WHERE Overlay_ID = ?''', (overlay_id,))
+                overlay['feed'] = cursor.fetchall()
 
-            if len(overlay['feed']):
-                overlay['feed'] = overlay['feed'][0]
+                if len(overlay['feed']):
+                    overlay['feed'] = overlay['feed'][0]
 
-            self.overlays[overlay_info[1]] = Overlay(self.config,
-                                                     ovl_dict=overlay,
-                                                     ignore=self.ignore)
-        connection.close()
+                self.overlays[overlay_info[1]] = Overlay(self.config,
+                                                         ovl_dict=overlay,
+                                                         ignore=self.ignore)
 
 
     def add_new(self, document=None, origin=None):
