@@ -103,8 +103,8 @@ class DBHandler(object):
                 cursor.execute('''CREATE TABLE IF NOT EXISTS Overlay
                 ( Overlay_ID INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, 
                 Priority TEXT, Status TEXT, Quality TEXT, Homepage 
-                TEXT, IRC TEXT, License TEXT, UNIQUE (Name, Homepage, License) 
-                ON CONFLICT IGNORE )''')
+                TEXT, IRC TEXT, License TEXT, UNIQUE (Name) ON CONFLICT IGNORE )
+                ''')
                 cursor.execute('''CREATE TABLE IF NOT EXISTS Owner ( Owner_ID
                 INTEGER PRIMARY KEY AUTOINCREMENT, Owner_Name TEXT, 
                 Owner_Email TEXT, UNIQUE (Owner_Name, Owner_Email) ON 
@@ -180,15 +180,17 @@ class DBHandler(object):
 
             cursor.execute('''SELECT Description FROM Description JOIN Overlay 
             USING (Overlay_ID) WHERE Overlay_ID = ?''', (overlay_id,))
-            overlay['description'] = cursor.fetchall()
-
-            if len(overlay['description']):
-                overlay['description'] = overlay['description'][0]
+            overlay['description'] = cursor.fetchall()[0]
 
             overlay['status'] = overlay_info[3]
             overlay['quality'] = overlay_info[4]
             overlay['priority'] = overlay_info[2]
-            overlay['license'] = overlay_info[7]
+
+            if overlay_info[7]:
+                overlay['license'] = overlay_info[7]
+            else:
+                overlay['license'] = None
+
             overlay['homepage'] = overlay_info[5]
             overlay['IRC'] = overlay_info[6]
 
@@ -196,9 +198,13 @@ class DBHandler(object):
             (Overlay_ID) WHERE Overlay_ID = ?''', (overlay_id,))
             overlay['feed'] = cursor.fetchall()
 
+            if len(overlay['feed']):
+                overlay['feed'] = overlay['feed'][0]
+
             self.overlays[overlay_info[1]] = Overlay(self.config,
                                                      ovl_dict=overlay,
                                                      ignore=self.ignore)
+        connection.close()
 
 
     def add_new(self, document=None, origin=None):
@@ -315,6 +321,9 @@ class DBHandler(object):
             (overlay_id,))
 
             connection.commit()
+
+        if overlay.name in self.overlays:
+            del self.overlays[overlay.name]
 
 
     def write(self, path):

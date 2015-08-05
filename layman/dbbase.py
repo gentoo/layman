@@ -215,6 +215,19 @@ class DbBase(object):
         db_ctl.write(path)
 
 
+    def remove(self, overlay, path):
+        '''
+        Remove an overlay from the database.
+        '''
+        db_ctl = self.mod_ctl.get_class(self.db_type)(self.config,
+                 self.overlays,
+                 self.paths,
+                 self.ignore,
+                 self.ignore_init_read_errors)
+
+        db_ctl.remove(overlay, path)
+
+
     def select(self, overlay):
         '''
         Select an overlay from the list.

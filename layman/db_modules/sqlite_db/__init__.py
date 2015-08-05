@@ -13,10 +13,11 @@ module_spec = {
             'name': 'sqlite_db',
             'class': 'DBHandler',
             'description': __doc__,
-            'functions': ['add_new', 'read_db', 'write'],
+            'functions': ['add_new', 'read_db', 'remove', 'write'],
             'func_desc': {
-                'add_new': 'Adds overlay(s) from provided database text',
+                'add_new': 'Adds overlay(s) from provided database file',
                 'read_db': 'Reads the list of overlays from database file',
+                'remove' : 'Removes overlay from provided database file',
                 'write'  : 'Writes the list of overlays to database file',
             },
         }

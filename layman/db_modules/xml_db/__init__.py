@@ -13,10 +13,11 @@ module_spec = {
             'name': 'xml_db',
             'class': 'DBHandler',
             'description': __doc__,
-            'functions': ['add_new', 'read_db', 'write'],
+            'functions': ['add_new', 'read_db', 'remove', 'write'],
             'func_desc': {
                 'add_new': 'Adds overlay(s) from provided database text',
                 'read_db': 'Reads the list of overlays from database file',
+                'remove' : 'Removes overlay from installed overlays list',
                 'write'  : 'Writes the list of overlays to database file',
             },
         }

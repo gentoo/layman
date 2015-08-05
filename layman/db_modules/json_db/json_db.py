@@ -104,6 +104,14 @@ class DBHandler(object):
         return True
 
 
+    def remove(self, overlay, path):
+        '''
+        Removes an overlay from installed overlays list.
+        '''
+        if overlay.name in self.overlays:
+            del self.overlays[overlay.name]
+
+
     def write(self, path):
         '''
         Write the list of overlays to a file.
