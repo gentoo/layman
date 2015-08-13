@@ -169,15 +169,15 @@ class DBHandler(object):
                 WHERE Overlay_ID = ?''', (overlay_id,))
                 overlay['source'] = cursor.fetchall()
 
-                cursor.execute('''SELECT Owner_Name, Owner_Email FROM 
+                cursor.execute('''SELECT Owner_Email, Owner_Name FROM 
                 Overlay_Owner JOIN Overlay USING (Overlay_ID) JOIN Owner USING 
                 (Owner_ID) WHERE Overlay_ID = ?''', (overlay_id,))
-                owner_info = cursor.fetchall()
+                owner_info = cursor.fetchall()[0]
 
-                if len(owner_info):
-                    owner_info = owner_info[0]
-                    overlay['owner_name'] = owner_info[0]
-                    overlay['owner_email'] = owner_info[1]
+                overlay['owner_email'] = owner_info[0]
+
+                if len(owner_info) > 1:
+                    overlay['owner_name'] = owner_info[1]
 
                 cursor.execute('''SELECT Description FROM Description JOIN 
                 Overlay USING (Overlay_ID) WHERE Overlay_ID = ?''',
@@ -187,12 +187,7 @@ class DBHandler(object):
                 overlay['status'] = overlay_info[3]
                 overlay['quality'] = overlay_info[4]
                 overlay['priority'] = overlay_info[2]
-
-                if overlay_info[7]:
-                    overlay['license'] = overlay_info[7]
-                else:
-                    overlay['license'] = None
-
+                overlay['license'] = overlay_info[7]
                 overlay['homepage'] = overlay_info[5]
                 overlay['IRC'] = overlay_info[6]
 
@@ -248,8 +243,8 @@ class DBHandler(object):
         VALUES ( ?, ? )''', (overlay.owner_name, overlay.owner_email,))
         connection.commit()
 
-        cursor.execute('''SELECT Owner_ID from Owner WHERE Owner_Name = ?;''',
-        (overlay.owner_name,))
+        cursor.execute('''SELECT Owner_ID from Owner WHERE Owner_Email = ?;''',
+        (overlay.owner_email,))
         owner_id = cursor.fetchone()[0]
 
         for source in overlay.sources:
