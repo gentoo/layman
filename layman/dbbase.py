@@ -197,7 +197,7 @@ class DbBase(object):
         db_ctl.read_db(path, text=text)
 
 
-    def write(self, path, migrate_type=None):
+    def write(self, path, remove=False, migrate_type=None):
         '''
         Write the list of overlays to a file.
         '''
@@ -212,7 +212,7 @@ class DbBase(object):
                  self.ignore,
                  self.ignore_init_read_errors)
 
-        db_ctl.write(path)
+        db_ctl.write(path, remove=remove)
 
 
     def remove(self, overlay, path):

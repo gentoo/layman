@@ -149,7 +149,7 @@ class DB(DbBase):
             overlay.delete(self.config['storage'])
             repo_ok = self.repo_conf.delete(overlay)
             self.remove(overlay, self.path)
-            self.write(self.path)
+            self.write(self.path, remove=True)
         else:
             self.output.error('No local overlay named "' + overlay.name + '"!')
             return False

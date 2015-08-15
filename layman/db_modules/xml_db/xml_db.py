@@ -157,7 +157,7 @@ class DBHandler(object):
             del self.overlays[overlay.name]
 
 
-    def write(self, path):
+    def write(self, path, remove=False):
         '''
         Write the list of overlays to a file.
         '''

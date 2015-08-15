@@ -283,6 +283,9 @@ class DBHandler(object):
         owner_id = 0
         source_ids = []
 
+        if overlay.name in self.overlays:
+            del self.overlays[overlay.name]
+
         with self.__connect__(path) as connection:
             cursor = connection.cursor()
             
@@ -318,14 +321,14 @@ class DBHandler(object):
 
             connection.commit()
 
-        if overlay.name in self.overlays:
-            del self.overlays[overlay.name]
 
-
-    def write(self, path):
+    def write(self, path, remove=False):
         '''
         Write the list of overlays to the database.
         '''
+        if remove:
+            return
+
         try:
             with self.__connect__(path) as connection:
                 for overlay in self.overlays:
