@@ -661,9 +661,7 @@ class Overlay(object):
         if self.license != None:
             repo['@license'] = self.license
         repo['name'] = self.name
-        repo['description'] = []
-        for i in self.descriptions:
-            repo['description'].append(i)
+        repo['description'] = [i for i in self.descriptions]
         if self.homepage != None:
             repo['homepage'] = self.homepage
         if self.irc != None:
