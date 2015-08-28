@@ -401,9 +401,25 @@ class Interactive(object):
         then appends the values to the overlay
         being created.
         '''
+        self.overlay['owner'] = []
         self.output.notice('')
-        self.overlay['owner_name'] = get_input('Define owner name: ')
-        self.overlay['owner_email'] = get_input('Define owner email: ')
+
+        msg = 'How many people own this overlay?: '
+        owner_amount = int(get_input(msg))
+
+        for i in range(1, owner_amount + 1):
+            owner = {}
+            extra = ''
+
+            if owner_amount > 1:
+                extra = '[%(i)s]\'s' % {'i': str(i)}
+
+            owner['name'] = get_input('Define owner%(extra)s name: '\
+                            % {'extra': extra})
+            owner['email'] = get_input('Define owner%(extra)s email: '\
+                             % {'extra': extra})
+            self.overlay['owner'].append(owner)
+
         self.output.notice('')
 
 
