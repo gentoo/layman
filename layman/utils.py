@@ -331,13 +331,12 @@ def create_overlay_dict(**kwargs):
     """
     result = {
         'name': '',
-        'owner_name': '',
-        'owner_email': '',
+        'owner': [],
         'homepage': '',
         'irc': '',
-        'description': '',
-        'feeds': [],
-        'sources': [('','','')],
+        'description': [],
+        'feed': [],
+        'source': [('','','')],
         'priority': 50,
         'quality': 'experimental',
         'status': '',
