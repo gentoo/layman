@@ -295,11 +295,11 @@ class Interactive(object):
         feeds = []
 
         for i in range(1, feed_amount + 1):
+            extra = ''
             if feed_amount > 1:
-                msg = 'Define overlay feed[%(i)s]: ' % ({'i': str(i)})
-                feeds.append(get_input(msg))
-            else:
-                feeds.append(get_input('Define overlay feed: '))
+                extra = '[%(i)s]' % {'i': str(i)}
+            feeds.append(get_input('Define overlay%(extra)s feed: '\
+                         % {'extra': extra}))
 
         self.overlay['feed'] = feeds
         self.output.notice('')
@@ -344,48 +344,32 @@ class Interactive(object):
         for i in range(1, source_amount + 1):
             sources = []
             correct = False
+            extra = ''
             if source_amount > 1:
-                msg = 'Define source[%(i)s]\'s URL: ' % ({'i': str(i)})
+                extra = '[%(i)s]\'s' % {'i': str(i)}
+
+            msg = 'Define source%(extra)s URL: ' % {'extra': extra}
+            sources.append(get_input(msg))
+
+            ovl_type = self.guess_overlay_type(sources[0])
+            if ovl_type:
+                msg = 'Is "%(type)s" the correct overlay type?: '\
+                    % ({'type': ovl_type})
+                correct = get_ans(msg)
+            while not ovl_type or not correct:
+                msg = 'Please provide overlay type: '
+                ovl_type = self.check_overlay_type(\
+                            get_input(msg, color='yellow'))
+                correct = True
+
+            sources.append(ovl_type)
+            if 'branch' in self.required:
+                msg = 'Define source%(extra)s branch (if applicable): '\
+                      % {'extra': extra}
                 sources.append(get_input(msg))
-
-                ovl_type = self.guess_overlay_type(sources[0])
-                if ovl_type:
-                    msg = 'Is "%(type)s" the correct overlay type?: '\
-                        % ({'type': ovl_type})
-                    correct = get_ans(msg)
-                while not ovl_type or not correct:
-                    msg = 'Please provide overlay type: '
-                    ovl_type = self.check_overlay_type(\
-                                get_input(msg, color='yellow'))
-                    correct = True
-
-                sources.append(ovl_type)
-                if 'branch' in self.required:
-                    msg = 'Define source[%(i)s]\'s branch (if applicable): '\
-                          % ({'i': str(i)})
-                    sources.append(get_input(msg))
-                else:
-                    sources.append('')
             else:
-                sources.append(get_input('Define source URL: '))
+                sources.append('')
 
-                ovl_type = self.guess_overlay_type(sources[0])
-                if ovl_type:
-                    msg = 'Is %(type)s the correct overlay type?: '\
-                           % ({'type': ovl_type})
-                    correct = get_ans(msg)
-                while not ovl_type or not correct:
-                    msg = 'Please provide overlay type: '
-                    ovl_type = self.check_overlay_type(\
-                                   get_input(msg, color='yellow'))
-                    correct = True
-
-                sources.append(ovl_type)
-                if 'branch' in self.required:
-                    msg = 'Define source branch (if applicable): '
-                    sources.append(get_input(msg))
-                else:
-                    sources.append('')
             if self.auto_complete:
                 sources = self._set_additional_info(sources)
                 for source in sources:
