@@ -454,32 +454,35 @@ class Overlay(object):
         _owners = xml.findall('owner')
         self.owners = []
 
-        for _owner in _owners:
-            owner = {}
-
-            _email = _owner.find('email')
-            _name = _owner.find('name')
-
-            if _name != None:
-                owner['name'] = encode(strip_text(_name))
-            else:
-                owner['name'] = None
-            if _email != None:
-                owner['email'] = encode(strip_text(_email))
-            else:
-                owner['email'] = None
-                msg = 'Overlay from_xml(), "%(name)s" is missing an '\
-                      '"owner.email" entry!' % {'name': self.name}
-                if not ignore:
-                    raise Exception(msg)
-                elif ignore == 1:
-                    self.output.warn(msg, 4)
-
-            # For backwards compatibility with older Overlay XML formats.
-            if not _email and not _name and 'contact' in xml.attrib:
-                owner['email'] = encode(xml.attrib['contact'])
-                owner['name'] = None
+        # For backwards compatibility with older Overlay XML formats
+        # default to this.
+        if 'contact' in xml.attrib:
+            owner = {'email': encode(xml.attrib['contact']),
+                     'name': None}
             self.owners.append(owner)
+        else:
+            for _owner in _owners:
+                owner = {}
+
+                _email = _owner.find('email')
+                _name = _owner.find('name')
+
+                if _name != None:
+                    owner['name'] = encode(strip_text(_name))
+                else:
+                    owner['name'] = None
+                if _email != None:
+                    owner['email'] = encode(strip_text(_email))
+                else:
+                    owner['email'] = None
+                    msg = 'Overlay from_xml(), "%(name)s" is missing an '\
+                          '"owner.email" entry!' % {'name': self.name}
+                    if not ignore:
+                        raise Exception(msg)
+                    elif ignore == 1:
+                        self.output.warn(msg, 4)
+
+                self.owners.append(owner)
 
         _desc = xml.findall('description')
         if _desc != None:
