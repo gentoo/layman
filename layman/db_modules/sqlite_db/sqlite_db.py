@@ -172,12 +172,21 @@ class DBHandler(object):
                 cursor.execute('''SELECT Owner_Email, Owner_Name FROM 
                 Overlay_Owner JOIN Overlay USING (Overlay_ID) JOIN Owner USING 
                 (Owner_ID) WHERE Overlay_ID = ?''', (overlay_id,))
-                owner_info = cursor.fetchall()[0]
+                owner_info = cursor.fetchall()
+                overlay['owner'] = []
 
-                overlay['owner_email'] = owner_info[0]
-
-                if len(owner_info) > 1:
-                    overlay['owner_name'] = owner_info[1]
+                for _owner in owner_info:
+                    owner = {}
+                    if _owner[0]:
+                        owner['email'] = _owner[0]
+                    else:
+                        owner['email'] = None
+                    if len(_owner) > 1:
+                        if _owner[1]:
+                            owner['name'] = _owner[1]
+                        else:
+                            owner['name'] = None
+                    overlay['owner'].append(owner)
 
                 cursor.execute('''SELECT Description FROM Description JOIN 
                 Overlay USING (Overlay_ID) WHERE Overlay_ID = ?''',
@@ -225,7 +234,7 @@ class DBHandler(object):
         '''
         overlay_id = None
         owner_id = None
-        source_ids = []
+        source_id = None
         cursor = None
 
         cursor = connection.cursor()
@@ -239,22 +248,37 @@ class DBHandler(object):
         (overlay.name,))
         overlay_id = cursor.fetchone()[0]
 
-        cursor.execute('''INSERT INTO Owner ( Owner_Name, Owner_Email ) 
-        VALUES ( ?, ? )''', (overlay.owner_name, overlay.owner_email,))
-        connection.commit()
+        for owner in overlay.owners:
+            _name = owner['name']
+            _email = owner['email']
 
-        cursor.execute('''SELECT Owner_ID from Owner WHERE Owner_Email = ?;''',
-        (overlay.owner_email,))
-        owner_id = cursor.fetchone()[0]
+            cursor.execute('''INSERT INTO Owner ( Owner_Name, Owner_Email ) 
+            VALUES ( ?, ? )''', (owner['name'], owner['email'],))
+            connection.commit()
+
+            if _name != None:
+                cursor.execute('''SELECT Owner_ID from Owner WHERE 
+                Owner_Email = ? AND Owner_Name = ?''', (_email, _name,))
+            else:
+                cursor.execute('''SELECT Owner_ID from Owner WHERE 
+                Owner_Email = ?''', (_email,))
+            owner_id = cursor.fetchone()[0]
+
+            cursor.execute('''INSERT INTO Overlay_Owner ( Overlay_ID, 
+            Owner_ID ) VALUES ( ?, ? )''', (overlay_id, owner_id,))
 
         for source in overlay.sources:
             cursor.execute('''INSERT INTO Source ( Type, Branch, URL )
             VALUES ( ?, ?, ? )''', (source.type_key, source.branch,
             source.src,))
             connection.commit()
+
             cursor.execute('''SELECT Source_ID FROM Source WHERE URL = ?;''',
             (source.src,))
-            source_ids.append(cursor.fetchone()[0])
+            source_id = cursor.fetchone()[0]
+
+            cursor.execute('''INSERT INTO Overlay_Source ( Overlay_ID, 
+            Source_ID ) VALUES ( ?, ? )''', (overlay_id, source_id, ))
 
         for description in overlay.descriptions:
             cursor.execute('''INSERT INTO Description ( Overlay_ID, 
@@ -263,13 +287,6 @@ class DBHandler(object):
         for feed in overlay.feeds:
             cursor.execute('''INSERT INTO Feed ( Overlay_ID, Feed ) VALUES ( ?,
              ? )''', (overlay_id, feed,))
-
-        cursor.execute('''INSERT INTO Overlay_Owner ( Overlay_ID, Owner_ID ) 
-        VALUES ( ?, ? )''', (overlay_id, owner_id,))
-
-        for source_id in source_ids:
-            cursor.execute('''INSERT INTO Overlay_Source ( Overlay_ID, 
-            Source_ID ) VALUES ( ?, ? )''', (overlay_id, source_id,))
 
         connection.commit()
 
@@ -280,7 +297,7 @@ class DBHandler(object):
         '''
         cursor = None
         overlay_id = 0
-        owner_id = 0
+        owner_ids = []
         source_ids = []
 
         if overlay.name in self.overlays:
@@ -295,7 +312,7 @@ class DBHandler(object):
 
             cursor.execute('''SELECT Owner_ID FROM Overlay_Owner WHERE 
             Overlay_ID = ?''', (overlay_id,))
-            owner_id = cursor.fetchone()[0]
+            owner_ids = cursor.fetchall()[0]
 
             cursor.execute('''SELECT Source_ID FROM Overlay_Source WHERE 
             Overlay_ID = ?''', (overlay_id,))
@@ -314,8 +331,10 @@ class DBHandler(object):
                cursor.execute('''DELETE FROM Source WHERE Source_ID = ?''', 
                (source_id,))
 
-            cursor.execute('''DELETE FROM Owner WHERE Owner_ID = ?''',
-            (owner_id,))
+            for owner_id in owner_ids:
+                cursor.execute('''DELETE FROM Owner WHERE Owner_ID = ?''',
+                (owner_id,))
+
             cursor.execute('''DELETE FROM Overlay WHERE Overlay_ID = ?''',
             (overlay_id,))
 

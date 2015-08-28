@@ -191,23 +191,28 @@ class Overlay(object):
 
         self.sources = [create_dict_overlay_source(e) for e in _sources]
 
-        if 'owner_name' in overlay:
-            _owner = overlay['owner_name']
-            self.owner_name = encode(_owner)
-        else:
-            self.owner_name = None
+        self.owners = []
 
-        if 'owner_email' in overlay:
-            _email = overlay['owner_email']
-            self.owner_email = encode(_email)
-        else:
-            self.owner_email = None
-            msg = 'Overlay from_dict(), "%(name)s" is missing an "owner.email"'\
-                  ' entry!' % {'name': self.name}
-            if not ignore:
-                raise Exception(msg)
-            elif ignore == 1:
-                self.output.warn(msg, 4)
+        if 'owner' in overlay:
+            for _owner in overlay['owner']:
+                owner = {}
+                if 'name' in _owner and _owner['name']:
+                    owner['name'] = encode(_owner['name'])
+                else:
+                    owner['name'] = None
+
+                if 'email' in _owner:
+                    owner['email'] = encode(_owner['email'])
+                else:
+                    owner['email'] = None
+                    msg = 'Overlay from_dict(), "%(name)s" is missing an '\
+                          '"owner.email" entry!' % {'name': self.name}
+                    if not ignore:
+                        raise Exception(msg)
+                    elif ignore == 1:
+                        self.output.warn(msg, 4)
+
+                self.owners.append(owner)
 
         if 'description' in overlay:
             self.descriptions = []
@@ -313,21 +318,26 @@ class Overlay(object):
 
         self.sources = [create_json_overlay_source(e) for e in _sources]
 
-        if 'name' in json['owner']:
-            self.owner_name = encode(json['owner']['name'])
-        else:
-            self.owner_name = None
+        _owners = json['owner']
+        self.owners = []
 
-        if 'email' in json['owner']:
-            self.owner_email = encode(json['owner']['email'])
-        else:
-            self.owner_email = None
-            msg = 'Overlay from_json(), "%(name)s" is missing an "owner.email"'\
-                  'entry!' % {'name': self.name}
-            if not ignore:
-                raise Exception(msg)
-            elif ignore == 1:
-                self.output.warn(msg, 4)
+        for _owner in _owners:
+            owner = {}
+            if 'name' in _owner:
+                owner['name'] = encode(_owner['name'])
+            else:
+                owner['name'] = None
+            if 'email' in _owner:
+                owner['email'] = encode(_owner['email'])
+            else:
+                owner['email'] = None
+                msg = 'Overlay from_json(), "%(name)s" is missing an '\
+                      '"owner.email" entry!' % {'name': self.name}
+                if not ignore:
+                    raise Exception(msg)
+                elif ignore == 1:
+                    self.output.warn(msg, 4)
+            self.owners.append(owner)
 
         if 'description' in json:
             self.descriptions = []
@@ -441,32 +451,35 @@ class Overlay(object):
 
         self.sources = [create_overlay_source(e) for e in _sources]
 
-        _owner = xml.find('owner')
+        _owners = xml.findall('owner')
+        self.owners = []
 
-        if _owner == None:
-            _email = None
-        else:
+        for _owner in _owners:
+            owner = {}
+
             _email = _owner.find('email')
-
-        if _owner != None and _email != None:
-            self.owner_email = encode(strip_text(_email))
             _name = _owner.find('name')
+
             if _name != None:
-                self.owner_name = encode(strip_text(_name))
+                owner['name'] = encode(strip_text(_name))
             else:
-                self.owner_name = None
-        elif 'contact' in xml.attrib:
-            self.owner_email = encode(xml.attrib['contact'])
-            self.owner_name = None
-        else:
-            self.owner_email = ''
-            self.owner_name = None
-            msg = 'Overlay from_xml(), "%(name)s" is mising an '\
-                  '"owner.email" entry!' % {'name': self.name}
-            if not ignore:
-                raise Exception(msg)
-            elif ignore == 1:
-                self.output.warn(msg, 4)
+                owner['name'] = None
+            if _email != None:
+                owner['email'] = encode(strip_text(_email))
+            else:
+                owner['email'] = None
+                msg = 'Overlay from_xml(), "%(name)s" is missing an '\
+                      '"owner.email" entry!' % {'name': self.name}
+                if not ignore:
+                    raise Exception(msg)
+                elif ignore == 1:
+                    self.output.warn(msg, 4)
+
+            # For backwards compatibility with older Overlay XML formats.
+            if not _email and not _name and 'contact' in xml.attrib:
+                owner['email'] = encode(xml.attrib['contact'])
+                owner['name'] = None
+            self.owners.append(owner)
 
         _desc = xml.findall('description')
         if _desc != None:
@@ -536,16 +549,27 @@ class Overlay(object):
         if len(self.sources) == 1:
             result += '\nSource  : ' + self.sources[0].src
         else:
-            result += '\nSources:'
+            result += '\nSources : '
             for i, v in enumerate(self.sources):
                 result += '\n  %d. %s' % (i + 1, v.src)
             result += '\n'
 
-        if self.owner_name != None:
-            result += '\nContact : %s <%s>' \
-                % (self.owner_name, self.owner_email)
+        if len(self.owners) == 1:
+            if 'name' in self.owners[0] and self.owners[0]['name'] != None:
+                result += '\nContact : %s <%s>' \
+                    % (self.owners[0]['name'], self.owners[0]['email'])
+            else:
+                result += '\nContact : ' + self.owners[0]['email']
         else:
-            result += '\nContact : ' + self.owner_email
+            result += '\nContacts: '
+            for i, v in enumerate(self.owners):
+                result += '\n %d. ' % (i + 1)
+                if 'name' in v and v['name'] != None:
+                    result += '%s <%s>' % (v['name'], v['email'])
+                else:
+                    result += v['email']
+            result += '\n'
+
         if len(self.sources) == 1:
             result += '\nType    : ' + self.sources[0].type
         else:
@@ -666,10 +690,7 @@ class Overlay(object):
             repo['homepage'] = self.homepage
         if self.irc != None:
             repo['irc'] = self.irc
-        repo['owner'] = {}
-        repo['owner']['email'] = self.owner_email
-        if self.owner_name != None:
-            repo['owner']['name'] = self.owner_name
+        repo['owner'] = [i for i in self.owners]
         repo['source'] = []
         for i in self.sources:
             source = {'@type': i.__class__.type_key}
@@ -712,15 +733,16 @@ class Overlay(object):
             irc = ET.Element('irc')
             irc.text = self.irc
             repo.append(irc)
-        owner = ET.Element('owner')
-        repo.append(owner)
-        owner_email = ET.Element('email')
-        owner_email.text = self.owner_email
-        owner.append(owner_email)
-        if self.owner_name != None:
-            owner_name = ET.Element('name')
-            owner_name.text = self.owner_name
-            owner.append(owner_name)
+        for _owner in self.owners:
+            owner = ET.Element('owner')
+            owner_email = ET.Element('email')
+            owner_email.text = _owner['email']
+            owner.append(owner_email)
+            if 'name' in _owner and _owner['name']:
+                owner_name = ET.Element('name')
+                owner_name.text = _owner['name']
+                owner.append(owner_name)
+            repo.append(owner)
         for i in self.sources:
             if not i.branch:
                 source = ET.Element('source', type=i.__class__.type_key)
