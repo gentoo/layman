@@ -76,8 +76,8 @@ class Overlay(object):
 
 
     def __eq__(self, other):
-        for i in ('descriptions', 'homepage', 'name', 'owner_email',
-                'owner_name', 'priority', 'status'):
+        for i in ('descriptions', 'homepage', 'name', 'owners', 'priority',
+                  'status'):
             if getattr(self, i) != getattr(other, i):
                 return False
         for i in self.sources + other.sources:
