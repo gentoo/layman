@@ -427,6 +427,7 @@ class FetchRemoteList(unittest.TestCase):
         my_opts = {
                    'overlays': ['file://'\
                                 + HERE + '/testfiles/global-overlays.xml'],
+                   'db_type': 'xml',
                    'cache': cache,
                    'nocheck': 'yes',
                    'proxy': None,
@@ -441,7 +442,9 @@ class FetchRemoteList(unittest.TestCase):
         filename = api._get_remote_db().filepath(config['overlays']) + '.xml'
 
         with fileopen(filename, 'r') as b:
-            self.assertEqual(b.readlines()[19], '      A collection of ebuilds from Gunnar Wrobel [wrobel@gentoo.org].\n')
+            description = b.readlines()[19]
+            self.assertEqual(description, '      A collection of ebuilds from '\
+                                          'Gunnar Wrobel [wrobel@gentoo.org].\n')
             for line in b.readlines():
                 print(line, end='')
 
@@ -449,29 +452,16 @@ class FetchRemoteList(unittest.TestCase):
         available = api.get_available()
         self.assertEqual(available, ['wrobel', 'wrobel-stable'])
 
-        # Test the info of an overlay.
-        all_info = api.get_all_info('wrobel')
-
-        test_info = {'status': 'official', 'owner_name': None,
-                     'description': ['Test'], 'src_uris':
-                     ['https://overlays.gentoo.org/svn/dev/wrobel'],
-                     'owner_email': 'nobody@gentoo.org', 'sources':
-                     [('https://overlays.gentoo.org/svn/dev/wrobel',
-                     'Subversion', None)], 'quality': 'experimental', 'name':
-                     'wrobel', 'supported': True, 'src_types': ['Subversion'],
-                     'official': True, 'priority': 10, 'feeds': [],
-                     'irc': None, 'homepage': None}
-        info = all_info['wrobel']
-        info['src_uris'] = [e for e in info['src_uris']]
-        info['src_types'] = [e for e in info['src_types']]
         
-        self.assertEqual(info, test_info)
+        # Test the info of an overlay.
+        info = api.get_info_str(['wrobel'], verbose=True, local=False)
+        test_info = 'wrobel\n~~~~~~\nSource  : https://overlays.gentoo.org'\
+                    '/svn/dev/wrobel\nContact : nobody@gentoo.org\nType    '\
+                    ': Subversion; Priority: 10\nQuality : experimental\n\n'\
+                    'Description:\n  Test\n'
 
-        self.assertEqual(info['status'], 'official')
-        self.assertEqual(info['description'], ['Test'])
-        sources = [('https://overlays.gentoo.org/svn/dev/wrobel', 'Subversion',
-                    None)]
-        self.assertEqual(info['sources'], sources)
+        info = info['wrobel'][0].decode('utf-8')
+        self.assertEqual(info, test_info)
 
         os.unlink(filename)
         shutil.rmtree(tmpdir)
@@ -523,8 +513,7 @@ class MakeOverlayXML(unittest.TestCase):
         ovl_dict = {
                     'name': 'wrobel',
                     'description': ['Test'],
-                    'owner_name': 'nobody',
-                    'owner_email': 'nobody@gentoo.org',
+                    'owner': [{'name': 'nobody', 'email': 'nobody@gentoo.org'}],
                     'status': 'official',
                     'source': [['https://overlays.gentoo.org/svn/dev/wrobel',
                                  'svn', '']],
@@ -555,13 +544,12 @@ class OverlayObjTest(unittest.TestCase):
         document = ET.parse(HERE + '/testfiles/global-overlays.xml')
         overlays = document.findall('overlay') + document.findall('repo')
         output = Message()
-
         ovl_a = Overlay({'output': output, 'db_type': 'xml'}, xml=overlays[0])
         self.assertEqual(ovl_a.name, 'wrobel')
         self.assertEqual(ovl_a.is_official(), True)
         url = ['https://overlays.gentoo.org/svn/dev/wrobel']
         self.assertEqual(list(ovl_a.source_uris()), url)
-        self.assertEqual(ovl_a.owner_email, 'nobody@gentoo.org')
+        self.assertEqual(ovl_a.owners[0]['email'], 'nobody@gentoo.org')
         self.assertEqual(ovl_a.descriptions, ['Test'])
         self.assertEqual(ovl_a.priority, 10)
 

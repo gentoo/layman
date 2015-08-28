@@ -14,10 +14,12 @@
       ],
       "homepage": "https://github.com/twitch153/ebuilds",
       "name": "twitch153",
-      "owner": {
+      "owner": [
+        {
         "email": "twitch153@gentoo.org",
         "name": "Devan Franchini"
-      },
+        }
+      ],
       "source": [
         {
           "#text": "git://github.com/twitch153/ebuilds.git",
@@ -30,9 +32,11 @@
         "A collection of ebuilds from Gunnar Wrobel [wrobel@gentoo.org]."
       ],
       "name": "wrobel-stable",
-      "owner": {
+      "owner": [
+        {
         "email": "nobody@gentoo.org"
-      },
+        }
+       ],
       "source": [
         {
           "#text": "rsync://gunnarwrobel.de/wrobel-stable",

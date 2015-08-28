@@ -381,17 +381,11 @@ class Main(object):
         self.output.debug('Printing installed overlays.', 6)
         list_printer = ListPrinter(self.config)
 
-        #
-        # fast way
         info = self.api.get_info_list(verbose=self.config['verbose'],
                                       width=list_printer.width)
         #self.output.debug('CLI: ListLocal() info = %s' % len(info), 4)
         #self.output.debug('\n'.join([ str(x) for x in info]), 4)
         list_printer.print_shortlist(info, complain=True)
-        #
-        # slow way
-        #info = self.api.get_all_info(self.api.get_installed(), local=True)
-        #list_printer.print_fulldict(info, complain=_complain)
 
         # blank newline  -- no " *"
         self.output.notice('')
