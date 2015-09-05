@@ -193,7 +193,7 @@ class LaymanAPI(object):
         for ovl in repos:
             if not self.is_repo(ovl):
                 self.output.error(UnknownOverlayMessage(ovl))
-                result.append(False)
+                results.append(False)
                 continue
             success = False
             try:
@@ -218,7 +218,7 @@ class LaymanAPI(object):
         for ovl in repos:
             if not self.is_repo(ovl):
                 self.output.error(UnknownOverlayMessage(ovl))
-                result.append(False)
+                results.append(False)
                 continue
             success = False
             try:
