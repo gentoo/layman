@@ -287,6 +287,14 @@ git_postsync::
     These are a space separated list of commands that are run after each add, sync operation if they
     are defined.
 
+DATABASE CONFIGURATION OPTIONS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*layman* now supports multiple database types for layman's install file. The
+options allowed include: *xml*, *json*, and *sqlite*. While xml is the default
+database type you may migrate from one database type to the other using the
+*layman-updater* tool while supplying the *-m* flag, followed by the database
+type you'd like to use.
+
 REPO CONFIGURATION OPTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
