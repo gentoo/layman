@@ -1,8 +1,18 @@
 CHANGES
 -------
 
-Version 2.3.1 - Release 2015-03-28
+Version 2.4.0 - Release 2015-??-??
 ==================================
+ - adds support for different overlay database types
+ - adds json database support
+ - adds sqlite database support
+ - adds database migration tool in layman-updater
+ - adds AddDeleteDB tests in test suite
+ - adds file locker utility class
+ - corrects importing of laymansync classes
+ - corrects type in enable/disable_repos()
+ - adds multiple owner support
+ - deprecates get_all_info() function
  - adds repos.conf dir creation if it doesn't exist
  - fixes bug #540012
  - moves Layman class initialization into a layman sub-file
