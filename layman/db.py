@@ -87,7 +87,7 @@ class DB(DbBase):
         @rtype bool: reflect the user's decision to install overlay.
         '''
         if self.config['check_official'] and not overlay.status == 'official':
-            msg = 'Overlay "%(repo)s" is not an official. Continue install?'\
+            msg = 'Overlay "%(repo)s" is not official. Continue installing?'\
                   ' [y/n]: ' % {'repo': overlay.name}
             if not get_ans(msg, color='green'):
                 msg = 'layman will not add "%(repo)s", due to user\'s'\
