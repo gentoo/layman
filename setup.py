@@ -28,6 +28,10 @@ SELECTABLE = {
 
 use_defaults = ' '.join(list(SELECTABLE))
 
+DB_PLUGINS = {
+    'sqlite': 'layman.db_modules.sqlite_db'
+}
+
 SYNC_PLUGINS = {
     'sync-plugin-portage': 'portage.sync.modules.laymansync',
 }
@@ -46,10 +50,13 @@ for mod in sorted(SELECTABLE):
     if mod in USE:
         modules.append('layman.overlays.modules.%s' % SELECTABLE[mod])
 
+for plugin in sorted(DB_PLUGINS):
+    if plugin in USE:
+        modules.append(DB_PLUGINS[plugin]
+
 for plugin in sorted(SYNC_PLUGINS):
     if plugin in USE:
         modules.append(SYNC_PLUGINS[plugin])
-
 
 class setup_plugins(Command):
     """ Perform moves for the plugins into base namespace
@@ -84,9 +91,9 @@ setup(
         'http://git.overlays.gentoo.org/gitweb/?p=proj/layman.git;a=summary',
     packages      = ['layman', 'layman.config_modules',
         'layman.config_modules.makeconf', 'layman.config_modules.reposconf',
-        'layman.db_modules', 'layman.db_modules.json_db', 
-        'layman.db_modules.sqlite_db', 'layman.db_modules.xml_db',
-        'layman.overlays', 'layman.overlays.modules',
+        'layman.db_modules', 'layman.db_modules.json_db',
+        'layman.db_modules.xml_db', 'layman.overlays',
+        'layman.overlays.modules',
         ] + modules,
     scripts       = ['bin/layman', 'bin/layman-overlay-maker',
                        'bin/layman-mounter', 'bin/layman-updater'],
