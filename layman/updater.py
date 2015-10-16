@@ -118,8 +118,7 @@ class Main(object):
         if migrate_type not in DB_TYPES:
             msg = 'migrate_database() error; invalid migration type: '\
                   '"%(db_type)s"' % {'db_type': migrate_type}
-            self.output.error('  ' + msg)
-            raise Exception(msg)
+            self.output.die(msg)
 
         db = DB(self.config)
         installed = self.config['installed']
