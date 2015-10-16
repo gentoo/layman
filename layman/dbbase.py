@@ -36,7 +36,7 @@ import os
 import os.path
 import sys
 
-from   layman.module             import Modules
+from   layman.module             import Modules, InvalidModuleName
 from   layman.overlays.overlay   import Overlay
 
 
@@ -155,6 +155,26 @@ class DbBase(object):
         raise NotImplementedError(msg)
 
 
+    def _get_dbctl(self, db_type):
+        '''
+        Returns database module controller for class or dies trying.
+        '''
+        try:
+            db_ctl = self.mod_ctl.get_class(db_type)(self.config,
+                        self.overlays,
+                        self.paths,
+                        self.ignore,
+                        self.ignore_init_read_errors)
+        except InvalidModuleName:
+            msg = 'DbBase._get_dbctl() error:\nDatabase module name '\
+                  '"%(name)s" is invalid or not found.\nPlease set db_type '\
+                  'variable to proper value to continue.'\
+                  % {'name': db_type.replace('_db', '')}
+            self.output.die(msg)
+
+        return db_ctl
+        
+        
     def add_new(self, xml=None, origin=None, from_dict=None):
         '''
         Reads xml text and dictionary definitions and adds
@@ -188,12 +208,7 @@ class DbBase(object):
         if 'cache' in path and '.xml' in path:
             db_type = 'xml_db'
 
-        db_ctl = self.mod_ctl.get_class(db_type)(self.config,
-                 self.overlays,
-                 self.paths,
-                 self.ignore,
-                 self.ignore_init_read_errors)
-
+        db_ctl = self._get_dbctl(db_type)
         db_ctl.read_db(path, text=text)
 
 
@@ -206,12 +221,7 @@ class DbBase(object):
         if migrate_type:
             db_type = migrate_type + '_db'
 
-        db_ctl = self.mod_ctl.get_class(db_type)(self.config,
-                 self.overlays,
-                 self.paths,
-                 self.ignore,
-                 self.ignore_init_read_errors)
-
+        db_ctl = self._get_dbctl(db_type)
         db_ctl.write(path, remove=remove)
 
 
@@ -219,12 +229,7 @@ class DbBase(object):
         '''
         Remove an overlay from the database.
         '''
-        db_ctl = self.mod_ctl.get_class(self.db_type)(self.config,
-                 self.overlays,
-                 self.paths,
-                 self.ignore,
-                 self.ignore_init_read_errors)
-
+        db_ctl = self._get_dbctl(db_type)
         db_ctl.remove(overlay, path)
 
 
