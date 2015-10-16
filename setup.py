@@ -52,7 +52,7 @@ for mod in sorted(SELECTABLE):
 
 for plugin in sorted(DB_PLUGINS):
     if plugin in USE:
-        modules.append(DB_PLUGINS[plugin]
+        modules.append(DB_PLUGINS[plugin])
 
 for plugin in sorted(SYNC_PLUGINS):
     if plugin in USE:
