@@ -173,8 +173,8 @@ class DbBase(object):
             self.output.die(msg)
 
         return db_ctl
-        
-        
+
+
     def add_new(self, xml=None, origin=None, from_dict=None):
         '''
         Reads xml text and dictionary definitions and adds
@@ -229,7 +229,7 @@ class DbBase(object):
         '''
         Remove an overlay from the database.
         '''
-        db_ctl = self._get_dbctl(db_type)
+        db_ctl = self._get_dbctl(self.db_type)
         db_ctl.remove(overlay, path)
 
 
