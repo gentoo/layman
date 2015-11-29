@@ -164,7 +164,7 @@ class Main(object):
                                    'to_type': migrate_type}
         self.output.info(msg)
 
-        self.set_db_type(migrate_type, os.path.basename(installed))
+        self.set_db_type(migrate_type, os.path.basename(new_name))
 
         msg = '  Warning: Please be sure to update your config file via '\
               'the\n  `dispatch-conf` command or you *will* lose database '\
