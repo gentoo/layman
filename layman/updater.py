@@ -124,7 +124,7 @@ class Main(object):
         installed = self.config['installed']
         old_ext = os.path.splitext(installed)[1]
         backup_name = installed + '.' + self.config['db_type']
-        if old_ext == self.config['db_type']:
+        if old_ext == "." + self.config['db_type']:
             backup_name = installed + '.bak'
         new_name = installed.replace(old_ext, '.db')
 
