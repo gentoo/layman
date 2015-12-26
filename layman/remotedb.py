@@ -139,13 +139,13 @@ class RemoteDB(DbBase):
                 filepath, mpath, tpath, sig = self._paths(url)
                 if 'file://' in url:
                     success, olist, timestamp = self._fetch_file(
-                        url, mpath, tpath)
+                        url, mpath, tpath, climit=60)
                 elif sig:
                     success, olist, timestamp = fetcher.fetch_content(
-                        url[0], tpath)
+                        url[0], tpath, climit=60)
                 else:
                     success, olist, timestamp = fetcher.fetch_content(
-                        url, tpath)
+                        url, tpath, climit=60)
                 if not success:
                     #succeeded = False
                     continue
