@@ -48,7 +48,7 @@ class Module(object):
         for submodule in self.module_spec['provides']:
             kid = self.module_spec['provides'][submodule]
             kidname = kid['name']
-            kid['module_name'] = '.'.join([mod_name, self.name])
+            kid['module_name'] = '.'.join([mod_name, kidname])
             kid['is_imported'] = False
             self.kids[kidname] = kid
             self.kids_names.append(kidname)
