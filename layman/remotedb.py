@@ -119,9 +119,15 @@ class RemoteDB(DbBase):
             'info':  self.output.info,
             'debug': self.output.debug,
             'error': self.output.error,
+            'exception': self.output.error,
+            # we want any warnings to be printed to the terminal
+            # so assign it to output.info with a lower noise level
+            'warning': self.output.info,
+            'kwargs-exception': {'level': None},
             'kwargs-info': {'level': 5},
             'kwargs-debug': {'level': 2},
             'kwargs-error':{'level': None},
+            'kwargs-warning': {'level': 2},
         }
         fetcher = Connector(connector_output, self.proxies, USERAGENT)
 
