@@ -219,7 +219,7 @@ class DbBase(object):
             db_type = 'xml_db'
 
         db_ctl = self._get_dbctl(db_type)
-        db_ctl.read_db(path, text=text)
+        return db_ctl.read_db(path, text=text)
 
 
     def write(self, path, remove=False, migrate_type=None):
