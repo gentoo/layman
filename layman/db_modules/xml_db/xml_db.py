@@ -108,12 +108,13 @@ class DBHandler(object):
                     document = df.read()
             except Exception as error:
                 if not self.ignore_init_read_errors:
-                    msg = 'XML DBHandler - Failed to read the overlay list at'\
-                      '("%(path)s")' % {'path': path}
+                    msg = 'XML DBHandler - Failed to read the overlay list at '\
+                      '"%(path)s"' % {'path': path}
                 self.output.error(msg)
-                raise error
+                return False
 
-        self.read(document, origin=path)
+        success = self.read(document, origin=path)
+        return success
 
 
     def read(self, text, origin):
@@ -123,8 +124,10 @@ class DBHandler(object):
         '''
         try:
             document = ET.fromstring(text)
-        except xml.parsers.expat.ExpatError as err:
-            raise BrokenOverlayCatalog(origin, err, self._broken_catalog_hint())
+        except ET.ParseError as error:
+            msg = 'XML DBHandler - ET.ParseError: %(err)s' % {'err': error}
+            self.output.error(msg)
+            return False
 
         overlays = document.findall('overlay') + document.findall('repo')
 
@@ -133,6 +136,8 @@ class DBHandler(object):
             self.output.debug(msg, 9)
             ovl = Overlay(config=self.config, xml=overlay, ignore=self.ignore)
             self.overlays[ovl.name] = ovl
+
+        return True
 
 
     def add_new(self, xml=None, origin=None):
@@ -145,8 +150,8 @@ class DBHandler(object):
             self.output.warn(msg)
             return False
 
-        self.read(xml, origin)
-        return True
+        success = self.read(xml, origin)
+        return success
 
 
     def remove(self, overlay, path):

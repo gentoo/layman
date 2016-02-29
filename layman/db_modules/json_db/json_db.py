@@ -75,6 +75,10 @@ class DBHandler(object):
             try:
                 with fileopen(path, 'r') as df:
                     document = df.read()
+            except ValueError as error:
+                msg = 'JSON DBHanlder - ValueError: %(err)s' % {'err': error}
+                self.output.error(msg)
+                return False
             except Exception as error:
                 if not self.ignore_init_read_errors:
                     msg = 'JSON DBHandler - Failed to read the overlay list at'\
@@ -82,7 +86,8 @@ class DBHandler(object):
                 self.output.error(msg)
                 raise error
 
-        self.add_new(document, origin=path)
+        success = self.add_new(document, origin=path)
+        return success
 
 
     def add_new(self, document=None, origin=None):

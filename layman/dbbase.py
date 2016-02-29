@@ -111,7 +111,17 @@ class DbBase(object):
             if not os.path.exists(path):
                 continue
 
-            self.read_db(path)
+            success = self.read_db(path)
+            if not success:
+                msg = 'DbBase; error, Failed to read database at "%(path)s"\n'\
+                      'Hint: If you manually set db_type. Please reset it and '\
+                      'let layman-updater\nmigrate it. Otherwise layman\'s '\
+                      'database is not initialized, nor populated\nwith any '\
+                      'existing data.\nRun the following: "layman-updater -m '\
+                      '<db_type>"' % {'path': path}
+                self.output.error(msg)
+                sys.exit(-1)
+
             path_found = True
 
         if not path_found and not allow_missing:

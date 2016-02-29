@@ -136,6 +136,8 @@ class DBHandler(object):
                 CONFLICT IGNORE )''')
 
                 connection.commit()
+            except sqlite3.DatabaseError as err:
+                raise err
             except Exception as err:
                 msg = 'SQLite DBHandler error; failed to create database.\n'\
                       'Error was: %(msg)s' % {'msg': err}
@@ -152,64 +154,71 @@ class DBHandler(object):
         overlay_id = None
         overlay = {}
 
-        with self.__connect__(path) as connection:
-            cursor = connection.cursor()
-            cursor.execute('''SELECT Overlay_ID, Name, Priority, Status, 
-            Quality, Homepage, IRC, License FROM Overlay''')
-            overlays_info = cursor.fetchall()
-            connection.commit()
+        try:
+            connection = self.__connect__(path)
+        except sqlite3.DatabaseError as err:
+            msg = 'SQLite DBHandler DatabaseError: %(err)s' % {'err': err}
+            self.output.error(msg)
+            return False
 
-            for overlay_info in overlays_info:
-                overlay = {}
-                overlay_id = overlay_info[0]
-                overlay['name'] = overlay_info[1]
+        cursor = connection.cursor()
+        cursor.execute('''SELECT Overlay_ID, Name, Priority, Status,
+        Quality, Homepage, IRC, License FROM Overlay''')
+        overlays_info = cursor.fetchall()
+        connection.commit()
 
-                cursor.execute('''SELECT URL, Type, Branch FROM Overlay_Source 
-                JOIN Overlay USING (Overlay_ID) JOIN Source USING (Source_ID) 
-                WHERE Overlay_ID = ?''', (overlay_id,))
-                overlay['source'] = cursor.fetchall()
+        for overlay_info in overlays_info:
+            overlay = {}
+            overlay_id = overlay_info[0]
+            overlay['name'] = overlay_info[1]
 
-                cursor.execute('''SELECT Owner_Email, Owner_Name FROM 
-                Overlay_Owner JOIN Overlay USING (Overlay_ID) JOIN Owner USING 
-                (Owner_ID) WHERE Overlay_ID = ?''', (overlay_id,))
-                owner_info = cursor.fetchall()
-                overlay['owner'] = []
+            cursor.execute('''SELECT URL, Type, Branch FROM Overlay_Source
+            JOIN Overlay USING (Overlay_ID) JOIN Source USING (Source_ID)
+            WHERE Overlay_ID = ?''', (overlay_id,))
+            overlay['source'] = cursor.fetchall()
 
-                for _owner in owner_info:
-                    owner = {}
-                    if _owner[0]:
-                        owner['email'] = _owner[0]
+            cursor.execute('''SELECT Owner_Email, Owner_Name FROM Overlay_Owner
+            JOIN Overlay USING (Overlay_ID) JOIN Owner USING (Owner_ID)
+            WHERE Overlay_ID = ?''', (overlay_id,))
+            owner_info = cursor.fetchall()
+            overlay['owner'] = []
+            for _owner in owner_info:
+                owner = {}
+                if _owner[0]:
+                    owner['email'] = _owner[0]
+                else:
+                    owner['email'] = None
+                if len(_owner) > 1:
+                    if _owner[1]:
+                        owner['name'] = _owner[1]
                     else:
-                        owner['email'] = None
-                    if len(_owner) > 1:
-                        if _owner[1]:
-                            owner['name'] = _owner[1]
-                        else:
-                            owner['name'] = None
-                    overlay['owner'].append(owner)
+                        owner['name'] = None
+                overlay['owner'].append(owner)
 
-                cursor.execute('''SELECT Description FROM Description JOIN 
-                Overlay USING (Overlay_ID) WHERE Overlay_ID = ?''',
-                (overlay_id,))
-                overlay['description'] = cursor.fetchall()[0]
+            cursor.execute('''SELECT Description FROM Description
+            JOIN Overlay USING (Overlay_ID) WHERE Overlay_ID = ?''',
+            (overlay_id,))
+            overlay['description'] = cursor.fetchall()[0]
 
-                overlay['status'] = overlay_info[3]
-                overlay['quality'] = overlay_info[4]
-                overlay['priority'] = overlay_info[2]
-                overlay['license'] = overlay_info[7]
-                overlay['homepage'] = overlay_info[5]
-                overlay['IRC'] = overlay_info[6]
+            overlay['status'] = overlay_info[3]
+            overlay['quality'] = overlay_info[4]
+            overlay['priority'] = overlay_info[2]
+            overlay['license'] = overlay_info[7]
+            overlay['homepage'] = overlay_info[5]
+            overlay['IRC'] = overlay_info[6]
 
-                cursor.execute('''SELECT Feed FROM Feed JOIN Overlay USING 
-                (Overlay_ID) WHERE Overlay_ID = ?''', (overlay_id,))
-                overlay['feed'] = cursor.fetchall()
+            cursor.execute('''SELECT Feed FROM Feed JOIN Overlay USING
+            (Overlay_ID) WHERE Overlay_ID = ?''', (overlay_id,))
+            overlay['feed'] = cursor.fetchall()
 
-                if len(overlay['feed']):
-                    overlay['feed'] = overlay['feed'][0]
+            if len(overlay['feed']):
+                overlay['feed'] = overlay['feed'][0]
 
-                self.overlays[overlay_info[1]] = Overlay(self.config,
-                                                         ovl_dict=overlay,
-                                                         ignore=self.ignore)
+            self.overlays[overlay_info[1]] = Overlay(self.config,
+                                                     ovl_dict=overlay,
+                                                     ignore=self.ignore)
+        connection.close()
+        return True
 
 
     def add_new(self, document=None, origin=None):
