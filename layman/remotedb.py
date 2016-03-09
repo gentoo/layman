@@ -145,7 +145,7 @@ class RemoteDB(DbBase):
                 filepath, mpath, tpath, sig = self._paths(url)
                 if 'file://' in url:
                     success, olist, timestamp = self._fetch_file(
-                        url, mpath, tpath, climit=60)
+                        url, mpath, tpath)
                 elif sig:
                     success, olist, timestamp = fetcher.fetch_content(
                         url[0], tpath, climit=60)
@@ -222,7 +222,7 @@ class RemoteDB(DbBase):
 
         return base + '_' + hashlib.md5(url_encoded).hexdigest()
 
-    def _fetch_file(self, url, mpath, tpath=None, climit=60):
+    def _fetch_file(self, url, mpath, tpath=None):
         self.output.debug('RemoteDB._fetch_file() url = %s' % url, 2)
         # check when the cache was last updated
         # and don't re-fetch it unless it has changed
