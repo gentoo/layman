@@ -15,6 +15,7 @@ module_spec = {
     'provides':{
         'layman-module': {
             'name': 'laymansync',
+            'sourcefile': 'laymansync',
             'class': 'CONFIG_CLASS',
             'description': __doc__,
             'functions': ['sync', 'new', 'exists'],
