@@ -53,7 +53,7 @@ def check_conf_path(conf_path):
 
 class ConfigHandler:
 
-    def __init__(self, config, overlays):
+    def __init__(self, config, overlays, rebuild=False):
 
         self.config = config
         self.output = config['output']
@@ -61,7 +61,7 @@ class ConfigHandler:
         self.path = check_conf_path(config['repos_conf'])
         self.storage = config['storage']
         self.repo_config = None
-        self.rebuild = False
+        self.rebuild = rebuild
 
         self.read()
 
@@ -193,14 +193,15 @@ class ConfigHandler:
                 if self.rebuild:
                     # start over with a fresh instance
                     self.repo_conf = ConfigParser.ConfigParser()
-                if not self.repo_conf.sections():
+                    for i in sorted(self.overlays):
+                        self.add(self.overlays[i], no_write=True)
+                if not self.repo_conf.sections() and not self.rebuild:
                     if ('disable' in self.config.keys() and not
                         self.config['disable'][0].lower() == 'all'):
                         for i in sorted(self.overlays):
                             if not i == delete:
                                 self.add(self.overlays[i], no_write=True)
                 self.repo_conf.write(laymanconf)
-                self.rebuild = False
             return True
         except IOError as error:
             self.output.error('ReposConf: ConfigHandler.write(); Failed to write "'\

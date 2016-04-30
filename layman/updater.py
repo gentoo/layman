@@ -273,7 +273,7 @@ class Main(object):
         # can write the overlays to it.
         open(self.config['repos_conf'], 'w').close()
         from layman.config_modules.reposconf.reposconf import ConfigHandler
-        repos_conf = ConfigHandler(self.config, overlays)
+        repos_conf = ConfigHandler(self.config, overlays, rebuild=True)
         repos_conf.write()
 
 
