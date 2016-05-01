@@ -24,7 +24,7 @@ from __future__ import unicode_literals
 __version__ = "$Id: version.py 309 2007-04-09 16:23:38Z wrobel $"
 
 
-VERSION = '2.4.0-git'
+VERSION = '2.4.0'
 
 if __name__ == '__main__':
     print(VERSION)
