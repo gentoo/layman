@@ -36,6 +36,7 @@ SYNC_PLUGINS = {
     'sync-plugin-portage': 'portage.sync.modules.laymansync',
 }
 
+use_defaults += ' ' + ' '.join(list(DB_PLUGINS))
 # get the USE from the environment, default to all selectable modules
 # split them so we don't get substring matches
 USE = os.environ.get("USE", use_defaults).split()
