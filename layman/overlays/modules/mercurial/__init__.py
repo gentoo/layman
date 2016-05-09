@@ -12,6 +12,7 @@ module_spec = {
         'mercurial-module': {
             'name': 'mercurial',
             'class': 'MercurialOverlay',
+            'sourcefile': 'mercurial',
             'description': __doc__,
             'functions': ['add', 'supported', 'sync', 'update'],
             'func_desc': {

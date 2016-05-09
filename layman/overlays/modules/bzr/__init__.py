@@ -12,6 +12,7 @@ module_spec = {
         'bzr-module': {
             'name': 'bzr',
             'class': 'BzrOverlay',
+            'sourcefile': 'bzr',
             'description': __doc__,
             'functions': ['add', 'supported', 'sync', 'update'],
             'func_desc': {

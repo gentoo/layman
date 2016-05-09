@@ -12,6 +12,7 @@ module_spec = {
         'sqlite-module': {
             'name': 'sqlite_db',
             'class': 'DBHandler',
+            'sourcefile': 'sqlite_db',
             'description': __doc__,
             'functions': ['add_new', 'read_db', 'remove', 'write'],
             'func_desc': {

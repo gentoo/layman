@@ -48,7 +48,15 @@ class Module(object):
         for submodule in self.module_spec['provides']:
             kid = self.module_spec['provides'][submodule]
             kidname = kid['name']
-            kid['module_name'] = '.'.join([mod_name, kidname])
+            try:
+                kid['module_name'] = '.'.join([mod_name, kidname])
+            except ImportError:
+                kid['module_name'] = '.'.join([mod_name, self.name])
+                f = self.__module.__file__
+                msg = 'Module.__initialize(); module spec is old, missing '\
+                      'attribute: \'sourcefile\'.\nBackward compatibility '\
+                      'may be removed in the future.\nFile: %(f)s' % {'f': f}
+                self.output.warn(msg)
             kid['is_imported'] = False
             self.kids[kidname] = kid
             self.kids_names.append(kidname)

@@ -12,6 +12,7 @@ module_spec = {
         'reposconf-module': {
             'name': 'reposconf',
             'class': 'ConfigHandler',
+            'sourcefile': 'reposconf',
             'description': __doc__,
             'functions': ['add', 'delete', 'disable', 'enable', 'read',
                           'update', 'write'],

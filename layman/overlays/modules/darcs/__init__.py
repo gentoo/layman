@@ -12,6 +12,7 @@ module_spec = {
         'darcs-module': {
             'name': 'darcs',
             'class': 'DarcsOverlay',
+            'sourcefile': 'darcs',
             'description': __doc__,
             'functions': ['add', 'supported', 'sync'],
             'func_desc': {

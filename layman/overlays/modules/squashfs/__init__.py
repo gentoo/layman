@@ -12,6 +12,7 @@ module_spec = {
         'squashfs-module': {
             'name': 'squashfs',
             'class': 'SquashfsOverlay',
+            'sourcefile': 'squashfs',
             'description': __doc__,
             'functions': ['add', 'supported', 'sync'],
             'func_desc': {

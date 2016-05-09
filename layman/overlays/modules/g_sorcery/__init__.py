@@ -12,6 +12,7 @@ module_spec = {
         'g-sorcery-module': {
             'name': 'g-sorcery',
             'class': 'GSorceryOverlay',
+            'sourcefile': 'g_sorcery',
             'description': __doc__,
             'functions': ['add', 'supported', 'sync'],
             'func_desc': {

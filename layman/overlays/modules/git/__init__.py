@@ -12,6 +12,7 @@ module_spec = {
         'git-module': {
             'name': 'git',
             'class': 'GitOverlay',
+            'sourcefile': 'git',
             'description': __doc__,
             'functions': ['add', 'supported', 'sync', 'update'],
             'func_desc': {

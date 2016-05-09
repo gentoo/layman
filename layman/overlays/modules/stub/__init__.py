@@ -13,6 +13,7 @@ module_spec = {
             'name': 'stub',
             'class': 'StubOverlay',
             'description': __doc__,
+            'sourcefile': 'stub',
             'functions': ['add', 'supported', 'sync', 'update'],
             'func_desc': {
                 'add': 'Stub add function',

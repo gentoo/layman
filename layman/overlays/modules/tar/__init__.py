@@ -12,6 +12,7 @@ module_spec = {
         'tar-module': {
             'name': 'tar',
             'class': 'TarOverlay',
+            'sourcefile': 'tar',
             'description': __doc__,
             'functions': ['add', 'supported', 'sync'],
             'func_desc': {

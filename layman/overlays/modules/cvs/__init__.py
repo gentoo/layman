@@ -12,6 +12,7 @@ module_spec = {
         'cvs-module': {
             'name': 'cvs',
             'class': 'CvsOverlay',
+            'sourcefile': 'cvs',
             'description': __doc__,
             'functions': ['add', 'supported', 'sync', 'update'],
             'func_desc': {

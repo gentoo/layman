@@ -12,6 +12,7 @@ module_spec = {
         'xml-module': {
             'name': 'xml_db',
             'class': 'DBHandler',
+            'sourcefile': 'xml_db',
             'description': __doc__,
             'functions': ['add_new', 'read_db', 'remove', 'write'],
             'func_desc': {

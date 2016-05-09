@@ -12,6 +12,7 @@ module_spec = {
         'json-module': {
             'name': 'json_db',
             'class': 'DBHandler',
+            'sourcefile': 'json_db',
             'description': __doc__,
             'functions': ['add_new', 'read_db', 'remove', 'write'],
             'func_desc': {

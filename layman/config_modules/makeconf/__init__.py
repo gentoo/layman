@@ -12,6 +12,7 @@ module_spec = {
         'makeconf-module': {
             'name': 'makeconf',
             'class': 'ConfigHandler',
+            'sourcefile': 'makeconf',
             'description': __doc__,
             'functions': ['add', 'delete', 'disable', 'enable', 'read',
                           'update', 'write'],

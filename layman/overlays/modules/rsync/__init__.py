@@ -12,6 +12,7 @@ module_spec = {
         'rsync-module': {
             'name': 'rsync',
             'class': 'RsyncOverlay',
+            'sourcefile': 'rsync',
             'description': __doc__,
             'functions': ['add', 'supported', 'sync'],
             'func_desc': {

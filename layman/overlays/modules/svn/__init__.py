@@ -12,6 +12,7 @@ module_spec = {
         'svn-module': {
             'name': 'svn',
             'class': 'SvnOverlay',
+            'sourcefile': 'svn',
             'description': __doc__,
             'functions': ['add', 'supported', 'sync', 'update'],
             'func_desc': {
