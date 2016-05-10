@@ -1,7 +1,11 @@
 CHANGES
 -------
 
-Version 2.4.0 - Release 2016-??-??
+Version 2.4.1 - Release 2016-05-06
+==================================
+ - adds sourcefile to plug-in modules, fixes bug #582154
+
+Version 2.4.0 - Release 2016-05-03
 ==================================
  - adds support for different overlay database types
  - adds json database support
