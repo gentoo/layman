@@ -42,4 +42,7 @@ except KeyError:
     pass
 
 main = Main(ArgsParser(root=root))
-main()
+try:
+    main()
+except KeyboardInterrupt:
+    print('Interrupt received, exiting...')
