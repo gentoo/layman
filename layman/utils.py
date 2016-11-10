@@ -270,9 +270,6 @@ def run_command(config, command, args, **kwargs):
 
     try:
         result = proc.wait()
-    except KeyboardInterrupt:
-        output.info('Interrupted manually', 2)
-        result = 1
     except Exception as err:
         output.error(
             'Unknown exception running command: %s' % command_repr)
