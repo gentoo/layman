@@ -384,6 +384,7 @@ class LaymanAPI(object):
         success  = []
         repos = self._check_repo_type(repos, "sync")
         db = self._get_installed_db()
+        rdb = self._get_remote_db()
 
         self.output.debug("API.sync(); starting ovl loop", 5)
         for ovl in repos:
@@ -406,7 +407,7 @@ class LaymanAPI(object):
 
             try:
                 self.output.debug("API.sync(); try: self._get_remote_db().select(ovl)", 5)
-                ordb = self._get_remote_db().select(ovl)
+                ordb = rdb.select(ovl)
             except UnknownOverlayException:
                 message = 'Overlay "%(repo)s" could not be found in the remote '\
                         'lists.\nPlease check if it has been renamed and '\
