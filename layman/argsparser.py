@@ -193,7 +193,7 @@ class ArgsParser(BareConfig):
                                action = 'store',
                                default = self.defaults['overlay_defs'],
                                # Force interpolation (to prevent argparse tracebacks)
-                               help = 'Path to aditional overlay.xml files [default: '
+                               help = 'Path to additional overlay.xml files [default: '
                                '%s].' % (self.defaults['overlay_defs'] %self.defaults))
 
         path_opts.add_argument('-z',
