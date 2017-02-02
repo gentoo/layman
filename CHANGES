@@ -1,6 +1,12 @@
 CHANGES
 -------
 
+Version 2.4.2 - Release 2017-02-01
+==================================
+ - Bug 587474 Fix a missed eprefix placeholder for repos_conf setting.
+ - Bug 539336 Adds exception handling
+ - Fix commit 63808ef00f94 mis-applied 'sourcefile' attribute changes
+
 Version 2.4.1 - Release 2016-05-06
 ==================================
  - adds sourcefile to plug-in modules, fixes bug #582154
