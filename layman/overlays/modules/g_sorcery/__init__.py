@@ -6,11 +6,11 @@ G-Sorcery plug-in module for layman.
 '''
 
 module_spec = {
-    'name': 'g-sorcery',
+    'name': 'g_sorcery',
     'description': __doc__,
     'provides':{
         'g-sorcery-module': {
-            'name': 'g-sorcery',
+            'name': 'g_sorcery',
             'class': 'GSorceryOverlay',
             'sourcefile': 'g_sorcery',
             'description': __doc__,
