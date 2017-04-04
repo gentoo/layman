@@ -99,6 +99,7 @@ class BareConfig(object):
             'protocol_filter': [],
             'auto_sync': 'No',
             'recursive': 'No',
+            'provided_masters': 'gentoo',
             'check_official': 'Yes',
             'conf_type': 'repos.conf',
             'db_type': 'xml',

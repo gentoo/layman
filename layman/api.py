@@ -166,6 +166,8 @@ class LaymanAPI(object):
             if success and self.config['recursive']:
                 ms = self._get_installed_db().select(
                         ovl).get_masters(self.config['storage'])
+                ms = list(set(ms) -
+                        set(self.config['provided_masters'].strip().split()))
                 for m in ms:
                     if (not self.is_installed(m) and
                             self.is_repo(m) and
