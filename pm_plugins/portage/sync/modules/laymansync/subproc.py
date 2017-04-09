@@ -72,7 +72,7 @@ class Layman(NewBase):
 
         exitcode = portage.process.spawn_bash("%(command)s" % \
             ({'command': command}),
-            **portage._native_kwargs(self.spawn_kwargs))
+            **self.spawn_kwargs)
         if exitcode != os.EX_OK:
             msg = "!!! layman add error in %(repo)s"\
                 % ({'repo': self.repo.name})
@@ -111,7 +111,7 @@ class Layman(NewBase):
         command = ' '.join(args)
         exitcode = portage.process.spawn_bash("%(command)s" % \
             ({'command': command}),
-            **portage._native_kwargs(self.spawn_kwargs))
+            **self.spawn_kwargs)
 
         if exitcode != os.EX_OK:
             exitcode = self.new()[0]
