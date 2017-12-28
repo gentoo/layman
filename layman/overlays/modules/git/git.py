@@ -131,7 +131,7 @@ class GitOverlay(OverlaySource):
         cfg_opts = self.config["git_syncopts"]
         target = path([base, self.parent.name])
 
-        args = ['pull']
+        args = ['pull', '-p']
         if self.config['quiet']:
             args.append('-q')
         if len(cfg_opts):
