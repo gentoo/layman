@@ -14,9 +14,6 @@
 #             Sebastian Pipping <sebastian@pipping.org>
 #
 
-from __future__ import print_function
-from __future__ import unicode_literals
-
 '''Runs external (non-doctest) test cases.'''
 
 import os
@@ -452,7 +449,7 @@ class FetchRemoteList(unittest.TestCase):
         available = api.get_available()
         self.assertEqual(available, ['wrobel', 'wrobel-stable'])
 
-        
+
         # Test the info of an overlay.
         info = api.get_info_str(['wrobel'], verbose=True, local=False)
         test_info = 'wrobel\n~~~~~~\nSource  : https://overlays.gentoo.org'\
@@ -769,4 +766,3 @@ class RemoteDBCache(unittest.TestCase):
 if __name__ == '__main__':
     filterwarnings('ignore')
     unittest.main()
-    resetwarnings()
