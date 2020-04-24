@@ -95,8 +95,9 @@ class Overlay(object):
     def add(self, base):
         res = 1
         first_s = True
-
+        self.output.debug('Overlay.add()', 5)
         self.sources = self.filter_protocols(self.sources)
+        self.output.debug('Overlay.add(), filtered protocols, sources:' + str(self.sources), 5)
         if not self.sources:
             msg = 'Overlay.add() error: overlay "%(name)s" does not support '\
                   ' the given\nprotocol(s) %(protocol)s and cannot be '\
@@ -110,10 +111,12 @@ class Overlay(object):
             if not first_s:
                 self.output.info('\nTrying next source of listed sources...', 4)
             try:
+                self.output.debug('Overlay.add(), s.add(base)', 5)
                 res = s.add(base)
                 if res == 0:
                     # Worked, throw other sources away
                     self.sources = [s]
+                    self.output.debug('Overlay.add(), back from s.add(base)', 5)
                     break
             except Exception as error:
                 self.output.warn(str(error), 4)
@@ -132,11 +135,17 @@ class Overlay(object):
         from the overlay's sources.
         '''
         _sources = []
-        if not self.config['protocol_filter']:
+        self.output.debug('Overlay.filter_protocols()', 5)
+        self.output.debug('Overlay.filter_protocols() filters:' + str(type(self.config['protocol_filter'])), 5)
+        if not self.config['protocol_filter'] and not self.config['protocol_filter'] == []:
+            self.output.debug('Overlay.filter_protocols() no protocol_filter, returning', 5)
             return sources
-
+        self.output.debug('Overlay.filter_protocols() sources:' + str(sources), 5)
         for source in sources:
+            self.output.debug('Overlay.filter_protocols() source:' + str(type(source)), 5)
+            self.output.debug('Overlay.filter_protocols() filters:' + str(self.config['protocol_filter']), 5)
             for protocol in self.config['protocol_filter']:
+                self.output.debug('Overlay.filter_protocols() protocol: ' + protocol + ' ' + str(type(protocol)), 5)
                 protocol = protocol.lower()
                 #re.search considers "\+" as the literal "+".
                 if protocol == 'git+ssh':
@@ -144,7 +153,7 @@ class Overlay(object):
                 protocol += '://'
                 if re.search('^' + protocol, source.src):
                     _sources.append(source)
-
+        self.output.debug('Overlay.filter_protocols(), returning sources' + str(_sources), 5)
         return _sources
 
 
@@ -792,7 +801,7 @@ class Overlay(object):
                 try:
                     res = self.sources[0].update(base, src)
                     if res == 0:
-                        # Updating it worked, no need to bother 
+                        # Updating it worked, no need to bother
                         # checking other sources.
                         self.sources[0].src = src
                         result = True

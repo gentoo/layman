@@ -83,15 +83,18 @@ class RemoteDB(DbBase):
         self.output.debug('RemoteDB.__init__(), paths to load = %s' %str(paths),
             2)
         if config['nocheck']:
+            self.output.debug('RemoteDB.__init__(), ignore = 2', 5)
             ignore = 2
         else:
+            self.output.debug('RemoteDB.__init__(), ignore = 0', 5)
             ignore = 0
 
         #quiet = int(config['quietness']) < 3
-
+        self.output.debug('RemoteDB.__init__(), DbBase.__init__() call', 5)
         DbBase.__init__(self, config, paths=paths, ignore=ignore,
             ignore_init_read_errors=ignore_init_read_errors)
 
+        self.output.debug('RemoteDB.__init__(), back from DbBase.__init__() call', 5)
         self.gpg = None
         self.gpg_config = None
 

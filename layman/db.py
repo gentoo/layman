@@ -111,6 +111,7 @@ class DB(DbBase):
         if overlay.name not in self.overlays.keys():
             if not self._check_official(overlay):
                 return False
+            self.output.debug('RemoteDB.__init__(), DB.add overlay.add() call', 4)
             result = overlay.add(self.config['storage'])
             if result == 0:
                 if 'priority' in self.config.keys():
