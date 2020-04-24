@@ -161,7 +161,7 @@ class PyLayman(NewBase):
         if self.repo.name not in available_overlays:
             overlay_package = create_overlay_package(repo=self.repo,\
                                 logger=self.logger,\
-                                xterm_titles=self.xter_titles)
+                                xterm_titles=self.xterm_titles)
             create_overlay_xml = Interactive(config=self.config)
             path = self.config.get_option('overlay_defs') + '/reposconf.xml'
             result = create_overlay_xml(overlay_package=overlay_package,
