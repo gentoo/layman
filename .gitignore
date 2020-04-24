@@ -1,5 +1,6 @@
 *~
 *.pyc
+*.pyo
 /doc/layman.8
 /doc/layman.8.html
 /doc/docbook-xsl.css
@@ -8,3 +9,4 @@
 *.patch
 testpath
 /misc/*
+*.geany
