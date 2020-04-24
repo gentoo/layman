@@ -1,6 +1,13 @@
 CHANGES
 -------
 
+Version 2.4.3 - Release 2020-04-24
+==================================
+ - Bug 613936 Drop portage_native_kwargs
+ - Bug 674594 typo in laymansync.pylayman.py
+ - Fix python 3.7 and python 3.8 compatibility
+ - several more typo fixes, added more debug statements...
+
 Version 2.4.2 - Release 2017-02-01
 ==================================
  - Bug 587474 Fix a missed eprefix placeholder for repos_conf setting.
