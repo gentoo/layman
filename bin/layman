@@ -20,6 +20,12 @@ __version__ = "0.2"
 
 import os
 
+# Used for running live development code only
+#import sys
+#print(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+#sys.path.insert(0,os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+
 #===============================================================================
 #
 # Dependencies
