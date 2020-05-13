@@ -29,6 +29,9 @@ __version__ = "$Id: git.py 146 2006-05-27 09:52:36Z wrobel $"
 from   layman.utils             import path, run_command
 from   layman.overlays.source   import OverlaySource, require_supported
 
+import subprocess
+import sys
+
 #===============================================================================
 #
 # Class GitOverlay
@@ -121,6 +124,32 @@ class GitOverlay(OverlaySource):
         return run_command(self.config, self.command(), args, cmd=self.type,
                            cwd=target)
 
+    def manual_sync(self, target):
+      process = subprocess.Popen([self.command(),
+        'rev-parse', '--abbrev-ref', '--symbolic-full-name', '@{upstream}' ],
+        cwd=target, stdout=subprocess.PIPE)
+      try:
+          revision = process.communicate()[0]
+      except Exception as err:
+          sys.stderr.write("git rev-parse failed\n")
+          return 1
+      revision = revision.decode('utf-8')
+      revision = revision.rstrip()
+      if revision == '':
+          sys.stderr.write("git rev-parse failed to return revision\n")
+          return 1
+      run_command(self.config, self.command(),
+        [ 'update-index', '--refresh', '-q', '--unmerged' ],
+        cwd=target, cmd="git update-index --refresh -q --unmerged")
+      sys.stderr.write("Bar\n")
+      result = run_command(self.config, self.command(), [ 'fetch' ],
+        cwd=target, cmd="git fetch")
+      if result != 0:
+          return 1
+      return run_command(self.config, self.command(),
+        [ 'reset', '--hard', revision ],
+        cwd=target, cmd="git reset --hard %s" % revision)
+
     def sync(self, base):
         '''Sync overlay.'''
 
@@ -137,10 +166,11 @@ class GitOverlay(OverlaySource):
         if len(cfg_opts):
             args.extend(cfg_opts.split())
 
-        return self.postsync(
-            run_command(self.config, self.command(), args, cwd=target,
-                        cmd=self.type),
-            cwd=target)
+        result = run_command(self.config, self.command(), args, cwd=target,
+          cmd=self.type)
+        if result != 0:
+           result = self.manual_sync(target)
+        return self.postsync(result, cwd=target)
 
     def supported(self):
         '''Overlay type supported?'''
