@@ -90,6 +90,7 @@ class BareConfig(object):
             self.root = root
 
         self._defaults = {
+            'eroot': path([self.root, EPREFIX, '/']),
             'configdir': path([self.root, EPREFIX,'/etc/layman']),
             'config'    : '%(configdir)s/layman.cfg',
             'storage'   : path([self.root, EPREFIX,'/var/lib/layman']),

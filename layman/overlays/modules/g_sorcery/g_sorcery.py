@@ -88,7 +88,7 @@ class GSorceryOverlay(OverlaySource):
              'g-sorcery',
              'app-portage/g-sorcery'),
 
-             ('/usr/bin/' + self.backend,
+             (self.config['eroot'] + '/usr/bin/' + self.backend,
               self.backend,
               'app-portage/' + self.backend),],
 
