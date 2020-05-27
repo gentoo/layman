@@ -671,6 +671,11 @@ class Overlay(object):
         return self.status == 'official'
 
 
+    def get_masters(self, base):
+        assert len(self.sources) == 1
+        return self.sources[0].get_masters(base)
+
+
     def source_uris(self):
         for i in self.sources:
             yield i.src

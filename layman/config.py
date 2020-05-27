@@ -98,6 +98,8 @@ class BareConfig(object):
             'installed': '%(storage)s/installed.xml',
             'protocol_filter': '',
             'auto_sync': 'No',
+            'recursive': 'No',
+            'provided_masters': 'gentoo',
             'check_official': 'Yes',
             'conf_type': 'repos.conf',
             'db_type': 'xml',

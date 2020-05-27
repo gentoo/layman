@@ -163,6 +163,19 @@ class LaymanAPI(object):
                             '\n%(err)s' % {'repo': ovl, 'err': e})
             results.append(success)
             self.get_installed(dbreload=True)
+            if success and self.config['recursive']:
+                ms = self._get_installed_db().select(
+                        ovl).get_masters(self.config['storage'])
+                ms = list(set(ms) -
+                        set(self.config['provided_masters'].strip().split()))
+                for m in ms:
+                    if (not self.is_installed(m) and
+                            self.is_repo(m) and
+                            m not in repos):
+                        msg = 'Overlay {} depends on overlay {}, which is not'\
+                                ' installed. Add {}? [y/n] '.format(ovl, m, m)
+                        if get_ans(msg):
+                            repos.append(m)
         if (True in results) and update_news:
             self.update_news(repos)
 

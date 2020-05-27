@@ -161,6 +161,11 @@ class ArgsParser(BareConfig):
                              action = 'store_true',
                              help = 'Update all overlays.')
 
+        actions.add_argument('-R',
+                             '--recursive',
+                             action = 'store_true',
+                             help = 'Add overlays recursively.')
+
         #-----------------------------------------------------------------
         # Path Options
 
@@ -313,6 +318,8 @@ class ArgsParser(BareConfig):
                 % {'configdir': self.defaults['configdir']}
 
         self._options['setup_help'] = self.options['setup_help']
+
+        self._options['recursive'] = self.options['recursive']
 
         # Now parse the config file
         self.output.debug('ARGSPARSER: Reading config file at ' + \

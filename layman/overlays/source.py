@@ -20,6 +20,7 @@ import copy
 import sys
 import shutil
 import subprocess
+from layman.compatibility import fileopen
 from layman.utils import path, resolve_command, run_command
 
 supported_cache = {}
@@ -110,6 +111,19 @@ class OverlaySource(object):
     def is_supported(self):
         '''Is the overlay type supported?'''
         return _supported(self.get_type_key(), self.supported)
+
+    def get_masters(self, base):
+        '''Return master repos, if present'''
+        lfile = path([base, self.parent.name, 'metadata', 'layout.conf'])
+        if os.path.exists(lfile) and os.access(lfile, os.R_OK):
+            with fileopen(lfile, 'r') as f:
+                for l in f:
+                    s = l.split('=')
+                    if (len(s) < 2): continue
+                    k = s[0].strip()
+                    if (k == 'masters'):
+                        return '='.join(s[1:]).strip().split()
+        return []
 
     def get_type_key(self):
         return '%s' % self.__class__.type_key
